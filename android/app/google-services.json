@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "68925653075",
+    "project_id": "academic-ally-7555f",
+    "storage_bucket": "academic-ally-7555f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68925653075:android:583b298cc2093e8a7b86a6",
+        "android_client_info": {
+          "package_name": "com.academically"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68925653075-8hn3iink9h5pnv8m8o6k7fues4k1us6b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzJspUznG5gaUUYUw7lSat___cYr_ExoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68925653075-8hn3iink9h5pnv8m8o6k7fues4k1us6b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
