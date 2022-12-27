@@ -1,1 +1,1 @@
-# Academically
+# Academic Ally
