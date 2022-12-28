@@ -16,7 +16,8 @@ const createStyles = () =>
             width: '100%',
             height: '100%',
         },
-        rocketIcon: {
+        studyIcon: {
+            top:50,
             width: 320,
             height: 320,
             resizeMode: 'contain',

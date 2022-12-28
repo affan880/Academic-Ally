@@ -1,68 +1,38 @@
-import { StyleSheet, Text, View, StatusBar, Dimensions, ScrollView } from 'react-native'
-import React,{useState} from 'react'
-import { logOut, firestoreDB } from '../../Modules/auth/firebase/firebase'
-import firebase from "@react-native-firebase/app"
-import firestore from "@react-native-firebase/firestore"
-
-
+import { StyleSheet, Text, View, StatusBar, Dimensions, ScrollView, Button} from 'react-native'
+import React, { useState } from 'react'
+import ScreenLayout from '../../interfaces/screenLayout';
+import { COLORS } from '../../constants/colors';
+const height = Dimensions.get("screen").height;
+const width = Dimensions.get("screen").width;
 const HomeScreen = () => {
-  const documentPath = "users/hey"
-  const [data, setData] = useState("ddd")
-  
+  const [index, setIndex] = useState(0);
 
-  const DeleteAcc = async () => {
-    console.log("Deleting user")
-  }
-
-
-  const height = Dimensions.get("screen").height;
-  const width = Dimensions.get("screen").width;
 
   return (
-    <View style={{
-      flex: 1,
-      backgroundColor: '#E6E6E6',
-    }} >
-      <StatusBar
-        // animated={true}
-        translucent={true}
-        backgroundColor={'transparent'}
-        barStyle={'dark-content'}
-      />
-      <ScrollView>
-        <View style={{
-          flex: 1,
-          backgroundColor: '#ffffff',
-          height: height,
-          width: width,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }} >
-          <Text
-            onPress={() => {
-              DeleteAcc()
-            }}
-            style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: '#000000',
-          }} >Home Screen</Text>
-          <Text
-            onPress={() => {
-              logOut()
-            }}
-            style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: '#000000',
-          }} >Log out</Text>
-        </View>
-
-      </ScrollView>
-    </View>
-  )
+    <ScreenLayout>
+      <View style={styles.titleContainer}>
+        <Text style={styles.pageTitle}>Home</Text>
+      </View>
+      
+    </ScreenLayout>
+  );
 }
 
 export default HomeScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  pageTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000000'
+  },
+  titleContainer: {
+    // height: height * 0.15,
+    // width: width,
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    // backgroundColor: COLORS.light,
+    // borderBottomLeftRadius: 30,
+    // borderBottomRightRadius: 30,
+  }
+})

@@ -75,7 +75,7 @@ const LoginScreen: React.FC<IProps> = ({ navigation }) => {
             <Form initialValues={initialValues} innerRef = {formRef} validationSchema={LoginvalidationSchema} onSubmit={(values) => 
                        logIn(values.email, values.password)
                    } >
-                    <CustomTextInput leftIcon="user" placeholder="email" name='email' />
+                    <CustomTextInput leftIcon="user" placeholder="Email" name='email' />
                     <CustomTextInput leftIcon="lock" placeholder="Password" handlePasswordVisibility name="password" />
               <TouchableOpacity style={styles.formContainer} touchSoundDisabled={false} >
                     <Text onPress={() => forgotPasswordHandler()} style={styles.forgotPasswordText}>Forgot Password?</Text>

@@ -6,6 +6,8 @@ export interface ColorValue{
     verdigris: string;
     paleSilver: string;
     isabelline: string;
+    primary: string;
+    secondary: string;
 }
 
 export const COLORS: ColorValue = {
@@ -16,4 +18,6 @@ export const COLORS: ColorValue = {
     verdigris: '#28afb0',
     paleSilver: '#ddcecd',
     isabelline: '#eee5e5',
+    primary: "#D2D5DD",
+    secondary: "#011638",
 }

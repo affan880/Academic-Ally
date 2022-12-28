@@ -9,7 +9,7 @@ type Props = {
     placeholder: string,
     handlePasswordVisibility?: any,
     name: string,
-    securuty?: boolean, 
+    securuty?: boolean,
     data?: any,
     width?: any,
 }
@@ -27,63 +27,63 @@ export const CustomTextInput = ({ leftIcon, placeholder, name, data, width }: Pr
     }
     return (
         <View style={styles.container}>
-        <View >
-            {renderLabel()}
-            <Dropdown
-                    style={[styles.input,{width: width}, touched[name] && errors[name] ? {
+            <View >
+                {renderLabel()}
+                <Dropdown
+                    style={[styles.input, { width: width }, touched[name] && errors[name] ? {
                         borderColor: '#FF2E00',
-                        borderWidth: 3,
+                        borderWidth: 2,
                     } : null]}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
-                data={data}
-                search
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                placeholder={!isFocus ? placeholder : ''}
-                searchPlaceholder="Search..."
-                value={value}
-                showsVerticalScrollIndicator={false}
-                onFocus={() => setIsFocus(true)}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={data}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={!isFocus ? placeholder : ''}
+                    searchPlaceholder="Search..."
+                    value={value}
+                    showsVerticalScrollIndicator={false}
+                    onFocus={() => setIsFocus(true)}
                     onBlur={() => {
                         setIsFocus(false)
                         setFieldTouched(name);
                     }}
-                dropdownPosition = 'auto'
+                    dropdownPosition='auto'
                     containerStyle={{
                         width: width,
                         height: 400,
-                        borderRadius: 15,
-                        elevation: 8,
+                        borderRadius: 12,
+                        elevation: 8,                        
                     }}
                     itemContainerStyle={{
                         height: 50,
                         justifyContent: 'center',
                         borderBottomWidth: 1,
-                        borderBottomColor: '#e5e5e5',
-                        borderRadius: 15,
+                        borderBottomColor: '#e5e5e5'
                     }}
                     itemTextStyle={{
                         fontSize: 16,
-                }}
+                        color: '#000000',
+                    }}
                     onChange={(item) => {
                         setValue(item.value);
                         setIsFocus(false);
                         setFieldValue(name, item.label);
                     }
                     }
-                renderLeftIcon={() => (
-                    <AntDesign
-                        style={styles.icon}
-                        color={isFocus ? 'blue' : 'black'}
-                        name={leftIcon}
-                        size={20}
-                    />
-                )}
-            />
+                    renderLeftIcon={() => (
+                        <AntDesign
+                            style={styles.icon}
+                            color={isFocus ? 'blue' : 'black'}
+                            name={leftIcon}
+                            size={20}
+                        />
+                    )}
+                />
             </View>
         </View>
     )
@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         marginTop: 10,
         alignItems: 'center',
+        color: "#000000"
     },
     textInput: {
         height: 60,
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
     },
     container: {
         marginTop: 10,
+        color:"#000000"
     },
     dropdown: {
         height: 50,
@@ -117,10 +119,11 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         borderWidth: 0.5,
         borderRadius: 8,
-        paddingHorizontal: 8,
+        paddingHorizontal: 0,
+        color: "#000000"
     },
     icon: {
-        marginRight: 15,
+        marginRight: 12,
     },
     label: {
         position: 'absolute',
@@ -130,21 +133,25 @@ const styles = StyleSheet.create({
         zIndex: 999,
         paddingHorizontal: 8,
         fontSize: 14,
-        borderRadius: 5
+        borderRadius: 5,
+        color:"#000000"
     },
     placeholderStyle: {
         fontSize: 16,
+        color: "#808080"
     },
     selectedTextStyle: {
         fontSize: 16,
+        color: "#000000"
     },
     iconStyle: {
         width: 25,
         height: 25,
-        marginRight:15
+        marginRight: 15
     },
     inputSearchStyle: {
         height: 40,
         fontSize: 16,
+        color: "#000000"
     },
 })

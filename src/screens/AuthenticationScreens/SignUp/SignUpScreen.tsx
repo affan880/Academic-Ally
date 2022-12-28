@@ -83,7 +83,7 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
                     contentContainerStyle={{ flexGrow: 1 }}
                     scrollEnabled={true}
                 >
-                <Image source={SIGNUPILLUSTRATION} style={styles.rocketIcon} />
+                <Image source={SIGNUPILLUSTRATION} style={styles.studyIcon} />
                 <Text style={styles.welcomeText}> Hi there!</Text>
                 <Text style={styles.loginText}>Let's Get Started</Text>
                 <View style={styles.inputContainer}>
@@ -92,12 +92,12 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
                         <CustomTextInput leftIcon="mail" placeholder="Email" name='email' />
                         <CustomTextInput leftIcon="lock" placeholder="Password" name="password" />
                             <CustomTextInput leftIcon="lock" placeholder="Confirm Password" handlePasswordVisibility name="confirmPassword" />
-                            <View style={{ flexDirection: 'row', width: screenWidth - 80, flex:1, justifyContent:"space-between" }}>
+                            <View style={{ flexDirection: 'row', width: screenWidth - 50, flex:1, justifyContent:"space-between" }}>
                                 <DropdownComponent name='Course' data={CourseData} placeholder={"Course"} leftIcon="Safety" width={screenWidth/2.5} />
                                 <DropdownComponent name='Branch' data={BranchData} placeholder={"Branch"} leftIcon="bars" width={screenWidth/2.5} />
                             </View>
-                            <View style={{ flexDirection: 'row', width: screenWidth - 80, flex: 1, justifyContent: "space-between" }}>
-                                <DropdownComponent name='Year' data={SemData} placeholder={"Studying year"} leftIcon="bars" width={screenWidth/2.5} />
+                            <View style={{ flexDirection: 'row', width: screenWidth - 50, flex: 1, justifyContent: "space-between" }}>
+                                <DropdownComponent name='Year' data={YearData} placeholder={"Studying year"} leftIcon="bars" width={screenWidth/2.5} />
                                 <DropdownComponent name='Sem' data={SemData} placeholder={"Semester"} leftIcon="ellipsis1" width={screenWidth/2.5} />
                             </View>
                         <View style={styles.SignupButton}>
