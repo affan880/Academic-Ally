@@ -1,4 +1,5 @@
-import React, { useEffect, useReducer, useRef } from 'react'
+import React, { useEffect, useReducer, useRef, } from 'react'
+
 import {
     Pressable,
     StatusBar,
@@ -64,6 +65,7 @@ const AppStack = () => {
         <>
             <StatusBar barStyle="light-content" />
             <Tab.Navigator
+                keyboardShouldPersistTaps="handled"
                 tabBar={(props) => <AnimatedTabBar {...props} />}
                 screenOptions={{
                     tabBarHideOnKeyboard: false,
@@ -79,7 +81,8 @@ const AppStack = () => {
                         height: 60,
                         backgroundColor: "#00A8E8",
                     },
-                }}
+                }
+                }
             >
                 <Tab.Screen
                     name="HomeScreen"

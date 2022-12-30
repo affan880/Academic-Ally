@@ -14,3 +14,13 @@ export const LoginvalidationSchema = yup.object().shape({
     email: yup.string().email().required(),
     password: yup.string().required().min(8, 'Password must be at least 8 characters').max(20, 'Password must be less than 20 characters'),
 })
+
+export const UploadvalidationSchema = yup.object().shape({
+    facultyName: yup.string(),
+    college: yup.string(),
+    notesId: yup.string().required('Id is required'),
+    sem: yup.string().required(),
+    branch: yup.string().required(),
+    subjectName: yup.string().required(),
+    course: yup.string().required()
+})

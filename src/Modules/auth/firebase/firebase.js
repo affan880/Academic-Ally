@@ -38,7 +38,16 @@ const DeleteAcc = async () => {
 export const createUser = async (email, password, values) => {
  auth().createUserWithEmailAndPassword(email, password).then((userCredential) => {
    var userID = userCredential;
-    createUserDocument(userID.user.uid, values);
+   createUserDocument(userID.user.uid, values).then(() => {
+     auth().currentUser.updateProfile(
+       {
+         displayName: values.username,
+       }
+     )
+     userCredential.user.sendEmailVerification();
+   })
+   //send verification mail
+
    return userID;
  }).catch((error) => {
     console.log("Error: ", error);

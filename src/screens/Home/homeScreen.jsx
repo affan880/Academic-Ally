@@ -1,38 +1,52 @@
-import { StyleSheet, Text, View, StatusBar, Dimensions, ScrollView, Button} from 'react-native'
-import React, { useState } from 'react'
+import React from 'react';
+import { StyleSheet, Dimensions, View } from 'react-native';
 import ScreenLayout from '../../interfaces/screenLayout';
-import { COLORS } from '../../constants/colors';
-const height = Dimensions.get("screen").height;
-const width = Dimensions.get("screen").width;
-const HomeScreen = () => {
-  const [index, setIndex] = useState(0);
+import Pdf from 'react-native-pdf';
 
+export default class PDFExample extends React.Component {
+  render() {
+    const source = { uri: 'https://drive.google.com/u/0/uc?id=1BIlTlX9obwlDkH7FnSS1G-1TERrUuDLb', cache: true };
+    //const source = require('./test.pdf');  // ios only
+    //const source = {uri:'bundle-assets://test.pdf' };
+    //const source = {uri:'file:///sdcard/test.pdf'};
+    //const source = {uri:"data:application/pdf;base64,JVBERi0xLjcKJc..."};
+    //const source = {uri:"content://com.example.blobs/xxxxxxxx-...?offset=0&size=xxx"};
+    //const source = {uri:"blob:xxxxxxxx-...?offset=0&size=xxx"};
 
-  return (
-    <ScreenLayout>
-      <View style={styles.titleContainer}>
-        <Text style={styles.pageTitle}>Home</Text>
+    return (
+      <ScreenLayout>
+      <View style={styles.container}>
+        <Pdf
+          trustAllCerts={false}
+          source={source}
+          onLoadComplete={(numberOfPages, filePath) => {
+            console.log(`Number of pages: ${numberOfPages}`);
+          }}
+          onPageChanged={(page, numberOfPages) => {
+            console.log(`Current page: ${page}`);
+          }}
+          onError={(error) => {
+            console.log(error);
+          }}
+          onPressLink={(uri) => {
+            console.log(`Link pressed: ${uri}`);
+          }}
+          style={styles.pdf} />
       </View>
-      
-    </ScreenLayout>
-  );
+</ScreenLayout>
+    )
+  }
 }
 
-export default HomeScreen
-
 const styles = StyleSheet.create({
-  pageTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000000'
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
-  titleContainer: {
-    // height: height * 0.15,
-    // width: width,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // backgroundColor: COLORS.light,
-    // borderBottomLeftRadius: 30,
-    // borderBottomRightRadius: 30,
+  pdf: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   }
-})
+});

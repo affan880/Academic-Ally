@@ -13,7 +13,7 @@ type Props = {
     data?: any,
     width?: any,
 }
-export const CustomTextInput = ({ leftIcon, placeholder, name, data, width }: Props) => {
+export const CustomDropdown = ({ leftIcon, placeholder, name, data, width }: Props) => {
     const { values, errors, touched, setFieldValue, setFieldTouched } = useFormikContext<any>();
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false)
@@ -30,7 +30,7 @@ export const CustomTextInput = ({ leftIcon, placeholder, name, data, width }: Pr
             <View >
                 {renderLabel()}
                 <Dropdown
-                    style={[styles.input, { width: width }, touched[name] && errors[name] ? {
+                    style={[styles.input, { width: 170 }, touched[name] && errors[name] ? {
                         borderColor: '#FF2E00',
                         borderWidth: 2,
                     } : null]}
@@ -55,12 +55,12 @@ export const CustomTextInput = ({ leftIcon, placeholder, name, data, width }: Pr
                     dropdownPosition='auto'
                     containerStyle={{
                         width: width,
-                        height: 400,
+                        height: 500,
                         borderRadius: 12,
                         elevation: 8,                        
                     }}
                     itemContainerStyle={{
-                        height: 50,
+                        height: 60,
                         justifyContent: 'center',
                         borderBottomWidth: 1,
                         borderBottomColor: '#e5e5e5'
@@ -89,7 +89,7 @@ export const CustomTextInput = ({ leftIcon, placeholder, name, data, width }: Pr
     )
 }
 
-export default CustomTextInput
+export default CustomDropdown
 
 const styles = StyleSheet.create({
     input: {
@@ -137,8 +137,9 @@ const styles = StyleSheet.create({
         color:"#000000"
     },
     placeholderStyle: {
-        fontSize: 16,
-        color: "#808080"
+        fontSize: 14,
+        color: "#808080",
+
     },
     selectedTextStyle: {
         fontSize: 16,
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     iconStyle: {
         width: 25,
         height: 25,
-        marginRight: 15
+        marginRight: 12
     },
     inputSearchStyle: {
         height: 40,

@@ -15,7 +15,6 @@ const ScreenLayout = (props) => {
                 backgroundColor={'transparent'}
                 barStyle={'dark-content'}
             />
-            <ScrollView showsVerticalScrollIndicator={false} >
                 <View style={{
                     flex: 1,
                     backgroundColor: '#D2D5DD',
@@ -25,8 +24,6 @@ const ScreenLayout = (props) => {
                 >
                     {props.children}
                 </View>
-
-            </ScrollView>
         </View>
     )
 }
