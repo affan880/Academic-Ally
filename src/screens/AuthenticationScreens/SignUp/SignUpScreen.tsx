@@ -10,6 +10,10 @@ import DropdownComponent from '../../../components/CustomFormComponents/Dropdown
 import { validationSchema } from '../../../utilis/validation'
 import createStyles from './styles'
 import { createUser } from '../../../Modules/auth/firebase/firebase'
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { useDispatch } from 'react-redux'
+import { setUsersData } from '../../../redux/reducers/usersData'
 
 const screenWidth = Dimensions.get('screen').width
 
@@ -17,17 +21,31 @@ interface IProps {
     navigation: NavigationProp<ParamListBase>
 }
 const SignUpScreen: FC<IProps> = ({ navigation }) => {
+    const dispatch = useDispatch()
+
     const styles = useMemo(() => createStyles(), []);
 
     const initialValues = {
-        username:'',
+        name:'',
         email: '',
         password: '',
         confirmPassword: '',
-        Course: "",
-        Sem: "",
-        Branch: "",
-        Year: "",
+        course: "",
+        sem: "",
+        branch: "",
+        year: "",
+        notesUploads: [],
+        notesDownloads: [],
+        notesViewed: [],
+        notesShared: [],
+        notesLiked: [],
+        notesDisliked: [],
+        notesReviewed: [],
+        notesComments: [],
+        notesRating: [],
+        notesRatingCount: [],
+        notesReviews: [],
+        notesBookmarked: []
     }
     const CourseData: any = [
     { label: 'B.E', value: '1' },
@@ -61,7 +79,19 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
     ];
 
     const onSubmit = (email: string, password: string, initialValues: any) => {
-        createUser(email, password, initialValues)
+        createUser(email, password, initialValues).then(() => {
+            firestore().collection('Users').doc(auth().currentUser?.uid).get().then((doc) => {
+                if (doc.exists) {
+                    dispatch(setUsersData(doc.data()));
+                    console.log("Document data:", doc.data());
+                }
+            }
+            )
+        }).catch((error) => {
+            Alert.alert(error.message)
+        }
+        )
+
     }
 
     return (
@@ -88,17 +118,17 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
                 <Text style={styles.loginText}>Let's Get Started</Text>
                 <View style={styles.inputContainer}>
                         <Form validationSchema={validationSchema} initialValues={initialValues} onSubmit={(values) => { onSubmit(values.email, values.password, values) }} >
-                        <CustomTextInput leftIcon="user" placeholder="Full Name" name='username' />
+                        <CustomTextInput leftIcon="user" placeholder="Full Name" name='name' />
                         <CustomTextInput leftIcon="mail" placeholder="Email" name='email' />
                         <CustomTextInput leftIcon="lock" placeholder="Password" name="password" />
                             <CustomTextInput leftIcon="lock" placeholder="Confirm Password" handlePasswordVisibility name="confirmPassword" />
                             <View style={{ flexDirection: 'row', width: screenWidth - 50, flex:1, justifyContent:"space-between" }}>
-                                <DropdownComponent name='Course' data={CourseData} placeholder={"Course"} leftIcon="Safety" width={screenWidth/2.5} />
-                                <DropdownComponent name='Branch' data={BranchData} placeholder={"Branch"} leftIcon="bars" width={screenWidth/2.5} />
+                                <DropdownComponent name='course' data={CourseData} placeholder={"Course"} leftIcon="Safety" width={screenWidth/2.5} />
+                                <DropdownComponent name='branch' data={BranchData} placeholder={"Branch"} leftIcon="bars" width={screenWidth/2.5} />
                             </View>
                             <View style={{ flexDirection: 'row', width: screenWidth - 50, flex: 1, justifyContent: "space-between" }}>
-                                <DropdownComponent name='Year' data={YearData} placeholder={"Studying year"} leftIcon="bars" width={screenWidth/2.5} />
-                                <DropdownComponent name='Sem' data={SemData} placeholder={"Semester"} leftIcon="ellipsis1" width={screenWidth/2.5} />
+                                <DropdownComponent name='year' data={YearData} placeholder={"Studying year"} leftIcon="bars" width={screenWidth/2.5} />
+                                <DropdownComponent name='sem' data={SemData} placeholder={"Semester"} leftIcon="ellipsis1" width={screenWidth/2.5} />
                             </View>
                         <View style={styles.SignupButton}>
                             <CustomBtn title="Sign Up" color="#19647E" />

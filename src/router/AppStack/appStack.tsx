@@ -1,5 +1,4 @@
-import React, { useEffect, useReducer, useRef, } from 'react'
-
+import React, { useEffect, useReducer, useRef, FC, useState } from 'react'
 import {
     Pressable,
     StatusBar,
@@ -9,110 +8,176 @@ import {
     LayoutChangeEvent,
     Dimensions,
 } from 'react-native'
-// navigation
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationProp, ParamListBase, DrawerActions } from '@react-navigation/native'
 import { BottomTabBarProps, BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { createDrawerNavigator } from '@react-navigation/drawer'
-// svg
-import Svg, { Path } from 'react-native-svg'
-// reanimated
+import Svg, { G, Path } from "react-native-svg"
 import Animated, { useAnimatedStyle, withTiming, useDerivedValue } from 'react-native-reanimated'
-// lottie
 import Lottie from 'lottie-react-native'
-
 import HomeScreen from '../../screens/Home/homeScreen'
 import Upload from '../../screens/Upload/upload'
 import Bookmark from '../../screens/Bookmark/Bookmark'
 import Profile from '../../screens/Profile/profile'
+import NotesScreen from '../../screens/Notes/NoteScreen'
+import { createStackNavigator } from '@react-navigation/stack'
+import Feather from "react-native-vector-icons/Feather"
+import Fontisto from "react-native-vector-icons/Fontisto"
+import Ionicons from "react-native-vector-icons/Ionicons"
+import Search from '../../screens/Search/searchScreen'
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
-
-// ------------------------------------------------------------------
-
 const drawer = createDrawerNavigator()
-
 const Tab = createBottomTabNavigator()
+const Stack = createStackNavigator()
+interface IProps {
+    navigation: NavigationProp<ParamListBase>
+}
 
-const AnimatedSvg = Animated.createAnimatedComponent(Svg)
-
-const DrawerScreen = () => {
+const DrawerScreen: FC<IProps> = ({navigation}) => {
     return (
         <drawer.Navigator>
             <drawer.Screen name="Home" component={HomeScreen} options={{
-                headerTitle: 'Home',
-                headerTitleAlign: 'center',
                 headerTitleStyle: {
-                    color: '#000000',
-                    fontSize: 20,
-                    fontWeight: 'bold',
+                    display:"none"
                 },
                 headerStyle: {
-                    height: height * 0.15,
-                    borderBottomLeftRadius: 20,
-                    borderBottomRightRadius: 20,
-                }
+                    backgroundColor: '#6360FF',
+                    elevation: 0,
+                },
+                headerLeft: ({props}:any) => (
+                    <View style={{ flexDirection: 'row', marginLeft: 20 }}>
+                        <Pressable onPress={() => {
+                            navigation.dispatch(DrawerActions.openDrawer());
+                        }} >
+                            <Svg
+                                width="20px"
+                                height="20px"
+                                viewBox="-2.4 -2.4 28.80 28.80"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                stroke="#fff"
+                                {...props}
+                            >
+                                <G strokeWidth={1.5}>
+                                    <Path d="M3.297 5.234a2.599 2.599 0 011.937-1.937v0a5.544 5.544 0 012.532 0v0a2.599 2.599 0 011.937 1.937v0c.195.833.195 1.7 0 2.532v0a2.599 2.599 0 01-1.937 1.937v0c-.833.195-1.7.195-2.532 0v0a2.599 2.599 0 01-1.937-1.937v0a5.545 5.545 0 010-2.532v0zM3.297 16.234a2.599 2.599 0 011.937-1.937v0a5.546 5.546 0 012.532 0v0a2.599 2.599 0 011.937 1.937v0c.195.833.195 1.7 0 2.532v0a2.599 2.599 0 01-1.937 1.937v0c-.833.195-1.7.195-2.532 0v0a2.599 2.599 0 01-1.937-1.937v0a5.545 5.545 0 010-2.532v0zM14.297 5.234a2.599 2.599 0 011.937-1.937v0a5.544 5.544 0 012.532 0v0a2.599 2.599 0 011.937 1.937v0c.195.833.195 1.7 0 2.532v0a2.599 2.599 0 01-1.937 1.937v0c-.833.195-1.7.195-2.532 0v0a2.599 2.599 0 01-1.937-1.937v0a5.546 5.546 0 010-2.532v0zM14.297 16.234a2.599 2.599 0 011.937-1.937v0a5.546 5.546 0 012.532 0v0a2.599 2.599 0 011.937 1.937v0c.195.833.195 1.7 0 2.532v0a2.599 2.599 0 01-1.937 1.937v0c-.833.195-1.7.195-2.532 0v0a2.599 2.599 0 01-1.937-1.937v0a5.546 5.546 0 010-2.532v0z" />
+                                </G>
+                            </Svg>
+                        </Pressable>
+                    </View>
+                ),
+                headerRight: () => (
+                    <View style={{ flexDirection: 'row', marginRight: 20 }} >
+                        <Pressable onPress={() => {
+                            navigation.navigate('Notes')
+                        }} >
+                            <Ionicons name='ios-notifications-outline' color={"#ffffff"}  size={20}/>
+                        </Pressable>
+                    </View>
+                )
             }} />
         </drawer.Navigator>
     )
 }
-
-// ------------------------------------------------------------------
-
-const AppStack = () => {
+export const BottomTabBar = () => {
+    const [activeState, setActiveState] = useState(false)
     return (
         <>
             <StatusBar barStyle="light-content" />
             <Tab.Navigator
-                keyboardShouldPersistTaps="handled"
-                tabBar={(props) => <AnimatedTabBar {...props} />}
                 screenOptions={{
                     tabBarHideOnKeyboard: false,
                     tabBarShowLabel: false,
                     headerShown: false,
                     tabBarStyle: {
                         position: "absolute",
-                        bottom: 15,
-                        left: 10,
-                        right: 10,
-                        elevation: 0,
-                        borderRadius: 18,
-                        height: 60,
-                        backgroundColor: "#00A8E8",
-                    },
+                        height: 70,
+                        width:"100%",
+                        backgroundColor: "#FCFCFF",
+                        borderTopLeftRadius: 30,
+                        borderTopRightRadius: 30,
+                    }
                 }
                 }
             >
                 <Tab.Screen
                     name="HomeScreen"
                     options={{
-                        // @ts-ignore
-                        tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('../../assets/lottie/home.icon.json')} style={styles.icon} />,
+                        tabBarIcon: (({ focused }) => {
+                            return (
+                                //label and icon
+                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                    <Feather name='home' size={25} color={focused ? '#FF8181' : '#161719'} style={{
+                                        bottom: focused? 3 : 0,
+                                    }} />
+                                    {
+                                        focused ? <Text style={{ color: '#FF8181', fontSize: 10, fontWeight: '400', textAlign:"center", bottom: 0 }}>Home</Text> : null
+                                    }
+                                </View>
+
+                            )
+                        })
                     }}
                     component={DrawerScreen}
                 />
                 <Tab.Screen
-                    name="Upload"
+                    name="Search"
                     options={{
-                        // @ts-ignore
-                        tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('../../assets/lottie/upload.icon.json')} style={styles.icon} />,
+                        tabBarIcon: (({ focused }) => {
+                            return (
+                                //label and icon
+                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                    <Feather name='search' size={25} color={focused ? '#FF8181' : '#161719'} style={{
+                                        bottom: focused ? 3 : 0,
+                                    }} />
+                                    {
+                                        focused ? <Text style={{ color: '#FF8181', fontSize: 10, fontWeight: '400', textAlign: "center", bottom: 0 }}>Search</Text> : null
+                                    }
+                                </View>
+
+                            )
+                        })
                     }}
                     component={Upload}
                 />
                 <Tab.Screen
-                    name="Chat"
+                    name="BookMark"
                     options={{
-                        // @ts-ignore
-                        tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('../../assets/lottie/chat.icon.json')} style={styles.icon} />,
+                        tabBarIcon: (({ focused }) => {
+                            return (
+                                //label and icon
+                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                    <Fontisto name={focused ? 'bookmark-alt' : 'bookmark'} size={25} color={focused ? '#FF8181' : '#161719'} style={{
+                                        bottom: focused ? 3 : 0,
+                                    }} />
+                                    {
+                                        focused ? <Text style={{ color: '#FF8181', fontSize: 10, fontWeight: '400', textAlign: "center", bottom: 0 }}>Saved</Text> : null
+                                    }
+                                </View>
+
+                            )
+                        })
                     }}
                     component={Bookmark}
                 />
                 <Tab.Screen
-                    name="Settings"
+                    name="Profle"
                     options={{
-                        // @ts-ignore
-                        tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('../../assets/lottie/profile.icon.json')} style={styles.icon} />,
+                        tabBarIcon: (({ focused }) => {
+                            return (
+                                //label and icon
+                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                    <Feather name="user" size={25} color={focused ? '#FF8181' : '#161719'} style={{
+                                        bottom: focused ? 3 : 0,
+                                    }} />
+                                    {
+                                        focused ? <Text style={{ color: '#FF8181', fontSize: 10, fontWeight: '400', textAlign: "center", bottom: 0 }}>Account</Text> : null
+                                    }
+                                </View>
+
+                            )
+                        })
                     }}
                     component={Profile}
                 />
@@ -121,136 +186,28 @@ const AppStack = () => {
     )
 }
 
-// ------------------------------------------------------------------
+const AppStack = () => {
+    return (
+        <Stack.Navigator initialRouteName={"BottomTabBar"} screenOptions={{
+            headerShown: false,
+            animationEnabled: false
+        }} >
+            <Stack.Screen name="BottomTabBar" component={BottomTabBar}/>
+            <Stack.Screen name="Notes" component={NotesScreen} options={{
+                headerShown: true,
+                headerTitle: 'Recent',
+            }} />
+        </Stack.Navigator>
+    )
+}
+
+export default AppStack
+
+
 
 const PlaceholderScreen = () => {
     return (
         <View style={{ flex: 1, backgroundColor: '#011638' }} />
-    )
-}
-
-// ------------------------------------------------------------------
-
-const AnimatedTabBar = ({ state: { index: activeIndex, routes }, navigation, descriptors }: BottomTabBarProps) => {
-    const { bottom } = useSafeAreaInsets()
-
-    // get information about the components position on the screen -----
-
-    const reducer = (state: any, action: { x: number, index: number }) => {
-        // Add the new value to the state
-        return [...state, { x: action.x, index: action.index }]
-    }
-
-    const [layout, dispatch] = useReducer(reducer, [])
-
-    const handleLayout = (event: LayoutChangeEvent, index: number) => {
-        dispatch({ x: event.nativeEvent.layout.x, index })
-    }
-
-    // animations ------------------------------------------------------
-
-    const xOffset = useDerivedValue(() => {
-        // Our code hasn't finished rendering yet, so we can't use the layout values
-        if (layout.length !== routes.length) return 0;
-        // We can use the layout values
-        // Copy layout to avoid errors between different threads
-        // We subtract 25 so the active background is centered behind our TabBar Components
-        // 20 pixels is the width of the left part of the svg (the quarter circle outwards)
-        // 5 pixels come from the little gap between the active background and the circle of the TabBar Components
-        return [...layout].find(({ index }) => index === activeIndex)!.x - 25
-        // Calculate the offset new if the activeIndex changes (e.g. when a new tab is selected)
-        // or the layout changes (e.g. when the components haven't finished rendering yet)
-    }, [activeIndex, layout])
-
-    const animatedStyles = useAnimatedStyle(() => {
-        return {
-            // translateX to the calculated offset with a smooth transition
-            transform: [{ translateX: withTiming(xOffset.value, { duration: 250 }) }],
-        }
-    })
-
-    return (
-        <View style={[styles.tabBar, { paddingBottom: 10 }]}>
-            <AnimatedSvg
-                width={110}
-                height={60}
-                viewBox="0 0 110 60"
-                style={[styles.activeBackground, animatedStyles]}
-            >
-                <Path
-                    fill="#D2D5DD"
-                    d="M20 0H0c11.046 0 20 8.953 20 20v5c0 19.33 15.67 35 35 35s35-15.67 35-35v-5c0-11.045 8.954-20 20-20H20z"
-                />
-            </AnimatedSvg>
-
-            <View style={styles.tabBarContainer}>
-                {routes.map((route, index) => {
-                    const active = index === activeIndex
-                    const { options } = descriptors[route.key]
-
-                    return (
-                        <TabBarComponent
-                            key={route.key}
-                            active={active}
-                            options={options}
-                            onLayout={(e) => handleLayout(e, index)}
-                            onPress={() => navigation.navigate(route.name)}
-                        />
-                    )
-                })}
-            </View>
-        </View>
-    )
-}
-
-// ------------------------------------------------------------------
-
-type TabBarComponentProps = {
-    active?: boolean
-    options: BottomTabNavigationOptions
-    onLayout: (e: LayoutChangeEvent) => void
-    onPress: () => void
-}
-
-const TabBarComponent = ({ active, options, onLayout, onPress }: TabBarComponentProps) => {
-    // handle lottie animation -----------------------------------------
-    const ref = useRef(null)
-
-    useEffect(() => {
-        if (active && ref?.current) {
-            // @ts-ignore
-            ref.current.play()
-        }
-    }, [active])
-
-    // animations ------------------------------------------------------
-
-    const animatedComponentCircleStyles = useAnimatedStyle(() => {
-        return {
-            transform: [
-                {
-                    scale: withTiming(active ? 1 : 0, { duration: 250 })
-                }
-            ]
-        }
-    })
-
-    const animatedIconContainerStyles = useAnimatedStyle(() => {
-        return {
-            opacity: withTiming(active ? 1 : 0.5, { duration: 250 })
-        }
-    })
-
-    return (
-        <Pressable onPress={onPress} onLayout={onLayout} style={styles.component}>
-            <Animated.View
-                style={[styles.componentCircle, animatedComponentCircleStyles]}
-            />
-            <Animated.View style={[styles.iconContainer, animatedIconContainerStyles]}>
-                {/* @ts-ignore */}
-                {options.tabBarIcon ? options.tabBarIcon({ ref }) : <Text>?</Text>}
-            </Animated.View>
-        </Pressable>
     )
 }
 
@@ -287,7 +244,6 @@ const styles = StyleSheet.create({
     icon: {
         height: 25,
         width: 25,
+        color:"#ffffff"
     }
 })
-
-export default AppStack;

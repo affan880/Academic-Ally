@@ -23,7 +23,26 @@ const DeleteAcc = async () => {
   firestore()
     .collection('Users')
     .doc(`${uid}`)
-    .set(Details)
+    .set({
+      Name: Details.name,
+      Email: Details.email,
+      Course: Details.course,
+      Sem: Details.sem,
+      Branch: Details.branch,
+      Year: Details.year,
+      NotesUploads: [],
+      NotesDownloads: [],
+      NotesViewed: [],
+      NotesShared: [],
+      NotesLiked: [],
+      NotesDisliked: [],
+      NotesReviewed: [],
+      NotesComments: [],
+      NotesRating: [],
+      NotesRatingCount: [],
+      NotesReviews: [],
+      NotesBookmarked: []
+    })
     .then(() => {
       console.log('User added!');
     }).catch((error) => {
@@ -41,7 +60,7 @@ export const createUser = async (email, password, values) => {
    createUserDocument(userID.user.uid, values).then(() => {
      auth().currentUser.updateProfile(
        {
-         displayName: values.username,
+         displayName: values.name,
        }
      )
      userCredential.user.sendEmailVerification();

@@ -16,11 +16,11 @@ const Upload = () => {
     const width = Dimensions.get("screen").width;
     const styles = useMemo(() => createStyles(), []);
     const onSubmitBTN = (values: any) => {
-        // const createUserDocument = async (values: any) => {
+        // const createUserDocument = async (values: any) => { /Resources/OU/B.E/CSE/1/Mathematics-1
         firestore()
-            .collection('Notes')
-            .doc('OU').collection(`${values.course}`).doc(`${values.branch}`).collection(`${values.sem}`).doc(`${values.subjectName}`).update({
-                resources: firestore.FieldValue.arrayUnion({
+            .collection('Resources')
+            .doc('OU').collection(`${values.course}`).doc(`${values.branch}`).collection(`${values.sem}`).doc('Subjects').collection(`${values.subjectName}`).doc('Notes').update({
+                Notes : firestore.FieldValue.arrayUnion({
                     college: values.college,
                     facultyName: values.facultyName,
                     notesId: values.notesId,
@@ -36,6 +36,7 @@ const Upload = () => {
                     likedBy: [],
                     dislikedBy: [],
                     views: 0,
+                    viewedBy:[],
                     downloads: 0,
                     date: new Date().toDateString(),
                     time: new Date().toLocaleTimeString(),
@@ -45,6 +46,15 @@ const Upload = () => {
                 })
             })
             .then(() => { 
+                firestore().collection('Users').doc(auth().currentUser?.uid).update({
+                    uploadedNotes: firestore.FieldValue.arrayUnion({
+                        sem: values.sem,
+                        branch: values.branch,
+                        course: values.course,
+                        subjectName: values.subjectName,
+                        notesId: values.notesId,
+                    })
+                })
                 console.log('User added!');
                 Alert.alert("Notes Uploaded");
             })

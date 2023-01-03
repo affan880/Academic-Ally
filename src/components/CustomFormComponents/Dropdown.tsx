@@ -30,7 +30,7 @@ export const CustomDropdown = ({ leftIcon, placeholder, name, data, width }: Pro
             <View >
                 {renderLabel()}
                 <Dropdown
-                    style={[styles.input, { width: 170 }, touched[name] && errors[name] ? {
+                    style={[styles.input, { width: width }, touched[name] && errors[name] ? {
                         borderColor: '#FF2E00',
                         borderWidth: 2,
                     } : null]}
