@@ -39,9 +39,7 @@ const DrawerScreen: FC<IProps> = ({navigation}) => {
     return (
         <drawer.Navigator>
             <drawer.Screen name="Home" component={HomeScreen} options={{
-                headerTitleStyle: {
-                    display:"none"
-                },
+                headerShown: false,
                 headerStyle: {
                     backgroundColor: '#6360FF',
                     elevation: 0,

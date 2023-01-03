@@ -4,17 +4,18 @@ import React, { Children, useState } from 'react'
 const ScreenLayout = (props) => {
     const height = Dimensions.get("screen").height;
     const width = Dimensions.get("screen").width;
-
+    const statusBarHeight = StatusBar.currentHeight;
     return (
         <View style={{
             flex: 1,
             backgroundColor: '#F1F1FA',
-            height: height*3,
+            marginTop:statusBarHeight 
         }} >
             <StatusBar
                 translucent={true}
-                backgroundColor={'transparent'}
-                barStyle={'dark-content'}
+                backgroundColor={'#6360FF'}
+                barStyle={'light-content'}
+
             />
                 <View style={{
                     flex: 1,

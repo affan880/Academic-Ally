@@ -164,7 +164,7 @@ const QuickAccess = () => {
                       <Path d="M431 408.31h-30c-2.762 0-5-2.238-5-5s2.238-5 5-5h25v-65c0-2.762 2.238-5 5-5s5 2.238 5 5v70a5 5 0 01-5 5z" />
                   </Svg>
               </View>
-              <Text style={styles.iconLabel}>Questions</Text>
+              <Text style={styles.iconLabel}>QP's</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.itemContainer}>
               <View style={styles.otherResourcesIconContainer}>

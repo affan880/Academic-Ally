@@ -8,15 +8,23 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setUsersData } from '../../redux/reducers/usersData';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
 
 const User = require('../../assets/images/user.jpg');
 
+type MyStackParamList = {
+  Notes:undefined
+}
+type MyScreenNavigationProp = StackNavigationProp<MyStackParamList, 'Notes'>
 type Props = {}
 
 const HomeScreen = (props: Props) => {
   const styles = useMemo(() => createStyles(), []);
-
-    const dispatch = useDispatch()
+  const navigation = useNavigation < MyScreenNavigationProp>();
+  const dispatch = useDispatch()
   const userFirestoreData = useSelector((state:any) => {
     return state.usersData;
   })
@@ -38,18 +46,28 @@ const HomeScreen = (props: Props) => {
       flex: 1,
       marginBottom: 70,
     }}>
-      <View style={styles.header}>
+        <View style={styles.header}>
         <View >
-           <View style={styles.userInfo}>
+            <View style={styles.userInfo}>
+              <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
              <View style={styles.userImgContainer}>
                <Image source={User} style={styles.userImg} />
              </View>
-             <View style={{
-               marginLeft: 15,
+                <View style={{
+                  marginLeft: 10,
              }}>
                <Text style={styles.salutation}>Welcome back</Text>
-               {/* <Text style={styles.userName}>{ userFirestoreData.usersData.Name }</Text> */}
-             </View>
+               <Text style={styles.userName}>{ userFirestoreData.usersData.Name }</Text>
+                </View>
+              </View>
+              <TouchableOpacity onPress={() => {
+                navigation.navigate('Notes')
+              }}>
+                <Ionicons name='ios-notifications-outline' color={"#ffffff"} size={20} />
+              </TouchableOpacity>
            </View>
          </View>
       </View>

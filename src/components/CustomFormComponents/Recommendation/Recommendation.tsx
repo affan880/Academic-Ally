@@ -3,7 +3,7 @@ import React,{useEffect, useMemo, useState} from 'react'
 import createStyles from './styles';
 import { useSelector } from 'react-redux';
 import firestore from '@react-native-firebase/firestore';
-
+import Ionicons from "react-native-vector-icons/Ionicons"
 
 type Props = {}
 
@@ -25,9 +25,9 @@ const Recommendation = (props: Props) => {
           {
             subjectList &&  subjectList.map((item:any, index) => {
                   //get initial of words in the text
-                  let initial = item.split(" ").map((item :any) => {
-                      return item[0]
-                  }).join("")
+                //   let initial = item.split(" ").map((item :any) => {
+                //       return item[0]
+                //   }).join("")
                   return (
                       <View style={styles.reccomendationContainer} key={index} >
                           <View style={styles.reccomendationStyle}>
@@ -38,10 +38,43 @@ const Recommendation = (props: Props) => {
                                       <Text style={styles.subjectName}>
                                             {item}
                                       </Text>
+                                      <View style={{
+                                          flexDirection: 'row',
+                                          alignItems: 'center',
+                                          justifyContent: 'space-between',
+                                      }}>
+                                      <Text style={{
+                                          color: '#000000',
+                                          fontSize: 12,
+                                          fontWeight: 'bold',
+                                          marginTop: 5,
+                                          textAlign:"auto"
+                                        }}>
+                                          Notes <Ionicons name="md-checkmark-done-circle-outline" size={20} color={'#6360FF'} />
+                                      </Text>
+                                      <Text style={{
+                                          color: '#000000',
+                                          fontSize: 12,
+                                          fontWeight: 'bold',
+                                          marginTop: 5,
+                                          textAlign:"auto"
+                                        }}>
+                                          Syllabus <Ionicons name="md-checkmark-done-circle-outline" size={20} color={'#6360FF'} />
+                                      </Text>
+                                      <Text style={{
+                                          color: '#000000',
+                                          fontSize: 12,
+                                          fontWeight: 'bold',
+                                          marginTop: 5,
+                                          textAlign:"auto"
+                                        }}>
+                                          Question Papers <Ionicons name="md-checkmark-done-circle-outline" size={20} color={'#6360FF'} />
+                                      </Text>
+                                          </View>
                                   </View>
                                   <View style={styles.container}>
                                       <Text style={styles.containerText}>
-                                          {initial}
+                                          {item[0]}
                                       </Text>
                                   </View>
                               </TouchableOpacity>

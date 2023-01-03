@@ -7,15 +7,17 @@ const createStyles = () =>
         header: {
             flex: 1,
             backgroundColor: '#6360FF',
-            height: height / 4.5,
+            height: height / 4,
             borderBottomLeftRadius: 20,
             borderBottomRightRadius: 20,
+            paddingTop:30
         },
         userInfo: {
             flexDirection: "row",
             alignItems: "center",
             width: "100%",
             paddingHorizontal: 20,
+            justifyContent: "space-between",
         },
         userImgContainer: {
             backgroundColor: "#fff",
