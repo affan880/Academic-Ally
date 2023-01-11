@@ -326,3 +326,519 @@ export const BE = [{
         ]
     }
 ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const Data = [
+    {
+        "fullPath": "1/Indian Constitution",
+        "name": "Indian Constitution",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1AQQw9p8BaKkaxVdFmd9XFxV3xjFOifIp",
+        "lastUpdated": "2023-01-11T23:40:27.691Z",
+        "size": 0,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1AQQw9p8BaKkaxVdFmd9XFxV3xjFOifIp"
+    },
+    {
+        "fullPath": "1/Indian Constitution/OtherResources",
+        "name": "OtherResources",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/10fTv2ebYOVCkMgRJ8VyFsqZ4_G42e6kG",
+        "lastUpdated": "2023-01-09T01:43:25.169Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "10fTv2ebYOVCkMgRJ8VyFsqZ4_G42e6kG"
+    },
+    {
+        "fullPath": "1/Indian Constitution/QuestionPapers",
+        "name": "QuestionPapers",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/16d78OCcCJnntGaGhjmJmqxhA8-EWxF2f",
+        "lastUpdated": "2023-01-08T09:37:27.728Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "16d78OCcCJnntGaGhjmJmqxhA8-EWxF2f"
+    },
+    {
+        "fullPath": "1/Indian Constitution/Syllabus",
+        "name": "Syllabus",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1CD46iC0O6pqOw9yH2zbB92ukVsydE6g0",
+        "lastUpdated": "2023-01-08T09:37:16.180Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1CD46iC0O6pqOw9yH2zbB92ukVsydE6g0"
+    },
+    {
+        "fullPath": "1/Indian Constitution/Syllabus/IC(2020-2021).pdf",
+        "name": "IC(2020-2021).pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/17Z66cofiRjcXqIZI8EByqRmJbCTUCO9w/view?usp=drivesdk",
+        "lastUpdated": "2023-01-08T04:00:00.000Z",
+        "size": 125.0126953125,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "17Z66cofiRjcXqIZI8EByqRmJbCTUCO9w"
+    },
+    {
+        "fullPath": "1/Indian Constitution/Notes",
+        "name": "Notes",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1X-kE4lM5eMJnVjxt8-xiAXfb6fgwZw_c",
+        "lastUpdated": "2023-01-08T09:36:45.212Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1X-kE4lM5eMJnVjxt8-xiAXfb6fgwZw_c"
+    },
+    {
+        "fullPath": "1/Indian Constitution/Notes/COI DCET.pdf",
+        "name": "COI DCET.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1uXRDm9hfQ7ie7O_Zddjg5FrfsXbleDlc/view?usp=drivesdk",
+        "lastUpdated": "2021-06-22T01:48:36.000Z",
+        "size": 1382.83984375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1uXRDm9hfQ7ie7O_Zddjg5FrfsXbleDlc"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering",
+        "name": "Basic Electrical Engineering",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1Z1W54g7URDiTgC8UJ0vzhHJLZN-HkGkU",
+        "lastUpdated": "2023-01-03T14:24:52.629Z",
+        "size": 0,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1Z1W54g7URDiTgC8UJ0vzhHJLZN-HkGkU"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/OtherResources",
+        "name": "OtherResources",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1C3byA6xkWEUSS_upYFt69lGqacUo8sXe",
+        "lastUpdated": "2023-01-09T01:42:33.614Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1C3byA6xkWEUSS_upYFt69lGqacUo8sXe"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/OtherResources/IMP QUEStions.pdf",
+        "name": "IMP QUEStions.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1tNrjn9j-CW4f5vB_HOHqpJ3yxtrXr-L_/view?usp=drivesdk",
+        "lastUpdated": "2021-06-28T12:19:36.000Z",
+        "size": 468.96484375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1tNrjn9j-CW4f5vB_HOHqpJ3yxtrXr-L_"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/OtherResources/index.pdf",
+        "name": "index.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/15buawMraDEAzaPjL8IzAGbDeLR3oLlo7/view?usp=drivesdk",
+        "lastUpdated": "2021-06-28T12:12:42.000Z",
+        "size": 95.3388671875,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "15buawMraDEAzaPjL8IzAGbDeLR3oLlo7"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/QuestionPapers",
+        "name": "QuestionPapers",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1cZpxT-fzWXMXQ8Z9YSS7XLP2DDiQKt04",
+        "lastUpdated": "2023-01-08T09:35:24.411Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1cZpxT-fzWXMXQ8Z9YSS7XLP2DDiQKt04"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/QuestionPapers/NOV-DEC-2018-QP.pdf",
+        "name": "NOV-DEC-2018-QP.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1dQDnqAV2zuumx1cnETWIDcG9SSWU4qci/view?usp=drivesdk",
+        "lastUpdated": "2021-06-28T12:19:28.000Z",
+        "size": 503.5146484375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1dQDnqAV2zuumx1cnETWIDcG9SSWU4qci"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/QuestionPapers/MAY-JUNE-2019-QP[supply].pdf",
+        "name": "MAY-JUNE-2019-QP[supply].pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1DeaXp7be-yjkhisnTaIH2EpkITM4leMI/view?usp=drivesdk",
+        "lastUpdated": "2021-06-28T12:19:26.000Z",
+        "size": 647.9306640625,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1DeaXp7be-yjkhisnTaIH2EpkITM4leMI"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/QuestionPapers/MAY-JUNE-2019-QP[main].pdf",
+        "name": "MAY-JUNE-2019-QP[main].pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1EywhUjO_BAZTJgfUw-o0skEbdVmW1upL/view?usp=drivesdk",
+        "lastUpdated": "2021-06-28T12:19:10.000Z",
+        "size": 779.1181640625,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1EywhUjO_BAZTJgfUw-o0skEbdVmW1upL"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/Syllabus",
+        "name": "Syllabus",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1p40dyZw-Rr5fX6o90jZBt5oHpgC_WTcl",
+        "lastUpdated": "2023-01-08T09:35:10.390Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1p40dyZw-Rr5fX6o90jZBt5oHpgC_WTcl"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/Syllabus/BEE (2020-2021).pdf",
+        "name": "BEE (2020-2021).pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1v13wMym7j1lOMsAebY5Y4YcuXy3BMy0q/view?usp=drivesdk",
+        "lastUpdated": "2023-01-08T04:00:20.000Z",
+        "size": 139.890625,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1v13wMym7j1lOMsAebY5Y4YcuXy3BMy0q"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/Notes",
+        "name": "Notes",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1-9ywKScwPk3hsgLwd7HYs0PKIWgngE0L",
+        "lastUpdated": "2023-01-08T09:34:30.456Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1-9ywKScwPk3hsgLwd7HYs0PKIWgngE0L"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/Notes/Unit 5.pdf",
+        "name": "Unit 5.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1geOABHFqdVfgiEulPc66cfIrkKTI_dDI/view?usp=drivesdk",
+        "lastUpdated": "2021-06-28T12:24:34.000Z",
+        "size": 639.65625,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1geOABHFqdVfgiEulPc66cfIrkKTI_dDI"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/Notes/Unit 1.pdf",
+        "name": "Unit 1.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1dMKVn1lwYMBa_3G_dNB_ymdqHF3ECEz8/view?usp=drivesdk",
+        "lastUpdated": "2021-06-28T12:19:24.000Z",
+        "size": 787.73046875,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1dMKVn1lwYMBa_3G_dNB_ymdqHF3ECEz8"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/Notes/Unit 2.pdf",
+        "name": "Unit 2.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/19MVEjOHXdbudN41fPTGE1S0cAnGpyEU9/view?usp=drivesdk",
+        "lastUpdated": "2021-06-28T12:19:20.000Z",
+        "size": 619.7744140625,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "19MVEjOHXdbudN41fPTGE1S0cAnGpyEU9"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/Notes/Unit 3.pdf",
+        "name": "Unit 3.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/10ms8foYGhwabVeabxtX-oZ2ag-PAZ4wv/view?usp=drivesdk",
+        "lastUpdated": "2021-06-28T12:19:18.000Z",
+        "size": 1424.3583984375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "10ms8foYGhwabVeabxtX-oZ2ag-PAZ4wv"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/Notes/Unit 4.pdf",
+        "name": "Unit 4.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1I1cqiSabRQppGbwFKvEFy3q2yD2C1npM/view?usp=drivesdk",
+        "lastUpdated": "2021-06-28T12:19:14.000Z",
+        "size": 1542.732421875,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1I1cqiSabRQppGbwFKvEFy3q2yD2C1npM"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/Notes/BEE_MJCET_219.pdf",
+        "name": "BEE_MJCET_219.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1NwuCPWlEr2hdA6xLX8XgUY60j6KynvQu/view?usp=drivesdk",
+        "lastUpdated": "2021-06-22T01:47:58.000Z",
+        "size": 14116.1796875,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1NwuCPWlEr2hdA6xLX8XgUY60j6KynvQu"
+    },
+    {
+        "fullPath": "1/Basic Electrical Engineering/Notes/BEE_MVSREC_400.pdf",
+        "name": "BEE_MVSREC_400.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1XVS9P8bFcZ9BVGhMPbxe71Rg6H4WcakN/view?usp=drivesdk",
+        "lastUpdated": "2021-06-22T01:47:54.000Z",
+        "size": 40251.2734375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1XVS9P8bFcZ9BVGhMPbxe71Rg6H4WcakN"
+    },
+    {
+        "fullPath": "1/Physics",
+        "name": "Physics",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1ee9WAvSOkMNZyGVLwXshJ7InRIX14kb4",
+        "lastUpdated": "2023-01-03T14:24:52.629Z",
+        "size": 0,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1ee9WAvSOkMNZyGVLwXshJ7InRIX14kb4"
+    },
+    {
+        "fullPath": "1/Physics/OtherResources",
+        "name": "OtherResources",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1CanVjEpFxwyXCazZhgn1CaTq4bUSnfPx",
+        "lastUpdated": "2023-01-09T01:44:28.295Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1CanVjEpFxwyXCazZhgn1CaTq4bUSnfPx"
+    },
+    {
+        "fullPath": "1/Physics/QuestionPapers",
+        "name": "QuestionPapers",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1AuBJb7Eu4bvgV5qw9QSWcfOGqqs6kCYa",
+        "lastUpdated": "2023-01-08T09:40:03.306Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1AuBJb7Eu4bvgV5qw9QSWcfOGqqs6kCYa"
+    },
+    {
+        "fullPath": "1/Physics/Syllabus",
+        "name": "Syllabus",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1R04oE2qE9wWUAFSAoEKYUQ-oyNElmyf1",
+        "lastUpdated": "2023-01-08T09:40:03.306Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1R04oE2qE9wWUAFSAoEKYUQ-oyNElmyf1"
+    },
+    {
+        "fullPath": "1/Physics/Syllabus/Physics(2020-2021).pdf",
+        "name": "Physics(2020-2021).pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1Q38nr7c-89wPjcQniHnXDUvgDnXC64Im/view?usp=drivesdk",
+        "lastUpdated": "2023-01-08T04:00:14.000Z",
+        "size": 182.36328125,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1Q38nr7c-89wPjcQniHnXDUvgDnXC64Im"
+    },
+    {
+        "fullPath": "1/Physics/Notes",
+        "name": "Notes",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1q5t8wPhc1QdSYYWfhGXU1onmRmv9gtO7",
+        "lastUpdated": "2023-01-08T09:40:03.306Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1q5t8wPhc1QdSYYWfhGXU1onmRmv9gtO7"
+    },
+    {
+        "fullPath": "1/Physics/Notes/PHYSICS_NSAKCET_1994.pdf",
+        "name": "PHYSICS_NSAKCET_1994.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1-0weYftE1h56YUg45sMaFK-rAxaE4Seo/view?usp=drivesdk",
+        "lastUpdated": "2021-06-22T01:47:50.000Z",
+        "size": 23541.583984375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1-0weYftE1h56YUg45sMaFK-rAxaE4Seo"
+    },
+    {
+        "fullPath": "1/Mathematics-I",
+        "name": "Mathematics-I",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1y_DgDm0dWg9h44ytG0yGLH0gcPXsCjVP",
+        "lastUpdated": "2023-01-03T14:24:52.629Z",
+        "size": 0,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1y_DgDm0dWg9h44ytG0yGLH0gcPXsCjVP"
+    },
+    {
+        "fullPath": "1/Mathematics-I/QuestionPapers",
+        "name": "QuestionPapers",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1uluL2W98YkcrRHlA_2pAAYTB402gT3rV",
+        "lastUpdated": "2023-01-09T01:50:19.748Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1uluL2W98YkcrRHlA_2pAAYTB402gT3rV"
+    },
+    {
+        "fullPath": "1/Mathematics-I/OtherResources",
+        "name": "OtherResources",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1mRXBKFD5cygBY-WMbJcs8sA6RPNyCyBO",
+        "lastUpdated": "2023-01-09T01:50:12.245Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1mRXBKFD5cygBY-WMbJcs8sA6RPNyCyBO"
+    },
+    {
+        "fullPath": "1/Mathematics-I/OtherResources/FAQs and IQs.pdf",
+        "name": "FAQs and IQs.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1z9mFB9ZR6UtvcWwgMwXPeIZXXvONhxDL/view?usp=drivesdk",
+        "lastUpdated": "2021-07-30T01:28:24.000Z",
+        "size": 613.064453125,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1z9mFB9ZR6UtvcWwgMwXPeIZXXvONhxDL"
+    },
+    {
+        "fullPath": "1/Mathematics-I/OtherResources/Unit 5.pdf",
+        "name": "Unit 5.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1eXiT6F1BKuwNGhE31CtfEZlTw083o5Ui/view?usp=drivesdk",
+        "lastUpdated": "2021-07-30T01:28:20.000Z",
+        "size": 2170.0849609375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1eXiT6F1BKuwNGhE31CtfEZlTw083o5Ui"
+    },
+    {
+        "fullPath": "1/Mathematics-I/OtherResources/Unit 3.pdf",
+        "name": "Unit 3.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1Vrs3z_QDqpRKi7JehmGDmrNiLyg3X718/view?usp=drivesdk",
+        "lastUpdated": "2021-07-30T01:28:14.000Z",
+        "size": 3849.2822265625,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1Vrs3z_QDqpRKi7JehmGDmrNiLyg3X718"
+    },
+    {
+        "fullPath": "1/Mathematics-I/OtherResources/Unit 4.pdf",
+        "name": "Unit 4.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1jNBHhmwiFftBmaPzkA93FJamBtj_qXsM/view?usp=drivesdk",
+        "lastUpdated": "2021-07-30T01:28:14.000Z",
+        "size": 732.3818359375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1jNBHhmwiFftBmaPzkA93FJamBtj_qXsM"
+    },
+    {
+        "fullPath": "1/Mathematics-I/OtherResources/Unit 2.pdf",
+        "name": "Unit 2.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1WSSkArFblAVJm7x7xN--dTzBG1eIsaVD/view?usp=drivesdk",
+        "lastUpdated": "2021-07-30T01:28:10.000Z",
+        "size": 916.7705078125,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1WSSkArFblAVJm7x7xN--dTzBG1eIsaVD"
+    },
+    {
+        "fullPath": "1/Mathematics-I/OtherResources/Unit 1.pdf",
+        "name": "Unit 1.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1Qgj9zSGpHQmzypxbV0gcH7fOj7CVhqY7/view?usp=drivesdk",
+        "lastUpdated": "2021-07-30T01:28:08.000Z",
+        "size": 675.1474609375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1Qgj9zSGpHQmzypxbV0gcH7fOj7CVhqY7"
+    },
+    {
+        "fullPath": "1/Mathematics-I/OtherResources/Model Papers.pdf",
+        "name": "Model Papers.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1_jVwkYB9MwXJEA5oJLEGTFXm5Ub3zIzR/view?usp=drivesdk",
+        "lastUpdated": "2021-07-30T01:28:04.000Z",
+        "size": 200.521484375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1_jVwkYB9MwXJEA5oJLEGTFXm5Ub3zIzR"
+    },
+    {
+        "fullPath": "1/Mathematics-I/OtherResources/Imp Formulae.pdf",
+        "name": "Imp Formulae.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1I6XdvH-k1ulrc0PkTaNyeZaGPPtp9IkZ/view?usp=drivesdk",
+        "lastUpdated": "2021-07-30T01:27:58.000Z",
+        "size": 300.8486328125,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1I6XdvH-k1ulrc0PkTaNyeZaGPPtp9IkZ"
+    },
+    {
+        "fullPath": "1/Mathematics-I/OtherResources/Contents.pdf",
+        "name": "Contents.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1jNElDKwIwZBcHHe7vijR_VYgSNkPpb7E/view?usp=drivesdk",
+        "lastUpdated": "2021-07-30T01:27:52.000Z",
+        "size": 281.2958984375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1jNElDKwIwZBcHHe7vijR_VYgSNkPpb7E"
+    },
+    {
+        "fullPath": "1/Mathematics-I/OtherResources/FORMULAE.pdf",
+        "name": "FORMULAE.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/12noUcK4vkHKTe2dLh8LUfu6QbSS4kteg/view?usp=drivesdk",
+        "lastUpdated": "2021-06-28T12:13:52.000Z",
+        "size": 829.9365234375,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "12noUcK4vkHKTe2dLh8LUfu6QbSS4kteg"
+    },
+    {
+        "fullPath": "1/Mathematics-I/Syllabus",
+        "name": "Syllabus",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1222tjODOsvXfJg8qk7OVEHqkaExAuuLP",
+        "lastUpdated": "2023-01-08T09:39:44.518Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1222tjODOsvXfJg8qk7OVEHqkaExAuuLP"
+    },
+    {
+        "fullPath": "1/Mathematics-I/Syllabus/M1(2020-2021).pdf",
+        "name": "M1(2020-2021).pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1Oj1oOED5pQrSPVeHmJ6DFb7uINdkHoNA/view?usp=drivesdk",
+        "lastUpdated": "2023-01-08T04:00:14.000Z",
+        "size": 121.3173828125,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1Oj1oOED5pQrSPVeHmJ6DFb7uINdkHoNA"
+    },
+    {
+        "fullPath": "1/Mathematics-I/Notes",
+        "name": "Notes",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1_Xac7vgRHWX0W7NLX-JwFt-RsMCaqsn6",
+        "lastUpdated": "2023-01-08T09:39:44.518Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1_Xac7vgRHWX0W7NLX-JwFt-RsMCaqsn6"
+    },
+    {
+        "fullPath": "1/Mathematics-I/Notes/Mathematics 1_NSAKCET16046688_papersy.pdf",
+        "name": "Mathematics 1_NSAKCET16046688_papersy.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1Av3gJDj_qwGyshoXbKD85t5FDmsSU1us/view?usp=drivesdk",
+        "lastUpdated": "2021-06-22T01:49:06.000Z",
+        "size": 38178.685546875,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1Av3gJDj_qwGyshoXbKD85t5FDmsSU1us"
+    },
+    {
+        "fullPath": "1/Mathematics-I/Notes/M1_LIET_1948.pdf",
+        "name": "M1_LIET_1948.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1iJPjA9Hp1vlq68z6eePU5ujghiKvSXg0/view?usp=drivesdk",
+        "lastUpdated": "2021-06-22T01:47:56.000Z",
+        "size": 13873.9091796875,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1iJPjA9Hp1vlq68z6eePU5ujghiKvSXg0"
+    }
+]

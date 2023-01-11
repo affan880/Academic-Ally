@@ -7,7 +7,7 @@ const createStyles = () =>
         header: {
             flex: 1,
             backgroundColor: '#6360FF',
-            height: height / 4,
+            height: height / 4.5,
             borderBottomLeftRadius: 20,
             borderBottomRightRadius: 20,
             paddingTop:30

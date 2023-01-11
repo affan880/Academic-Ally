@@ -7,16 +7,18 @@ import ScreenLayout from '../../interfaces/screenLayout';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUsersData } from '../../redux/reducers/usersData';
 import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
+import auth, { firebase } from '@react-native-firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Qp } from '../../utilis/Qp';
+import { notesDe } from '../../utilis/notes';
 
 
 const User = require('../../assets/images/user.jpg');
 
 type MyStackParamList = {
-  Notes:undefined
+  Notes: { itemId: number };
 }
 type MyScreenNavigationProp = StackNavigationProp<MyStackParamList, 'Notes'>
 type Props = {}
@@ -28,7 +30,39 @@ const HomeScreen = (props: Props) => {
   const userFirestoreData = useSelector((state:any) => {
     return state.usersData;
   })
+  ///Resources/OU/B.E/IT/6
   useEffect(() => {
+    // notesDe.map((item) => {
+    //   firestore().collection('Resources').doc('OU').collection('B.E').doc('IT').collection('6').doc('Subjects').collection('Machine Learning').doc('Notes').update({
+    //     Notes: firebase.firestore.FieldValue.arrayUnion({
+    //       fileName: item.name,
+    //       college: null,
+    //       facultyName: null,
+    //       notesId: item.notesid,
+    //       uploaderEmail: item.ownerEmail,
+    //       uploaderName: 'Affan',
+    //       uploaderUid: 'mAoHs0lNQtUXyCir1QbkSMSJpu72',
+    //       reviews: 0,
+    //       rating: 0,
+    //       ratingCount: 0,
+    //       comments: [],
+    //       likes: 0,
+    //       dislikes: 0,
+    //       likedBy: [],
+    //       dislikedBy: [],
+    //       views: 0,
+    //       viewedBy: [],
+    //       downloads: 0,
+    //       date: Date.now(),
+    //       time: new Date().getTime(),
+    //       shared: 0,
+    //       sharedBy: [],
+    //       sharedWith: [],
+    //     })
+    //   })
+    //   console.log(item.name)
+    // },[])
+
     const subscriber = firestore()
     .collection('Users')
     .doc(auth().currentUser?.uid)
@@ -44,7 +78,8 @@ const HomeScreen = (props: Props) => {
       <ScrollView showsVerticalScrollIndicator={false}
       style={{
       flex: 1,
-      marginBottom: 70,
+        marginBottom: 70,
+      backgroundColor: '#6360FF',
     }}>
         <View style={styles.header}>
         <View >
@@ -63,9 +98,7 @@ const HomeScreen = (props: Props) => {
                <Text style={styles.userName}>{ userFirestoreData.usersData.Name }</Text>
                 </View>
               </View>
-              <TouchableOpacity onPress={() => {
-                navigation.navigate('Notes')
-              }}>
+              <TouchableOpacity>
                 <Ionicons name='ios-notifications-outline' color={"#ffffff"} size={20} />
               </TouchableOpacity>
            </View>
@@ -73,7 +106,11 @@ const HomeScreen = (props: Props) => {
       </View>
       <QuickAccess />
         <View style={{
-          marginTop: -30,
+          marginTop: -120,
+          backgroundColor: '#F1F1FA',
+          paddingTop: 80,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
         }}>
         <Text style={{
           color: '#161719',

@@ -8,7 +8,7 @@ const ScreenLayout = (props) => {
     return (
         <View style={{
             flex: 1,
-            backgroundColor: '#F1F1FA',
+            backgroundColor: '#6360FF',
             marginTop:statusBarHeight 
         }} >
             <StatusBar

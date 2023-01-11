@@ -9,5 +9,6 @@
   },
   "esModuleInterop": true,
   "allowSyntheticDefaultImports": true,
-  "jsx": "react"
+  "jsx": "react",
+  "include": ["src"]
 }

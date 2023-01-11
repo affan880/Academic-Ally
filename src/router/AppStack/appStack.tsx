@@ -5,16 +5,12 @@ import {
     StyleSheet,
     View,
     Text,
-    LayoutChangeEvent,
     Dimensions,
 } from 'react-native'
 import { NavigationProp, ParamListBase, DrawerActions } from '@react-navigation/native'
-import { BottomTabBarProps, BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import Svg, { G, Path } from "react-native-svg"
-import Animated, { useAnimatedStyle, withTiming, useDerivedValue } from 'react-native-reanimated'
-import Lottie from 'lottie-react-native'
 import HomeScreen from '../../screens/Home/homeScreen'
 import Upload from '../../screens/Upload/upload'
 import Bookmark from '../../screens/Bookmark/Bookmark'
@@ -24,7 +20,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import Feather from "react-native-vector-icons/Feather"
 import Fontisto from "react-native-vector-icons/Fontisto"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import Search from '../../screens/Search/searchScreen'
+import Notes from '../../screens/Notes/Notes'
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
@@ -191,9 +187,11 @@ const AppStack = () => {
             animationEnabled: false
         }} >
             <Stack.Screen name="BottomTabBar" component={BottomTabBar}/>
-            <Stack.Screen name="Notes" component={NotesScreen} options={{
-                headerShown: true,
-                headerTitle: 'Recent',
+            <Stack.Screen name="NotesList" component={NotesScreen} options={{
+                headerShown: false,
+            }} />
+            <Stack.Screen name="Notes" component={Notes} options={{
+                headerShown: false,
             }} />
         </Stack.Navigator>
     )
