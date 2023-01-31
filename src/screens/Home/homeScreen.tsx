@@ -11,8 +11,6 @@ import auth, { firebase } from '@react-native-firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Qp } from '../../utilis/Qp';
-import { notesDe } from '../../utilis/notes';
 
 
 const User = require('../../assets/images/user.jpg');
@@ -27,52 +25,16 @@ const HomeScreen = (props: Props) => {
   const styles = useMemo(() => createStyles(), []);
   const navigation = useNavigation < MyScreenNavigationProp>();
   const dispatch = useDispatch()
+  useEffect(() => {
+    firestore().collection('Users').doc(auth().currentUser?.uid).get().then((data) => {
+      dispatch(setUsersData(data.data()));
+      // console.log(data.data());
+    })
+  },[])
   const userFirestoreData = useSelector((state:any) => {
     return state.usersData;
   })
-  ///Resources/OU/B.E/IT/6
-  useEffect(() => {
-    // notesDe.map((item) => {
-    //   firestore().collection('Resources').doc('OU').collection('B.E').doc('IT').collection('6').doc('Subjects').collection('Machine Learning').doc('Notes').update({
-    //     Notes: firebase.firestore.FieldValue.arrayUnion({
-    //       fileName: item.name,
-    //       college: null,
-    //       facultyName: null,
-    //       notesId: item.notesid,
-    //       uploaderEmail: item.ownerEmail,
-    //       uploaderName: 'Affan',
-    //       uploaderUid: 'mAoHs0lNQtUXyCir1QbkSMSJpu72',
-    //       reviews: 0,
-    //       rating: 0,
-    //       ratingCount: 0,
-    //       comments: [],
-    //       likes: 0,
-    //       dislikes: 0,
-    //       likedBy: [],
-    //       dislikedBy: [],
-    //       views: 0,
-    //       viewedBy: [],
-    //       downloads: 0,
-    //       date: Date.now(),
-    //       time: new Date().getTime(),
-    //       shared: 0,
-    //       sharedBy: [],
-    //       sharedWith: [],
-    //     })
-    //   })
-    //   console.log(item.name)
-    // },[])
-
-    const subscriber = firestore()
-    .collection('Users')
-    .doc(auth().currentUser?.uid)
-    .onSnapshot(documentSnapshot => {
-      dispatch(setUsersData(documentSnapshot.data()))
-      });
-    return () => subscriber();
-  }, []);
-
-
+  // console.log(userFirestoreData.usersData);
   return (
     <ScreenLayout>
       <ScrollView showsVerticalScrollIndicator={false}
@@ -111,8 +73,9 @@ const HomeScreen = (props: Props) => {
           paddingTop: 80,
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
+          minHeight: 600,
         }}>
-        <Text style={{
+          <Text style={{
           color: '#161719',
           lineHeight: 30,
           fontSize: 16,
@@ -120,8 +83,9 @@ const HomeScreen = (props: Props) => {
           fontFamily: 'DM Sans',
           paddingLeft: 20,
           fontStyle: "normal",
-        }} >Recommended</Text>
+            }} >Recommended</Text>
       <View>
+            
         <Recommendation />
       </View>
       </View>

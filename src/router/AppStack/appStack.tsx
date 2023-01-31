@@ -15,12 +15,14 @@ import HomeScreen from '../../screens/Home/homeScreen'
 import Upload from '../../screens/Upload/upload'
 import Bookmark from '../../screens/Bookmark/Bookmark'
 import Profile from '../../screens/Profile/profile'
-import NotesScreen from '../../screens/Notes/NoteScreen'
+import SubjectResources from '../../screens/Notes/SubjectResources'
 import { createStackNavigator } from '@react-navigation/stack'
 import Feather from "react-native-vector-icons/Feather"
 import Fontisto from "react-native-vector-icons/Fontisto"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import Notes from '../../screens/Notes/Notes'
+import NotesList from '../../screens/Notes/NotesList'
+import UploadScreen from '../../screens/Notes/uploadScreen'
+import PdfViewer from '../../screens/Notes/PdfViewer/pdfViewer'
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
@@ -187,10 +189,16 @@ const AppStack = () => {
             animationEnabled: false
         }} >
             <Stack.Screen name="BottomTabBar" component={BottomTabBar}/>
-            <Stack.Screen name="NotesList" component={NotesScreen} options={{
+            <Stack.Screen name="SubjectResources" component={SubjectResources} options={{
                 headerShown: false,
             }} />
-            <Stack.Screen name="Notes" component={Notes} options={{
+            <Stack.Screen name="NotesList" component={NotesList} options={{
+                headerShown: false,
+            }} />
+            <Stack.Screen name="UploadScreen" component={UploadScreen} options={{
+                headerShown: false,
+            }} />
+            <Stack.Screen name="PdfViewer" component={PdfViewer} options={{
                 headerShown: false,
             }} />
         </Stack.Navigator>

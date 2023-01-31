@@ -2,11 +2,8 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import React,{useEffect, useState, useMemo} from 'react'
 import { RouteProp, useNavigation, useRoute, NavigationProp, ParamListBase } from '@react-navigation/native';
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
-import firestore from '@react-native-firebase/firestore';
+import NavigationLayout from '../../interfaces/navigationLayout';
 import createStyles from './styles';
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import Feather from 'react-native-vector-icons/Feather'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { NavBtn } from '../../components/CustomFormComponents/CustomBtn';
 import { Syllabus,Notes, Qp, OtherRes } from '../../assets/images/icons';
 
@@ -21,17 +18,30 @@ type RootStackParamList = {
   };
 };
 type MyStackParamList = {
-  Notes: {
+  NotesList: {
     userData: {
       Course: string,
       Branch: string,
       Sem: string,
     },
     notesData: string,
-    selected: string
+    selected: string,
+    subject: string
+  },
+  UploadScreen: {
+    userData: {
+      Course: string,
+      Branch: string,
+      Sem: string,
+    },
+    notesData: string,
+    selected: string,
+    subject: string
   }
 }
-type  MyScreenNavigationProp = StackNavigationProp<MyStackParamList, 'Notes'>
+type MyScreenNavigationProp = StackNavigationProp<MyStackParamList, 'NotesList'>
+
+type  uploadScreenNavigationProp = StackNavigationProp<MyStackParamList, 'UploadScreen' >
 
 
 type notesTypes = {
@@ -43,7 +53,8 @@ type notesTypes = {
 const NotesScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const { userData } = route.params;
-  const { notesData } = route.params;
+  const { notesData }: any = route.params;
+  const { subject }: any = route.params;
   const [notesbtnStyle, setNotesStyle] = useState(false)
   const [syllabusbtnStyle, setSyllabusStyle] = useState(false)
   const [qpbtnStyle, setQpStyle] = useState(false)
@@ -51,78 +62,135 @@ const NotesScreen = () => {
   const [selected, setSelected] = useState("")
   const styles = useMemo(() => createStyles(), []);
   const navigation = useNavigation<MyScreenNavigationProp>();
+  const navigationUpload = useNavigation<uploadScreenNavigationProp>();
+
 
   const [availableNotes, setavailableNotes] = useState<Array<notesTypes>>([])
-  
-  useEffect(() => {    
-    firestore().collection('Resources').doc('OU').collection(`${userData?.Course}`).doc(`${userData?.Branch}`).collection(`${userData?.Sem}`).doc('Subjects').collection(`${notesData}`).doc('Notes').get().then((data) => {
-      setavailableNotes(data.data()?.Notes);
-      console.log(data.data()?.Notes);
-    });
-  },[])
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Ionicons name='chevron-back-outline' size={20} color="#ffffff" onPress={() => {
-          navigation.goBack()
-        }}/>
-        <MaterialCommunityIcons name="backup-restore" size={30} color="#ffffff"/>
-      </View>
-      <View style={styles.body}>
-        <View style={styles.bodyContent}>
+    <NavigationLayout>
+      <View style={styles.categoryBtnsContainer}>
+      <View >
+        {
+            notesData.syllabus.length > 0 ?
           <TouchableOpacity style={[styles.categoryBtns, syllabusbtnStyle ? styles.categoryBtnClicked : null]} onPress={() => {
             setNotesStyle(false)
             setSyllabusStyle(true)
             setQpStyle(false)
             setOtherResStyle(false)
-            setSelected("1")
+            setSelected("syllabus")
           }}>
             <Syllabus />
             <Text style={styles.btnText}>Syllabus</Text>
-          </TouchableOpacity>
+              </TouchableOpacity> :
+              <TouchableOpacity style={[styles.disabledBtn, syllabusbtnStyle ? styles.disabledBtnClicked : null]}
+                onPress={() => {
+                  setNotesStyle(false)
+                  setSyllabusStyle(true)
+                  setQpStyle(false)
+                  setOtherResStyle(false)
+                  setSelected("syllabus")
+                }}
+              >
+                <Syllabus />
+                <Text style={styles.btnText}>Syllabus</Text>
+              </TouchableOpacity>
+          }
+          </View>
+          <View>{
+            notesData.notes.length > 0 ?
           <TouchableOpacity style={[styles.categoryBtns, notesbtnStyle ? styles.categoryBtnClicked : null]} onPress={() => {
             setNotesStyle(true)
             setSyllabusStyle(false)
             setQpStyle(false)
             setOtherResStyle(false)
-            setSelected("2")
+            setSelected("notes")
           }} >
             <Notes />
             <Text style={styles.btnText}>Notes</Text>
           </TouchableOpacity>
+              :
+              <TouchableOpacity style={[styles.disabledBtn, notesbtnStyle ? styles.disabledBtnClicked : null]} onPress={() => {
+                setNotesStyle(true)
+                setSyllabusStyle(false)
+                setQpStyle(false)
+                setOtherResStyle(false)
+                setSelected("notes")
+              }}  >
+                <Notes />
+                <Text style={styles.btnText}>Notes</Text>
+              </TouchableOpacity> 
+          }
+          </View>
+          <View>{
+            notesData.questionPapers.length > 0 ?
           <TouchableOpacity style={[styles.categoryBtns, qpbtnStyle ? styles.categoryBtnClicked : null]} onPress={() => {
             setNotesStyle(false)
             setSyllabusStyle(false)
             setQpStyle(true)
             setOtherResStyle(false)
-            setSelected("3")
+            setSelected("questionPapers")
           }}>
             <Qp />
             <Text style={styles.btnText}>QP</Text>
           </TouchableOpacity>
+              :
+              <TouchableOpacity style={[styles.disabledBtn, qpbtnStyle ? styles.disabledBtnClicked : null]} onPress={() => {
+                setNotesStyle(false)
+                setSyllabusStyle(false)
+                setQpStyle(true)
+                setOtherResStyle(false)
+                setSelected("questionPapers")
+              }} >
+                <Qp />
+                <Text style={styles.btnText}>QP</Text>
+              </TouchableOpacity>
+          }
+          </View>
+          <View>{
+            notesData.otherResources.length > 0 ?
           <TouchableOpacity style={[styles.categoryBtns, otherResbtnStyle ? styles.categoryBtnClicked : null]} onPress={() => {
             setNotesStyle(false)
             setSyllabusStyle(false)
             setQpStyle(false)
             setOtherResStyle(true)
-            setSelected("4")
+            setSelected("otherResources")
           }}>
             <OtherRes />
             <Text style={styles.btnText}>Other Resources</Text>
-          </TouchableOpacity>
+              </TouchableOpacity>
+              :
+              <TouchableOpacity style={[styles.disabledBtn, otherResbtnStyle ? styles.disabledBtnClicked : null]}
+                onPress={() => {
+                  setNotesStyle(false)
+                  setSyllabusStyle(false)
+                  setQpStyle(false)
+                  setOtherResStyle(true)
+                  setSelected("otherResources")
+                }}
+              >
+                <OtherRes />
+                <Text style={styles.btnText}>Other Resources</Text>
+              </TouchableOpacity>
+          }
         </View>
+      </View>
         <View style={styles.selectBtn}>
-          <NavBtn title='Select' color={selected === "" ? "#7A7D7D" : "#6360FF"} onPress={() => {
-            selected !== "" ? navigation.navigate('Notes', {
+          <NavBtn title={selected === "" ? "Select" : notesData[selected].length > 0 ? "Select" : "Upload"} color={selected === "" ? "#7A7D7D" : notesData[selected].length > 0 ? "#6360FF" : "#FF8181" } onPress={() => {
+            selected === "" ? null : notesData[selected].length > 0 ? navigation.navigate('NotesList', {
               userData: userData,
               notesData: notesData,
-              selected: selected
-            }): null
+              selected: selected,
+              subject: subject
+            }) : navigation.navigate('UploadScreen', {
+              userData: userData,
+              notesData: notesData,
+              selected: selected,
+              subject: subject
+            }) 
           }} />
         </View>  
-      </View>
-    </View>
+    </NavigationLayout>
   )
 }
 

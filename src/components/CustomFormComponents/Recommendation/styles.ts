@@ -28,7 +28,7 @@ const createStyles = () =>
             alignItems: 'center',
         },
         containerText: {
-            fontSize: 20,
+            fontSize: 18,
             color: 'white',
             fontWeight: 'bold',
             backgroundColor: 'rgba(255, 255, 255, 0.17)',
@@ -60,12 +60,16 @@ const createStyles = () =>
             paddingHorizontal: 15,
         },
         subjectName: {
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: '700',
             color: '#161719',
             fontFamily: 'DM Sans',
             fontStyle: "normal",
-        }
+        },
+        subjectCategory: { flexDirection: 'row', alignItems: 'center', paddingTop: 5 },
+        subjectCategoryText: { color: '#706f6f', fontSize: 12, fontWeight: '700' },
+        subjectCategoryCheckIcon: { color: "#7DC579" },
+        subjectCategoryUnCheckIcon: { color: "#FF0000"},
     })
 
 export default createStyles;
