@@ -19,7 +19,7 @@ const ScreenLayout = (props) => {
             />
                 <View style={{
                     flex: 1,
-                backgroundColor: '#F1F1FA',
+                    backgroundColor: '#F1F1FA',
                     height: height,
                     width: width,
                 }}

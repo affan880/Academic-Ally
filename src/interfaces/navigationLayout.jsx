@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useNavigation } from '@react-navigation/native'
 
-const navigationLayout = ({ children }) => {
+const navigationLayout = ({ children, rightIconFalse }) => {
     const navigation = useNavigation();
     const styles = useMemo(() => createStyles(), []);
   return (
@@ -14,7 +14,10 @@ const navigationLayout = ({ children }) => {
               <Ionicons name='chevron-back-outline' size={20} color="#ffffff" onPress={() => {
                   navigation.goBack()
               }} />
+              {
+                  !rightIconFalse &&
               <MaterialCommunityIcons name="backup-restore" size={30} color="#ffffff" />
+              }
           </View>
           <View style={styles.body}>
               <View style={styles.bodyContent}>

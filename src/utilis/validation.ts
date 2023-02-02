@@ -17,12 +17,12 @@ export const LoginvalidationSchema = yup.object().shape({
 
 export const UploadvalidationSchema = yup.object().shape({
     facultyName: yup.string(),
-    college: yup.string(),
-    notesId: yup.string().required('Id is required'),
-    sem: yup.string().required(),
-    branch: yup.string().required(),
-    subjectName: yup.string().required(),
-    course: yup.string().required()
+    // college: yup.string(),
+    // notesId: yup.string().required('Id is required'),
+    // sem: yup.string().required(),
+    // branch: yup.string().required(),
+    // subjectName: yup.string().required(),
+    // course: yup.string().required()
 })
 
 export const NotesSearchValidationSchema = yup.object().shape({
@@ -30,4 +30,12 @@ export const NotesSearchValidationSchema = yup.object().shape({
     branch: yup.string(),
     course: yup.string(),
     notes:yup.string()
+})
+
+export const updatevalidationSchema = yup.object().shape({
+    name: yup.string().required('Name is required').min(3, 'Name must be at least 3 characters').max(12, 'Name must be less than 12 characters'),
+    course: yup.string(),
+    sem: yup.string(),
+    branch: yup.string(),
+    year: yup.string(),
 })

@@ -132,3 +132,40 @@ export const forgotPassword = (email) => {
     console.log(errorCode, errorMessage);
   });
 }
+
+//get data from firestore
+export const getFirestoreData = async (uid, updateReduxData) => {
+  await firestore().collection('Users').doc(`${uid}`).get()
+    .then((documentSnapshot) => {
+      if (documentSnapshot.exists) {
+        updateReduxData(documentSnapshot.data())
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
+}
+
+
+export const updateFirestoreData = async (uid, data) => {
+  firestore().collection('Users').doc(`${uid}`).update(data)
+    .then(() => {
+      // getFirestoreData(uid);
+      console.log('User Data updated!');
+    }).catch((error) => {
+      console.log(error);
+    });
+}
+
+export const manageBookmarks = async (item, selected, subject, status) => {
+  console.log("saving")
+  const data = {
+    fileName: item.fileName,
+    subject: subject,
+    notesId: item.notesId,
+    category: selected,
+  }
+  console.log(getCurrentUser().uid, data, status)
+  firestore().collection('Users').doc(`${getCurrentUser().uid}`).update({
+    NotesBookmarked: !status ? firebase.firestore.FieldValue.arrayUnion(data) : firebase.firestore.FieldValue.arrayRemove(data)
+  })
+}

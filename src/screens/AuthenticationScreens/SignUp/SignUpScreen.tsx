@@ -70,7 +70,7 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
     ]
 
     const BranchData: any = [
-        { label: 'IT', value: '1' },
+        { label: 'I.T', value: '1' },
         { label: 'CSE', value: '2' },
         { label: 'ECE', value: '3' },
         { label: 'MECH', value: '4' },

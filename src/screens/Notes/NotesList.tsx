@@ -1,12 +1,15 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React,{useMemo} from 'react'
+import React,{useMemo, useState} from 'react'
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import NavigationLayout from '../../interfaces/navigationLayout'
-import createStyles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import { useDispatch, useSelector } from 'react-redux'
+import NavigationLayout from '../../interfaces/navigationLayout'
+import createStyles from './styles';
+import { manageBookmarks } from '../../Modules/auth/firebase/firebase'
+import { userAddBookMarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement'
 
 type Props = {}
 type RootStackParamList = {
@@ -57,16 +60,30 @@ function remove(str:string) {
 const NotesList = (props: Props) => {
   const styles = useMemo(() => createStyles(), []);
   const navigation = useNavigation<pdfViewer>();
+  const dispatch = useDispatch();
   
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const { userData } = route.params;
   const { notesData } = route.params;
   const { selected } = route.params;
   const { subject } = route.params;
-   
-  console.log(subject)
+  const [saved, setSaved] = useState(false);
+
+  const userBookmarks = useSelector((state: any) => state.userBookmarkManagement).userBookMarks;
+  console.log("userBookmarks", userBookmarks)
+
+  console.log(subject);
+
+  const BookmarkStatus = (item: any) => {
+    if (userBookmarks.some((bookmark: any) => bookmark.notesId === item)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   return (
-    <NavigationLayout>
+    <NavigationLayout rightIconFalse={true} >
       <View style={styles.notesListHeaderContainer} >
         <View style={{
           width: '75%',
@@ -171,8 +188,28 @@ const NotesList = (props: Props) => {
                       </View>
                     </View>
                   </View>
-                  <TouchableOpacity >
-                    <Fontisto name={'bookmark'} size={25} color={'#161719'}  />
+                  <TouchableOpacity onPress={()=>{
+                    setSaved(!saved);
+                    const status = BookmarkStatus(item.notesId);
+                    console.log("status", status)
+                    !status ?
+                      dispatch(userAddBookMarks({
+                        fileName: item.fileName,
+                        subject: subject,
+                        notesId: item.notesId,
+                        category: selected,
+                      })) :
+                      dispatch(userRemoveBookMarks({
+                        fileName: item.fileName,
+                        subject: subject,
+                        notesId: item.notesId,
+                        category: selected,
+                      }));
+                    manageBookmarks(item, selected, subject, status);
+                    console.log("userBookmarks", userBookmarks)
+
+                  }} >
+                    <Fontisto name={BookmarkStatus(item.notesId)  ? 'bookmark-alt' : 'bookmark'} size={25} color={'#161719'}  />
                   </TouchableOpacity>
                 </TouchableOpacity>
               </View>

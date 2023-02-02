@@ -8,7 +8,7 @@ import { NavBtn } from '../../components/CustomFormComponents/CustomBtn';
 import { Syllabus,Notes, Qp, OtherRes } from '../../assets/images/icons';
 
 type RootStackParamList = {
-  NotesList: {
+  Home: {
     userData: {
       Course: string,
       Branch: string,
@@ -51,7 +51,7 @@ type notesTypes = {
 
 
 const NotesScreen = () => {
-  const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'Home'>>();
   const { userData } = route.params;
   const { notesData }: any = route.params;
   const { subject }: any = route.params;
@@ -64,11 +64,10 @@ const NotesScreen = () => {
   const navigation = useNavigation<MyScreenNavigationProp>();
   const navigationUpload = useNavigation<uploadScreenNavigationProp>();
 
-
   const [availableNotes, setavailableNotes] = useState<Array<notesTypes>>([])
 
   return (
-    <NavigationLayout>
+    <NavigationLayout rightIconFalse={true}>
       <View style={styles.categoryBtnsContainer}>
       <View >
         {

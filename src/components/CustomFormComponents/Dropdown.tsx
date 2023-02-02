@@ -52,7 +52,7 @@ export const CustomDropdown = ({ leftIcon, placeholder, name, data, width }: Pro
                         setIsFocus(false)
                         setFieldTouched(name);
                     }}
-                    dropdownPosition='auto'
+                    dropdownPosition='bottom'
                     containerStyle={{
                         width: width,
                         height: 500,

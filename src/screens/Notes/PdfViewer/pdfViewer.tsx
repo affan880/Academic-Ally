@@ -1,10 +1,11 @@
-import React,{useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Dimensions, View, ScrollView, Text } from 'react-native';
 import Pdf from 'react-native-pdf';
 import createStyles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack';
 import RNFS from 'react-native-fs';
 
 const { width, height } = Dimensions.get('window');
@@ -22,6 +23,21 @@ type RootStackParamList = {
   };
 };
 
+type MyStackParamList = {
+  SavedPdfViewer: {
+    userData: {
+      Course: string,
+      Branch: string,
+      Sem: string,
+    },
+    notesData: any,
+    selected: string,
+    subject: string
+  };
+};
+
+type MyScreenNavigationProp = StackNavigationProp<MyStackParamList, 'SavedPdfViewer'>
+
 const PdfViewer = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const [offline, setOffline] = useState(false);
@@ -29,12 +45,11 @@ const PdfViewer = () => {
   const { notesData } = route.params;
   const { selected } = route.params;
   const { subject } = route.params;
-  const [expire , setExpire] = useState(10)
-  const [source, setSource] = useState({ uri: `https://drive.google.com/u/0/uc?id=${notesData.notesId}`, cache: true, expiration: 0  });
-  // const source = { uri: `https://drive.google.com/u/0/uc?id=${notesData.notesId}`, cache: true, expiration: 60*60 }
+  const source = { uri: `https://drive.google.com/u/0/uc?id=${notesData.notesId}`, cache: true, expiration: 60 * 30 }
   // const setSource = { uri: `https://drive.google.com/u/0/uc?id=${notesData.notesId}`, cache: true, expiration: 60 * 60  }
   const styles = createStyles();
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
+  const navigation = useNavigation<MyScreenNavigationProp>();
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
@@ -66,40 +81,45 @@ const PdfViewer = () => {
         }} >
           {
             notesData.fileName.length > 20 ? remove(notesData.fileName).substring(0, 20) + "..." :
-            remove(notesData.fileName).substring(0, 20)
+              remove(notesData.fileName).substring(0, 20)
           }
         </Text>
-        <MaterialCommunityIcons name="backup-restore" size={30} color="#ffffff" onPress={() => {
+        {/* <MaterialCommunityIcons name="backup-restore" size={30} color="#ffffff" onPress={() => {
           console.log("offline");
-          setSource({ uri: `https://drive.google.com/u/0/uc?id=${notesData.notesId}`, cache: true, expiration: 0 });
+          navigation.navigate('SavedPdfViewer', {
+            userData: userData,
+            notesData: notesData,
+            selected: selected,
+            subject: subject
+          })
           setReload(true);
-        }} />
+        }} /> */}
       </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>
-         <View style={styl.container}>
-         <Pdf
-          trustAllCerts={false}
-          source={source}
-          scale={1}
-          spacing={10}
-          enableRTL={true}
-          enableAnnotationRendering={true}
-          onLoadComplete={(numberOfPages, filePath) => {
-            console.log(`Number of pages: ${numberOfPages}`);
-            console.log(`File path: ${filePath}`);
-          }}
-          onPageChanged={(page, numberOfPages) => {
-            console.log(`Current page: ${page}`);
-          }}
-          onError={(error) => {
-            console.log(error);
-          }}
-          onPressLink={(uri) => {
-            console.log(`Link pressed: ${uri}`);
+          <View style={styl.container}>
+            <Pdf
+              trustAllCerts={false}
+              source={source}
+              scale={1}
+              spacing={10}
+              enableRTL={true}
+              enableAnnotationRendering={true}
+              onLoadComplete={(numberOfPages, filePath) => {
+                console.log(`Number of pages: ${numberOfPages}`);
+                console.log(`File path: ${filePath}`);
               }}
-          style={styl.pdf} />
-      </View>
+              onPageChanged={(page, numberOfPages) => {
+                console.log(`Current page: ${page}`);
+              }}
+              onError={(error) => {
+                console.log(error);
+              }}
+              onPressLink={(uri) => {
+                console.log(`Link pressed: ${uri}`);
+              }}
+              style={styl.pdf} />
+          </View>
         </View>
       </View>
     </View>
@@ -151,7 +171,7 @@ const styl = StyleSheet.create({
   },
   pdf: {
     width: width,
-    height: height ,
+    height: height,
     borderRadius: 40,
     marginBottom: height * 0.12,
   }

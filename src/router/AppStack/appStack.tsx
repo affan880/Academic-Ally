@@ -23,6 +23,9 @@ import Ionicons from "react-native-vector-icons/Ionicons"
 import NotesList from '../../screens/Notes/NotesList'
 import UploadScreen from '../../screens/Notes/uploadScreen'
 import PdfViewer from '../../screens/Notes/PdfViewer/pdfViewer'
+import SavedPdfViewer from '../../screens/Notes/PdfViewer/savedPdfViewer'
+import UpdateInformation from '../../screens/Profile/AccountSettings/UpdateInformation'
+import Search from '../../screens/Search/searchScreen'
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
@@ -135,7 +138,7 @@ export const BottomTabBar = () => {
                             )
                         })
                     }}
-                    component={Upload}
+                    component={Search}
                 />
                 <Tab.Screen
                     name="BookMark"
@@ -199,6 +202,12 @@ const AppStack = () => {
                 headerShown: false,
             }} />
             <Stack.Screen name="PdfViewer" component={PdfViewer} options={{
+                headerShown: false,
+            }} />
+            <Stack.Screen name="SavedPdfViewer" component={SavedPdfViewer} options={{
+                headerShown: false,
+            }} />
+            <Stack.Screen name="UpdateInformation" component={UpdateInformation} options={{
                 headerShown: false,
             }} />
         </Stack.Navigator>

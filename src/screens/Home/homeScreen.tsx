@@ -85,7 +85,6 @@ const HomeScreen = (props: Props) => {
           fontStyle: "normal",
             }} >Recommended</Text>
       <View>
-            
         <Recommendation />
       </View>
       </View>
