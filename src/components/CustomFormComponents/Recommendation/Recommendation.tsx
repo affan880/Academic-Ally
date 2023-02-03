@@ -40,13 +40,11 @@ const Recommendation = (props: Props) => {
                                 questionPapers: item.docs[2]?.data().resources,
                                 syllabus: item.docs[3]?.data().resources,
                             }]);
-                            console.log(item.docs[0]);
                         })
 
                     }
                 })
             })
-            console.log(list);
         } catch (error) {
             console.log(error);
         }

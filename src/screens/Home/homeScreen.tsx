@@ -11,6 +11,7 @@ import auth, { firebase } from '@react-native-firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const User = require('../../assets/images/user.jpg');
@@ -30,6 +31,18 @@ const HomeScreen = (props: Props) => {
       dispatch(setUsersData(data.data()));
       // console.log(data.data());
     })
+    const getData = async () => {
+      try {
+        const value = await AsyncStorage.getItem('userBookMarks')
+        console.log("value", value);
+        if(value !== null) {
+          // value previously stored
+        }
+      } catch(e) {
+        // error reading value
+      }
+    }
+    getData()
   },[])
   const userFirestoreData = useSelector((state:any) => {
     return state.usersData;

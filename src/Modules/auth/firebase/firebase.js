@@ -157,15 +157,27 @@ export const updateFirestoreData = async (uid, data) => {
 }
 
 export const manageBookmarks = async (item, selected, subject, status) => {
-  console.log("saving")
   const data = {
     fileName: item.fileName,
     subject: subject,
     notesId: item.notesId,
     category: selected,
   }
-  console.log(getCurrentUser().uid, data, status)
   firestore().collection('Users').doc(`${getCurrentUser().uid}`).update({
     NotesBookmarked: !status ? firebase.firestore.FieldValue.arrayUnion(data) : firebase.firestore.FieldValue.arrayRemove(data)
   })
+}
+export const removeBookmark = async (item) => {
+  const data = {
+    fileName: item.fileName,
+    subject: item.subject,
+    notesId: item.notesId,
+    category:  item.category,
+  }
+  firestore().collection('Users').doc(`${getCurrentUser().uid}`).update({
+    NotesBookmarked: firebase.firestore.FieldValue.arrayRemove(data)
+  }).catch((error) => {
+    console.log("err",error);
+  }
+  );
 }
