@@ -102,7 +102,7 @@ const Bookmark = () => {
             opacity: 0.5
         }}>
             <VStack alignItems="center" space={2}>
-                <Icon as={<MaterialIcons name="delete" />} color="white" size="lg  " />
+                <Icon as={<MaterialIcons name="delete" />} color="white" size="lg" />
                 <Text color="white" fontSize="xs" fontWeight="medium">
                     Delete
                 </Text>

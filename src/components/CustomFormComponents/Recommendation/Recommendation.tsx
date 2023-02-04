@@ -30,9 +30,9 @@ const Recommendation = (props: Props) => {
         try {
             firestore().collection('Users').doc(auth().currentUser?.uid).get().then(async (userFirestoreData: any) => {
                 setList([]);
-                await firestore().collection('Resources').doc('OU').collection(`${userFirestoreData.data().Course}`).doc(`${userFirestoreData.data().Branch}`).collection(`${userFirestoreData.data().Sem}`).doc('SubjectsList').get().then(async (data) => {
+                await firestore().collection('Universities').doc('OU').collection(`${userFirestoreData.data().Course}`).doc(`${userFirestoreData.data().Branch}`).collection(`${userFirestoreData.data().Sem}`).doc('SubjectsList').get().then(async (data) => {
                     for (const items of data.data()?.list) {
-                        await firestore().collection('Resources').doc('OU').collection(`${userFirestoreData.data().Course}`).doc(`${userFirestoreData.data().Branch}`).collection(`${userFirestoreData.data().Sem}`).doc('Subjects').collection(items.subjectName).get().then((item) => {
+                        await firestore().collection('Universities').doc('OU').collection(`${userFirestoreData.data().Course}`).doc(`${userFirestoreData.data().Branch}`).collection(`${userFirestoreData.data().Sem}`).doc('Subjects').collection(items.subjectName).get().then((item) => {
                             setList((prev) => [...prev, {
                                 subjectName: items.subjectName,
                                 notes: item.docs[0]?.data().resources,
