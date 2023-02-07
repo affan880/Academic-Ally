@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Dimensions, View, ScrollView, Text } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Dimensions, View, ScrollView, TouchableOpacity } from 'react-native';
 import Pdf from 'react-native-pdf';
 import createStyles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Fab, Icon, Popover, Button, VStack, Actionsheet,useDisclose, Text, Box, Center, HStack,  } from 'native-base';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useDispatch, useSelector } from 'react-redux';
+import {userAddToRecents, userRemoveFromRecents, userClearRecents } from '../../../redux/reducers/usersRecentPdfsManager';
+import Entypo from 'react-native-vector-icons/Entypo';
 import RNFS from 'react-native-fs';
 
 const { width, height } = Dimensions.get('window');
@@ -38,33 +43,49 @@ type MyStackParamList = {
 
 type MyScreenNavigationProp = StackNavigationProp<MyStackParamList, 'SavedPdfViewer'>
 
+
+
 const PdfViewer = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const [offline, setOffline] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const {
+    isOpen,
+    onOpen,
+    onClose
+  } = useDisclose();
   const { userData } = route.params;
   const { notesData } = route.params;
   const { selected } = route.params;
   const { subject } = route.params;
-  const source = { uri: `https://drive.google.com/u/0/uc?id=${notesData.notesId}`, cache: true, expiration: 60 * 30 }
+  const source = { uri: `https://drive.google.com/u/0/uc?id=${notesData.notesId}`, cache: true, expiration: 60 * 120 }
   // const setSource = { uri: `https://drive.google.com/u/0/uc?id=${notesData.notesId}`, cache: true, expiration: 60 * 60  }
   const styles = createStyles();
   // const navigation = useNavigation();
   const navigation = useNavigation<MyScreenNavigationProp>();
   const [reload, setReload] = useState(false);
 
+  const dispatch = useDispatch();
+
+  const userRecents = useSelector((state: any) => state.userRecentPdfs.RecentViews);
+
+  
   useEffect(() => {
-    if (reload) {
-      setReload(false);
-    }
+    console.log("userRecensts", userRecents, "length", userRecents.length);
+    dispatch(userAddToRecents(notesData));
   }, [reload]);
 
 
   function remove(str: string) {
     if (str.includes("(oufastupdates.com)") || str.includes(".pdf")) {
-      return str.replace(/\(oufastupdates.com\)|\.pdf/g, "");
-    } else {
-      return str;
+      const text = str.replace(/\(oufastupdates.com\)|\.pdf/g, "");
+      return text.slice(0, 35) + "...";
+    } 
+    if (str.length > 15) {
+      return str.slice(0, 5) + "...";
     }
+    return str;
   }
 
   return (
@@ -80,20 +101,10 @@ const PdfViewer = () => {
           maxWidth: '80%',
         }} >
           {
-            notesData.fileName.length > 20 ? remove(notesData.fileName).substring(0, 20) + "..." :
-              remove(notesData.fileName).substring(0, 20)
+            totalPages > 0 ? `${currentPage}/${totalPages}` : "0/0"
           }
         </Text>
-        {/* <MaterialCommunityIcons name="backup-restore" size={30} color="#ffffff" onPress={() => {
-          console.log("offline");
-          navigation.navigate('SavedPdfViewer', {
-            userData: userData,
-            notesData: notesData,
-            selected: selected,
-            subject: subject
-          })
-          setReload(true);
-        }} /> */}
+        <MaterialCommunityIcons name="backup-restore" size={30} color="#ffffff" onPress={onOpen} />
       </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>
@@ -108,9 +119,11 @@ const PdfViewer = () => {
               onLoadComplete={(numberOfPages, filePath) => {
                 console.log(`Number of pages: ${numberOfPages}`);
                 console.log(`File path: ${filePath}`);
+                
               }}
               onPageChanged={(page, numberOfPages) => {
-                console.log(`Current page: ${page}`);
+                setCurrentPage(page);
+                setTotalPages(numberOfPages);
               }}
               onError={(error) => {
                 console.log(error);
@@ -122,6 +135,81 @@ const PdfViewer = () => {
           </View>
         </View>
       </View>
+      <Popover trigger={triggerProps => {
+      return <Fab renderInPortal={false} backgroundColor={"#FF8181"} {...triggerProps} shadow={2} size="lg" icon={<Icon color="white" as={AntDesign} name="plus" size="lg" />} />;
+    }}>
+        <Popover.Content accessibilityLabel="Delete Customerd" w="20" height={"80"} >
+          <Popover.Arrow />
+          <Popover.Body>
+            <VStack space={2}>
+              <Button onPress={() => {
+                console.log("offline");
+                navigation.navigate('SavedPdfViewer', {
+                  userData: userData,
+                  notesData: notesData,
+                  selected: selected,
+                  subject: subject
+                })
+                setReload(true);
+              }} colorScheme="red" variant="outline">
+                Offline
+              </Button>
+              <Button onPress={() => {
+                console.log("share");
+                Share.share({
+                  message: `https://drive.google.com/u/0/uc?id=${notesData.notesId}`,
+                });
+              }} colorScheme="blue" variant="outline">
+                Share
+              </Button>
+            </VStack>
+
+          </Popover.Body>
+        </Popover.Content>
+      </Popover>
+
+      <Actionsheet isOpen={isOpen} onClose={onClose}>
+        <Actionsheet.Content>
+          <HStack w="100%" h={60} px={4} justifyContent="space-between">
+            <Text fontSize="16" color="gray.500" _dark={{
+            color: "gray.300"
+          }}>
+              Recents
+            </Text>
+            <TouchableOpacity onPress={() => {
+              dispatch(userClearRecents(notesData));
+              onClose()
+            }}>
+            <Text fontSize="12" color="#000000" >Clear</Text>
+            </TouchableOpacity>
+          </HStack>
+          {
+            userRecents.map((item: any, index: number) => {
+              return (
+                <Actionsheet.Item key={index} width={"100%"} paddingTop={5} onPress={()=>{
+                  navigation.navigate('PdfViewer', {
+                    userData: userData,
+                    notesData: item,
+                    selected: selected,
+                    subject: subject
+                  })
+                  onClose() 
+                }}>
+                  <Box flexDirection={"row"}  width={"100%"} justifyContent={"space-between"}>
+                    <Text textAlign={"left"}  width={"90%"} >{remove(item.fileName)}</Text>
+                    <TouchableOpacity onPress={() => {
+                      dispatch(userRemoveFromRecents(item));
+                    }}>
+                    <Icon as={Entypo} name="cross" size="md" color="gray.400" />
+                    </TouchableOpacity>
+                  </Box>
+
+                </Actionsheet.Item>
+              )
+            })
+          }
+        </Actionsheet.Content>
+      </Actionsheet>
     </View>
   )
 }

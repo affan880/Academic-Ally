@@ -15,7 +15,7 @@ const createStyles = () =>
             flexDirection: "row",
             paddingHorizontal: 20,
             position: "relative",
-            paddingBottom: 30
+            paddingBottom: 15
         },
         body: {
             flex: 1,

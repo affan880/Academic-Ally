@@ -26,6 +26,7 @@ import PdfViewer from '../../screens/Notes/PdfViewer/pdfViewer'
 import SavedPdfViewer from '../../screens/Notes/PdfViewer/savedPdfViewer'
 import UpdateInformation from '../../screens/Profile/AccountSettings/UpdateInformation'
 import Search from '../../screens/Search/searchScreen'
+import SharedPdfViewer from '../../screens/Notes/PdfViewer/sharedPdfViewer'
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
@@ -208,6 +209,9 @@ const AppStack = () => {
                 headerShown: false,
             }} />
             <Stack.Screen name="UpdateInformation" component={UpdateInformation} options={{
+                headerShown: false,
+            }} />
+            <Stack.Screen name="SharedPdfViewer" component={SharedPdfViewer} options={{
                 headerShown: false,
             }} />
         </Stack.Navigator>

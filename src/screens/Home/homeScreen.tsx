@@ -12,6 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
 
 
 const User = require('../../assets/images/user.jpg');
@@ -42,6 +43,7 @@ const HomeScreen = (props: Props) => {
         // error reading value
       }
     }
+
     getData()
   },[])
   const userFirestoreData = useSelector((state:any) => {

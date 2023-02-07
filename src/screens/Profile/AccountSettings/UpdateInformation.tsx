@@ -63,7 +63,7 @@ const UpdateInformation = () => {
     ]
 
     const BranchData: any = [
-        { label: 'I.T', value: '1' },
+        { label: 'IT', value: '1' },
         { label: 'CSE', value: '2' },
         { label: 'ECE', value: '3' },
         { label: 'MECH', value: '4' },
@@ -100,6 +100,10 @@ const UpdateInformation = () => {
                 alignItems: "center",
           }} >
             <Avatar source={User} size={'2xl'} alignSelf={'center'} mt={10} />
+            <Text style={{ fontSize: 15, fontWeight: 'bold', marginTop: 10, color:"#000000" }} >Course: {userFirestoreData.usersData.Course}</Text>
+            <Text style={{ fontSize: 15, fontWeight: 'bold', marginTop: 10, color:"#000000" }} >Sem: {userFirestoreData.usersData.Sem}</Text>
+            <Text style={{ fontSize: 15, fontWeight: 'bold', marginTop: 10,color:"#000000" }} >Branch: {userFirestoreData.usersData.Branch}</Text>
+            <Text style={{ fontSize: 15, fontWeight: 'bold', marginTop: 10, color:"#000000" }} >Year: {userFirestoreData.usersData.Year}</Text>
         <Form validationSchema={updatevalidationSchema} innerRef={formRef} initialValues={initialValues} onSubmit={(values) =>
                     updateData(values)
               } >
