@@ -1,46 +1,116 @@
-import React, { useState } from 'react'
-import { StyleSheet, Dimensions, TextInput, View, TouchableOpacity } from 'react-native'
-import Feather from 'react-native-vector-icons/Feather'
-import { useFormikContext } from 'formik'
+import React, {useEffect, useState} from 'react';
+import {
+  StyleSheet,
+  Dimensions,
+  TextInput,
+  View,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useFormikContext} from 'formik';
+
 type Props = {
-  leftIcon: any,
-  placeholder: string,
-  handlePasswordVisibility?: any,
-  name: string
-  securuty?: boolean
-}
+  leftIcon: any;
+  placeholder: string;
+  handlePasswordVisibility?: any;
+  name: any;
+  securuty?: boolean;
+  errors?: any;
+};
 
 const Width = Dimensions.get('screen').width;
 
-export const CustomTextInput = ({ leftIcon, placeholder, handlePasswordVisibility, name }: Props) => {
-  const [passwordVisibility, setPasswordVisibility] = useState(true)
-  const { values, errors, touched, setFieldValue, setFieldTouched } = useFormikContext<any>();
+export const CustomTextInput = ({
+  leftIcon,
+  placeholder,
+  handlePasswordVisibility,
+  name,
+}: Props) => {
+  const [passwordVisibility, setPasswordVisibility] = useState(true);
+  const {values, errors, touched, setFieldValue, setFieldTouched} =
+    useFormikContext<any>();
   return (
     <View style={styles.container}>
-      <View style={[styles.input, touched[name] && errors[name] ? {
-        borderColor: '#FF2E00',
-        borderWidth: 3,
-      } : null]} >
-        <Feather name={leftIcon} size={18} color={touched[name] && errors[name] ? '#FF2E00' : '#000000'} style={{ paddingRight: 15, alignSelf: "center" }} />
-        <TextInput placeholder={placeholder} value={values[name]} onChangeText={(text) => {
-          setFieldValue(name, text)
-        }}
+      <View
+        style={[
+          styles.input,
+          touched[name] && errors[name]
+            ? {
+                borderColor: '#FF2E00',
+                borderWidth: 3,
+              }
+            : null,
+        ]}>
+        {name === 'college' ? (
+          <FontAwesome
+            size={16}
+            color={touched[name] && errors[name] ? '#FF2E00' : '#000000'}
+            style={{paddingRight: 15, alignSelf: 'center'}}
+            name={'university'}
+          />
+        ) : (
+          <Feather
+            name={leftIcon}
+            size={18}
+            color={touched[name] && errors[name] ? '#FF2E00' : '#000000'}
+            style={{paddingRight: 15, alignSelf: 'center'}}
+          />
+        )}
+        <TextInput
+          placeholder={placeholder}
+          value={values[name]}
+          onChangeText={text => {
+            setFieldValue(name, text);
+          }}
           onBlur={() => setFieldTouched(name)}
-          placeholderTextColor={touched[name] && errors[name] ? '#FF2E00' : '#808080'}
+          placeholderTextColor={
+            touched[name] && errors[name] ? '#FF2E00' : '#808080'
+          }
           style={styles.textInput}
           maxLength={50}
-          secureTextEntry={name === 'password' || name === 'confirmPassword' ? passwordVisibility : false}
+          secureTextEntry={
+            name === 'password' || name === 'confirmPassword'
+              ? passwordVisibility
+              : false
+          }
         />
-        {touched[name] && errors[name] && name !== 'password' && name !== 'confirmPassword' ? <Feather name="alert-circle" size={18} color="#FF2E00" /> : null}
-        {name === 'password' || name === 'confirmPassword' ? <TouchableOpacity onPress={() => setPasswordVisibility(!passwordVisibility)} style={{ paddingRight: 25, alignSelf: "center" }} >
-          <Feather name={passwordVisibility ? "eye" : "eye-off"} size={18} color={touched[name] && errors[name] ? "#FF2E00" : "#000000"} />
-        </TouchableOpacity> : null}
+        {touched[name] &&
+        errors[name] &&
+        name !== 'password' &&
+        name !== 'confirmPassword' ? (
+          <Feather name="alert-circle" size={18} color="#FF2E00" />
+        ) : null}
+        {name === 'password' || name === 'confirmPassword' ? (
+          <TouchableOpacity
+            onPress={() => setPasswordVisibility(!passwordVisibility)}
+            style={{paddingRight: 25, alignSelf: 'center'}}>
+            <Feather
+              name={passwordVisibility ? 'eye' : 'eye-off'}
+              size={18}
+              color={touched[name] && errors[name] ? '#FF2E00' : '#000000'}
+            />
+          </TouchableOpacity>
+        ) : null}
       </View>
+      {touched[name] && errors[name] ? (
+        <Text
+          style={{
+            color: '#FFFFFF',
+            fontSize: 12,
+            fontFamily: 'Poppins-Regular',
+            paddingLeft: 20,
+            fontWeight: 'bold',
+          }}>
+          *{errors[name]}
+        </Text>
+      ) : null}
     </View>
-  )
-}
+  );
+};
 
-export default CustomTextInput
+export default CustomTextInput;
 
 const styles = StyleSheet.create({
   input: {
@@ -52,7 +122,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     marginTop: 10,
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   container: {
     marginTop: 10,
@@ -62,6 +132,6 @@ const styles = StyleSheet.create({
     width: '78%',
     fontSize: 16,
     color: '#000000',
-    fontFamily: 'Poppins-Regular'
+    fontFamily: 'Poppins-Regular',
   },
-})
+});

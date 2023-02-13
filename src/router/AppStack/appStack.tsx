@@ -23,10 +23,8 @@ import Ionicons from "react-native-vector-icons/Ionicons"
 import NotesList from '../../screens/Notes/NotesList'
 import UploadScreen from '../../screens/Notes/uploadScreen'
 import PdfViewer from '../../screens/Notes/PdfViewer/pdfViewer'
-import SavedPdfViewer from '../../screens/Notes/PdfViewer/savedPdfViewer'
 import UpdateInformation from '../../screens/Profile/AccountSettings/UpdateInformation'
 import Search from '../../screens/Search/searchScreen'
-import SharedPdfViewer from '../../screens/Notes/PdfViewer/sharedPdfViewer'
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
@@ -51,19 +49,7 @@ const DrawerScreen: FC<IProps> = ({navigation}) => {
                         <Pressable onPress={() => {
                             navigation.dispatch(DrawerActions.openDrawer());
                         }} >
-                            <Svg
-                                width="20px"
-                                height="20px"
-                                viewBox="-2.4 -2.4 28.80 28.80"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                stroke="#fff"
-                                {...props}
-                            >
-                                <G strokeWidth={1.5}>
-                                    <Path d="M3.297 5.234a2.599 2.599 0 011.937-1.937v0a5.544 5.544 0 012.532 0v0a2.599 2.599 0 011.937 1.937v0c.195.833.195 1.7 0 2.532v0a2.599 2.599 0 01-1.937 1.937v0c-.833.195-1.7.195-2.532 0v0a2.599 2.599 0 01-1.937-1.937v0a5.545 5.545 0 010-2.532v0zM3.297 16.234a2.599 2.599 0 011.937-1.937v0a5.546 5.546 0 012.532 0v0a2.599 2.599 0 011.937 1.937v0c.195.833.195 1.7 0 2.532v0a2.599 2.599 0 01-1.937 1.937v0c-.833.195-1.7.195-2.532 0v0a2.599 2.599 0 01-1.937-1.937v0a5.545 5.545 0 010-2.532v0zM14.297 5.234a2.599 2.599 0 011.937-1.937v0a5.544 5.544 0 012.532 0v0a2.599 2.599 0 011.937 1.937v0c.195.833.195 1.7 0 2.532v0a2.599 2.599 0 01-1.937 1.937v0c-.833.195-1.7.195-2.532 0v0a2.599 2.599 0 01-1.937-1.937v0a5.546 5.546 0 010-2.532v0zM14.297 16.234a2.599 2.599 0 011.937-1.937v0a5.546 5.546 0 012.532 0v0a2.599 2.599 0 011.937 1.937v0c.195.833.195 1.7 0 2.532v0a2.599 2.599 0 01-1.937 1.937v0c-.833.195-1.7.195-2.532 0v0a2.599 2.599 0 01-1.937-1.937v0a5.546 5.546 0 010-2.532v0z" />
-                                </G>
-                            </Svg>
+                            <Feather name='menu' color={"#ffffff"} size={20} />
                         </Pressable>
                     </View>
                 ),
@@ -205,13 +191,7 @@ const AppStack = () => {
             <Stack.Screen name="PdfViewer" component={PdfViewer} options={{
                 headerShown: false,
             }} />
-            <Stack.Screen name="SavedPdfViewer" component={SavedPdfViewer} options={{
-                headerShown: false,
-            }} />
             <Stack.Screen name="UpdateInformation" component={UpdateInformation} options={{
-                headerShown: false,
-            }} />
-            <Stack.Screen name="SharedPdfViewer" component={SharedPdfViewer} options={{
                 headerShown: false,
             }} />
         </Stack.Navigator>

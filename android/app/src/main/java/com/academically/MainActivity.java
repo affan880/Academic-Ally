@@ -4,8 +4,16 @@ import android.os.Bundle;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import com.zoontek.rnbootsplash.RNBootSplash;
 
 public class MainActivity extends ReactActivity {
+
+  private static final int PERMISSION_REQUEST_CODE = 1;
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
@@ -17,8 +25,34 @@ public class MainActivity extends ReactActivity {
   }
 
   @Override
-  protected void onCreate(Bundle savedInstanceState){
-    super.onCreate(null);
+  protected void onCreate(Bundle savedInstanceState) {
+    RNBootSplash.init(this);
+    super.onCreate(savedInstanceState);
+    checkPermissions();
+  }
+
+  private void checkPermissions() {
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        != PackageManager.PERMISSION_GRANTED) {
+      requestPermissions();
+    }
+  }
+
+  private void requestPermissions() {
+    ActivityCompat.requestPermissions(this, new String[] {
+      Manifest.permission.READ_EXTERNAL_STORAGE
+    }, PERMISSION_REQUEST_CODE);
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    if (requestCode == PERMISSION_REQUEST_CODE) {
+      if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        // Permission has been granted.
+      } else {
+        // Permission has been denied.
+      }
+    }
   }
 
   /**

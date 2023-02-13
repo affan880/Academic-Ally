@@ -1,24 +1,26 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
-import { firebase } from '@react-native-firebase/auth';
+import {firebase} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {Toast, CheckIcon} from 'native-base';
 
 export const firestoreDB = () => {
   return firestore();
-}
+};
 
 const DeleteAcc = async () => {
-  console.log("Deleting user")
-  firebase.auth().currentUser.delete("syedaffan@duck.com", "affan786")
+  firebase
+    .auth()
+    .currentUser.delete(Email, Password)
     .then(() => {
-      console.log("User deleted")
+      console.log('User deleted');
     })
-    .catch((error) => {
-      console.log(error)
-    }
-    )
-}
+    .catch(error => {
+      console.log(error);
+    });
+};
 
- const createUserDocument = async (uid, Details) => {
+const createUserDocument = async (uid, Details) => {
   if (!uid) return;
   firestore()
     .collection('Users')
@@ -41,120 +43,170 @@ const DeleteAcc = async () => {
       NotesRating: [],
       NotesRatingCount: [],
       NotesReviews: [],
-      NotesBookmarked: []
+      NotesBookmarked: [],
     })
     .then(() => {
       console.log('User added!');
-    }).catch((error) => {
-      firestore().collection('Users').doc(`${uid}`).delete()
+    })
+    .catch(error => {
+      firestore().collection('Users').doc(`${uid}`).delete();
       DeleteAcc();
       console.log(error);
     });
-  
 };
 
-  
 export const createUser = async (email, password, values) => {
- auth().createUserWithEmailAndPassword(email, password).then((userCredential) => {
-   var userID = userCredential;
-   createUserDocument(userID.user.uid, values).then(() => {
-     auth().currentUser.updateProfile(
-       {
-         displayName: values.name,
-       }
-     )
-     userCredential.user.sendEmailVerification();
-   })
-   //send verification mail
+  auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then(userCredential => {
+      var userID = userCredential;
+      createUserDocument(userID.user.uid, values).then(() => {
+        auth().currentUser.updateProfile({
+          displayName: values.name,
+        });
+        userCredential.user.sendEmailVerification();
+        Toast.show({
+          title: `Welcome ${values.name}!`,
+          type: 'success',
+          placement: 'top-right',
+          backgroundColor: '#00b300',
+        });
+      });
+      //send verification mail
 
-   return userID;
- }).catch((error) => {
-    console.log("Error: ", error);
-    return error;
-})
-  .catch((error) => {
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    console.log(errorCode, errorMessage);
-    // ..
-    console.log("err")
-  }
-  );
-}
-
+      return userID;
+    })
+    .catch(error => {
+      console.log('Error: ', error);
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      const msg = errorMessage.includes(
+        'The email address is already in use by another account.',
+      );
+      if (msg) {
+        Toast.show({
+          title: 'Email already in use',
+          type: 'danger',
+        });
+      } else {
+        Toast.show({
+          title: 'Something went wrong, Please try again later',
+          type: 'danger',
+        });
+      }
+      return error;
+    })
+    .catch(error => {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+      // ..
+      console.log('err');
+    });
+};
 
 export const logIn = async (email, password) => {
-   auth().signInWithEmailAndPassword(email, password)
-  .then((userCredential) => {
-    var user = userCredential.user;
-    console.log("Success");
-  })
-  .catch((error) => {
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    console.log(errorCode, errorMessage);
-  });
-}
+  auth()
+    .signInWithEmailAndPassword(email, password)
+    .then(userCredential => {
+      var user = userCredential.user;
+      Toast.show({
+        title: `Welcome Back!`,
+        type: 'success',
+        placement: 'top-right',
+        backgroundColor: '#00b300',
+      });
+      return user;
+    })
+    .catch(error => {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      const msg = errorMessage.includes(
+        'There is no user record corresponding to this identifier. The user may have been deleted',
+      );
+      if (msg) {
+        Toast.show({
+          title: 'User not found',
+          type: 'danger',
+        });
+      } else {
+        Toast.show({
+          title: 'Incorrect Password',
+          type: 'danger',
+        });
+      }
+    });
+};
 
-export const ResendVerification = async (email,password) => {
- auth().signInWithEmailAndPassword(email, password)
-  .then((userCredential) => {
-    var user = userCredential.user;
-    userCredential.user.sendEmailVerification();
-    console.log("done");
-
-  })
-  .catch((error) => {
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    console.log(errorCode, errorMessage);
-  });
-}
-
+export const ResendVerification = async (email, password) => {
+  auth()
+    .signInWithEmailAndPassword(email, password)
+    .then(userCredential => {
+      var user = userCredential.user;
+      userCredential.user.sendEmailVerification();
+      console.log('done');
+    })
+    .catch(error => {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    });
+};
 
 export const logOut = () => {
-  auth().signOut().then(() => {
-    console.log('User signed out!');
-  });
-}
+  auth()
+    .signOut()
+    .then(() => {
+      AsyncStorage.clear();
+    });
+};
 
 export const getCurrentUser = () => {
   return auth().currentUser;
-}
+};
 
-export const forgotPassword = (email) => {
-  auth().sendPasswordResetEmail(email).then(() => {
-    console.log('Password reset email sent!');
-  })
-  .catch((error) => {
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    console.log(errorCode, errorMessage);
-  });
-}
+export const forgotPassword = email => {
+  auth()
+    .sendPasswordResetEmail(email)
+    .then(() => {
+      console.log('Password reset email sent!');
+    })
+    .catch(error => {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    });
+};
 
 //get data from firestore
 export const getFirestoreData = async (uid, updateReduxData) => {
-  await firestore().collection('Users').doc(`${uid}`).get()
-    .then((documentSnapshot) => {
+  await firestore()
+    .collection('Users')
+    .doc(`${uid}`)
+    .get()
+    .then(documentSnapshot => {
       if (documentSnapshot.exists) {
-        updateReduxData(documentSnapshot.data())
+        updateReduxData(documentSnapshot.data());
       }
-    }).catch((error) => {
+    })
+    .catch(error => {
       console.log(error);
     });
-}
-
+};
 
 export const updateFirestoreData = async (uid, data) => {
-  firestore().collection('Users').doc(`${uid}`).update(data)
+  firestore()
+    .collection('Users')
+    .doc(`${uid}`)
+    .update(data)
     .then(() => {
       // getFirestoreData(uid);
       console.log('User Data updated!');
-    }).catch((error) => {
+    })
+    .catch(error => {
       console.log(error);
     });
-}
+};
 
 export const manageBookmarks = async (item, selected, subject, status) => {
   const data = {
@@ -162,22 +214,30 @@ export const manageBookmarks = async (item, selected, subject, status) => {
     subject: subject,
     notesId: item.notesId,
     category: selected,
-  }
-  firestore().collection('Users').doc(`${getCurrentUser().uid}`).update({
-    NotesBookmarked: !status ? firebase.firestore.FieldValue.arrayUnion(data) : firebase.firestore.FieldValue.arrayRemove(data)
-  })
-}
-export const removeBookmark = async (item) => {
+  };
+  firestore()
+    .collection('Users')
+    .doc(`${getCurrentUser().uid}`)
+    .update({
+      NotesBookmarked: !status
+        ? firebase.firestore.FieldValue.arrayUnion(data)
+        : firebase.firestore.FieldValue.arrayRemove(data),
+    });
+};
+export const removeBookmark = async item => {
   const data = {
     fileName: item.fileName,
     subject: item.subject,
     notesId: item.notesId,
-    category:  item.category,
-  }
-  firestore().collection('Users').doc(`${getCurrentUser().uid}`).update({
-    NotesBookmarked: firebase.firestore.FieldValue.arrayRemove(data)
-  }).catch((error) => {
-    console.log("err",error);
-  }
-  );
-}
+    category: item.category,
+  };
+  firestore()
+    .collection('Users')
+    .doc(`${getCurrentUser().uid}`)
+    .update({
+      NotesBookmarked: firebase.firestore.FieldValue.arrayRemove(data),
+    })
+    .catch(error => {
+      console.log('err', error);
+    });
+};
