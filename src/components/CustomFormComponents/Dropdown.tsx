@@ -6,6 +6,7 @@ import {
   TextInput,
   View,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import {useFormikContext} from 'formik';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -21,6 +22,8 @@ type Props = {
   data?: any;
   width?: any;
 };
+
+const {width, height} = Dimensions.get('window');
 export const CustomDropdown = ({
   leftIcon,
   placeholder,
@@ -84,8 +87,8 @@ export const CustomDropdown = ({
             marginTop: -35,
           }}
           itemContainerStyle={{
-            height: 50,
-            justifyContent: 'center',
+            // height: 50,
+            // justifyContent: 'center',
             borderBottomWidth: 1,
             borderBottomColor: '#e5e5e5',
           }}
@@ -181,12 +184,13 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   placeholderStyle: {
-    fontSize: 14,
+    fontSize: width * 0.035,
     color: '#808080',
   },
   selectedTextStyle: {
     fontSize: 16,
     color: '#000000',
+    flexWrap: 'nowrap',
   },
   iconStyle: {
     width: 25,
@@ -197,5 +201,6 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 16,
     color: '#000000',
+    fontFamily: 'Poppins-Regular',
   },
 });

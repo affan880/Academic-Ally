@@ -21,6 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
+import {Toast} from 'native-base';
 
 const Search = () => {
   const styles = useMemo(() => createStyles(), []);
@@ -87,7 +88,6 @@ const Search = () => {
   const limitedData = filteredData?.slice(0, limit);
 
   const selectedSubject = async (item: any) => {
-    console.log('item');
     try {
       const userFirestoreData: any = await firestore()
         .collection('Users')
@@ -120,7 +120,10 @@ const Search = () => {
         subject: item.subject,
       });
     } catch (error) {
-      console.log(error);
+      Toast.show({
+        title: 'Please check your internet connection',
+        duration: 3000,
+      });
     }
   };
   return (

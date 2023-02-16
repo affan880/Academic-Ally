@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import NavigationLayout from '../../interfaces/navigationLayout';
 import createStyles from './styles';
 import {manageBookmarks} from '../../Modules/auth/firebase/firebase';
+import {userAddToRecentsStart} from '../../redux/reducers/usersRecentPdfsManager';
 import {
   userAddBookMarks,
   userRemoveBookMarks,
@@ -127,6 +128,7 @@ const NotesList = (props: Props) => {
                     selected: selected,
                     subject: subject,
                   });
+                  dispatch(userAddToRecentsStart(item));
                 }}>
                 <View style={styles.containerBox}>
                   <View style={styles.containerText}>

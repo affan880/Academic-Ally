@@ -12,7 +12,7 @@ import QuickAccess from '../../components/CustomFormComponents/QuickAccess/Quick
 import Recommendation from '../../components/CustomFormComponents/Recommendation/Recommendation';
 import ScreenLayout from '../../interfaces/screenLayout';
 import {useSelector, useDispatch} from 'react-redux';
-import usersData, {setUsersData} from '../../redux/reducers/usersData';
+import {setUsersData, setUsersDataLoaded} from '../../redux/reducers/usersData';
 import firestore from '@react-native-firebase/firestore';
 import auth, {firebase} from '@react-native-firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,7 +20,11 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {setSubjectsList} from '../../redux/reducers/subjectsList';
+import {
+  setSubjectsList,
+  setListLoaded,
+} from '../../redux/reducers/subjectsList';
+import {Toast} from 'native-base';
 
 const User = require('../../assets/images/user.jpg');
 
@@ -54,8 +58,10 @@ const HomeScreen = (props: Props) => {
     useNavigation<StackNavigationProp<MyStackParamList, 'Notes'>>();
   const dispatch = useDispatch();
   const userFirestoreData = useSelector((state: any) => state.usersData);
+  const userDataLoaded = useSelector(
+    (state: any) => state.usersData.usersDataLoaded,
+  );
   const subjectsList = useSelector((state: any) => state.subjectsList);
-
   const handleDynamicLink = (link: any) => {
     const parts = link?.url.split('/');
     const userData = {
@@ -96,6 +102,15 @@ const HomeScreen = (props: Props) => {
       .get()
       .then((data: any) => {
         dispatch(setUsersData(data?.data()));
+        dispatch(setUsersDataLoaded(true));
+      })
+      .catch(error => {
+        console.log('error ar homescreen.js', error);
+        dispatch(setUsersDataLoaded(false));
+        Toast.show({
+          title: 'Check your internet connection and try again later',
+          duration: 3000,
+        });
       });
 
     const getData = async () => {
@@ -103,6 +118,7 @@ const HomeScreen = (props: Props) => {
         const list: any = await AsyncStorage.getItem('subjectsList');
         if (list?.length === 0 && list !== null) {
           dispatch(setSubjectsList(JSON.parse(list)));
+          dispatch(setListLoaded(true));
         } else {
           firestore()
             .collection('QueryList')
@@ -113,6 +129,14 @@ const HomeScreen = (props: Props) => {
             .then((doc: any) => {
               const subjectsList = doc.data().list;
               dispatch(setSubjectsList(subjectsList));
+              dispatch(setListLoaded(true));
+            })
+            .catch(error => {
+              dispatch(setListLoaded(false));
+              Toast.show({
+                title: 'Check your internet connection and try again later',
+                duration: 3000,
+              });
             });
         }
       } catch (error) {
@@ -124,7 +148,7 @@ const HomeScreen = (props: Props) => {
 
     const unsubscribe = dynamicLinks().onLink(handleDynamicLink);
     return () => unsubscribe();
-  }, [usersData]);
+  }, []);
 
   return (
     <ScreenLayout>

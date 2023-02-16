@@ -27,6 +27,7 @@ import {
   Box,
   Center,
   HStack,
+  Toast,
 } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
@@ -112,8 +113,8 @@ const PdfViewer = () => {
     }
   };
   const recentsList = useSelector(
-    (state: any) => state.userRecentPdfs,
-  ).RecentViews;
+    (state: any) => state.userRecentPdfs.RecentViews,
+  );
 
   useEffect(() => {
     setUserRecents(recentsList);
@@ -139,16 +140,12 @@ const PdfViewer = () => {
     createDynamicLink();
   };
 
-  useEffect(() => {
-    dispatch(userAddToRecentsStart(notesData));
-  }, []);
-
   function remove(str: string) {
     if (str.includes('(oufastupdates.com)') || str.includes('.pdf')) {
       const text = str.replace(/\(oufastupdates.com\)|\.pdf/g, '');
       return text.slice(0, 35) + '...';
     }
-    if (str.length > 15) {
+    if (str?.length > 15) {
       return str.slice(0, 5) + '...';
     }
     return str;
@@ -178,7 +175,7 @@ const PdfViewer = () => {
               fontSize: 18,
               fontWeight: 'bold',
               color: '#ffffff',
-              width: '30%',
+              width: '50%',
               paddingVertical: 5,
               textAlign: 'right',
               left: 2,
@@ -235,7 +232,11 @@ const PdfViewer = () => {
               }}
               // page={JSON.parse(currentPage)}
               onError={error => {
-                console.log(error);
+                Toast.show({
+                  title: 'Error Loading Pdf',
+                  description: 'Please try again later or reload the page',
+                  duration: 3000,
+                });
               }}
               // onPressLink={(uri) => {
               //   console.log(`Link pressed: ${uri}`);
@@ -339,7 +340,7 @@ const PdfViewer = () => {
               </Text>
             </TouchableOpacity>
           </HStack>
-          {userRecents.length > 0 ? (
+          {userRecents?.length > 0 ? (
             userRecents.map((item: any, index: any) => {
               return (
                 <Actionsheet.Item

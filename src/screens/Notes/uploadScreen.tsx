@@ -184,7 +184,12 @@ const UploadPDF = () => {
       setPdf({uri: result.fileCopyUri, name: result.name});
       return result;
     } catch (error) {
-      console.log(error);
+      Toast.show({
+        title: 'Error',
+        description: 'Something went wrong. Please try again.',
+        placement: 'bottom',
+        duration: 2000,
+      });
     }
   };
 

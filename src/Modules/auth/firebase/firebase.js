@@ -44,6 +44,10 @@ const createUserDocument = async (uid, Details) => {
       NotesRatingCount: [],
       NotesReviews: [],
       NotesBookmarked: [],
+      NotesReported: [],
+      NotesReportedReason: [],
+      University: Details.university,
+      College: Details.college,
     })
     .then(() => {
       console.log('User added!');

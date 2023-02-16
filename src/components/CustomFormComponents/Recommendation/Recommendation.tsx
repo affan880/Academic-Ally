@@ -8,6 +8,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
+import {Toast} from 'native-base';
 
 type MyStackParamList = {
   SubjectResources: {userData: object; notesData: string; subject: string};
@@ -27,6 +28,7 @@ const Recommendation = (props: Props) => {
   const [initial, setInital] = useState('');
   const navigation = useNavigation<MyScreenNavigationProp>();
   const [list, setList] = useState<any[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   async function fetchData() {
     try {
@@ -78,21 +80,25 @@ const Recommendation = (props: Props) => {
                     self.indexOf(item) === index,
                 ),
               );
+              setLoaded(true);
             });
         });
     } catch (error) {
-      console.log(error);
+      Toast.show({
+        title: 'Error loaidng data',
+      });
     }
   }
 
   useEffect(() => {
     setList([]);
+    setLoaded(false);
     fetchData();
   }, [userData]);
 
   return (
     <View style={styles.body}>
-      {list.length > 1 ? (
+      {loaded ? (
         list.map((item: any, index) => {
           return (
             <View style={styles.reccomendationContainer} key={index}>

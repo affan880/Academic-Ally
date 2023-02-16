@@ -8,28 +8,20 @@ export const createUserDataSlice = createSlice({
   },
   reducers: {
     userAddToRecentsStart: (state, action) => {
-      //dont add object if it already exists with the notesId
-      if (
-        state.RecentViews.filter(
-          recents => recents.notesId === action.payload.notesId,
-        ).length === 0
-      ) {
-        state.RecentViews.unshift(action.payload);
-        AsyncStorage.setItem(
-          'RecentsManagement',
-          JSON.stringify(state.RecentViews),
-        );
-      }
-      //if it is present then remove it and add it to the top of the array
-      else {
+      if (state.RecentViews?.length > 0) {
+        state.RecentViews = [action.payload, ...state.RecentViews];
+
         state.RecentViews = state.RecentViews.filter(
-          recents => recents.notesId !== action.payload.notesId,
+          (recents, index, self) =>
+            index === self.findIndex(t => t.notesId === recents.notesId),
         );
-        state.RecentViews.unshift(action.payload);
+
         AsyncStorage.setItem(
           'RecentsManagement',
           JSON.stringify(state.RecentViews),
         );
+      } else {
+        state.RecentViews = [action.payload];
       }
     },
 

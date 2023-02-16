@@ -61,7 +61,6 @@ const Bookmark = () => {
     const getData = async () => {
       const storedValue: any = await AsyncStorage.getItem('userBookMarks');
       if (listData.length === 0 && storedValue?.length !== 0) {
-        console.log('storedValue', storedValue);
         const list = await JSON.parse(storedValue);
         dispatch(setBookmarks(list));
       }

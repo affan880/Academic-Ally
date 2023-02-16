@@ -6,11 +6,14 @@ export const createUserDataSlice = createSlice({
   name: 'BookmarkManagement',
   initialState: {
     userBookMarks: [],
+    bookMarksLoaded: false,
   },
   reducers: {
     setBookmarks: (state, action) => {
       state.userBookMarks = action.payload;
-      console.log('state.userBookMarks is being called');
+    },
+    setBookmarksLoaded: (state, action) => {
+      state.bookMarksLoaded = action.payload;
     },
     userAddBookMarks: (state, action) => {
       state.userBookMarks = [...state.userBookMarks, action.payload];
@@ -44,7 +47,11 @@ export const createUserDataSlice = createSlice({
   },
 });
 
-export const {userAddBookMarks, userRemoveBookMarks, setBookmarks} =
-  createUserDataSlice.actions;
+export const {
+  userAddBookMarks,
+  userRemoveBookMarks,
+  setBookmarks,
+  setBookmarksLoaded,
+} = createUserDataSlice.actions;
 
 export default createUserDataSlice.reducer;

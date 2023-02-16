@@ -35,7 +35,6 @@ interface IProps {
 
 const LoginScreen: React.FC<IProps> = ({navigation}) => {
   const validEmail = useSelector((state: any) => state.usersData.validEmail);
-  console.log('validEmail', validEmail);
   const formRef: any = useRef();
   const styles = useMemo(() => createStyles(), []);
   const initialValues = {
