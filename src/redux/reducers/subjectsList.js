@@ -6,6 +6,8 @@ export const createUserDataSlice = createSlice({
   initialState: {
     list: [],
     listLoaded: false,
+    reccommendSubjects: [],
+    reccommendSubjectsLoaded: false,
   },
   reducers: {
     setSubjectsList: (state, action) => {
@@ -15,9 +17,24 @@ export const createUserDataSlice = createSlice({
     setListLoaded: (state, action) => {
       state.listLoaded = action.payload;
     },
+    setReccommendSubjects: (state, action) => {
+      state.reccommendSubjects = action.payload;
+      AsyncStorage.setItem(
+        'reccommendSubjects',
+        JSON.stringify(state.reccommendSubjects),
+      );
+    },
+    setReccommendSubjectsLoaded: (state, action) => {
+      state.reccommendSubjectsLoaded = action.payload;
+    },
   },
 });
 
-export const {setSubjectsList, setListLoaded} = createUserDataSlice.actions;
+export const {
+  setSubjectsList,
+  setListLoaded,
+  setReccommendSubjects,
+  setReccommendSubjectsLoaded,
+} = createUserDataSlice.actions;
 
 export default createUserDataSlice.reducer;

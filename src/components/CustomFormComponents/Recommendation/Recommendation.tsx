@@ -9,6 +9,12 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import {Toast} from 'native-base';
+import {
+  setReccommendSubjects,
+  setReccommendSubjectsLoaded,
+} from '../../../redux/reducers/subjectsList';
+import {useDispatch} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type MyStackParamList = {
   SubjectResources: {userData: object; notesData: string; subject: string};
@@ -24,11 +30,28 @@ const Recommendation = (props: Props) => {
     return state.usersData;
   });
   const styles = useMemo(() => createStyles(), []);
-  const [subjectList, setSubjectList] = useState([]);
-  const [initial, setInital] = useState('');
   const navigation = useNavigation<MyScreenNavigationProp>();
   const [list, setList] = useState<any[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const dispatch = useDispatch();
+
+  //if reccommendSubjects key exists in async storage then load from there
+  //else load from firestore and save to async storage
+  //and after loading in background check if any new subjects are added
+  //if yes then update the async storage and redux store
+
+  useEffect(() => {
+    AsyncStorage.getItem('reccommendSubjects').then(data => {
+      if (data && data !== '[]') {
+        setList(JSON.parse(data));
+        setLoaded(true);
+      } else {
+        setList([]);
+        setLoaded(false);
+        fetchData();
+      }
+    });
+  }, [userData]);
 
   async function fetchData() {
     try {
@@ -67,10 +90,10 @@ const Recommendation = (props: Props) => {
                   .then(item => {
                     updatedList.push({
                       subjectName: items.subjectName,
-                      notes: item.docs[0]?.data().resources,
-                      otherResources: item.docs[1]?.data().resources,
-                      questionPapers: item.docs[2]?.data().resources,
-                      syllabus: item.docs[3]?.data().resources,
+                      notes: item.docs[0]?.data().list,
+                      otherResources: item.docs[1]?.data().list,
+                      questionPapers: item.docs[2]?.data().list,
+                      syllabus: item.docs[3]?.data().list,
                     });
                   });
               }
@@ -80,6 +103,8 @@ const Recommendation = (props: Props) => {
                     self.indexOf(item) === index,
                 ),
               );
+              dispatch(setReccommendSubjects(updatedList));
+              dispatch(setReccommendSubjectsLoaded(true));
               setLoaded(true);
             });
         });
@@ -90,11 +115,11 @@ const Recommendation = (props: Props) => {
     }
   }
 
-  useEffect(() => {
-    setList([]);
-    setLoaded(false);
-    fetchData();
-  }, [userData]);
+  // useEffect(() => {
+  //   setList([]);
+  //   setLoaded(false);
+  //   fetchData();
+  // }, [userData]);
 
   return (
     <View style={styles.body}>

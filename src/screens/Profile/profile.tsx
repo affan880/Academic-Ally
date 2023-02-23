@@ -48,7 +48,7 @@ const Profile = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.headerContainer}>
+      <View style={styles.headerContainer}>
         <View
           style={{
             flexDirection: 'row',
@@ -66,7 +66,7 @@ const Profile = () => {
         <Avatar source={User} size={'2xl'} alignSelf={'center'} mt={10} />
         <Text style={styles.name}>{userFirestoreData.usersData.Name}</Text>
         <Text style={styles.email}>{userFirestoreData.usersData.Email}</Text>
-      </TouchableOpacity>
+      </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>
           <ScrollView showsVerticalScrollIndicator={false}>

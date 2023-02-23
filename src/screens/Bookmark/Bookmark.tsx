@@ -58,15 +58,22 @@ const Bookmark = () => {
   const navigation = useNavigation<pdfViewer>();
 
   useEffect(() => {
-    const getData = async () => {
-      const storedValue: any = await AsyncStorage.getItem('userBookMarks');
-      if (listData.length === 0 && storedValue?.length !== 0) {
-        const list = await JSON.parse(storedValue);
+    AsyncStorage.getItem('userBookMarks').then(data => {
+      if (data && data !== '[]') {
+        const list = JSON.parse(data);
         dispatch(setBookmarks(list));
       }
-    };
-    getData();
+    });
   }, []);
+  function remove(str: string) {
+    if (str.includes('(oufastupdates.com)') || str.includes('.pdf')) {
+      let text = str.replace(/\(oufastupdates.com\)|\.pdf/g, '');
+      if (text.length > 15) {
+        return text.substring(0, 25) + '...';
+      }
+      return str;
+    }
+  }
 
   useEffect(() => {
     const getListData = async () => {
@@ -166,16 +173,19 @@ const Bookmark = () => {
                   alignItems: 'flex-start',
                   paddingLeft: 10,
                 }}>
-                <Text style={styles.subjectName}>{item.subject}</Text>
+                <Text style={styles.fileName}>{remove(item.fileName)}</Text>
                 <Text
                   style={{
-                    fontSize: 16,
+                    fontSize: 12,
                     color: '#161719',
-                    fontWeight: 'bold',
-                  }}>
-                  {item.category.charAt(0).toUpperCase() +
-                    item.category.slice(1)}
+                  }}
+                  fontWeight={500}>
+                  {item?.category === 'otherResources'
+                    ? 'Other Resources'
+                    : item?.category?.charAt(0).toUpperCase() +
+                      item?.category?.slice(1)}
                 </Text>
+                <Text style={styles.subjectName}>{item?.subject}</Text>
               </Box>
             </VStack>
           </HStack>
@@ -216,14 +226,9 @@ const Bookmark = () => {
   return listData?.length > 0 ? (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Ionicons
-          name="chevron-back-outline"
-          size={20}
-          color="#ffffff"
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Bookmarks</Text>
+        </View>
       </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>

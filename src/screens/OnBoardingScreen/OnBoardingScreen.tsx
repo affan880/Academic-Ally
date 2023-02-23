@@ -14,8 +14,9 @@ import {
   SECONDONBOARDINGSCREEN,
   THIRDONBOARDINGSCREEN,
 } from '../../assets';
-const Bar_Height = StatusBar.currentHeight;
+const Bar_Height: any = StatusBar.currentHeight;
 const Full_Screen_Height = Dimensions.get('screen').height;
+const Full_Screen_Width = Dimensions.get('screen').width;
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
@@ -50,6 +51,21 @@ const OnBoardingScreen: FC<IProps> = ({navigation}) => {
             Skip
           </Text>
         }
+        // DoneButtonComponent={() => (
+        //   <Text
+        //     style={{
+        //       fontSize: 16,
+        //       fontWeight: 'bold',
+        //       width: 50,
+        //     }}>
+        //     Done
+        //   </Text>
+        // )}
+        imageContainerStyles={{
+          marginTop: 0,
+          marginBottom: 0,
+          height: Full_Screen_Height / 1.5 - Bar_Height - 200,
+        }}
         pages={[
           {
             backgroundColor: '#6360FF',
@@ -57,26 +73,25 @@ const OnBoardingScreen: FC<IProps> = ({navigation}) => {
               <Image
                 source={THIRDONBOARDINGSCREEN}
                 style={{
-                  width: 300,
-                  height: 300,
+                  width: Full_Screen_Width - 100,
+                  height: Full_Screen_Height / 1.5 - Bar_Height - 200,
                   resizeMode: 'contain',
                 }}
               />
             ),
             titleStyles: {
               color: '#fff',
-              fontSize: 32,
+              fontSize: 26,
               fontWeight: 'bold',
               textAlign: 'center',
               marginTop: 20,
+              paddingHorizontal: 10,
             },
             subTitleStyles: {
               color: '#fff',
               fontSize: 18,
-              fontWeight: 'bold',
+              fontWeight: '700',
               textAlign: 'center',
-              marginTop: 0,
-              paddingHorizontal: 10,
             },
             title: 'Academic Hub!',
             subtitle:
@@ -88,8 +103,8 @@ const OnBoardingScreen: FC<IProps> = ({navigation}) => {
               <Image
                 source={SECONDONBOARDINGSCREEN}
                 style={{
-                  width: 300,
-                  height: 300,
+                  width: Full_Screen_Width - 100,
+                  height: Full_Screen_Height / 1.5 - Bar_Height - 200,
                   resizeMode: 'contain',
                 }}
               />
@@ -105,7 +120,7 @@ const OnBoardingScreen: FC<IProps> = ({navigation}) => {
             title: 'Effortlessly Manage Your Notes and Resources',
             titleStyles: {
               color: '#fff',
-              fontSize: 30,
+              fontSize: 26,
               fontWeight: 'bold',
               textAlign: 'center',
               marginTop: 20,
@@ -120,8 +135,8 @@ const OnBoardingScreen: FC<IProps> = ({navigation}) => {
               <Image
                 source={FIRSTONBOARDINGSCREEN}
                 style={{
-                  width: 300,
-                  height: 300,
+                  width: Full_Screen_Width - 100,
+                  height: Full_Screen_Height / 1.5 - Bar_Height - 200,
                   resizeMode: 'contain',
                 }}
               />
@@ -129,7 +144,7 @@ const OnBoardingScreen: FC<IProps> = ({navigation}) => {
             title: 'One Place for All Your Study Needs',
             titleStyles: {
               color: '#fff',
-              fontSize: 30,
+              fontSize: 26,
               fontWeight: 'bold',
               textAlign: 'center',
               marginTop: 20,

@@ -89,12 +89,13 @@ const PdfViewer = () => {
   const {isOpen, onOpen, onClose} = useDisclose();
   const {userData} = route.params;
   const {notesData} = route.params;
+  const {selected} = route.params;
   const [pageNo, setPageNo] = useState(0);
   const [loading, setLoading] = useState(true);
   const source = {
     uri: `https://drive.google.com/u/0/uc?id=${notesData.notesId}`,
     cache: true,
-    expiration: 60 * 120,
+    expiration: 60 * 60 * 24 * 7,
   };
   const styles = createStyles();
   const pdfRef = useRef(null);
@@ -106,7 +107,7 @@ const PdfViewer = () => {
     (state: any) => state.userBookmarkManagement,
   ).userBookMarks;
   const BookmarkStatus = (item: any) => {
-    if (userBookmarks.some((bookmark: any) => bookmark.notesId === item)) {
+    if (userBookmarks?.some((bookmark: any) => bookmark.notesId === item)) {
       return true;
     } else {
       return false;
@@ -123,8 +124,8 @@ const PdfViewer = () => {
   async function createDynamicLink() {
     const link = await dynamicLinks().buildShortLink(
       {
-        link: `https://academically.com/${notesData.category}/${userData.Course}/${userData.Branch}/${userData.Sem}/${notesData.subject}/${notesData.notesId}`,
-        domainUriPrefix: 'https://academicallyou.page.link',
+        link: `https://academically.com/${selected}/${userData.Course}/${userData.Branch}/${userData.Sem}/${notesData.subject}/${notesData.notesId}`,
+        domainUriPrefix: 'https://academicallyapp.page.link',
         android: {
           packageName: 'com.academically',
         },
@@ -132,7 +133,9 @@ const PdfViewer = () => {
       dynamicLinks.ShortLinkType.SHORT,
     );
     Share.share({
-      message: `I just discovered some amazing ${userData.Course} ${userData.Sem}th semester Big Data notes on Academic Ally! Check them out 📚! ${link}`,
+      title: `${notesData.subject} ${selected} `,
+      message: `I just discovered some amazing ${userData.Course} ${userData.Sem}th semester ${notesData.subject} on Academic Ally! Check them out 📚!
+      ${link}`,
     });
   }
 
@@ -278,7 +281,7 @@ const PdfViewer = () => {
                           fileName: notesData.fileName,
                           subject: notesData.subject,
                           notesId: notesData.notesId,
-                          category: notesData.category,
+                          category: selected,
                           Course: userData.Course,
                           Branch: userData.Branch,
                           Sem: userData.Sem,
@@ -289,12 +292,12 @@ const PdfViewer = () => {
                           fileName: notesData.fileName,
                           subject: notesData.subject,
                           notesId: notesData.notesId,
-                          category: notesData.category,
+                          category: selected,
                         }),
                       );
                   manageBookmarks(
                     notesData,
-                    notesData.category,
+                    selected,
                     notesData.subject,
                     status,
                   );
@@ -351,7 +354,7 @@ const PdfViewer = () => {
                     navigation.navigate('PdfViewer', {
                       userData: userData,
                       notesData: item,
-                      selected: notesData.category,
+                      selected: selected,
                       subject: notesData.subject,
                     });
                     onClose();

@@ -6,6 +6,7 @@ const createStyles = () =>
     container: {
       flex: 1,
       backgroundColor: '#6360FF',
+      marginBottom: 70,
     },
     headerContainer: {
       height: height * 0.15,
@@ -51,6 +52,7 @@ const createStyles = () =>
       paddingHorizontal: 10,
       marginVertical: 10,
       alignSelf: 'center',
+      color: '#000000',
     },
     searchIcon: {
       width: 20,
@@ -166,6 +168,17 @@ const createStyles = () =>
       fontWeight: 'bold',
       color: '#161719',
       textAlign: 'center',
+    },
+    headerText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#FFFFFF',
+      textAlign: 'center',
+      paddingLeft: 5,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
     },
   });
 

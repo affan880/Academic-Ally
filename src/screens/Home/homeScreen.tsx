@@ -180,13 +180,13 @@ const HomeScreen = (props: Props) => {
                   </Text>
                 </View>
               </View>
-              <TouchableOpacity>
+              {/* <TouchableOpacity>
                 <Ionicons
                   name="ios-notifications-outline"
                   color={'#ffffff'}
                   size={20}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </View>

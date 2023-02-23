@@ -15,6 +15,7 @@ import {Syllabus, Notes, Qp, OtherRes} from '../../assets/images/icons';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userAddToRecents} from '../../redux/reducers/usersRecentPdfsManager';
+import LottieView from 'lottie-react-native';
 
 type RootStackParamList = {
   Home: {
@@ -76,7 +77,10 @@ const NotesScreen = () => {
   const navigation = useNavigation<MyScreenNavigationProp>();
   const dispatch = useDispatch();
   const recentViews = useSelector((state: any) => state.userRecentPdfs);
-  // console.log('recentViews', recentViews);
+  const [loading, setLoading] = useState(false);
+
+  const subjectTitle =
+    subject.length > 20 ? subject.slice(0, 20) + '...' : subject;
 
   useEffect(() => {
     const getRecents = async () => {
@@ -90,8 +94,31 @@ const NotesScreen = () => {
     getRecents();
   }, []);
 
-  return (
-    <NavigationLayout rightIconFalse={true}>
+  function handleNavigation(category: string) {
+    setSelected(category);
+    setLoading(true);
+    notesData[category]?.length > 0
+      ? (navigation.navigate('NotesList', {
+          userData: userData,
+          notesData: notesData,
+          selected: category,
+          subject: subject,
+        }),
+        setLoading(false))
+      : (navigation.navigate('UploadScreen', {
+          userData: userData,
+          notesData: notesData,
+          selected: category,
+          subject: subject,
+        }),
+        setLoading(false));
+  }
+
+  return !loading ? (
+    <NavigationLayout rightIconFalse={true} title={subjectTitle}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Resources</Text>
+      </View>
       <View style={styles.categoryBtnsContainer}>
         <View>
           {notesData?.syllabus?.length > 0 ? (
@@ -105,7 +132,9 @@ const NotesScreen = () => {
                 setSyllabusStyle(true);
                 setQpStyle(false);
                 setOtherResStyle(false);
+                setLoading(true);
                 setSelected('syllabus');
+                handleNavigation('syllabus');
               }}>
               <Syllabus />
               <Text style={styles.btnText}>Syllabus</Text>
@@ -121,7 +150,9 @@ const NotesScreen = () => {
                 setSyllabusStyle(true);
                 setQpStyle(false);
                 setOtherResStyle(false);
+                setLoading(true);
                 setSelected('syllabus');
+                handleNavigation('syllabus');
               }}>
               <Syllabus />
               <Text style={styles.btnText}>Syllabus</Text>
@@ -140,7 +171,9 @@ const NotesScreen = () => {
                 setSyllabusStyle(false);
                 setQpStyle(false);
                 setOtherResStyle(false);
+                setLoading(true);
                 setSelected('notes');
+                handleNavigation('notes');
               }}>
               <Notes />
               <Text style={styles.btnText}>Notes</Text>
@@ -156,7 +189,9 @@ const NotesScreen = () => {
                 setSyllabusStyle(false);
                 setQpStyle(false);
                 setOtherResStyle(false);
+                setLoading(true);
                 setSelected('notes');
+                handleNavigation('notes');
               }}>
               <Notes />
               <Text style={styles.btnText}>Notes</Text>
@@ -175,7 +210,9 @@ const NotesScreen = () => {
                 setSyllabusStyle(false);
                 setQpStyle(true);
                 setOtherResStyle(false);
+                setLoading(true);
                 setSelected('questionPapers');
+                handleNavigation('questionPapers');
               }}>
               <Qp />
               <Text style={styles.btnText}>QP</Text>
@@ -191,7 +228,9 @@ const NotesScreen = () => {
                 setSyllabusStyle(false);
                 setQpStyle(true);
                 setOtherResStyle(false);
+                setLoading(true);
                 setSelected('questionPapers');
+                handleNavigation('questionPapers');
               }}>
               <Qp />
               <Text style={styles.btnText}>QP</Text>
@@ -210,7 +249,9 @@ const NotesScreen = () => {
                 setSyllabusStyle(false);
                 setQpStyle(false);
                 setOtherResStyle(true);
+                setLoading(true);
                 setSelected('otherResources');
+                handleNavigation('otherResources');
               }}>
               <OtherRes />
               <Text style={styles.btnText}>Other Resources</Text>
@@ -226,7 +267,9 @@ const NotesScreen = () => {
                 setSyllabusStyle(false);
                 setQpStyle(false);
                 setOtherResStyle(true);
+                setLoading(true);
                 setSelected('otherResources');
+                handleNavigation('otherResources');
               }}>
               <OtherRes />
               <Text style={styles.btnText}>Other Resources</Text>
@@ -234,7 +277,7 @@ const NotesScreen = () => {
           )}
         </View>
       </View>
-      <View style={styles.selectBtn}>
+      {/* <View style={styles.selectBtn}>
         <NavBtn
           title={
             selected === ''
@@ -268,8 +311,28 @@ const NotesScreen = () => {
                 });
           }}
         />
-      </View>
+      </View> */}
     </NavigationLayout>
+  ) : (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+      }}>
+      <LottieView
+        source={require('../../assets/lottie/loading-doc.json')}
+        autoPlay
+        loop
+      />
+      <LottieView
+        style={{position: 'absolute', bottom: 0, marginTop: 300}}
+        source={require('../../assets/lottie/loading-text.json')}
+        autoPlay
+        loop
+      />
+    </View>
   );
 };
 

@@ -20,6 +20,7 @@ const createStyles = () =>
     },
     rocketIcon: {
       width: width * 0.6,
+      height: height * 0.35,
       resizeMode: 'contain',
       alignSelf: 'center',
     },

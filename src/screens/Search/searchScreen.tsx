@@ -30,6 +30,7 @@ const Search = () => {
   const [subjectListDetail, setSubjectListDetail] = useState(list);
   const [limit, setLimit] = useState(10);
   const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   type MyStackParamList = {
     SubjectResources: {userData: object; notesData: any; subject: string};
@@ -88,6 +89,7 @@ const Search = () => {
   const limitedData = filteredData?.slice(0, limit);
 
   const selectedSubject = async (item: any) => {
+    setLoading(true);
     try {
       const userFirestoreData: any = await firestore()
         .collection('Users')
@@ -103,13 +105,13 @@ const Search = () => {
         .collection(item.subject)
         .get();
       const notesData = {
-        notes: data?.docs[0]?.data()?.resources || [],
-        otherResources: data?.docs[1]?.data()?.resources || [],
-        questionPapers: data?.docs[2]?.data()?.resources || [],
-        syllabus: data?.docs[3]?.data()?.resources || [],
+        notes: data?.docs[0]?.data()?.list || [],
+        otherResources: data?.docs[1]?.data()?.list || [],
+        questionPapers: data?.docs[2]?.data()?.list || [],
+        syllabus: data?.docs[3]?.data()?.list || [],
         subjectName: item.subject,
       };
-
+      setLoading(false);
       navigation.navigate('SubjectResources', {
         userData: {
           Course: userFirestoreData.data().Course,
@@ -124,24 +126,24 @@ const Search = () => {
         title: 'Please check your internet connection',
         duration: 3000,
       });
+      setLoading(false);
     }
   };
-  return (
+  return !loading ? (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Ionicons
-          name="chevron-back-outline"
-          size={20}
-          color="#ffffff"
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
+        <View style={styles.header}>
+          <Ionicons name="search-circle-sharp" size={30} color="#FFFFFF" />
+          <Text style={styles.headerText}>Explore</Text>
+        </View>
       </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>
           <ScrollView
             showsVerticalScrollIndicator={false}
+            onScrollAnimationEnd={() => {
+              setLimit(limit + 6);
+            }}
             onMomentumScrollEnd={({nativeEvent}) => {
               if (
                 nativeEvent.contentOffset.y >=
@@ -157,6 +159,7 @@ const Search = () => {
                   value={searchTerm}
                   onChangeText={text => setSearchTerm(text)}
                   placeholder="Search"
+                  placeholderTextColor={'#000000'}
                   style={styles.searchInput}
                 />
                 <Feather
@@ -257,6 +260,26 @@ const Search = () => {
           </ScrollView>
         </View>
       </View>
+    </View>
+  ) : (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+      }}>
+      <LottieView
+        source={require('../../assets/lottie/loading-doc.json')}
+        autoPlay
+        loop
+      />
+      <LottieView
+        style={{position: 'absolute', bottom: 0, marginTop: 300}}
+        source={require('../../assets/lottie/loading-text.json')}
+        autoPlay
+        loop
+      />
     </View>
   );
 };

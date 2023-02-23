@@ -81,7 +81,7 @@ const UploadPDF = () => {
           }),
         };
         firestore()
-          .collection('usersUploads')
+          .collection('UsersUploads')
           .doc('OU')
           .collection(userData.Course)
           .doc(userData.Branch)
@@ -94,7 +94,7 @@ const UploadPDF = () => {
             if (docSnapshot?.exists) {
               // Update the existing array
               firestore()
-                .collection('usersUploads')
+                .collection('UsersUploads')
                 .doc('OU')
                 .collection(userData.Course)
                 .doc(userData.Branch)
@@ -106,7 +106,7 @@ const UploadPDF = () => {
             } else {
               // Create a new array
               firestore()
-                .collection('usersUploads')
+                .collection('UsersUploads')
                 .doc('OU')
                 .collection(userData.Course)
                 .doc(userData.Branch)
@@ -181,6 +181,7 @@ const UploadPDF = () => {
         type: [DocumentPicker.types.pdf],
         copyTo: 'cachesDirectory',
       });
+      console.log(result);
       setPdf({uri: result.fileCopyUri, name: result.name});
       return result;
     } catch (error) {
@@ -198,10 +199,27 @@ const UploadPDF = () => {
       await requestPermission();
       const pdfs = await pickPDF();
       setPdfSize(pdfs?.size);
-      if (pdfs && pdf?.uri) {
-        setModalVisible(!modalVisible);
-        uploadPDF();
+      if (pdf === undefined) {
+        Toast.show({
+          title: 'Error',
+          description: 'Please select a PDF file.',
+          placement: 'bottom',
+          duration: 2000,
+        });
+        return;
       }
+      if (pdfSize > 10000000) {
+        Toast.show({
+          title: 'Error',
+          description: 'File size should be less than 10MB.',
+          placement: 'bottom',
+          duration: 2000,
+        });
+        return;
+      }
+
+      setModalVisible(!modalVisible);
+      uploadPDF();
     } catch (err) {
       console.log(err);
     }

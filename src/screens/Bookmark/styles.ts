@@ -139,8 +139,8 @@ const createStyles = () =>
       shadowColor: '#000',
     },
     subjectName: {
-      fontSize: 16,
-      fontWeight: '400',
+      fontSize: 14,
+      fontWeight: '600',
       color: '#161719',
       fontFamily: 'DM Sans',
       fontStyle: 'normal',
@@ -180,6 +180,22 @@ const createStyles = () =>
       fontSize: 14,
       fontWeight: 'bold',
       color: '#91919F',
+    },
+    headerText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#FFFFFF',
+      textAlign: 'center',
+      paddingLeft: 5,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    fileName: {
+      fontSize: 14,
+      fontWeight: 'bold',
+      color: '#161719',
     },
   });
 
