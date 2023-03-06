@@ -41,7 +41,7 @@ const createStyles = () =>
             fontWeight: "700",
             alignSelf: "center",
             marginBottom: 5,
-            paddingTop: 25,
+            paddingTop: 5,
         },
         email: {
             fontSize: 16,
@@ -69,6 +69,17 @@ const createStyles = () =>
             justifyContent: "space-between",
             alignItems: "center",
             paddingVertical: 20,
+        },
+        gridContainer: {
+            flex: 1,
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            paddingHorizontal: 20,
+        },
+        gridItem: {
+            margin: 5,
+            marginBottom: 20,
         },
     })
 

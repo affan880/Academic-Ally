@@ -79,7 +79,7 @@ const NotesScreen = () => {
   const recentViews = useSelector((state: any) => state.userRecentPdfs);
   const [loading, setLoading] = useState(false);
 
-  const subjectTitle =
+  const subjectTitle : string =
     subject.length > 20 ? subject.slice(0, 20) + '...' : subject;
 
   useEffect(() => {
@@ -115,7 +115,7 @@ const NotesScreen = () => {
   }
 
   return !loading ? (
-    <NavigationLayout rightIconFalse={true} title={subjectTitle}>
+    <NavigationLayout rightIconFalse={true} title={subjectTitle} >
       <View style={styles.header}>
         <Text style={styles.headerText}>Resources</Text>
       </View>

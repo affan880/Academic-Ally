@@ -27,6 +27,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useDispatch} from 'react-redux';
 import {setUsersData} from '../../../redux/reducers/usersData';
+import CustomLoader from '../../../components/CustomLoader';
 
 const screenWidth = Dimensions.get('screen').width;
 
@@ -37,6 +38,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
   const dispatch = useDispatch();
 
   const styles = useMemo(() => createStyles(), []);
+  const [loading, setLoading] = useState(false);
 
   const initialValues = {
     name: '',
@@ -115,6 +117,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
 
   return (
     <SafeAreaView style={[styles.container, {flex: 1}]}>
+      <CustomLoader loading={loading} />
       <StatusBar
         animated={true}
         translucent={true}
@@ -138,6 +141,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
               validationSchema={validationSchema}
               initialValues={initialValues}
               onSubmit={values => {
+                setLoading(true);
                 onSubmit(values.email, values.password, values);
               }}>
               <CustomTextInput

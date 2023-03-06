@@ -15,24 +15,50 @@ import {
 } from '../../../redux/reducers/subjectsList';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { userAddToRecents } from '../../../redux/reducers/usersRecentPdfsManager';
 
 type MyStackParamList = {
   SubjectResources: {userData: object; notesData: string; subject: string};
+   NotesList: {
+    userData: {
+      Course: string;
+      Branch: string;
+      Sem: string;
+    };
+    notesData: string;
+    selected: string;
+    subject: string;
+  };
+  UploadScreen: {
+    userData: {
+      Course: string;
+      Branch: string;
+      Sem: string;
+    };
+    notesData: string;
+    selected: string;
+    subject: string;
+  };
 };
+
 type MyScreenNavigationProp = StackNavigationProp<
   MyStackParamList,
   'SubjectResources'
 >;
-type Props = {};
+type Props = {
+  selected : string
+};
 
 const Recommendation = (props: Props) => {
   const userData = useSelector((state: any) => {
     return state.usersData;
   });
+  console.log(userData);  
   const styles = useMemo(() => createStyles(), []);
   const navigation = useNavigation<MyScreenNavigationProp>();
   const [list, setList] = useState<any[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   //if reccommendSubjects key exists in async storage then load from there
@@ -115,6 +141,36 @@ const Recommendation = (props: Props) => {
     }
   }
 
+  useEffect(() => {
+    const getRecents = async () => {
+      AsyncStorage.getItem('RecentsManagement').then(res => {
+        if (res !== null || res !== undefined) {
+          const recentViews = JSON.parse(res as any);
+          dispatch(userAddToRecents(recentViews));
+        }
+      });
+    };
+    getRecents();
+  }, []);
+
+  function handleNavigation(notesData: any, category: string, subject: string) {
+    setLoading(true);
+    notesData[category]?.length > 0
+      ? (navigation.navigate('NotesList', {
+          userData: userData.usersData,
+          notesData: notesData,
+          selected: category,
+          subject: subject,
+        }),
+        setLoading(false))
+      : (navigation.navigate('UploadScreen', {
+          userData: userData.usersData,
+          notesData: notesData,
+          selected: category,
+          subject: subject,
+        }),
+        setLoading(false));
+  }
   // useEffect(() => {
   //   setList([]);
   //   setLoaded(false);
@@ -131,11 +187,15 @@ const Recommendation = (props: Props) => {
                 <TouchableOpacity
                   style={styles.subjectContainer}
                   onPress={() => {
-                    navigation.navigate('SubjectResources', {
+                    props.selected === 'All' ? (
+                       navigation.navigate('SubjectResources', {
                       userData: userData.usersData,
                       notesData: item,
                       subject: item.subjectName,
-                    });
+                    })
+                    ) : (
+                    handleNavigation(item, props.selected, item.subjectName)
+                    )
                   }}>
                   <View
                     style={{

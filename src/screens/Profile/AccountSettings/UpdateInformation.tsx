@@ -82,7 +82,7 @@ const UpdateInformation = () => {
   const updateReduxData = (data: any) => {
     dispatch(setUsersData(data));
     navigation.navigate('BottomTabBar', {
-      screen: 'HomeScreen',
+      screen: 'Home',
     });
   };
 

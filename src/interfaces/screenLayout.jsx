@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, StatusBar, Dimensions, ScrollView } from 'react-native'
-import React, { Children, useState } from 'react'
+import React from 'react'
 
 const ScreenLayout = (props) => {
     const height = Dimensions.get("screen").height;

@@ -6,6 +6,7 @@ export const createUserDataSlice = createSlice({
     usersData: [],
     validEmail: false,
     usersDataLoaded: false,
+    userProfile: ""
   },
   reducers: {
     setUsersData: (state, action) => {
@@ -17,10 +18,13 @@ export const createUserDataSlice = createSlice({
     setUsersDataLoaded: (state, action) => {
       state.usersDataLoaded = action.payload;
     },
+    setUserProfile: (state, action) => {
+      state.userProfile = action.payload;
+    }
   },
 });
 
-export const {setUsersData, setValidEmail, setUsersDataLoaded} =
+export const {setUsersData, setValidEmail, setUsersDataLoaded, setUserProfile } =
   createUserDataSlice.actions;
 
 export default createUserDataSlice.reducer;

@@ -67,6 +67,7 @@ export const createUser = async (email, password, values) => {
       createUserDocument(userID.user.uid, values).then(() => {
         auth().currentUser.updateProfile({
           displayName: values.name,
+          photoURL: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2FAvatar9.png?alt=media&token=f588e0f2-3319-4cec-ad60-8053a03c3172',
         });
         userCredential.user.sendEmailVerification();
         Toast.show({

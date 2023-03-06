@@ -118,7 +118,7 @@ const NotesList = (props: Props) => {
 
   return (
     <>
-      <NavigationLayout rightIconFalse={true} handleScroll={handleScroll}>
+      <NavigationLayout rightIconFalse={true}  title={subject} >
         <View style={styles.notesListHeaderContainer}>
           <View
             style={{
@@ -160,7 +160,7 @@ const NotesList = (props: Props) => {
                       selected: selected,
                       subject: subject,
                     });
-                    dispatch(userAddToRecentsStart(item));
+                    dispatch(userAddToRecentsStart({...item, "viewedTime": `${new Date()}`, "category": selected}));
                   }}>
                   <View style={styles.containerBox}>
                     <View style={styles.containerText}>

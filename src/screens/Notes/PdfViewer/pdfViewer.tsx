@@ -32,8 +32,6 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  userAddToRecents,
-  userAddToRecentsStart,
   userRemoveFromRecents,
   userClearRecents,
 } from '../../../redux/reducers/usersRecentPdfsManager';
@@ -84,7 +82,7 @@ type MyScreenNavigationProp = StackNavigationProp<
 const PdfViewer = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage]:any = useState(0);
   const [saved, setSaved] = useState(false);
   const {isOpen, onOpen, onClose} = useDisclose();
   const {userData} = route.params;
@@ -185,7 +183,7 @@ const PdfViewer = () => {
               top: -1,
             }}
             value={`${currentPage}`}
-            onChangeText={text => setCurrentPage(text)}
+            onChangeText={(text:any) => setCurrentPage(text)}
             keyboardType="number-pad"
             maxLength={3}
             onSubmitEditing={() => {

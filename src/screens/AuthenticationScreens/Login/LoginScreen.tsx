@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {NavigationProp, ParamListBase} from '@react-navigation/native';
-import React, {FC, useMemo, useRef} from 'react';
+import React, {FC, useMemo, useRef, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import createStyles from './styles';
 import {LOGINILLUSTRATION} from '../../../assets';
@@ -28,6 +28,7 @@ import {
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Toast} from 'native-base';
 import {useSelector} from 'react-redux';
+import CustomLoader from '../../../components/CustomLoader';
 
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
@@ -35,6 +36,7 @@ interface IProps {
 
 const LoginScreen: React.FC<IProps> = ({navigation}) => {
   const validEmail = useSelector((state: any) => state.usersData.validEmail);
+  const [loading, setLoading] = useState(false);
   const formRef: any = useRef();
   const styles = useMemo(() => createStyles(), []);
   const initialValues = {
@@ -84,6 +86,8 @@ const LoginScreen: React.FC<IProps> = ({navigation}) => {
   };
 
   return (
+    <>
+    <CustomLoader loading={loading} />
     <View style={styles.container}>
       <StatusBar
         animated={true}
@@ -105,7 +109,10 @@ const LoginScreen: React.FC<IProps> = ({navigation}) => {
               innerRef={formRef}
               validationSchema={LoginvalidationSchema}
               onSubmit={values => {
-                logIn(values.email, values.password);
+                setLoading(true);
+                logIn(values.email, values.password).then(() => {
+                  setLoading(false);
+                });
               }}>
               <CustomTextInput
                 leftIcon="user"
@@ -122,7 +129,17 @@ const LoginScreen: React.FC<IProps> = ({navigation}) => {
                 style={styles.formContainer}
                 touchSoundDisabled={false}>
                 <Text
-                  onPress={() => forgotPasswordHandler()}
+                  onPress={() => {
+                    if(formRef.current.values.email){
+                      forgotPasswordHandler();
+                    }else{
+                      Toast.show({
+                        title: 'Please Enter a Valid Email',
+                        duration: 4000,
+                        backgroundColor: '#FF0101',
+                      });
+                    }
+                  }}
                   style={styles.forgotPasswordText}>
                   Forgot Password?
                 </Text>
@@ -143,6 +160,7 @@ const LoginScreen: React.FC<IProps> = ({navigation}) => {
         </KeyboardAwareScrollView>
       </LinearGradient>
     </View>
+    </>
   );
 };
 

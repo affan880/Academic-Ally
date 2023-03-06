@@ -15,7 +15,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {setUsersData, setUsersDataLoaded} from '../../redux/reducers/usersData';
 import firestore from '@react-native-firebase/firestore';
 import auth, {firebase} from '@react-native-firebase/auth';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -25,8 +24,6 @@ import {
   setListLoaded,
 } from '../../redux/reducers/subjectsList';
 import {Toast} from 'native-base';
-
-const User = require('../../assets/images/user.jpg');
 
 type MyStackParamList = {
   Notes: {itemId: number};
@@ -54,6 +51,7 @@ type Props = {};
 
 const HomeScreen = (props: Props) => {
   const styles = useMemo(() => createStyles(), []);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const navigation =
     useNavigation<StackNavigationProp<MyStackParamList, 'Notes'>>();
   const dispatch = useDispatch();
@@ -143,9 +141,7 @@ const HomeScreen = (props: Props) => {
         console.error(error);
       }
     };
-
     getData();
-
     const unsubscribe = dynamicLinks().onLink(handleDynamicLink);
     return () => unsubscribe();
   }, []);
@@ -168,7 +164,9 @@ const HomeScreen = (props: Props) => {
                   alignItems: 'center',
                 }}>
                 <View style={styles.userImgContainer}>
-                  <Image source={User} style={styles.userImg} />
+                  <Image source={{
+                    uri: userFirestoreData.userProfile || auth().currentUser?.photoURL,
+                  }} style={styles.userImg} />
                 </View>
                 <View
                   style={{
@@ -190,7 +188,9 @@ const HomeScreen = (props: Props) => {
             </View>
           </View>
         </View>
-        <QuickAccess />
+        <QuickAccess selected={selectedCategory} setSelectedCategory={(option)=>{
+          setSelectedCategory(option)
+        }} />
         <View
           style={{
             marginTop: -120,
@@ -213,7 +213,7 @@ const HomeScreen = (props: Props) => {
             Recommended
           </Text>
           <View>
-            <Recommendation />
+            <Recommendation selected={selectedCategory} />
           </View>
         </View>
       </ScrollView>
