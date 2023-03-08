@@ -156,8 +156,8 @@ const Profile = () => {
               </Modal.Content>
             </Modal>
          </VStack>
-        <Text style={styles.name}>{userFirestoreData.usersData.Name}</Text>
-        <Text style={styles.email}>{userFirestoreData.usersData.Email}</Text>
+        <Text style={styles.name}>{userFirestoreData.usersData.name}</Text>
+        <Text style={styles.email}>{userFirestoreData.usersData.email}</Text>
       </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>

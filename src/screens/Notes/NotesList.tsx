@@ -35,9 +35,9 @@ type MyStackParamList = {
   };
   PdfViewer: {
     userData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
+      course: string;
+      branch: string;
+      sem: string;
     };
     notesData: string;
     selected: string;

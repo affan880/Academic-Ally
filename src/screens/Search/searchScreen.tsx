@@ -97,10 +97,10 @@ const Search = () => {
         .doc(auth().currentUser?.uid)
         .get();
         const customizedData = {
-          University : userData.data().University,
-          Course : userData.data().Course,
-          Branch : item.branch,
-          Sem : item.sem
+          university : userData.data().university,
+          course : userData.data().course,
+          branch : item.branch,
+          sem : item.sem
         }
       const notesData = {
         notes: await userFirestoreData(customizedData,'Notes', { subjectName: item.subject}),
@@ -112,7 +112,7 @@ const Search = () => {
       setLoading(false);
       navigation.navigate('SubjectResources', {
         userData: {
-          Course: userData.data().Course,
+          course: userData.data().course,
           branch: item.branch,
           sem: item.sem,
         },
@@ -227,13 +227,13 @@ const Search = () => {
                             width: '100%',
                             alignItems: 'center',
                           }}>
-                          <Text style={styles.subjectItemBranch}>Branch:</Text>
+                          <Text style={styles.subjectItemBranch}>branch:</Text>
                           <Text style={styles.subjectItemBranchText}>
                             {item.branch}
                           </Text>
                         </View>
                         <Text style={styles.subjectItemSem}>
-                          Sem: {item.sem}
+                          sem: {item.sem}
                         </Text>
                       </View>
                     </TouchableOpacity>

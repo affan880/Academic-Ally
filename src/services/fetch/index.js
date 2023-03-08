@@ -10,10 +10,10 @@ export const userFirestoreData = async (userData, type, item) => {
   let list = [];
   await firestore()
     .collection('Universities')
-    .doc(`${userData.University}`)
-    .collection(`${userData.Course}`)
-    .doc(`${userData.Branch}`)
-    .collection(`${userData.Sem}`)
+    .doc(`${userData.university}`)
+    .collection(`${userData.course}`)
+    .doc(`${userData.branch}`)
+    .collection(`${userData.sem}`)
     .doc(type)
     .collection(item.subjectName).get().then((querySnapshot) => {
       if (querySnapshot.docs.length > 0) {
@@ -21,10 +21,10 @@ export const userFirestoreData = async (userData, type, item) => {
           list.push({
             ...doc.data(),
             id: doc.id,
-            Branch: userData.Branch || userData.Branch,
-            Sem: userData.Sem || userData.Sem,
-            University: userData.University || userData.University,
-            Course: userData.Course || userData.Course,
+            branch: userData.branch,
+            sem: userData.sem,
+            university: userData.university || userData.university,
+            course: userData.course || userData.course,
           });
         });
       }
@@ -35,10 +35,10 @@ export const userFirestoreData = async (userData, type, item) => {
 const checkIfDocExists = async (item, type, usersData) => {
   const status = await firestore()
     .collection('Universities')
-    .doc(`${usersData.usersData.University}`)
-    .collection(`${usersData.usersData.Course}`)
-    .doc(`${usersData.usersData.Branch}`)
-    .collection(`${usersData.usersData.Sem}`)
+    .doc(`${usersData.usersData.university}`)
+    .collection(`${usersData.usersData.course}`)
+    .doc(`${usersData.usersData.branch}`)
+    .collection(`${usersData.usersData.sem}`)
     .doc(type)
     .collection(item.subjectName)
     .get().then((querySnapshot) => {
@@ -60,9 +60,9 @@ export const fetchSubjectList = async (setList, dispatch, setReccommendSubjects,
       let updatedList = [];
       await firestore()
         .collection('Universities')
-        .doc('OU').collection(userFirestoreData.data().Course === 'BE' ? 'B.E' : userFirestoreData.data().Course)
-        .doc(userFirestoreData.data().Branch)
-        .collection(userFirestoreData.data().Sem)
+        .doc('OU').collection(userFirestoreData.data().course === 'BE' ? 'B.E' : userFirestoreData.data().course)
+        .doc(userFirestoreData.data().branch)
+        .collection(userFirestoreData.data().sem)
         .doc('SubjectsList')
         .get().then(async (item) => {
           for (const items of item.data().list) {
@@ -151,10 +151,10 @@ export async function ViewCount(data) {
   try {
     await firestore()
       .collection('Universities')
-      .doc(data.University)
-      .collection(data.Course)
-      .doc(data.Branch)
-      .collection(data.Sem)
+      .doc(data.university)
+      .collection(data.course)
+      .doc(data.branch)
+      .collection(data.sem)
       .doc(data.type)
       .collection(data.subjectName)
       .doc(data.id)
@@ -178,14 +178,14 @@ async function addToUSersRateList(data, rating) {
       subject: data.subjectName,
       rating: rating,
       category: data.type,
-      University: data.University,
-      Course: data.course,
-      Branch: data.branch,
-      Sem: data.Sem,
+      university: data.university,
+      course: data.course,
+      branch: data.branch,
+      sem: data.sem,
       id: data.id,
       did: data.did,
       name: data.name,
-      seze: data.size,
+      size: data.size,
       college: data.college,
       uploaderId: data.uploaderId,
       uploaderName: data.uploaderName,
@@ -202,10 +202,10 @@ export async function submitRating(data, newRating) {
     try {
       await firestore()
         .collection('Universities')
-        .doc(data.University)
-        .collection(data.Course)
-        .doc(data.Branch)
-        .collection(data.Sem)
+        .doc(data.university)
+        .collection(data.course)
+        .doc(data.branch)
+        .collection(data.sem)
         .doc(data.type)
         .collection(data.subjectName)
         .doc(data.id)
@@ -223,10 +223,10 @@ export async function submitRating(data, newRating) {
     try {
       await firestore()
         .collection('Universities')
-        .doc(data.University)
-        .collection(data.Course)
-        .doc(data.Branch)
-        .collection(data.Sem)
+        .doc(data.university)
+        .collection(data.course)
+        .doc(data.branch)
+        .collection(data.sem)
         .doc(data.type)
         .collection(data.subjectName)
         .doc(data.id)
@@ -245,10 +245,10 @@ export async function submitReport(userData, ReportData) {
   try {
     await firestore()
       .collection('userReports')
-      .doc(userData.University)
-      .collection(userData.Course)
-      .doc(userData.Branch)
-      .collection(userData.Sem)
+      .doc(userData.university)
+      .collection(userData.course)
+      .doc(userData.branch)
+      .collection(userData.sem)
       .doc(auth().currentUser?.uid)
       .set({
         ...userData,
@@ -301,7 +301,7 @@ export const shareNotes = async (notesData) => {
   });
   Share.share({
     title: `${notesData.subject} ${notesData.category} `,
-    message: `I just discovered some amazing ${notesData.Course} ${notesData.Sem}th semester ${notesData.subject} on Academic Ally! Check them out 📚!
+    message: `I just discovered some amazing ${notesData.course} ${notesData.sem}th semester ${notesData.subject} on Academic Ally! Check them out 📚!
       ${link}`,
   });
 }

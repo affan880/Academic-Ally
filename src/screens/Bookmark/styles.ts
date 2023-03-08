@@ -192,7 +192,7 @@ const createStyles = () =>
       flexDirection: 'row',
       alignItems: 'center',
     },
-    fileName: {
+    name: {
       fontSize: 14,
       fontWeight: 'bold',
       color: '#161719',

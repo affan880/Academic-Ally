@@ -38,7 +38,7 @@ type RootStackParamList = {
   UploadScreen: {
     userData: {
       Course: string;
-      Branch: string;
+      branch: string;
       Sem: string;
     };
     notesData: string;
@@ -55,7 +55,7 @@ const UploadPDF = () => {
   const subject = route.params.subject;
   const {userData} = route.params;
   const {notesData}: any = route.params;
-  const path = `${userData?.Course}/${userData?.Branch}/${
+  const path = `${userData?.Course}/${userData?.branch}/${
     userData?.Sem
   }/${subject}/${selected}/${auth().currentUser?.uid}`;
   const storageRef = storage().ref(path);
@@ -71,7 +71,7 @@ const UploadPDF = () => {
         setModalVisible(false);
         const updateData = {
           resources: firestore.FieldValue.arrayUnion({
-            fileName: pdf?.name,
+            name: pdf?.name,
             uploaderName: auth().currentUser?.displayName,
             uploaderEmail: auth().currentUser?.email,
             uploaderUid: auth().currentUser?.uid,
@@ -84,7 +84,7 @@ const UploadPDF = () => {
           .collection('UsersUploads')
           .doc('OU')
           .collection(userData.Course)
-          .doc(userData.Branch)
+          .doc(userData.branch)
           .collection(userData.Sem)
           .doc(subject)
           .collection(selected)
@@ -97,7 +97,7 @@ const UploadPDF = () => {
                 .collection('UsersUploads')
                 .doc('OU')
                 .collection(userData.Course)
-                .doc(userData.Branch)
+                .doc(userData.branch)
                 .collection(userData.Sem)
                 .doc(subject)
                 .collection(selected)
@@ -109,7 +109,7 @@ const UploadPDF = () => {
                 .collection('UsersUploads')
                 .doc('OU')
                 .collection(userData.Course)
-                .doc(userData.Branch)
+                .doc(userData.branch)
                 .collection(userData.Sem)
                 .doc(subject)
                 .collection(selected)
@@ -117,7 +117,7 @@ const UploadPDF = () => {
                 .set({
                   resources: [
                     {
-                      fileName: pdf?.name,
+                      name: pdf?.name,
                       uploaderName: auth().currentUser?.displayName,
                       uploaderEmail: auth().currentUser?.email,
                       uploaderUid: auth().currentUser?.uid,
@@ -286,14 +286,14 @@ const UploadPDF = () => {
             alignItems={'center'}
             justifyContent={'flex-start'}>
             <Text fontSize={'20px'} fontWeight={'600'} alignSelf={'center'}>
-              Branch:{' '}
+              branch:{' '}
             </Text>
             <Text
               fontSize={'18px'}
               pl={2}
               fontWeight={'400'}
               alignSelf={'center'}>
-              {userData.Branch}
+              {userData.branch}
             </Text>
           </Box>
           <Box

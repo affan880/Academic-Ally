@@ -51,9 +51,9 @@ const {width, height} = Dimensions.get('window');
 type RootStackParamList = {
   NotesList: {
     userData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
+      course: string;
+      branch: string;
+      sem: string;
     };
     notesData: any;
     selected: string;
@@ -64,9 +64,9 @@ type RootStackParamList = {
 type MyStackParamList = {
   PdfViewer: {
     userData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
+      course: string;
+      branch: string;
+      sem: string;
     };
     notesData: any;
     selected: string;
@@ -137,7 +137,7 @@ const PdfViewer = () => {
     });
     Share.share({
       title: `${notesData.subject} ${notesData.category} `,
-      message: `I just discovered some amazing ${notesData.Course} ${notesData.Sem}th semester ${notesData.subject} on Academic Ally! Check them out 📚!
+      message: `I just discovered some amazing ${notesData.course} ${notesData.sem}th semester ${notesData.subject} on Academic Ally! Check them out 📚!
       ${link}`,
     });
   }
@@ -281,7 +281,7 @@ const PdfViewer = () => {
                   !status
                     ? dispatch(
                         userAddBookMarks({
-                          fileName: notesData.name,
+                          name: notesData.name,
                           subject: notesData.subject,
                           did: notesData.did,
                           ...notesData,
@@ -289,7 +289,7 @@ const PdfViewer = () => {
                       )
                     : dispatch(
                         userRemoveBookMarks({
-                          fileName: notesData.name,
+                          name: notesData.name,
                           subject: notesData.subject,
                           notesId: notesData.did,
                           category: selected,

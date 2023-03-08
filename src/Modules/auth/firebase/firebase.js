@@ -27,15 +27,15 @@ const createUserDocument = async (uid, Details) => {
     .collection('Users')
     .doc(`${uid}`)
     .set({
-      Name: Details.name,
-      Email: Details.email,
-      Course: Details.course,
-      Sem: Details.sem,
-      Branch: Details.branch,
+      name: Details.name,
+      email: Details.email,
+      course: Details.course,
+      sem: Details.sem,
+      branch: Details.branch,
       Year: Details.year,
-      University: Details.university,
-      College: Details.college,
-      Pfp: img,
+      university: Details.university,
+      college: Details.college,
+      pfp: img,
     })
     .then(() => {
       console.log('User added!');

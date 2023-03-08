@@ -314,7 +314,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                       !status
                         ? dispatch(
                             userAddBookMarks({
-                              fileName: item.name,
+                              name: item.name,
                               subject: subject,
                               did: item.did,
                               category: selected,
@@ -323,7 +323,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                           )
                         : dispatch(
                             userRemoveBookMarks({
-                              fileName: item.name,
+                              name: item.name,
                               subject: subject,
                               did: item.did,
                               category: selected,

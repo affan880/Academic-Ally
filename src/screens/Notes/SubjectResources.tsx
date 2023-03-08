@@ -20,9 +20,9 @@ import LottieView from 'lottie-react-native';
 type RootStackParamList = {
   Home: {
     userData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
+      course: string;
+      branch: string;
+      sem: string;
     };
     notesData: string;
   };
@@ -30,9 +30,9 @@ type RootStackParamList = {
 type MyStackParamList = {
   NotesList: {
     userData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
+      course: string;
+      branch: string;
+      sem: string;
     };
     notesData: string;
     selected: string;
@@ -40,9 +40,9 @@ type MyStackParamList = {
   };
   UploadScreen: {
     userData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
+      course: string;
+      branch: string;
+      sem: string;
     };
     notesData: string;
     selected: string;
@@ -60,7 +60,7 @@ type uploadScreenNavigationProp = StackNavigationProp<
 >;
 
 type notesTypes = {
-  fileName: string;
+  name: string;
 };
 
 const NotesScreen = () => {

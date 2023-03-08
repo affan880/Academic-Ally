@@ -31,8 +31,8 @@ type MyStackParamList = {
   PdfViewer: {
     userData: {
       Course: string;
-      Branch: string;
-      Sem: string;
+      branch: string;
+      sem: string;
     };
     notesData: {
       course: string;
@@ -63,8 +63,8 @@ const HomeScreen = (props: Props) => {
     const parts = link?.url.split('/');
     const userData = {
       Course: parts[4],
-      Branch: parts[5],
-      Sem: parts[6],
+      branch: parts[5],
+      sem: parts[6],
     };
     const notesData = {
       course: parts[4],
@@ -145,7 +145,7 @@ const HomeScreen = (props: Props) => {
                   }}>
                   <Text style={styles.salutation}>Welcome back</Text>
                   <Text style={styles.userName}>
-                    {userFirestoreData.usersData?.Name}
+                    {userFirestoreData.usersData?.name}
                   </Text>
                 </View>
               </View>

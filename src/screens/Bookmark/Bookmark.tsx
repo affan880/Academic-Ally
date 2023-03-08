@@ -158,7 +158,7 @@ const Bookmark = () => {
                   alignItems: 'flex-start',
                   paddingLeft: 10,
                 }}>
-                <Text style={styles.fileName}>{remove(item.name)}</Text>
+                <Text style={styles.name}>{remove(item.name)}</Text>
                 <Text
                   style={{
                     fontSize: 12,
