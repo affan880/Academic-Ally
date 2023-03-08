@@ -99,7 +99,7 @@ export const CustomDropdown = ({
           onChange={item => {
             setValue(item.value);
             setIsFocus(false);
-            setFieldValue(name, item.label);
+            setFieldValue(name, item.value);
           }}
           renderLeftIcon={() =>
             name === 'university' ? (

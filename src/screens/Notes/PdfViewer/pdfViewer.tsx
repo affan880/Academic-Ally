@@ -91,7 +91,7 @@ const PdfViewer = () => {
   const [pageNo, setPageNo] = useState(0);
   const [loading, setLoading] = useState(true);
   const source = {
-    uri: `https://drive.google.com/u/0/uc?id=${notesData.notesId}`,
+    uri: `https://drive.google.com/u/0/uc?id=${notesData.did}`,
     cache: true,
     expiration: 60 * 60 * 24 * 7,
   };
@@ -105,7 +105,7 @@ const PdfViewer = () => {
     (state: any) => state.userBookmarkManagement,
   ).userBookMarks;
   const BookmarkStatus = (item: any) => {
-    if (userBookmarks?.some((bookmark: any) => bookmark.notesId === item)) {
+    if (userBookmarks?.some((bookmark: any) => bookmark.did === item)) {
       return true;
     } else {
       return false;
@@ -120,19 +120,24 @@ const PdfViewer = () => {
   }, [recentsList]);
 
   async function createDynamicLink() {
-    const link = await dynamicLinks().buildShortLink(
+         const link = await dynamicLinks().buildShortLink(
       {
-        link: `https://academically.com/${selected}/${userData.Course}/${userData.Branch}/${userData.Sem}/${notesData.subject}/${notesData.notesId}`,
+        link: `https://academically.com/${notesData.category}/${notesData.course}/${notesData.branch}/${notesData.sem}/${notesData.subject}/${notesData.did}`,
         domainUriPrefix: 'https://academicallyapp.page.link',
         android: {
           packageName: 'com.academically',
         },
       },
       dynamicLinks.ShortLinkType.SHORT,
-    );
+    ).catch((error) => {
+      Toast.show({
+        title: 'Something went wrong, Please try again later',
+        duration: 3000,
+      })
+    });
     Share.share({
-      title: `${notesData.subject} ${selected} `,
-      message: `I just discovered some amazing ${userData.Course} ${userData.Sem}th semester ${notesData.subject} on Academic Ally! Check them out 📚!
+      title: `${notesData.subject} ${notesData.category} `,
+      message: `I just discovered some amazing ${notesData.Course} ${notesData.Sem}th semester ${notesData.subject} on Academic Ally! Check them out 📚!
       ${link}`,
     });
   }
@@ -272,39 +277,32 @@ const PdfViewer = () => {
               <Button
                 onPress={() => {
                   setSaved(!saved);
-                  const status = BookmarkStatus(notesData.notesId);
+                  const status = BookmarkStatus(notesData.did);
                   !status
                     ? dispatch(
                         userAddBookMarks({
-                          fileName: notesData.fileName,
+                          fileName: notesData.name,
                           subject: notesData.subject,
-                          notesId: notesData.notesId,
-                          category: selected,
-                          Course: userData.Course,
-                          Branch: userData.Branch,
-                          Sem: userData.Sem,
+                          did: notesData.did,
+                          ...notesData,
                         }),
                       )
                     : dispatch(
                         userRemoveBookMarks({
-                          fileName: notesData.fileName,
+                          fileName: notesData.name,
                           subject: notesData.subject,
-                          notesId: notesData.notesId,
+                          notesId: notesData.did,
                           category: selected,
+                          ...notesData,
                         }),
                       );
-                  manageBookmarks(
-                    notesData,
-                    selected,
-                    notesData.subject,
-                    status,
-                  );
+                  manageBookmarks(notesData, status);
                 }}
                 colorScheme="red"
                 variant="outline">
                 <Fontisto
                   name={
-                    BookmarkStatus(notesData.notesId)
+                    BookmarkStatus(notesData.did)
                       ? 'bookmark-alt'
                       : 'bookmark'
                   }
@@ -362,7 +360,7 @@ const PdfViewer = () => {
                     width={'100%'}
                     justifyContent={'space-between'}>
                     <Text textAlign={'left'} width={'90%'}>
-                      {remove(item.fileName)}
+                      {remove(item.name)}
                     </Text>
                     <TouchableOpacity
                       onPress={() => {

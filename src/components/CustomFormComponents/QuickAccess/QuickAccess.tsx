@@ -10,8 +10,6 @@ import {
 import React, {useMemo} from 'react';
 import {Syllabus, Notes, Qp, OtherRes} from '../../../assets/images/icons';
 import createStyles from './styles';
-import firestore from '@react-native-firebase/firestore';
-import auth, {firebase} from '@react-native-firebase/auth';
 
 type Props = {
   selected: string;
@@ -24,10 +22,10 @@ const QuickAccess = ({selected, setSelectedCategory}:Props) => {
   return (
     <View style={styles.categories}>
       <TouchableOpacity style={styles.itemContainer} onPress={() => {
-        setSelectedCategory('syllabus');
+        setSelectedCategory('Syllabus');
       }}>
         <View style={
-          selected === 'syllabus' ? [styles.syllabusIconContainer, {
+          selected === 'Syllabus' ? [styles.syllabusIconContainer, {
           transform: [{scale: 1.2}],
           borderColor: '#6360FF',
           borderWidth: 2,
@@ -39,10 +37,10 @@ const QuickAccess = ({selected, setSelectedCategory}:Props) => {
         <Text style={styles.iconLabel}>Syllabus</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.itemContainer} onPress={()=>{
-         setSelectedCategory('notes');
+         setSelectedCategory('Notes');
       }} >
         <View style={
-          selected === 'notes' ? [styles.notesIconContainer, {
+          selected === 'Notes' ? [styles.notesIconContainer, {
           transform: [{scale: 1.2}],
           borderColor: '#6360FF',
           borderWidth: 2,
@@ -54,10 +52,10 @@ const QuickAccess = ({selected, setSelectedCategory}:Props) => {
         <Text style={styles.iconLabel}>Notes</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.itemContainer} onPress={()=>{
-         setSelectedCategory('questionPapers');
+         setSelectedCategory('QuestionPapers');
       }} >
         <View style={
-          selected === 'questionPapers' ? [styles.questionsIconContainer, {
+          selected === 'QuestionPapers' ? [styles.questionsIconContainer, {
           transform: [{scale: 1.2}],
           borderColor: '#6360FF',
           borderWidth: 2,
@@ -69,10 +67,10 @@ const QuickAccess = ({selected, setSelectedCategory}:Props) => {
         <Text style={styles.iconLabel}>QP's</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.itemContainer} onPress={() => {
-         setSelectedCategory('otherResources');
+         setSelectedCategory('OtherResources');
       }}>
         <View style={
-          selected === 'otherResources' ? [styles.otherResourcesIconContainer, {
+          selected === 'OtherResources' ? [styles.otherResourcesIconContainer, {
           transform: [{scale: 1.2}],
           borderColor: '#6360FF',
           borderWidth: 2,

@@ -13,7 +13,7 @@ export const createUserDataSlice = createSlice({
 
         state.RecentViews = state.RecentViews.filter(
           (recents, index, self) =>
-            index === self.findIndex(t => t.notesId === recents.notesId),
+            index === self.findIndex(t => t.did === recents.did),
         );
 
         AsyncStorage.setItem(
@@ -31,7 +31,7 @@ export const createUserDataSlice = createSlice({
     userRemoveFromRecents: (state, action) => {
       //renmove the bookmark from the array
       state.RecentViews = state.RecentViews.filter(
-        recents => recents.notesId !== action.payload.notesId,
+        recents => recents.did !== action.payload.did,
       );
       AsyncStorage.setItem(
         'RecentsManagement',

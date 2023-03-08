@@ -16,16 +16,17 @@ import {
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userAddToRecents } from '../../../redux/reducers/usersRecentPdfsManager';
+import { fetchSubjectList, userFirestoreData} from '../../../services/fetch'
 
 type MyStackParamList = {
-  SubjectResources: {userData: object; notesData: string; subject: string};
+  SubjectResources: {userData: object; notesData: any; subject: string};
    NotesList: {
     userData: {
       Course: string;
       Branch: string;
       Sem: string;
     };
-    notesData: string;
+    notesData: any;
     selected: string;
     subject: string;
   };
@@ -35,7 +36,7 @@ type MyStackParamList = {
       Branch: string;
       Sem: string;
     };
-    notesData: string;
+    notesData: any;
     selected: string;
     subject: string;
   };
@@ -53,19 +54,12 @@ const Recommendation = (props: Props) => {
   const userData = useSelector((state: any) => {
     return state.usersData;
   });
-  console.log(userData);  
   const styles = useMemo(() => createStyles(), []);
   const navigation = useNavigation<MyScreenNavigationProp>();
   const [list, setList] = useState<any[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-
-  //if reccommendSubjects key exists in async storage then load from there
-  //else load from firestore and save to async storage
-  //and after loading in background check if any new subjects are added
-  //if yes then update the async storage and redux store
-
   useEffect(() => {
     AsyncStorage.getItem('reccommendSubjects').then(data => {
       if (data && data !== '[]') {
@@ -80,65 +74,7 @@ const Recommendation = (props: Props) => {
   }, [userData]);
 
   async function fetchData() {
-    try {
-      firestore()
-        .collection('Users')
-        .doc(auth().currentUser?.uid)
-        .get()
-        .then(async (userFirestoreData: any) => {
-          setList([]);
-          await firestore()
-            .collection('Universities')
-            .doc('OU')
-            .collection(`${userFirestoreData.data().Course}`)
-            .doc(`${userFirestoreData.data().Branch}`)
-            .collection(`${userFirestoreData.data().Sem}`)
-            .doc('SubjectsList')
-            .get()
-            .then(async data => {
-              let updatedList: {
-                subjectName: string;
-                notes: string[];
-                otherResources: string[];
-                questionPapers: string[];
-                syllabus: string[];
-              }[] = [];
-              for (const items of data.data()?.list) {
-                await firestore()
-                  .collection('Universities')
-                  .doc('OU')
-                  .collection(`${userFirestoreData.data().Course}`)
-                  .doc(`${userFirestoreData.data().Branch}`)
-                  .collection(`${userFirestoreData.data().Sem}`)
-                  .doc('Subjects')
-                  .collection(items.subjectName)
-                  .get()
-                  .then(item => {
-                    updatedList.push({
-                      subjectName: items.subjectName,
-                      notes: item.docs[0]?.data().list,
-                      otherResources: item.docs[1]?.data().list,
-                      questionPapers: item.docs[2]?.data().list,
-                      syllabus: item.docs[3]?.data().list,
-                    });
-                  });
-              }
-              setList(
-                updatedList.filter(
-                  (item: object, index: number, self: any) =>
-                    self.indexOf(item) === index,
-                ),
-              );
-              dispatch(setReccommendSubjects(updatedList));
-              dispatch(setReccommendSubjectsLoaded(true));
-              setLoaded(true);
-            });
-        });
-    } catch (error) {
-      Toast.show({
-        title: 'Error loaidng data',
-      });
-    }
+    fetchSubjectList(setList,dispatch, setReccommendSubjects, setReccommendSubjectsLoaded, setLoaded,userData);
   }
 
   useEffect(() => {
@@ -153,29 +89,35 @@ const Recommendation = (props: Props) => {
     getRecents();
   }, []);
 
-  function handleNavigation(notesData: any, category: string, subject: string) {
-    setLoading(true);
-    notesData[category]?.length > 0
-      ? (navigation.navigate('NotesList', {
+  async function handleNavigation(item: any, category: string) {
+    item[category]? (
+      navigation.navigate('NotesList', {
+        userData: userData.usersData,
+        notesData: await userFirestoreData(userData.usersData, category, item),
+        selected: category,
+        subject: item.subjectName,
+      })
+    ) : (navigation.navigate('UploadScreen', {
           userData: userData.usersData,
-          notesData: notesData,
+          notesData: await userFirestoreData(userData.usersData, category, item),
           selected: category,
-          subject: subject,
-        }),
-        setLoading(false))
-      : (navigation.navigate('UploadScreen', {
-          userData: userData.usersData,
-          notesData: notesData,
-          selected: category,
-          subject: subject,
-        }),
-        setLoading(false));
+          subject: item.subjectName,
+        })
+    )
   }
-  // useEffect(() => {
-  //   setList([]);
-  //   setLoaded(false);
-  //   fetchData();
-  // }, [userData]);
+
+  async function handleNavigationToRes(item:any) {
+     navigation.navigate('SubjectResources', {
+      userData: userData.usersData,
+      notesData: {
+        notes :  await userFirestoreData(userData.usersData, 'Notes', item),
+        syllabus :  await userFirestoreData(userData.usersData, 'Syllabus', item),
+        questionPapers :  await userFirestoreData(userData.usersData, 'QuestionPapers', item),
+        otherResources :  await userFirestoreData(userData.usersData, 'OtherResources', item),
+      },
+      subject: item.subjectName,
+    })
+  }
 
   return (
     <View style={styles.body}>
@@ -188,15 +130,12 @@ const Recommendation = (props: Props) => {
                   style={styles.subjectContainer}
                   onPress={() => {
                     props.selected === 'All' ? (
-                       navigation.navigate('SubjectResources', {
-                      userData: userData.usersData,
-                      notesData: item,
-                      subject: item.subjectName,
-                    })
+                      handleNavigationToRes(item)
                     ) : (
-                    handleNavigation(item, props.selected, item.subjectName)
+                    handleNavigation(item, props.selected)
                     )
-                  }}>
+                  }}
+                  >
                   <View
                     style={{
                       width: '75%',
@@ -218,10 +157,10 @@ const Recommendation = (props: Props) => {
                       <View style={styles.subjectCategory}>
                         <Text style={styles.subjectCategoryText}>Notes</Text>
                         <Entypo
-                          name={item.notes?.length > 0 ? 'check' : 'cross'}
+                          name={item.Notes ? 'check' : 'cross'}
                           size={20}
                           color={
-                            item.notes?.length > 0
+                            item.Notes
                               ? styles.subjectCategoryCheckIcon.color
                               : styles.subjectCategoryUnCheckIcon.color
                           }
@@ -231,10 +170,10 @@ const Recommendation = (props: Props) => {
                       <View style={styles.subjectCategory}>
                         <Text style={styles.subjectCategoryText}>Syllabus</Text>
                         <Entypo
-                          name={item.syllabus?.length > 0 ? 'check' : 'cross'}
+                          name={item.Syllabus ? 'check' : 'cross'}
                           size={20}
                           color={
-                            item.syllabus?.length > 0
+                            item.Syllabus
                               ? styles.subjectCategoryCheckIcon.color
                               : styles.subjectCategoryUnCheckIcon.color
                           }
@@ -246,11 +185,11 @@ const Recommendation = (props: Props) => {
                         </Text>
                         <Entypo
                           name={
-                            item.questionPapers?.length > 0 ? 'check' : 'cross'
+                            item.QuestionPapers ? 'check' : 'cross'
                           }
                           size={20}
                           color={
-                            item.questionPapers?.length > 0
+                            item.QuestionPapers
                               ? styles.subjectCategoryCheckIcon.color
                               : styles.subjectCategoryUnCheckIcon.color
                           }
@@ -260,7 +199,7 @@ const Recommendation = (props: Props) => {
                   </View>
                   <View style={styles.container}>
                     <Text style={styles.containerText}>
-                      {item.subjectName[0]}
+                      {item.subjectName.slice(0, 1)}
                     </Text>
                   </View>
                 </TouchableOpacity>

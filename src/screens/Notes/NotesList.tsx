@@ -15,15 +15,12 @@ import {
   userRemoveBookMarks,
 } from '../../redux/reducers/userBookmarkManagement';
 import {NavBtn} from '../../components/CustomFormComponents/CustomBtn';
+import NotesCard from '../../components/notes/notesCard';
 
 type Props = {};
 type RootStackParamList = {
   NotesList: {
-    userData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
-    };
+    userData: any;
     notesData: any;
     selected: string;
     subject: string;
@@ -31,11 +28,7 @@ type RootStackParamList = {
 };
 type MyStackParamList = {
   NotesList: {
-    userData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
-    };
+    userData: any;
     notesData: string;
     selected: string;
     subject: string;
@@ -51,11 +44,7 @@ type MyStackParamList = {
     subject: string;
   };
   UploadScreen: {
-    userData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
-    };
+    userData: any;
     notesData: string;
     selected: string;
     subject: string;
@@ -95,26 +84,13 @@ const NotesList = (props: Props) => {
         useNativeDriver: true,
       }).start();
     }
-  };
+  }
 
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const {userData} = route.params;
   const {notesData} = route.params;
   const {selected} = route.params;
   const {subject} = route.params;
-  const [saved, setSaved] = useState(false);
-
-  const userBookmarks = useSelector(
-    (state: any) => state.userBookmarkManagement,
-  ).userBookMarks;
-
-  const BookmarkStatus = (item: any) => {
-    if (userBookmarks?.some((bookmark: any) => bookmark.notesId === item)) {
-      return true;
-    } else {
-      return false;
-    }
-  };
 
   return (
     <>
@@ -139,146 +115,14 @@ const NotesList = (props: Props) => {
               alignItems: 'flex-end',
             }}>
             <Text style={styles.notesListValueText}>
-              Total {notesData[selected].length}
+              Total {notesData.length}
             </Text>
           </View>
         </View>
-        {notesData[selected].map((item: any, index: number) => {
+        {notesData.map((item: any, index: number) => {
           return (
-            <View style={styles.reccomendationContainer} key={index}>
-              <View style={styles.reccomendationStyle}>
-                <TouchableOpacity
-                  style={styles.subjectContainer}
-                  onPress={() => {
-                    navigation.navigate('PdfViewer', {
-                      userData: {
-                        Course: userData.Course,
-                        Branch: userData.Branch,
-                        Sem: userData.Sem,
-                      },
-                      notesData: item,
-                      selected: selected,
-                      subject: subject,
-                    });
-                    dispatch(userAddToRecentsStart({...item, "viewedTime": `${new Date()}`, "category": selected}));
-                  }}>
-                  <View style={styles.containerBox}>
-                    <View style={styles.containerText}>
-                      <Ionicons
-                        name="eye-sharp"
-                        size={20}
-                        color="#fff"
-                        style={{
-                          alignSelf: 'center',
-                          transform: [{rotate: '135deg'}],
-                        }}
-                      />
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      width: '65%',
-                      height: 80,
-                      justifyContent: 'space-evenly',
-                      alignItems: 'flex-start',
-                      paddingLeft: 10,
-                    }}>
-                    <Text style={styles.subjectName}>
-                      {remove(item.fileName)}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 13,
-                        color: '#161719',
-                        fontWeight: 'bold',
-                      }}>
-                      {selected.charAt(0).toUpperCase() + selected.slice(1)}
-                    </Text>
-                    <View
-                      style={{
-                        width: '100%',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingRight: 10,
-                        maxWidth: '100%',
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          width: '15%',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          marginRight: 10,
-                        }}>
-                        <Ionicons name="eye-sharp" size={13} color="#161719" />
-                        <Text
-                          style={{
-                            fontSize: 13,
-                            color: '#161719',
-                            fontWeight: '700',
-                            paddingLeft: 5,
-                          }}>
-                          {item.reviews < 10
-                            ? `${item.reviews + 10}`
-                            : item.reviews}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          width: '12%',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          paddingHorizontal: 5,
-                        }}>
-                        <AntDesign name="star" size={13} color="#FFC960" />
-                        <Text
-                          style={{
-                            fontSize: 13,
-                            color: '#161719',
-                            fontWeight: '700',
-                            paddingLeft: 5,
-                          }}>
-                          {item.rating < 1 ? 5 : item.rating}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSaved(!saved);
-                      const status = BookmarkStatus(item.notesId);
-                      !status
-                        ? dispatch(
-                            userAddBookMarks({
-                              fileName: item.fileName,
-                              subject: subject,
-                              notesId: item.notesId,
-                              category: selected,
-                            }),
-                          )
-                        : dispatch(
-                            userRemoveBookMarks({
-                              fileName: item.fileName,
-                              subject: subject,
-                              notesId: item.notesId,
-                              category: selected,
-                            }),
-                          );
-                      manageBookmarks(item, selected, subject, status);
-                    }}>
-                    <Fontisto
-                      name={
-                        BookmarkStatus(item.notesId)
-                          ? 'bookmark-alt'
-                          : 'bookmark'
-                      }
-                      size={25}
-                      color={'#161719'}
-                    />
-                  </TouchableOpacity>
-                </TouchableOpacity>
-              </View>
+            <View key={index}>
+            <NotesCard key={index} item={item} userData={userData} notesData={notesData} selected={selected} subject={subject} />
             </View>
           );
         })}

@@ -32,7 +32,7 @@ const Upload = () => {
         Notes: firestore.FieldValue.arrayUnion({
           college: values.college,
           facultyName: values.facultyName,
-          notesId: values.notesId,
+          notesId: values.did,
           uploaderEmail: auth().currentUser?.email,
           uploaderName: auth().currentUser?.displayName,
           uploaderUid: auth().currentUser?.uid,
@@ -64,7 +64,7 @@ const Upload = () => {
               branch: values.branch,
               course: values.course,
               subjectName: values.subjectName,
-              notesId: values.notesId,
+              notesId: values.did,
             }),
           });
       });

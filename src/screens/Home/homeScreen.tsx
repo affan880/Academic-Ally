@@ -24,6 +24,7 @@ import {
   setListLoaded,
 } from '../../redux/reducers/subjectsList';
 import {Toast} from 'native-base';
+import { fetchNotesList } from '../../services/fetch';
 
 type MyStackParamList = {
   Notes: {itemId: number};
@@ -34,15 +35,13 @@ type MyStackParamList = {
       Sem: string;
     };
     notesData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
-      Subject: string;
+      course: string;
+      branch: string;
+      sem: string;
       subject: string;
-
       category: string;
-      notesId: string;
-      fileName: string;
+      did: string;
+      name: string;
     };
   };
 };
@@ -68,14 +67,13 @@ const HomeScreen = (props: Props) => {
       Sem: parts[6],
     };
     const notesData = {
-      Course: parts[4],
-      Branch: parts[5],
-      Sem: parts[6],
-      Subject: parts[7],
+      course: parts[4],
+      branch: parts[5],
+      sem: parts[6],
       subject: parts[7],
       category: parts[3],
-      notesId: parts[8],
-      fileName: parts[7],
+      did: parts[8],
+      name: parts[7],
     };
     navigation.navigate('PdfViewer', {
       userData,
@@ -112,34 +110,7 @@ const HomeScreen = (props: Props) => {
       });
 
     const getData = async () => {
-      try {
-        const list: any = await AsyncStorage.getItem('subjectsList');
-        if (list?.length === 0 && list !== null) {
-          dispatch(setSubjectsList(JSON.parse(list)));
-          dispatch(setListLoaded(true));
-        } else {
-          firestore()
-            .collection('QueryList')
-            .doc('OU')
-            .collection('B.E')
-            .doc('SubjectsListDetail')
-            .get()
-            .then((doc: any) => {
-              const subjectsList = doc.data().list;
-              dispatch(setSubjectsList(subjectsList));
-              dispatch(setListLoaded(true));
-            })
-            .catch(error => {
-              dispatch(setListLoaded(false));
-              Toast.show({
-                title: 'Check your internet connection and try again later',
-                duration: 3000,
-              });
-            });
-        }
-      } catch (error) {
-        console.error(error);
-      }
+      fetchNotesList(dispatch, setSubjectsList, setListLoaded); 
     };
     getData();
     const unsubscribe = dynamicLinks().onLink(handleDynamicLink);

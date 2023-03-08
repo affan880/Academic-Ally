@@ -30,7 +30,7 @@ export const createUserDataSlice = createSlice({
     },
     userRemoveBookMarks: (state, action) => {
       state.userBookMarks = state.userBookMarks.filter(
-        item => item.notesId !== action.payload.notesId,
+        item => item.did !== action.payload.did,
       );
       AsyncStorage.setItem(
         'userBookMarks',

@@ -100,7 +100,7 @@ const NotesScreen = () => {
     notesData[category]?.length > 0
       ? (navigation.navigate('NotesList', {
           userData: userData,
-          notesData: notesData,
+          notesData: notesData[category],
           selected: category,
           subject: subject,
         }),

@@ -181,7 +181,6 @@ const UploadPDF = () => {
         type: [DocumentPicker.types.pdf],
         copyTo: 'cachesDirectory',
       });
-      console.log(result);
       setPdf({uri: result.fileCopyUri, name: result.name});
       return result;
     } catch (error) {

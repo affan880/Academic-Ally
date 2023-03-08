@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
-import {firebase} from '@react-native-firebase/auth';
+import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {Toast, CheckIcon} from 'native-base';
+import { Toast, CheckIcon } from 'native-base';
 
 export const firestoreDB = () => {
   return firestore();
@@ -21,8 +21,9 @@ const DeleteAcc = async () => {
 };
 
 const createUserDocument = async (uid, Details) => {
+  const img = auth().currentUser.photoURL;
   if (!uid) return;
-  firestore()
+  await firestore()
     .collection('Users')
     .doc(`${uid}`)
     .set({
@@ -32,22 +33,9 @@ const createUserDocument = async (uid, Details) => {
       Sem: Details.sem,
       Branch: Details.branch,
       Year: Details.year,
-      NotesUploads: [],
-      NotesDownloads: [],
-      NotesViewed: [],
-      NotesShared: [],
-      NotesLiked: [],
-      NotesDisliked: [],
-      NotesReviewed: [],
-      NotesComments: [],
-      NotesRating: [],
-      NotesRatingCount: [],
-      NotesReviews: [],
-      NotesBookmarked: [],
-      NotesReported: [],
-      NotesReportedReason: [],
       University: Details.university,
       College: Details.college,
+      Pfp: img,
     })
     .then(() => {
       console.log('User added!');
@@ -213,36 +201,43 @@ export const updateFirestoreData = async (uid, data) => {
     });
 };
 
-export const manageBookmarks = async (item, selected, subject, status) => {
-  const data = {
-    fileName: item.fileName,
-    subject: subject,
-    notesId: item.notesId,
-    category: selected,
-  };
-  firestore()
+export const manageBookmarks = async (notesData, status) => {
+  !status ? await firestore()
     .collection('Users')
     .doc(`${getCurrentUser().uid}`)
-    .update({
-      NotesBookmarked: !status
-        ? firebase.firestore.FieldValue.arrayUnion(data)
-        : firebase.firestore.FieldValue.arrayRemove(data),
-    });
+    .collection('NotesBookmarked')
+    .doc(`${notesData.did}`)
+    .set({
+      ...notesData
+    })
+    :
+    removeBookmark(notesData);
 };
 export const removeBookmark = async item => {
-  const data = {
-    fileName: item.fileName,
-    subject: item.subject,
-    notesId: item.notesId,
-    category: item.category,
-  };
   firestore()
     .collection('Users')
     .doc(`${getCurrentUser().uid}`)
-    .update({
-      NotesBookmarked: firebase.firestore.FieldValue.arrayRemove(data),
-    })
-    .catch(error => {
-      console.log('err', error);
-    });
+    .collection('NotesBookmarked')
+    .doc(`${item.did}`)
+    .delete();
 };
+
+export const createList = (item) => {
+  const sep = item.fullPath.split('/');
+  console.log(sep);
+  sep.length === 3 && item.type === 'Folder'
+    ? firestore()
+      .collection('Universities')
+      .doc('OU')
+      .collection('BE')
+      .doc(sep[0])
+      .collection(sep[1])
+      .doc('SubjectsList')
+      .update({
+        list: firebase.firestore.FieldValue.arrayUnion({
+          subjectName: item.name,
+          subjectId: item.id,
+        }),
+      })
+    : null
+}

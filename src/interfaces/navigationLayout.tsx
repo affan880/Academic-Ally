@@ -23,7 +23,18 @@ const navigationLayout = ({children, rightIconFalse, title}: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }} >
         <TouchableOpacity
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: 30,
+          height: 30,
+        }}
           onPress={() => {
             navigation.goBack();
           }}>
@@ -45,6 +56,7 @@ const navigationLayout = ({children, rightIconFalse, title}: Props) => {
           // empty view
           <View style={{width: 30}} />
         )}
+      </View>
       </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>

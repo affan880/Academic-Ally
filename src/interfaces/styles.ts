@@ -35,10 +35,10 @@ const createStyles = () =>
       flexWrap: 'nowrap',
     },
     headerText: {
-      fontSize: 20,
       color: '#fff',
       fontWeight: 'bold',
       flexWrap: 'nowrap',
+      marginTop: 2,
     },
     backBtn: {
       width: 40,

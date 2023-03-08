@@ -22,6 +22,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import {Toast} from 'native-base';
+import { userFirestoreData } from '../../services/fetch';
 
 const Search = () => {
   const styles = useMemo(() => createStyles(), []);
@@ -91,30 +92,27 @@ const Search = () => {
   const selectedSubject = async (item: any) => {
     setLoading(true);
     try {
-      const userFirestoreData: any = await firestore()
+      const userData: any = await firestore()
         .collection('Users')
         .doc(auth().currentUser?.uid)
         .get();
-      const data = await firestore()
-        .collection('Universities')
-        .doc('OU')
-        .collection(userFirestoreData.data().Course)
-        .doc(item.branch)
-        .collection(item.sem)
-        .doc('Subjects')
-        .collection(item.subject)
-        .get();
+        const customizedData = {
+          University : userData.data().University,
+          Course : userData.data().Course,
+          Branch : item.branch,
+          Sem : item.sem
+        }
       const notesData = {
-        notes: data?.docs[0]?.data()?.list || [],
-        otherResources: data?.docs[1]?.data()?.list || [],
-        questionPapers: data?.docs[2]?.data()?.list || [],
-        syllabus: data?.docs[3]?.data()?.list || [],
+        notes: await userFirestoreData(customizedData,'Notes', { subjectName: item.subject}),
+        otherResources: await userFirestoreData(customizedData,'OtherResources', { subjectName: item.subject}),
+        questionPapers: await userFirestoreData(customizedData,'QuestionPapers', { subjectName: item.subject}),
+        syllabus: await userFirestoreData(customizedData,'Syllabus', { subjectName: item.subject}),
         subjectName: item.subject,
       };
       setLoading(false);
       navigation.navigate('SubjectResources', {
         userData: {
-          Course: userFirestoreData.data().Course,
+          Course: userData.data().Course,
           branch: item.branch,
           sem: item.sem,
         },

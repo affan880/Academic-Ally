@@ -49,24 +49,12 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
     sem: '',
     branch: '',
     year: '',
-    notesUploads: [],
-    notesDownloads: [],
-    notesViewed: [],
-    notesShared: [],
-    notesLiked: [],
-    notesDisliked: [],
-    notesReviewed: [],
-    notesComments: [],
-    notesRating: [],
-    notesRatingCount: [],
-    notesReviews: [],
-    notesBookmarked: [],
     university: '',
     college: '',
   };
   const CourseData: any = [
-    {label: 'B.E', value: '1'},
-    {label: 'B.TECH', value: '2'},
+    {label: 'B.E', value: 'BE'},
+    {label: 'B.TECH', value: 'BTECH'},
   ];
   const SemData: any = [
     {label: '1', value: '1'},
@@ -87,12 +75,12 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
   ];
 
   const BranchData: any = [
-    {label: 'IT', value: '1'},
-    {label: 'CSE', value: '2'},
-    {label: 'ECE', value: '3'},
-    {label: 'MECH', value: '4'},
-    {label: 'CIVIL', value: '5'},
-    {label: 'EEE', value: '6'},
+    {label: 'IT', value: 'IT'},
+    {label: 'CSE', value: 'CSE'},
+    {label: 'ECE', value: 'ECE'},
+    {label: 'MECH', value: 'MECH'},
+    {label: 'CIVIL', value: 'CIVIL'},
+    {label: 'EEE', value: 'EEE'},
   ];
 
   const UniversityData: any = [{label: 'Osmania University', value: 'OU'}];

@@ -21,6 +21,7 @@ import {
 } from '../../redux/reducers/userBookmarkManagement';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
+import { fetchBookmarksList } from '../../services/fetch';
 
 const {width, height} = Dimensions.get('window');
 
@@ -56,7 +57,6 @@ const Bookmark = () => {
   ).userBookMarks;
   const dispatch = useDispatch();
   const navigation = useNavigation<pdfViewer>();
-
   useEffect(() => {
     AsyncStorage.getItem('userBookMarks').then(data => {
       if (data && data !== '[]') {
@@ -78,22 +78,7 @@ const Bookmark = () => {
   useEffect(() => {
     const getListData = async () => {
       if (bookmarkList?.length === 0) {
-        firestore()
-          .collection('Users')
-          .doc(getCurrentUser()?.uid)
-          .get()
-          .then(doc => {
-            if (doc.exists) {
-              const list = doc.data()?.NotesBookmarked;
-              if (list?.length !== 0) {
-                dispatch(setBookmarks(list));
-                setListData(list);
-                AsyncStorage.setItem('userBookMarks', JSON.stringify(listData));
-              } else {
-                setListData([]);
-              }
-            }
-          });
+        fetchBookmarksList(dispatch, setBookmarks, setListData);
       } else {
         setListData(bookmarkList);
       }
@@ -112,13 +97,13 @@ const Bookmark = () => {
     closeRow(rowMap, rowKey);
     const newData = [...listData];
     const prevIndex = listData.findIndex(
-      (item: any) => item.notesId === rowKey,
+      (item: any) => item.did === rowKey,
     );
     newData.splice(prevIndex, 1);
     setListData(newData);
     dispatch(
       userRemoveBookMarks({
-        notesId: item.item.notesId,
+        did: item.item.did,
       }),
     );
     removeBookmark(item.item);
@@ -173,7 +158,7 @@ const Bookmark = () => {
                   alignItems: 'flex-start',
                   paddingLeft: 10,
                 }}>
-                <Text style={styles.fileName}>{remove(item.fileName)}</Text>
+                <Text style={styles.fileName}>{remove(item.name)}</Text>
                 <Text
                   style={{
                     fontSize: 12,
@@ -210,7 +195,7 @@ const Bookmark = () => {
         justifyContent="center"
         alignSelf={'center'}
         ml={'auto'}
-        onPress={() => deleteRow(rowMap, data.item.notesId, data)}
+        onPress={() => deleteRow(rowMap, data.item.did, data)}
         _pressed={{
           opacity: 0.5,
         }}>

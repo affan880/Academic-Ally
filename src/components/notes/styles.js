@@ -102,17 +102,17 @@ const createStyles = () =>
 
     reccomendationContainer: {
       alignItems: 'center',
-      justifyContent: 'center',
       marginTop: 20,
       width: width / 1.1,
-      height: height / 7,
+      height: height / 4.3,
       alignSelf: 'center',
       borderRadius: 10,
       marginBottom: 20,
+      backgroundColor: '#6360FF',
     },
     reccomendationStyle: {
       width: width / 1.1,
-      height: height / 7,
+      height: "75%",
       backgroundColor: '#FCFCFF',
       borderColor: '#0000000',
       borderRadius: 10,
@@ -126,28 +126,28 @@ const createStyles = () =>
       backgroundColor: 'rgba(255, 255, 255, 0.17)',
       width: 30,
       height: 30,
-      borderRadius: 2,
+      borderRadius: 50,
       position: 'absolute',
       justifyContent: 'center',
       alignItems: 'center',
       transform: [{rotate: '45deg'}],
     },
     containerBox: {
-      backgroundColor: '#6360FF',
+      backgroundColor: '#FF8181',
       width: 80,
       height: 80,
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 10,
+      borderRadius: 15,
       shadowColor: '#000',
     },
     subjectName: {
-      fontSize: 14,
-      fontWeight: '400',
+      fontSize: 15,
+      fontWeight: '700',
       color: '#161719',
       fontFamily: 'DM Sans',
       fontStyle: 'normal',
-      width: '80%',
+      width: '90%',
     },
     subjectContainer: {
       width: width / 1.1,
@@ -177,7 +177,7 @@ const createStyles = () =>
     },
     notesListHeaderText: {
       fontSize: 16,
-      fontWeight: '500',
+      fontWeight: 'bold',
       color: '#161719',
     },
     notesListValueText: {
@@ -198,6 +198,26 @@ const createStyles = () =>
       color: '#161719',
       textDecorationLine: 'underline',
     },
+    cardOptions: {
+        width: '100%',
+        height: '25%',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        paddingHorizontal: 25,
+    },
+    cardOptionContainer: {
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexDirection: 'row',
+    },
+    cardOptionText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+        paddingRight: 5,
+      }
+
   });
 
 export default createStyles;
