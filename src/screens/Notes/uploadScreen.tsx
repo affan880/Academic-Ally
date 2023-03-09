@@ -37,13 +37,13 @@ interface Result {
 type RootStackParamList = {
   UploadScreen: {
     userData: {
-      Course: string;
-      branch: string;
-      Sem: string;
+      course: any;
+      branch: any;
+      sem: any;
     };
-    notesData: string;
-    selected: string;
-    subject: string;
+    notesData: any;
+    selected: any;
+    subject: any;
   };
 };
 
@@ -55,8 +55,8 @@ const UploadPDF = () => {
   const subject = route.params.subject;
   const {userData} = route.params;
   const {notesData}: any = route.params;
-  const path = `${userData?.Course}/${userData?.branch}/${
-    userData?.Sem
+  const path = `${userData?.course}/${userData?.branch}/${
+    userData?.sem
   }/${subject}/${selected}/${auth().currentUser?.uid}`;
   const storageRef = storage().ref(path);
 
@@ -64,7 +64,7 @@ const UploadPDF = () => {
   const [uploadingResult, setUploadingResult] = React.useState(null);
   const navigation = useNavigation();
   const [pdfSize, setPdfSize] = useState(0);
-
+  
   useEffect(() => {
     try {
       if (uploadingResult !== null) {
@@ -83,9 +83,9 @@ const UploadPDF = () => {
         firestore()
           .collection('UsersUploads')
           .doc('OU')
-          .collection(userData.Course)
+          .collection(userData.course)
           .doc(userData.branch)
-          .collection(userData.Sem)
+          .collection(userData.sem)
           .doc(subject)
           .collection(selected)
           .doc('list')
@@ -96,9 +96,9 @@ const UploadPDF = () => {
               firestore()
                 .collection('UsersUploads')
                 .doc('OU')
-                .collection(userData.Course)
+                .collection(userData.course)
                 .doc(userData.branch)
-                .collection(userData.Sem)
+                .collection(userData.sem)
                 .doc(subject)
                 .collection(selected)
                 .doc('list')
@@ -108,9 +108,9 @@ const UploadPDF = () => {
               firestore()
                 .collection('UsersUploads')
                 .doc('OU')
-                .collection(userData.Course)
+                .collection(userData.course)
                 .doc(userData.branch)
-                .collection(userData.Sem)
+                .collection(userData.sem)
                 .doc(subject)
                 .collection(selected)
                 .doc('list')
@@ -154,7 +154,6 @@ const UploadPDF = () => {
       setUploadingResult(snapshot);
     });
   };
-
   const requestPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -259,7 +258,7 @@ const UploadPDF = () => {
               pl={2}
               fontWeight={'400'}
               alignSelf={'center'}>
-              {notesData.subjectName}
+              {subject}
             </Text>
           </Box>
           <Box
@@ -276,7 +275,7 @@ const UploadPDF = () => {
               pl={2}
               fontWeight={'400'}
               alignSelf={'center'}>
-              {userData.Course}
+              {userData.course}
             </Text>
           </Box>
           <Box
@@ -310,7 +309,7 @@ const UploadPDF = () => {
               pl={2}
               fontWeight={'400'}
               alignSelf={'center'}>
-              {userData.Sem}
+              {userData.sem}
             </Text>
           </Box>
         </Box>

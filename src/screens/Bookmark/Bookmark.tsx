@@ -1,13 +1,14 @@
-import {StyleSheet, View, Dimensions, ScrollView} from 'react-native';
+import {StyleSheet, View, Dimensions, ScrollView, TouchableOpacity} from 'react-native';
 import React, {useState, useEffect, useMemo} from 'react';
 import ScreenLayout from '../../interfaces/screenLayout';
-import {Box, Text, Pressable, Icon, HStack, VStack} from 'native-base';
+import {Box, Text, Pressable, Icon, HStack, VStack, Divider} from 'native-base';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LottieView from 'lottie-react-native';
+import { ShareIconImg } from '../../assets/images/images';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {
   getCurrentUser,
@@ -21,7 +22,7 @@ import {
 } from '../../redux/reducers/userBookmarkManagement';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
-import { fetchBookmarksList } from '../../services/fetch';
+import { fetchBookmarksList, shareNotes } from '../../services/fetch';
 
 const {width, height} = Dimensions.get('window');
 
@@ -52,6 +53,7 @@ type pdfViewer = StackNavigationProp<MyStackParamList, 'PdfViewer'>;
 const Bookmark = () => {
   const styles = useMemo(() => createStyles(), []);
   const [listData, setListData] = useState([]);
+  const [sortedList, setSortedList] = useState([]);
   const bookmarkList = useSelector(
     (state: any) => state.userBookmarkManagement,
   ).userBookMarks;
@@ -109,6 +111,24 @@ const Bookmark = () => {
     removeBookmark(item.item);
   };
 
+  function groupBySubject(array:any) {
+  const groupedArray:any = {};
+  for (const item of array) {
+    const subject = item.subject;
+    if (groupedArray[subject]) {
+      groupedArray[subject].push(item);
+    } else {
+      groupedArray[subject] = [item];
+    }
+  }
+  setSortedList(Object.values(groupedArray));
+  return Object.values(groupedArray);
+}
+
+useEffect(() => {
+ groupBySubject(listData);
+}, [listData]);
+
   // const onRowDidOpen = (rowKey: any) => {
   //   console.log('This row opened', rowKey);
   // };
@@ -116,7 +136,7 @@ const Bookmark = () => {
   const renderItem = ({item, index}: any) => (
     <Box
       height={height / 7}
-      width={width / 1.1}
+      width={"92%"}
       borderRadius={10}
       backgroundColor={'#FFFFFF'}
       justifyContent={'center'}
@@ -136,43 +156,45 @@ const Bookmark = () => {
         }}>
         <HStack px={15}>
           <View style={styles.containerBox}>
-            <View style={styles.containerText}>
-              <Ionicons
-                name="eye-sharp"
-                size={20}
-                color="#fff"
-                style={{
-                  alignSelf: 'center',
-                  transform: [{rotate: '135deg'}],
-                }}
-              />
-            </View>
+            <View style={styles.containerText}/>
           </View>
-          <HStack width={'75%'} px={5}>
-            <VStack>
+          <HStack width={'80%'} px={5} justifyContent={'space-between'} >
+            <VStack  >
               <Box
                 style={{
                   width: '100%',
                   height: 80,
                   justifyContent: 'space-evenly',
                   alignItems: 'flex-start',
-                  paddingLeft: 10,
                 }}>
                 <Text style={styles.name}>{remove(item.name)}</Text>
                 <Text
                   style={{
-                    fontSize: 12,
+                    fontSize: 14,
                     color: '#161719',
                   }}
-                  fontWeight={500}>
+                  fontWeight={400}>
                   {item?.category === 'otherResources'
                     ? 'Other Resources'
                     : item?.category?.charAt(0).toUpperCase() +
                       item?.category?.slice(1)}
                 </Text>
-                <Text style={styles.subjectName}>{item?.subject}</Text>
+                <HStack>
+                  <Text style={styles.subjectName}>{item?.units === "" ? "Units Unknown" : `Units ${item.units}`}</Text>
+                  <Text style={[styles.subjectName, {
+                    marginLeft: 10,
+                  }]}>Semester: {`${item.sem}`}</Text>
+                </HStack>
+                <Text style={styles.subjectName}>Branch: {item?.branch}</Text>
               </Box>
             </VStack>
+            <TouchableOpacity onPress={()=>{
+              shareNotes(item)
+            }} style={{
+              justifyContent: 'center',
+            }}  >
+              <ShareIconImg /> 
+            </TouchableOpacity>
           </HStack>
         </HStack>
       </Pressable>
@@ -188,10 +210,13 @@ const Bookmark = () => {
       backgroundColor={'#FFFFFF'}
       justifyContent={'center'}
       alignSelf={'center'}>
+        <Box width={"78%"} borderRadius={10} backgroundColor={"#FFF"} zIndex={999} />
       <Pressable
-        w="70"
-        bg="red.500"
-        height={70}
+        w="90"
+        height={"100%"}
+        bg="#F65742"
+        borderBottomRightRadius={10}
+        borderTopRightRadius={10}
         justifyContent="center"
         alignSelf={'center'}
         ml={'auto'}
@@ -200,10 +225,10 @@ const Bookmark = () => {
           opacity: 0.5,
         }}>
         <VStack alignItems="center" space={2}>
-          <Icon as={<MaterialIcons name="delete" />} color="white" size="lg" />
-          <Text color="white" fontSize="xs" fontWeight="medium">
+          <Icon as={<MaterialIcons name="delete" />} color="white" size="2xl" />
+          {/* <Text color="white" fontSize="xs" fontWeight="medium">
             Delete
-          </Text>
+          </Text> */}
         </VStack>
       </Pressable>
     </HStack>
@@ -217,21 +242,50 @@ const Bookmark = () => {
       </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>
-          <SwipeListView
-            data={listData}
-            renderItem={renderItem}
-            scrollEnabled={true}
-            ItemSeparatorComponent={() => (
-              <View style={{height: 20, width: '100%'}} />
-            )}
-            showsVerticalScrollIndicator={false}
-            renderHiddenItem={renderHiddenItem}
-            rightOpenValue={-140}
-            previewRowKey={'0'}
-            previewOpenValue={-40}
-            previewOpenDelay={3000}
-            // onRowDidOpen={onRowDidOpen}
-          />
+          <ScrollView>
+          {
+            sortedList?.map((item:any, index:any) => {
+              return (
+                <View key={index} style={{
+                  marginBottom: 20,
+                }}>
+                  <Text style={{
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    color: '#161719',
+                    marginLeft: 10,
+                    marginTop: 20,
+                    marginBottom: 10,
+                    width: '95%',
+                  }}>{item[0].subject}</Text>
+                  <SwipeListView
+                  data={item}
+                  renderItem={renderItem}
+                  scrollEnabled={true}
+                  renderSectionHeader={({section}) => (
+                    <Text style={styles.header}>{section.title}</Text>
+                  )}
+                  ItemSeparatorComponent={() => (
+                    <View style={{height: 20, width: '100%'}} />
+                  )}
+                  showsVerticalScrollIndicator={false}
+                  renderHiddenItem={renderHiddenItem}
+                  rightOpenValue={-100}
+                  previewRowKey={'0'}
+                  previewOpenValue={-40}
+                  previewOpenDelay={3000}
+                  // onRowDidOpen={onRowDidOpen}
+                  />
+                  <Divider style={{
+                    marginTop: 20,
+                    width: '90%',
+                    alignSelf: 'center',
+                  }} />
+                </View>
+              );
+            })
+          }
+          </ScrollView>
         </View>
       </View>
     </View>

@@ -15,9 +15,10 @@ interface Props {
   children?: React.ReactNode;
   rightIconFalse: boolean;
   title: string;
+  handleScroll: (event: any) => void;
 }
 
-const navigationLayout = ({children, rightIconFalse, title}: Props) => {
+const navigationLayout = ({children, rightIconFalse, title, handleScroll}: Props) => {
   const navigation = useNavigation();
   const styles = useMemo(() => createStyles(), []);
   return (
@@ -61,6 +62,7 @@ const navigationLayout = ({children, rightIconFalse, title}: Props) => {
       <View style={styles.body}>
         <View style={styles.bodyContent}>
           <ScrollView
+            onScroll={handleScroll}
             showsVerticalScrollIndicator={false}>
             {children}
           </ScrollView>

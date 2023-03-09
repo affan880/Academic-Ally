@@ -19,9 +19,9 @@ const createStyles = () =>
             alignContent: "flex-start",
         },
         headerText: {
-            fontSize: 16,
+            fontSize: 18,
             color: "#FCFCFF",
-            fontWeight: "600",
+            fontWeight: "700",
             marginLeft: 10,
         },
         body: {
@@ -30,6 +30,7 @@ const createStyles = () =>
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
             width: width,
+            paddingBottom: 80,
         },
         bodyContent: {
             flex: 1,
@@ -48,7 +49,6 @@ const createStyles = () =>
             color: "#FCFCFF",
             fontWeight: "400",
             alignSelf: "center",
-            marginBottom: 10,
         },
         menuContainer: {
             backgroundColor: "#FCFCFF",
@@ -68,7 +68,7 @@ const createStyles = () =>
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            paddingVertical: 20,
+            paddingVertical: 15,
         },
         gridContainer: {
             flex: 1,

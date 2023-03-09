@@ -168,7 +168,6 @@ export async function ViewCount(data) {
 }
 
 async function addToUSersRateList(data, rating) {
-  console.log(data);
   await firestore()
     .collection('Users')
     .doc(auth().currentUser?.uid)
@@ -193,7 +192,6 @@ async function addToUSersRateList(data, rating) {
 }
 
 export async function submitRating(data, newRating) {
-  console.log(data);
   const rate = (newRating + data.rating)
   const rating = rate / 2;
   // console.log(rating);
@@ -286,7 +284,7 @@ export async function getMailId() {
 export const shareNotes = async (notesData) => {
   const link = await dynamicLinks().buildShortLink(
     {
-      link: `https://academically.com/${notesData.category}/${notesData.course}/${notesData.branch}/${notesData.sem}/${notesData.subject}/${notesData.did}`,
+      link: `https://academically.com/${notesData.category}/${notesData.course}/${notesData.branch}/${notesData.sem}/${notesData.subject}/${notesData.did}/${notesData.units}//${notesData.name}`,
       domainUriPrefix: 'https://academicallyapp.page.link',
       android: {
         packageName: 'com.academically',

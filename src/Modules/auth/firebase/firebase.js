@@ -137,7 +137,12 @@ export const ResendVerification = async (email, password) => {
     .then(userCredential => {
       var user = userCredential.user;
       userCredential.user.sendEmailVerification();
-      console.log('done');
+      // Toast.show({
+      //   title: `Verification mail sent!`,
+      //   type: 'success',
+      //   placement: 'top-right',
+      //   backgroundColor: '#00b300',
+      // });
     })
     .catch(error => {
       var errorCode = error.code;
@@ -162,7 +167,12 @@ export const forgotPassword = email => {
   auth()
     .sendPasswordResetEmail(email)
     .then(() => {
-      console.log('Password reset email sent!');
+      Toast.show({
+        title: 'Password reset link sent to your email',
+        type: 'success',
+        placement: 'top-right',
+        backgroundColor: '#00b300',
+      });
     })
     .catch(error => {
       var errorCode = error.code;

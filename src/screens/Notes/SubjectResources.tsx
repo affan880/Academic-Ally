@@ -80,7 +80,7 @@ const NotesScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const subjectTitle : string =
-    subject.length > 20 ? subject.slice(0, 20) + '...' : subject;
+    subject.length > 20 ? subject.slice(0, 25) + '...' : subject;
 
   useEffect(() => {
     const getRecents = async () => {

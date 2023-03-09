@@ -28,7 +28,7 @@ const createStyles = () =>
     },
     bodyContent: {
       flex: 1,
-      paddingTop: 35,
+      paddingTop: 15,
     },
     categoryBtns: {
       width: width * 0.4,
@@ -123,19 +123,18 @@ const createStyles = () =>
       backgroundColor: 'rgba(255, 255, 255, 0.17)',
       width: 30,
       height: 30,
-      borderRadius: 2,
+      borderRadius: 50,
       position: 'absolute',
       justifyContent: 'center',
       alignItems: 'center',
-      transform: [{rotate: '45deg'}],
     },
     containerBox: {
-      backgroundColor: '#6360FF',
+      backgroundColor: '#FF8181',
       width: 80,
       height: 80,
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 10,
+      borderRadius: 20,
       shadowColor: '#000',
     },
     subjectName: {
@@ -144,7 +143,6 @@ const createStyles = () =>
       color: '#161719',
       fontFamily: 'DM Sans',
       fontStyle: 'normal',
-      width: '100%',
     },
     subjectContainer: {
       width: width / 1.1,
@@ -193,8 +191,8 @@ const createStyles = () =>
       alignItems: 'center',
     },
     name: {
-      fontSize: 14,
-      fontWeight: 'bold',
+      fontSize: 16,
+      fontWeight: '700',
       color: '#161719',
     },
   });

@@ -94,7 +94,7 @@ const NotesList = (props: Props) => {
 
   return (
     <>
-      <NavigationLayout rightIconFalse={true}  title={subject} >
+      <NavigationLayout rightIconFalse={true} title={subject} handleScroll={handleScroll} >
         <View style={styles.notesListHeaderContainer}>
           <View
             style={{
@@ -121,7 +121,7 @@ const NotesList = (props: Props) => {
         </View>
         {notesData.map((item: any, index: number) => {
           return (
-            <View key={index}>
+            <View key={item.id}>
             <NotesCard key={index} item={item} userData={userData} notesData={notesData} selected={selected} subject={subject} />
             </View>
           );

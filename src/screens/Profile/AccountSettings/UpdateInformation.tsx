@@ -42,15 +42,15 @@ const UpdateInformation = () => {
 
   const styles = createStyles();
   const initialValues = {
-    name: userFirestoreData.usersData.Name,
-    course: userFirestoreData.usersData.Course,
-    sem: userFirestoreData.usersData.Sem,
-    branch: userFirestoreData.usersData.Branch,
-    year: userFirestoreData.usersData.Year,
+    name: userFirestoreData.usersData.name,
+    course: userFirestoreData.usersData.course,
+    sem: userFirestoreData.usersData.sem,
+    branch: userFirestoreData.usersData.branch,
+    year: userFirestoreData.usersData.year,
   };
-  const CourseData: any = [
-    {label: 'B.E', value: '1'},
-    {label: 'B.TECH', value: '2'},
+   const CourseData: any = [
+    {label: 'B.E', value: 'BE'},
+    {label: 'B.TECH', value: 'BTECH'},
   ];
   const SemData: any = [
     {label: '1', value: '1'},
@@ -71,13 +71,15 @@ const UpdateInformation = () => {
   ];
 
   const BranchData: any = [
-    {label: 'IT', value: '1'},
-    {label: 'CSE', value: '2'},
-    {label: 'ECE', value: '3'},
-    {label: 'MECH', value: '4'},
-    {label: 'CIVIL', value: '5'},
-    {label: 'EEE', value: '6'},
+    {label: 'IT', value: 'IT'},
+    {label: 'CSE', value: 'CSE'},
+    {label: 'ECE', value: 'ECE'},
+    {label: 'MECH', value: 'MECH'},
+    {label: 'CIVIL', value: 'CIVIL'},
+    {label: 'EEE', value: 'EEE'},
   ];
+
+  const UniversityData: any = [{label: 'Osmania University', value: 'OU'}];
 
   const updateReduxData = (data: any) => {
     dispatch(setUsersData(data));
@@ -88,11 +90,11 @@ const UpdateInformation = () => {
 
   const updateData = async (values: any) => {
     const data = {
-      Name: values.name,
-      Course: values.course,
-      Sem: values.sem,
-      Branch: values.branch,
-      Year: values.year,
+      name: values.name,
+      // course: values.course,
+      sem: values.sem,
+      branch: values.branch,
+      // Year: values.year,
     };
     updateFirestoreData(uid, data);
     getFirestoreData(uid, updateReduxData);
@@ -106,7 +108,9 @@ const UpdateInformation = () => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Avatar source={User} size={'2xl'} alignSelf={'center'} mt={10} />
+        <Avatar source={{
+          uri: auth().currentUser?.photoURL || User,
+        }} size={'2xl'} alignSelf={'center'} mt={10} />
         <Text
           style={{
             fontSize: 15,
@@ -114,7 +118,7 @@ const UpdateInformation = () => {
             marginTop: 10,
             color: '#000000',
           }}>
-          Course: {userFirestoreData.usersData.Course}
+          Course: {userFirestoreData.usersData.course}
         </Text>
         <Text
           style={{
@@ -123,7 +127,7 @@ const UpdateInformation = () => {
             marginTop: 10,
             color: '#000000',
           }}>
-          Sem: {userFirestoreData.usersData.Sem}
+          Sem: {userFirestoreData.usersData.sem}
         </Text>
         <Text
           style={{
@@ -132,7 +136,7 @@ const UpdateInformation = () => {
             marginTop: 10,
             color: '#000000',
           }}>
-          Branch: {userFirestoreData.usersData.Branch}
+          Branch: {userFirestoreData.usersData.branch}
         </Text>
         <Text
           style={{
@@ -141,7 +145,7 @@ const UpdateInformation = () => {
             marginTop: 10,
             color: '#000000',
           }}>
-          Year: {userFirestoreData.usersData.Year}
+          Year: {userFirestoreData.usersData.year}
         </Text>
         <Form
           validationSchema={updatevalidationSchema}
@@ -160,18 +164,25 @@ const UpdateInformation = () => {
               flex: 1,
               justifyContent: 'space-between',
             }}>
-            <DropdownComponent
+            {/* <DropdownComponent
               name="course"
               data={CourseData}
               placeholder={'Course'}
               leftIcon="Safety"
               width={screenWidth / 2.5}
-            />
+            /> */}
             <DropdownComponent
               name="branch"
               data={BranchData}
               placeholder={'Branch'}
               leftIcon="bars"
+              width={screenWidth / 2.5}
+            />
+             <DropdownComponent
+              name="sem"
+              data={SemData}
+              placeholder={'Semester'}
+              leftIcon="ellipsis1"
               width={screenWidth / 2.5}
             />
           </View>
@@ -182,7 +193,7 @@ const UpdateInformation = () => {
               flex: 1,
               justifyContent: 'space-between',
             }}>
-            <DropdownComponent
+            {/* <DropdownComponent
               name="year"
               data={YearData}
               placeholder={'Studying year'}
@@ -195,7 +206,8 @@ const UpdateInformation = () => {
               placeholder={'Semester'}
               leftIcon="ellipsis1"
               width={screenWidth / 2.5}
-            />
+            /> */}
+            
           </View>
           <View style={styles.SignupButton}>
             <CustomBtn title="Update" color="#19647E" />

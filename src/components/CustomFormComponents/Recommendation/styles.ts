@@ -19,7 +19,7 @@ const createStyles = () =>
       borderRadius: 10,
     },
     reccomendationStyle: {
-      width: width / 1.1,
+      width: '100%',
       height: height / 7,
       backgroundColor: '#FCFCFF',
       borderColor: '#0000000',
@@ -28,9 +28,9 @@ const createStyles = () =>
       alignItems: 'center',
     },
     containerText: {
-      fontSize: 18,
-      color: 'white',
-      fontWeight: 'bold',
+      fontSize: 16,
+      color: '#FFF',
+      fontWeight: '400',
       backgroundColor: 'rgba(255, 255, 255, 0.17)',
       width: 30,
       height: 30,

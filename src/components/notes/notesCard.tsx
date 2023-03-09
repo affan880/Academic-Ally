@@ -11,7 +11,8 @@ import NavigationLayout from '../../interfaces/navigationLayout';
 import createStyles from './styles';
 import {manageBookmarks} from '../../Modules/auth/firebase/firebase';
 import {userAddToRecentsStart} from '../../redux/reducers/usersRecentPdfsManager';
-import { ReportIconWhite, ShareIcon, ReportIconBlack } from '../../assets/images/icons';
+import { ReportIconWhite, ShareIcon } from '../../assets/images/icons';
+import { ReportIconBlack } from '../../assets/images/images';
 import {
   Box,
   Icon,
@@ -22,7 +23,8 @@ import {
   Stack,
   Center,
   Checkbox,
-  Toast
+  Toast,
+  Card
 } from 'native-base';
 import {
   userAddBookMarks,
@@ -121,6 +123,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
   const [checked3, setChecked3] = useState(false);
   const userFirestoreData = useSelector((state: any) => state.usersData);
   const [ratedList, setRatedList] = useState<any>([]);
+  const [submitted, setSubmitted] = useState(false);
   const ReportsList = [];
   const userBookmarks = useSelector(
     (state: any) => state.userBookmarkManagement,
@@ -421,7 +424,16 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
       </Modal>
        <Center>
       <Actionsheet isOpen={isOpen} onClose={onClose} borderRadius={0}>
-        <Actionsheet.Content>
+        {
+          !submitted ? (
+            <Card style={{
+              backgroundColor: "#FFF",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            }}>
             <ReportIconBlack /> 
           <Box w="100%" h={60} px={4} my={4} justifyContent="center" alignItems={"center"} >
             <Text fontSize="16" color="#161719" fontWeight={700} >
@@ -500,14 +512,64 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                 checked2,
                 checked3
               });
-              onClose();
+              setSubmitted(true);
             }} >
               <Text fontSize={'16px'} fontWeight={'700'} textAlign="center" color={"#FFF"} >
                 Confirm
               </Text>
             </TouchableOpacity>
           </Stack>  
-        </Actionsheet.Content>
+          <Ionicons name="close-circle" size={30} onPress={onClose} color="#BCC4CC" style={{
+              position: "absolute",
+              top: 15,
+              right: 15,
+            }} />
+        </Card>
+          ) : (
+            <Card style={{
+              height: 400,
+              backgroundColor: "#FFF",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            }} >
+            <AntDesign name="checkcircle" size={50} color="#6360FF" />
+            <Box w="100%" h={60} px={4} my={4} justifyContent="center" alignItems={"center"} marginBottom={20} >
+              <Text fontSize="16" color="#161719" fontWeight={700} >
+              Thanks for letting us know!
+              </Text>
+              <Text fontSize="14" padding={2} paddingTop={4} color="#91919F" textAlign={"center"} fontWeight={700} >
+              We will review your report and take appropriate action.
+              </Text>
+            </Box>
+            <TouchableOpacity style={{
+              backgroundColor: '#6360FF',
+              borderRadius: 10,
+              width: "100%",
+              paddingVertical: 10,
+              marginVertical: 50,
+              position: "absolute",
+              height: 50,
+              bottom: 0,
+              justifyContent: "center",
+              alignItems: "center",
+             }} onPress={()=>{
+              onClose();
+            }} >
+              <Text fontSize={'16px'} fontWeight={'700'} textAlign="center" color={"#FFF"} >
+                Close
+              </Text>
+            </TouchableOpacity>
+            <Ionicons name="close-circle" size={30} onPress={onClose} color="#BCC4CC" style={{
+              position: "absolute",
+              top: 15,
+              right: 15,
+            }} />
+            </Card>
+          ) 
+        }
       </Actionsheet>
     </Center>
     </View>

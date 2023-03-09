@@ -99,7 +99,12 @@ const Recommendation = (props: Props) => {
       })
     ) : (navigation.navigate('UploadScreen', {
           userData: userData.usersData,
-          notesData: await userFirestoreData(userData.usersData, category, item),
+          notesData: {
+            subject : item.subjectName,
+            course : userData.usersData.Course,
+            branch : userData.usersData.Branch,
+            sem : userData.usersData.Sem,
+          },
           selected: category,
           subject: item.subjectName,
         })
@@ -118,7 +123,6 @@ const Recommendation = (props: Props) => {
       subject: item.subjectName,
     })
   }
-
   return (
     <View style={styles.body}>
       {loaded ? (
@@ -142,7 +146,7 @@ const Recommendation = (props: Props) => {
                       height: '100%',
                       justifyContent: 'space-evenly',
                       alignItems: 'flex-start',
-                      paddingLeft: 10,
+                      margin: 2,
                       paddingVertical: 15,
                     }}>
                     <Text style={styles.subjectName}>{item.subjectName}</Text>
@@ -157,7 +161,7 @@ const Recommendation = (props: Props) => {
                       <View style={styles.subjectCategory}>
                         <Text style={styles.subjectCategoryText}>Notes</Text>
                         <Entypo
-                          name={item.Notes ? 'check' : 'cross'}
+                          name={item?.Notes ? 'check' : 'cross'}
                           size={20}
                           color={
                             item.Notes

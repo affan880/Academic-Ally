@@ -118,11 +118,11 @@ const PdfViewer = () => {
   useEffect(() => {
     setUserRecents(recentsList);
   }, [recentsList]);
-
+console.log(notesData)
   async function createDynamicLink() {
          const link = await dynamicLinks().buildShortLink(
       {
-        link: `https://academically.com/${notesData.category}/${notesData.course}/${notesData.branch}/${notesData.sem}/${notesData.subject}/${notesData.did}`,
+        link: `https://academically.com/${notesData.category}/${notesData.course}/${notesData.branch}/${notesData.sem}/${notesData.subject}/${notesData.did}/${notesData.units}/${notesData.name}`,
         domainUriPrefix: 'https://academicallyapp.page.link',
         android: {
           packageName: 'com.academically',

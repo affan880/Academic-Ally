@@ -29,11 +29,13 @@ const Profile = () => {
   const user = auth().currentUser;
   const [isOpen, setIsOpen] = React.useState(false);
   const [password, setPassword] = useState<string>('');
+  const [logOutAlert, setLogOutAlert] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const userImage = useSelector((state: any) => {
     return state.usersData.userProfile;
   });
   const onClose = () => setIsOpen(false);
+  const onCloseLogout = () => setLogOutAlert(false);
   const cancelRef = React.useRef(null);
   type MyScreenNavigationProp = StackNavigationProp<
     MyStackParamList,
@@ -101,14 +103,14 @@ const Profile = () => {
           style={{
             flexDirection: 'row',
           }}>
-          <Ionicons
+          {/* <Ionicons
             name="chevron-back-outline"
             size={20}
             color="#ffffff"
             onPress={() => {
               navigation.goBack();
             }}
-          />
+          /> */}
           <Text style={styles.headerText}>Account</Text>
         </View>
          <VStack alignItems="center" space={2} marginTop={10} width={"100%"} justifyContent={"center"} >
@@ -160,8 +162,8 @@ const Profile = () => {
         <Text style={styles.email}>{userFirestoreData.usersData.email}</Text>
       </View>
       <View style={styles.body}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.bodyContent}>
-          <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.menuContainer}>
               <VStack>
                 <View>
@@ -174,7 +176,7 @@ const Profile = () => {
                       itemId: 86,
                     });
                   }}>
-                  <Text style={styles.settingsText}>Update Information</Text>
+                  <Text style={styles.settingsText}>Update Profile</Text>
                   <Ionicons
                     name="chevron-forward-outline"
                     size={20}
@@ -184,7 +186,7 @@ const Profile = () => {
                 <TouchableOpacity
                   style={styles.settingsContainer}
                   onPress={() => {
-                    auth().signOut();
+                    setLogOutAlert(!logOutAlert);
                   }}>
                   <Text style={styles.settingsText}>Log Out</Text>
                   <Ionicons
@@ -205,8 +207,51 @@ const Profile = () => {
                 </TouchableOpacity>
               </VStack>
             </View>
-          </ScrollView>
+            <View style={styles.menuContainer}>
+              <VStack>
+                <View>
+                  <Text style={styles.settingsTitleText}>Support</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.settingsContainer}>
+                  <Text style={styles.settingsText}>About Us</Text>
+                  <Ionicons
+                    name="chevron-forward-outline"
+                    size={20}
+                    color="#91919F"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.settingsContainer}>
+                  <Text style={styles.settingsText}>Share AcademicAlly</Text>
+                  <Ionicons
+                    name="chevron-forward-outline"
+                    size={20}
+                    color="#91919F"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.settingsContainer}>
+                  <Text style={styles.settingsText}>Privacy Policy</Text>
+                  <Ionicons
+                    name="chevron-forward-outline"
+                    size={20}
+                    color="#91919F"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.settingsContainer}>
+                  <Text style={styles.settingsText}>Get in Touch</Text>
+                  <Ionicons
+                    name="chevron-forward-outline"
+                    size={20}
+                    color="#91919F"
+                  />
+                </TouchableOpacity>
+              </VStack>
+            </View>
         </View>
+      </ScrollView>
       </View>
       <AlertDialog
         leastDestructiveRef={cancelRef}
@@ -272,6 +317,55 @@ const Profile = () => {
                     });
                 }}>
                 Delete
+              </Button>
+            </Button.Group>
+          </AlertDialog.Footer>
+        </AlertDialog.Content>
+      </AlertDialog>
+      <AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={logOutAlert}
+        onClose={onCloseLogout}>
+        <AlertDialog.Content>
+          <AlertDialog.CloseButton />
+          <AlertDialog.Header>Log Out</AlertDialog.Header>
+          <AlertDialog.Body>
+            <Text style={{color: '#91919F', fontSize: 16}} >
+              Are you sure you want to log out?
+            </Text>
+            {/* <TextInput
+              onChangeText={text => {
+                setPassword(text);
+              }}
+              placeholder="Enter your password to confirm"
+              style={{
+                borderWidth: 1,
+                borderRadius: 10,
+                padding: 10,
+                borderBottomColor: '#91919F',
+                marginTop: 10,
+                marginBottom: 10,
+                alignSelf: 'center',
+                color: '#91919F',
+                width: width * 0.6,
+              }}
+            /> */}
+          </AlertDialog.Body>
+          <AlertDialog.Footer>
+            <Button.Group space={2}>
+              <Button
+                variant="unstyled"
+                colorScheme="coolGray"
+                onPress={onCloseLogout}
+                ref={cancelRef}>
+                Cancel
+              </Button>
+              <Button
+                colorScheme="danger"
+                onPress={() => {
+                  auth().signOut();
+                }}>
+                Log Out
               </Button>
             </Button.Group>
           </AlertDialog.Footer>

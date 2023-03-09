@@ -61,6 +61,7 @@ const HomeScreen = (props: Props) => {
   const subjectsList = useSelector((state: any) => state.subjectsList);
   const handleDynamicLink = (link: any) => {
     const parts = link?.url.split('/');
+    console.log('parts', parts);
     const userData = {
       Course: parts[4],
       branch: parts[5],
@@ -73,7 +74,8 @@ const HomeScreen = (props: Props) => {
       subject: parts[7],
       category: parts[3],
       did: parts[8],
-      name: parts[7],
+      name: parts[11],
+      units : parts[9]
     };
     navigation.navigate('PdfViewer', {
       userData,
