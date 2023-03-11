@@ -9,10 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import {Toast} from 'native-base';
-import {
-  setReccommendSubjects,
-  setReccommendSubjectsLoaded,
-} from '../../../redux/reducers/subjectsList';
+import { setReccommendSubjects, setReccommendSubjectsLoaded, setVisitedSubjects } from '../../../redux/reducers/subjectsList';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userAddToRecents } from '../../../redux/reducers/usersRecentPdfsManager';
@@ -47,12 +44,16 @@ type MyScreenNavigationProp = StackNavigationProp<
   'SubjectResources'
 >;
 type Props = {
-  selected : string
+  selected : string,
+  setResourcesLoaded : any,
 };
 
-const Recommendation = (props: Props) => {
+const Recommendation = ({setResourcesLoaded,selected}: Props) => {
   const userData = useSelector((state: any) => {
     return state.usersData;
+  });
+  const visitedList = useSelector((state: any) => {
+    return state.subjectsList.visitedSubjects.Syllabus;
   });
   const styles = useMemo(() => createStyles(), []);
   const navigation = useNavigation<MyScreenNavigationProp>();
@@ -72,6 +73,8 @@ const Recommendation = (props: Props) => {
       }
     });
   }, [userData]);
+
+  // console.log('list', visitedList);
 
   async function fetchData() {
     fetchSubjectList(setList,dispatch, setReccommendSubjects, setReccommendSubjectsLoaded, setLoaded,userData);
@@ -93,7 +96,10 @@ const Recommendation = (props: Props) => {
     item[category]? (
       navigation.navigate('NotesList', {
         userData: userData.usersData,
-        notesData: await userFirestoreData(userData.usersData, category, item),
+        notesData: await userFirestoreData(userData.usersData, category, item, dispatch).then(res =>{
+          setResourcesLoaded(false);
+          return res
+        }),
         selected: category,
         subject: item.subjectName,
       })
@@ -107,21 +113,24 @@ const Recommendation = (props: Props) => {
           },
           selected: category,
           subject: item.subjectName,
-        })
+        }),
+        setResourcesLoaded(false)
     )
+    setResourcesLoaded(false);
   }
 
   async function handleNavigationToRes(item:any) {
      navigation.navigate('SubjectResources', {
       userData: userData.usersData,
       notesData: {
-        notes :  await userFirestoreData(userData.usersData, 'Notes', item),
-        syllabus :  await userFirestoreData(userData.usersData, 'Syllabus', item),
-        questionPapers :  await userFirestoreData(userData.usersData, 'QuestionPapers', item),
-        otherResources :  await userFirestoreData(userData.usersData, 'OtherResources', item),
+        notes :  await userFirestoreData(userData.usersData, 'Notes', item, dispatch),
+        syllabus :  await userFirestoreData(userData.usersData, 'Syllabus', item, dispatch),
+        questionPapers :  await userFirestoreData(userData.usersData, 'QuestionPapers', item, dispatch),
+        otherResources :  await userFirestoreData(userData.usersData, 'OtherResources', item, dispatch ),
       },
       subject: item.subjectName,
     })
+    // setResourcesLoaded(false);
   }
   return (
     <View style={styles.body}>
@@ -133,10 +142,12 @@ const Recommendation = (props: Props) => {
                 <TouchableOpacity
                   style={styles.subjectContainer}
                   onPress={() => {
-                    props.selected === 'All' ? (
+                    selected === 'All' ? (
+                      setResourcesLoaded(true),
                       handleNavigationToRes(item)
                     ) : (
-                    handleNavigation(item, props.selected)
+                      setResourcesLoaded(true),
+                    handleNavigation(item, selected)
                     )
                   }}
                   >

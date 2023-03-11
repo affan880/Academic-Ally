@@ -18,6 +18,7 @@ type Props = {
   name: any;
   securuty?: boolean;
   errors?: any;
+  other?: any;
 };
 
 const Width = Dimensions.get('screen').width;
@@ -27,6 +28,7 @@ export const CustomTextInput = ({
   placeholder,
   handlePasswordVisibility,
   name,
+  other
 }: Props) => {
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const {values, errors, touched, setFieldValue, setFieldTouched} =
@@ -61,6 +63,7 @@ export const CustomTextInput = ({
         <TextInput
           placeholder={placeholder}
           value={values[name]}
+          {...other}
           onChangeText={text => {
             setFieldValue(name, text);
           }}
@@ -117,8 +120,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: Width - 50,
     height: 60,
-    borderRadius: 20,
-    elevation: 8,
+    borderRadius: 10,
+    elevation: 3,
     paddingLeft: 20,
     marginTop: 10,
     alignItems: 'center',

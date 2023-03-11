@@ -25,6 +25,8 @@ import UploadScreen from '../../screens/Notes/uploadScreen'
 import PdfViewer from '../../screens/Notes/PdfViewer/pdfViewer'
 import UpdateInformation from '../../screens/Profile/AccountSettings/UpdateInformation'
 import Search from '../../screens/Search/searchScreen'
+import PrivacyPolicy from '../../screens/Profile/Support/PrivacyPolicy'
+import TermsAndConditions from '../../screens/Profile/Support/Terms&Conditions'
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
@@ -192,6 +194,12 @@ const AppStack = () => {
                 headerShown: false,
             }} />
             <Stack.Screen name="UpdateInformation" component={UpdateInformation} options={{
+                headerShown: false,
+            }} />
+            <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} options={{
+                headerShown: false,
+            }} />
+            <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} options={{
                 headerShown: false,
             }} />
         </Stack.Navigator>

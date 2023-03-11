@@ -6,8 +6,13 @@ const ScreenLayout = (props) => {
     const width = Dimensions.get("screen").width;
     const statusBarHeight = StatusBar.currentHeight;
     return (
-        <View style={{
+        <View
+        //enable potrait and landscape
+        // style={{ flex: 1, width: '100%', height: height }}
+        style={{
             flex: 1,
+            width: '100%',
+            height: height,
             backgroundColor: '#6360FF',
             marginTop:statusBarHeight 
         }} >

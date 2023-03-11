@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import {NavigationProp, ParamListBase} from '@react-navigation/native';
-import React, {FC, useMemo, useEffect, useState} from 'react';
+import React, {FC, useMemo, useEffect, useState, useRef,} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {SIGNUPILLUSTRATION} from '../../../assets';
 import {
@@ -27,7 +27,8 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useDispatch} from 'react-redux';
 import {setUsersData} from '../../../redux/reducers/usersData';
-import CustomLoader from '../../../components/CustomLoader';
+import CustomLoader from '../../../components/loaders/CustomLoader';
+import {setCustomLoader} from '../../../redux/reducers/userState';
 
 const screenWidth = Dimensions.get('screen').width;
 
@@ -36,9 +37,10 @@ interface IProps {
 }
 const SignUpScreen: FC<IProps> = ({navigation}) => {
   const dispatch = useDispatch();
-
   const styles = useMemo(() => createStyles(), []);
-  const [loading, setLoading] = useState(false);
+  const formRef: any = useRef();
+   const [selectedYear, setSelectedYear] = useState('');
+  const [selectedSem, setSelectedSem] = useState('');
 
   const initialValues = {
     name: '',
@@ -56,7 +58,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
     {label: 'B.E', value: 'BE'},
     {label: 'B.TECH', value: 'BTECH'},
   ];
-  const SemData: any = [
+  const SemList: any = [
     {label: '1', value: '1'},
     {label: '2', value: '2'},
     {label: '3', value: '3'},
@@ -85,8 +87,47 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
 
   const UniversityData: any = [{label: 'Osmania University', value: 'OU'}];
 
+    const handleYearChange = (event: any) => {
+    const yearValue = event.value;
+    setSelectedYear(yearValue);
+
+    // Reset selected semester when year is changed
+    setSelectedSem('');
+    formRef.current?.setFieldValue('sem', '');
+  };
+
+  const handleSemChange = (event :any) => {
+    const semValue = event.value;
+    setSelectedSem(semValue);
+     if (!selectedYear) {
+      if (semValue <= 2) {
+        setSelectedYear('1');
+      } else if (semValue <= 4) {
+        setSelectedYear('2');
+      } else if (semValue <= 6) {
+        setSelectedYear('3');
+      } else {
+        setSelectedYear('4');
+      }
+    }
+  };
+
+  const filteredSemList = SemList.filter((sem: any) => {
+  if (selectedYear === '1') {
+    return sem.value === '1' || sem.value === '2';
+  } else if (selectedYear === '2') {
+    return sem.value === '3' || sem.value === '4';
+  } else if (selectedYear === '3') {
+    return sem.value === '5' || sem.value === '6';
+  } else if (selectedYear === '4') {
+    return sem.value === '7' || sem.value === '8';
+  } else {
+    return true;
+  }
+});
+
   const onSubmit = (email: string, password: string, initialValues: any) => {
-    createUser(email, password, initialValues)
+    createUser(email, password, initialValues, dispatch)
       .then(() => {
         firestore()
           .collection('Users')
@@ -105,7 +146,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
 
   return (
     <SafeAreaView style={[styles.container, {flex: 1}]}>
-      <CustomLoader loading={loading} />
+      <CustomLoader/>
       <StatusBar
         animated={true}
         translucent={true}
@@ -126,10 +167,11 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
           <Text style={styles.loginText}>Let's Get Started</Text>
           <View style={styles.inputContainer}>
             <Form
+              innerRef={formRef}
               validationSchema={validationSchema}
               initialValues={initialValues}
               onSubmit={values => {
-                setLoading(true);
+                dispatch(setCustomLoader(true));
                 onSubmit(values.email, values.password, values);
               }}>
               <CustomTextInput
@@ -159,6 +201,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
                 placeholder={'Select the name of your university'}
                 leftIcon="ellipsis1"
                 width={screenWidth - 50}
+                handleOptions = {()=>{}}
               />
               <View
                 style={{
@@ -173,6 +216,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
                   placeholder={'Course'}
                   leftIcon="Safety"
                   width={screenWidth / 2.5}
+                  handleOptions = {()=>{}}
                 />
                 <DropdownComponent
                   name="branch"
@@ -180,6 +224,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
                   placeholder={'Branch'}
                   leftIcon="bars"
                   width={screenWidth / 2.5}
+                  handleOptions = {()=>{}}
                 />
               </View>
               <View
@@ -195,13 +240,15 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
                   placeholder={'Studying year'}
                   leftIcon="bars"
                   width={screenWidth / 2.5}
+                  handleOptions={handleYearChange}
                 />
                 <DropdownComponent
                   name="sem"
-                  data={SemData}
+                  data={filteredSemList}
                   placeholder={'Semester'}
                   leftIcon="ellipsis1"
                   width={screenWidth / 2.5}
+                  handleOptions={handleSemChange}
                 />
               </View>
 

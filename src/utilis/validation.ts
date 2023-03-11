@@ -58,7 +58,8 @@ export const updatevalidationSchema = yup.object().shape({
     .min(3, 'Name must be at least 3 characters')
     .max(12, 'Name must be less than 12 characters'),
   course: yup.string(),
-  sem: yup.string(),
+  sem: yup.string().required(),
   branch: yup.string(),
-  year: yup.string(),
+  Year: yup.string().required(),
+  college: yup.string(),
 });

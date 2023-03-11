@@ -11,25 +11,11 @@ import NavigationLayout from '../../interfaces/navigationLayout';
 import createStyles from './styles';
 import {manageBookmarks} from '../../Modules/auth/firebase/firebase';
 import {userAddToRecentsStart} from '../../redux/reducers/usersRecentPdfsManager';
-import { ReportIconWhite, ShareIcon } from '../../assets/images/icons';
-import { ReportIconBlack } from '../../assets/images/images';
-import {
-  Box,
-  Icon,
-  Text,
-  Modal,
-  Actionsheet,
-  useDisclose,
-  Stack,
-  Center,
-  Checkbox,
-  Toast,
-  Card
-} from 'native-base';
-import {
-  userAddBookMarks,
-  userRemoveBookMarks,
-} from '../../redux/reducers/userBookmarkManagement';
+import { ShareIcon } from '../../assets/images/icons';
+import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
+import SwipeableRating from 'react-native-swipeable-rating';
+import {Box,Icon,Text,Modal,Actionsheet,useDisclose,Stack,Center,Checkbox,Toast,Card} from 'native-base';
+import  { userAddBookMarks,  userRemoveBookMarks} from '../../redux/reducers/userBookmarkManagement';
 import {NavBtn} from '../CustomFormComponents/CustomBtn';
 import { ViewCount, submitRating, submitReport, getMailId, shareNotes, ratedResourcesList } from '../../services/fetch';
 
@@ -103,17 +89,11 @@ function KbsToMB(bits :any) {
   return megabytes.toFixed(2) + " MB";
 }
 
-
 const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) => {
-  const {
-    isOpen,
-    onOpen,
-    onClose
-  } = useDisclose();
+  const {isOpen,onOpen,onClose} = useDisclose();
   const styles = useMemo(() => createStyles(), []);
   const navigation = useNavigation<pdfViewer>();
   const dispatch = useDispatch();
-
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const [saved, setSaved] = useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -162,10 +142,10 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
   function submitRatingCount() {
     setModalVisible(false);
     submitRating({
-          University : userData.University,
-          Branch: userData.Branch,
-          Course: userData.Course,
-          Sem: userData.Sem,
+          university : userData.University,
+          branch: userData.Branch,
+          course: userData.Course,
+          sem: userData.Sem,
           type: selected.charAt(0).toUpperCase() + selected.slice(1),
           subjectName: subject,
           id : item.id,
@@ -182,16 +162,16 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
   }
 
   return (
-            <View style={styles.reccomendationContainer} key={key}>
+            <View style={styles.reccomendationContainer}>
               <View style={styles.reccomendationStyle}>
                 <TouchableOpacity
                   style={styles.subjectContainer}
                   onPress={() => {
                      ViewCount({
-                      University : userFirestoreData.usersData.University,
-                      Branch: userData.Branch || item.branch,
-                      Course: userData.Course || userData.course,
-                      Sem: userData.Sem || item.sem,
+                      university : userFirestoreData.usersData.university,
+                      branch: userData.Branch || item.branch,
+                      course: userData.Course || userData.course,
+                      sem: userData.Sem || item.sem,
                       type: selected.charAt(0).toUpperCase() + selected.slice(1),
                       subjectName: subject,
                       id : item.id,
@@ -239,7 +219,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                         color: item.units === "" ? "#91919F" : "#161719",
                         fontWeight: '400',
                       }}>
-                      {item.units === "" ? "Unknown" : item.units + " Units"}
+                      {item.units === "" ? "Units: Unknown" : item.units + " Units"}
                     </Text>
                     <View
                       style={{
@@ -261,7 +241,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                         }} />
                         <Text
                           style={{
-                            fontSize: 16,
+                            fontSize: 14,
                             color: '#161719',
                             fontWeight: '600',
                             paddingLeft: 5,
@@ -280,7 +260,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                         <AntDesign name="star" size={13} color="#FFC960" />
                         <Text
                           style={{
-                            fontSize: 16,
+                            fontSize: 14,
                             color: item.rating < 1 ? "#91919F" : "#161719",
                             fontWeight: '600',
                             paddingLeft: 5,
@@ -299,7 +279,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                         }} />
                         <Text
                           style={{
-                            fontSize: 16,
+                            fontSize: 14,
                             color: '#91919F',
                             fontWeight: '400',
                             paddingLeft: 0,
@@ -342,7 +322,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                           : 'bookmark-o'
                       }
                       size={25}
-                      color={'#161719'}
+                      color={'#6360FF'}
                     />
                   </TouchableOpacity>
                 </TouchableOpacity>
@@ -379,21 +359,35 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
             How likely are you to recommend this resources to your friends/colleagues?
           </Text>
           <Stack direction="row" space={2} marginY={10} alignItems="center" justifyContent="center" >
-            <AntDesign name={ratingCount > 1 || ratingCount === 1 ? "star" : "staro" } size={50} onPress={()=>{
-              setRatingCount(1);
-            }} color="#FFC960" />  
-            <AntDesign name={ratingCount > 2 || ratingCount === 2 ? "star" : "staro" } size={50} onPress={()=>{
-              setRatingCount(2);
-            }} color="#FFC960" />  
-            <AntDesign name={ratingCount > 3 || ratingCount === 3 ? "star" : "staro" } size={50} onPress={()=>{
-              setRatingCount(3);
-            }} color="#FFC960" />  
-            <AntDesign name={ratingCount > 4 || ratingCount === 4 ? "star" : "staro" } size={50} onPress={()=>{
-              setRatingCount(4);
-            }} color="#FFC960" />  
-            <AntDesign name={ratingCount > 5 || ratingCount === 5 ? "star" : "staro" } size={50} onPress={()=>{
-              setRatingCount(5);
-            }} color="#FFC960" />  
+                <SwipeableRating
+                  rating={ratingCount}
+                  size={50}
+                  gap={4}
+                  onPress={(rating: any)=>{
+                    setRatingCount(rating)
+                  }}
+                  swipeable={true}
+                  color="#FFC960"
+                  emptyColor="#91919F"
+                  maxRating={5}
+                  allowHalves={true}
+                  style={{
+                      alignSelf: 'center',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                />
+             {/* {
+              [1,2,3,4,5].map((item, index)=>{
+                return(
+                 <AntDesign onMagicTap={()=>{
+                  setRatingCount(item)
+                 }} name={ratingCount > item || ratingCount === item ? "star" : "staro" } size={50} key={index} onPress={()=>{
+                  setRatingCount(item)
+                 }} color="#FFC960" />
+                )  
+              })    
+             }  */}
           </Stack>
           <Stack direction="row" space={2} marginY={5} alignItems="center" justifyContent="space-evenly" >
              <TouchableOpacity onPress={()=>{
@@ -443,51 +437,88 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
             Your report is anonymous, except if you are reporting an intellectual property infringement
             </Text>
           </Box>
+          <Box w="100%" px={0} my={4} justifyContent="center" alignItems={"center"} >
           <Actionsheet.Item style={{
-            borderBottomWidth: 1,
+            borderBottomWidth: 0.9,
             borderBottomColor: "#91919F",
-            borderRadius: 10,
+            backgroundColor: "#FFF",
           }} onPress={()=>{
             setChecked1(!checked1);
           }}>
-            <Checkbox onChange={(value)=>{
+            <Checkbox _android={{
+              _checked: {
+                bg: "#6360FF",
+                borderColor: "#6360FF",
+                color: "white",
+              },
+              _unchecked: {
+                bg: "white",
+                borderColor: "#6360FF",
+                color: "#6360FF",
+              },
+            }} onChange={(value)=>{
               setChecked1(!checked1);
             }} value={"Checked 1"}  colorScheme="green" >
-              <Text fontSize="14" color="#161719" fontWeight={700} paddingLeft={4} >
+              <Text fontSize="14" color="#161719" fontWeight={700} paddingLeft={4} width={'95%'} >
               Copyrights: The notes or this resource file contain copyrighted material
               </Text>
             </Checkbox>
           </Actionsheet.Item>
           <Actionsheet.Item style={{
-            borderBottomWidth: 1,
+            borderBottomWidth: 0.9,
             borderBottomColor: "#91919F",
-            borderRadius: 10,
+            backgroundColor: "#FFF",
           }} onPress={()=>{
             setChecked2(!checked2);
           }}>
-            <Checkbox onChange={(value)=>{
+            <Checkbox _android={{
+              _checked: {
+                bg: "#6360FF",
+                borderColor: "#6360FF",
+                color: "white",
+              },
+              _unchecked: {
+                bg: "white",
+                borderColor: "#6360FF",
+                color: "#6360FF",
+              },
+            }}  onChange={(value)=>{
               setChecked2(!checked2);
             }} value={"Checked 1"}  colorScheme="green" >
-              <Text fontSize="14" color="#161719" fontWeight={700} paddingLeft={4} >
+              <Text fontSize="14" color="#161719" fontWeight={700} paddingLeft={4} width={'95%'} >
               Misleading resource: The uploaded source contains inaccurate and false information.
               </Text>
             </Checkbox>
           </Actionsheet.Item>
           <Actionsheet.Item style={{
-            borderBottomWidth: 1,
+            borderBottomWidth: 0.9,
             borderBottomColor: "#91919F",
-            borderRadius: 10,
+            backgroundColor: "#FFF",
           }} onPress={()=>{
             setChecked3(!checked3);
           }}>
-            <Checkbox onChange={(value)=>{
+            <Checkbox 
+            _android={{
+              _checked: {
+                bg: "#6360FF",
+                borderColor: "#6360FF",
+                color: "white",
+              },
+              _unchecked: {
+                bg: "white",
+                borderColor: "#6360FF",
+                color: "#6360FF",
+              },
+            }}
+             onChange={(value)=>{
               setChecked3(!checked3);
             }} value={"Checked 1"}  colorScheme="green" >
-              <Text fontSize="14" color="#161719" fontWeight={700} paddingLeft={4} >
+              <Text fontSize="14" color="#161719" fontWeight={700} paddingLeft={4} width={"92%"}>
               Spam: This file contains content other than notes and resources.
               </Text>
             </Checkbox>
           </Actionsheet.Item>
+          </Box>
           <Box w="100%" h={60} px={4} my={2} justifyContent="center" alignItems={"center"} >
             <Text fontSize="16" color="#6360FF" fontWeight={700} onPress={()=>{
               mail()

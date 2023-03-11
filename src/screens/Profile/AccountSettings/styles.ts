@@ -1,4 +1,6 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+const { width, height } = Dimensions.get('window');
 
 const createStyles = () =>
     StyleSheet.create({
@@ -144,6 +146,37 @@ const createStyles = () =>
         },
         SignupButton: {
             marginTop: 20,
+        },
+
+        disabledIp: {
+             width: width - 50,
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            marginTop: 10,
+            height: 60,
+            backgroundColor: '#FFF',
+            borderRadius: 10,
+            elevation: 3,
+            shadowColor: '#000',
+            shadowOffset: {width: 0, height: 2},
+            shadowOpacity: 0.8,
+            shadowRadius: 2,
+            flexDirection: 'row',
+            paddingLeft: 20,
+        },
+             gridContainer: {
+            flex: 1,
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-around",
+            paddingHorizontal: 20,
+            paddingTop: 25,
+        },
+        gridItem: {
+            margin: 5,
+            marginBottom: 20,
+            alignItems: "center",
+            justifyContent: "center",
         },
     }
     )

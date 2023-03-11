@@ -13,7 +13,7 @@ import ScreenLayout from '../../interfaces/screenLayout';
 import createStyles from './styles';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {FlatList} from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
@@ -23,6 +23,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import {Toast} from 'native-base';
 import { userFirestoreData } from '../../services/fetch';
+import { setResourceLoader } from '../../redux/reducers/userState';
 
 const Search = () => {
   const styles = useMemo(() => createStyles(), []);
@@ -31,7 +32,7 @@ const Search = () => {
   const [subjectListDetail, setSubjectListDetail] = useState(list);
   const [limit, setLimit] = useState(10);
   const [filteredData, setFilteredData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   type MyStackParamList = {
     SubjectResources: {userData: object; notesData: any; subject: string};
@@ -90,7 +91,7 @@ const Search = () => {
   const limitedData = filteredData?.slice(0, limit);
 
   const selectedSubject = async (item: any) => {
-    setLoading(true);
+    dispatch(setResourceLoader(true));
     try {
       const userData: any = await firestore()
         .collection('Users')
@@ -109,7 +110,7 @@ const Search = () => {
         syllabus: await userFirestoreData(customizedData,'Syllabus', { subjectName: item.subject}),
         subjectName: item.subject,
       };
-      setLoading(false);
+      dispatch(setResourceLoader(false));
       navigation.navigate('SubjectResources', {
         userData: {
           course: userData.data().course,
@@ -120,14 +121,14 @@ const Search = () => {
         subject: item.subject,
       });
     } catch (error) {
+      setResourceLoader(false),
       Toast.show({
         title: 'Please check your internet connection',
         duration: 3000,
       });
-      setLoading(false);
     }
   };
-  return !loading ? (
+  return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
@@ -258,26 +259,6 @@ const Search = () => {
           </ScrollView>
         </View>
       </View>
-    </View>
-  ) : (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%',
-      }}>
-      <LottieView
-        source={require('../../assets/lottie/loading-doc.json')}
-        autoPlay
-        loop
-      />
-      <LottieView
-        style={{position: 'absolute', bottom: 0, marginTop: 300}}
-        source={require('../../assets/lottie/loading-text.json')}
-        autoPlay
-        loop
-      />
     </View>
   );
 };

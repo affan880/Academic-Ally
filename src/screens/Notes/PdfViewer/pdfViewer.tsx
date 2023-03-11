@@ -118,7 +118,6 @@ const PdfViewer = () => {
   useEffect(() => {
     setUserRecents(recentsList);
   }, [recentsList]);
-console.log(notesData)
   async function createDynamicLink() {
          const link = await dynamicLinks().buildShortLink(
       {

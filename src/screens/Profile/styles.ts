@@ -34,7 +34,7 @@ const createStyles = () =>
         },
         bodyContent: {
             flex: 1,
-            paddingTop: 50,
+            paddingTop: 20,
         },
         name: {
             fontSize: 24,
@@ -60,7 +60,7 @@ const createStyles = () =>
             color: "#91919F",
         },
         settingsText: {
-            fontSize: 16,
+            fontSize: 14,
             color: "#161719",
             fontWeight: "500",
         },

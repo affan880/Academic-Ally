@@ -19,10 +19,10 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {
-  setSubjectsList,
-  setListLoaded,
-} from '../../redux/reducers/subjectsList';
+import LottieView from 'lottie-react-native';
+import ResourceLoader from '../../components/loaders/ResourceLoader';
+import {  setSubjectsList,  setListLoaded,} from '../../redux/reducers/subjectsList';
+import { setResourceLoader } from '../../redux/reducers/userState';
 import {Toast} from 'native-base';
 import { fetchNotesList } from '../../services/fetch';
 
@@ -51,6 +51,7 @@ type Props = {};
 const HomeScreen = (props: Props) => {
   const styles = useMemo(() => createStyles(), []);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [resourcesLoaded, setResourcesLoaded] = useState(false);
   const navigation =
     useNavigation<StackNavigationProp<MyStackParamList, 'Notes'>>();
   const dispatch = useDispatch();
@@ -120,7 +121,8 @@ const HomeScreen = (props: Props) => {
   }, []);
 
   return (
-    <ScreenLayout>
+ <ScreenLayout>
+      <ResourceLoader />
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{
@@ -186,7 +188,9 @@ const HomeScreen = (props: Props) => {
             Recommended
           </Text>
           <View>
-            <Recommendation selected={selectedCategory} />
+            <Recommendation selected={selectedCategory} setResourcesLoaded = {(option :boolean)=>{
+              dispatch(setResourceLoader(option))
+            }} />
           </View>
         </View>
       </ScrollView>

@@ -67,15 +67,15 @@ const Bookmark = () => {
       }
     });
   }, []);
-  function remove(str: string) {
-    if (str.includes('(oufastupdates.com)') || str.includes('.pdf')) {
-      let text = str.replace(/\(oufastupdates.com\)|\.pdf/g, '');
-      if (text.length > 15) {
-        return text.substring(0, 25) + '...';
-      }
-      return str;
-    }
+function remove(filename: string) {
+  if (filename.endsWith(".pdf")) {
+  filename = filename.slice(0, -4); 
+  if (filename.length > 15) {
+    return filename.substring(0, 20) ;
   }
+  return filename;
+  }
+}
 
   useEffect(() => {
     const getListData = async () => {
@@ -180,7 +180,7 @@ useEffect(() => {
                       item?.category?.slice(1)}
                 </Text>
                 <HStack>
-                  <Text style={styles.subjectName}>{item?.units === "" ? "Units Unknown" : `Units ${item.units}`}</Text>
+                  <Text style={styles.subjectName}>{item?.units === "" ? "Units: Unknown" : `Units: ${item.units}`}</Text>
                   <Text style={[styles.subjectName, {
                     marginLeft: 10,
                   }]}>Semester: {`${item.sem}`}</Text>
@@ -242,7 +242,7 @@ useEffect(() => {
       </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>
-          <ScrollView>
+          {/* <ScrollView> */}
           {
             sortedList?.map((item:any, index:any) => {
               return (
@@ -285,7 +285,7 @@ useEffect(() => {
               );
             })
           }
-          </ScrollView>
+          {/* </ScrollView>2. */}
         </View>
       </View>
     </View>
@@ -308,9 +308,11 @@ useEffect(() => {
           color: '#FFFFFF',
           marginBottom: 20,
           alignSelf: 'center',
+          margin: 25,
+          textAlign: 'center',
+          lineHeight: 30,
         }}>
-        No Bookmarks Found
-      </Text>
+       No bookmarks to show. Start bookmarking your favorite notes for easy access later!</Text>
     </View>
   );
 };

@@ -21,6 +21,8 @@ type Props = {
   securuty?: boolean;
   data?: any;
   width?: any;
+  other?: any;
+  handleOptions?: any;
 };
 
 const {width, height} = Dimensions.get('window');
@@ -30,6 +32,8 @@ export const CustomDropdown = ({
   name,
   data,
   width,
+  handleOptions,
+  ...other
 }: Props) => {
   const {values, errors, touched, setFieldValue, setFieldTouched} =
     useFormikContext<any>();
@@ -39,7 +43,7 @@ export const CustomDropdown = ({
     if (values[name] || isFocus) {
       return (
         <Text style={[styles.label, isFocus && {color: '#FFFFFF'}]}>
-          {name}
+          {name.charAt(0).toUpperCase() + name.slice(1)}
         </Text>
       );
     }
@@ -65,7 +69,9 @@ export const CustomDropdown = ({
           inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
           data={data}
-          search
+          search={
+            name === 'branch' || name === 'Year' || name === 'sem' ? false : true
+          }
           maxHeight={300}
           labelField="label"
           valueField="value"
@@ -78,12 +84,12 @@ export const CustomDropdown = ({
             setIsFocus(false);
             setFieldTouched(name);
           }}
-          dropdownPosition="bottom"
+          dropdownPosition="auto"
+          {...other}
           containerStyle={{
             width: width,
-            height: 300,
-            borderRadius: 12,
-            elevation: 8,
+            borderRadius: 10,
+            elevation: 3,
             marginTop: -35,
           }}
           itemContainerStyle={{
@@ -100,6 +106,7 @@ export const CustomDropdown = ({
             setValue(item.value);
             setIsFocus(false);
             setFieldValue(name, item.value);
+            handleOptions(item);
           }}
           renderLeftIcon={() =>
             name === 'university' ? (
@@ -129,7 +136,7 @@ export const CustomDropdown = ({
             alignSelf: 'center',
             fontWeight: 'bold',
           }}>
-          *{errors[name]}
+          {errors[name] + ' '}
         </Text>
       ) : null}
     </View>
@@ -142,15 +149,14 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: '#fff',
     height: 60,
-    borderRadius: 20,
-    elevation: 8,
+    borderRadius: 10,
+    elevation: 3,
     paddingLeft: 20,
     marginTop: 10,
     alignItems: 'center',
     color: '#000000',
   },
   textInput: {
-    height: 60,
     width: 250,
     fontSize: 16,
     color: '#000000',
@@ -161,7 +167,6 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   dropdown: {
-    height: 50,
     width: 300,
     borderColor: 'gray',
     borderWidth: 0.5,

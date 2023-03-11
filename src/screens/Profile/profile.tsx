@@ -19,7 +19,9 @@ import { setUserProfile } from '../../redux/reducers/usersData';
 import auth from '@react-native-firebase/auth';
 
 type MyStackParamList = {
-  UpdateInformation: {itemId: number};
+  'UpdateInformation': undefined;
+  'PrivacyPolicy': undefined;
+  'TermsAndConditions': undefined;
 };
 const height = Dimensions.get('screen').height;
 const width = Dimensions.get('screen').width;
@@ -98,6 +100,7 @@ const Profile = () => {
 
   return (
     <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.headerContainer}>
         <View
           style={{
@@ -113,56 +116,16 @@ const Profile = () => {
           /> */}
           <Text style={styles.headerText}>Account</Text>
         </View>
-         <VStack alignItems="center" space={2} marginTop={10} width={"100%"} justifyContent={"center"} >
+         <VStack alignItems="center" space={2} marginY={8} width={"100%"} justifyContent={"center"} >
             <Avatar source={{
               uri: userImage||user?.photoURL
             }}size={'2xl'} alignSelf={'center'}/>
-            <AntDesign
-              name="pluscircle"
-              size={20}
-              color="#FF8181"
-              onPress={() => setModalVisible(true)}
-              style={{
-                position: 'relative',
-                bottom: 32,
-                left: 40,
-                zIndex: 999,
-                backgroundColor: '#ffffff',
-                borderRadius: 50,
-              }}
-            />
-            <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
-              <Modal.Content maxWidth="400px">
-                <Modal.CloseButton />
-                <Modal.Header>Choose Avatar</Modal.Header>
-                <Modal.Body>
-                  <Stack style={styles.gridContainer} >
-                   {
-                      avatarsList.map((item) => {
-                        return (
-                          <TouchableOpacity  key={item.id} onPress={() => {
-                            updateUserImage(item.image);
-                            setModalVisible(false);
-                          }}>
-                           <Avatar source={
-                              {
-                                uri: item.image
-                              }
-                           } size={'xl'} style={styles.gridItem} alignSelf={'center'} />
-                          </TouchableOpacity>
-                        )
-                      })
-                   }
-                   </Stack>
-                </Modal.Body>
-              </Modal.Content>
-            </Modal>
          </VStack>
         <Text style={styles.name}>{userFirestoreData.usersData.name}</Text>
         <Text style={styles.email}>{userFirestoreData.usersData.email}</Text>
       </View>
       <View style={styles.body}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+
         <View style={styles.bodyContent}>
             <View style={styles.menuContainer}>
               <VStack>
@@ -172,9 +135,7 @@ const Profile = () => {
                 <TouchableOpacity
                   style={styles.settingsContainer}
                   onPress={() => {
-                    navigation.navigate('UpdateInformation', {
-                      itemId: 86,
-                    });
+                    navigation.navigate('UpdateInformation');
                   }}>
                   <Text style={styles.settingsText}>Update Profile</Text>
                   <Ionicons
@@ -210,7 +171,9 @@ const Profile = () => {
             <View style={styles.menuContainer}>
               <VStack>
                 <View>
-                  <Text style={styles.settingsTitleText}>Support</Text>
+                  <Text style = {[styles.settingsTitleText, {
+                    marginTop: 10,
+                  }]}>Support</Text>
                 </View>
                 <TouchableOpacity
                   style={styles.settingsContainer}>
@@ -230,7 +193,19 @@ const Profile = () => {
                     color="#91919F"
                   />
                 </TouchableOpacity>
-                <TouchableOpacity
+                 <TouchableOpacity
+                  style={styles.settingsContainer}>
+                  <Text style={styles.settingsText}>Get in Touch</Text>
+                  <Ionicons
+                    name="chevron-forward-outline"
+                    size={20}
+                    color="#91919F"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity 
+                onPress={()=>{
+                  navigation.navigate('PrivacyPolicy')
+                }}
                   style={styles.settingsContainer}>
                   <Text style={styles.settingsText}>Privacy Policy</Text>
                   <Ionicons
@@ -240,18 +215,21 @@ const Profile = () => {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.settingsContainer}>
-                  <Text style={styles.settingsText}>Get in Touch</Text>
+                  style={styles.settingsContainer} onPress={()=>{
+                    navigation.navigate('TermsAndConditions')
+                  }} >
+                  <Text style={styles.settingsText}>Terms & Conditions</Text>
                   <Ionicons
                     name="chevron-forward-outline"
                     size={20}
                     color="#91919F"
                   />
                 </TouchableOpacity>
+               
               </VStack>
             </View>
         </View>
-      </ScrollView>
+
       </View>
       <AlertDialog
         leastDestructiveRef={cancelRef}
@@ -371,6 +349,7 @@ const Profile = () => {
           </AlertDialog.Footer>
         </AlertDialog.Content>
       </AlertDialog>
+      </ScrollView>
     </View>
   );
 };

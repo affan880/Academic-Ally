@@ -3,6 +3,7 @@ import auth from '@react-native-firebase/auth';
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { Toast, CheckIcon } from 'native-base';
+import { setCustomLoader } from '../../../redux/reducers/userState';
 
 export const firestoreDB = () => {
   return firestore();
@@ -20,7 +21,7 @@ const DeleteAcc = async () => {
     });
 };
 
-const createUserDocument = async (uid, Details) => {
+const createUserDocument = async (uid, Details, dispatch) => {
   const img = auth().currentUser.photoURL;
   if (!uid) return;
   await firestore()
@@ -38,7 +39,7 @@ const createUserDocument = async (uid, Details) => {
       pfp: img,
     })
     .then(() => {
-      console.log('User added!');
+      dispatch(setCustomLoader(false));
     })
     .catch(error => {
       firestore().collection('Users').doc(`${uid}`).delete();
@@ -47,12 +48,12 @@ const createUserDocument = async (uid, Details) => {
     });
 };
 
-export const createUser = async (email, password, values) => {
+export const createUser = async (email, password, values, dispatch) => {
   auth()
     .createUserWithEmailAndPassword(email, password)
     .then(userCredential => {
       var userID = userCredential;
-      createUserDocument(userID.user.uid, values).then(() => {
+      createUserDocument(userID.user.uid, values, dispatch).then(() => {
         auth().currentUser.updateProfile({
           displayName: values.name,
           photoURL: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2FAvatar9.png?alt=media&token=f588e0f2-3319-4cec-ad60-8053a03c3172',
@@ -98,11 +99,12 @@ export const createUser = async (email, password, values) => {
     });
 };
 
-export const logIn = async (email, password) => {
+export const logIn = async (email, password, dispatch) => {
   auth()
     .signInWithEmailAndPassword(email, password)
     .then(userCredential => {
       var user = userCredential.user;
+      dispatch(setCustomLoader(false));
       Toast.show({
         title: `Welcome Back!`,
         type: 'success',
@@ -122,11 +124,13 @@ export const logIn = async (email, password) => {
           title: 'User not found',
           type: 'danger',
         });
+        dispatch(setCustomLoader(false));
       } else {
         Toast.show({
           title: 'Incorrect Password',
           type: 'danger',
         });
+        dispatch(setCustomLoader(false));
       }
     });
 };
@@ -204,7 +208,13 @@ export const updateFirestoreData = async (uid, data) => {
     .update(data)
     .then(() => {
       // getFirestoreData(uid);
-      console.log('User Data updated!');
+      // console.log('User Data updated!');
+      Toast.show({
+        title: 'Profile Updated',
+        type: 'success',
+        placement: 'top-right',
+        backgroundColor: '#00b300',
+      });
     })
     .catch(error => {
       console.log(error);

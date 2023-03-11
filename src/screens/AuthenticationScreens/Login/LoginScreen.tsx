@@ -12,37 +12,25 @@ import LinearGradient from 'react-native-linear-gradient';
 import createStyles from './styles';
 import {LOGINILLUSTRATION} from '../../../assets';
 import {CustomTextInput} from '../../../components/CustomFormComponents/CustomTextInput';
-import {
-  CustomBtn,
-  NavBtn,
-} from '../../../components/CustomFormComponents/CustomBtn';
+import {CustomBtn,NavBtn,} from '../../../components/CustomFormComponents/CustomBtn';
 import Form from '../../../components/Forms/form';
 import {LoginvalidationSchema} from '../../../utilis/validation';
-import {
-  logIn,
-  forgotPassword,
-  getCurrentUser,
-  logOut,
-  ResendVerification,
-} from '../../../Modules/auth/firebase/firebase';
+import {  logIn,  forgotPassword,  getCurrentUser,  logOut,  ResendVerification,} from '../../../Modules/auth/firebase/firebase';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Toast} from 'native-base';
-import {useSelector} from 'react-redux';
-import CustomLoader from '../../../components/CustomLoader';
+import {useSelector, useDispatch} from 'react-redux';
+import CustomLoader from '../../../components/loaders/CustomLoader';
+import { setCustomLoader } from '../../../redux/reducers/userState';
 
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
 
 const LoginScreen: React.FC<IProps> = ({navigation}) => {
-  const validEmail = useSelector((state: any) => state.usersData.validEmail);
-  const [loading, setLoading] = useState(false);
   const formRef: any = useRef();
   const styles = useMemo(() => createStyles(), []);
-  const initialValues = {
-    email: '',
-    password: '',
-  };
+  const initialValues = {  email: '',  password: ''};
+  const dispatch = useDispatch();
 
   const userLogin = (email: string, password: string): void => {
     logIn(email, password);
@@ -87,7 +75,7 @@ const LoginScreen: React.FC<IProps> = ({navigation}) => {
 
   return (
     <>
-    <CustomLoader loading={loading} />
+    <CustomLoader/>
     <View style={styles.container}>
       <StatusBar
         animated={true}
@@ -109,10 +97,8 @@ const LoginScreen: React.FC<IProps> = ({navigation}) => {
               innerRef={formRef}
               validationSchema={LoginvalidationSchema}
               onSubmit={values => {
-                setLoading(true);
-                logIn(values.email, values.password).then(() => {
-                  setLoading(false);
-                });
+                dispatch(setCustomLoader(true));
+                logIn(values.email, values.password, dispatch)
               }}>
               <CustomTextInput
                 leftIcon="user"

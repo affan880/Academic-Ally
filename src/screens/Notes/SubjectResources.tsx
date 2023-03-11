@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userAddToRecents} from '../../redux/reducers/usersRecentPdfsManager';
 import LottieView from 'lottie-react-native';
+import { setResourceLoader } from '../../redux/reducers/userState';
 
 type RootStackParamList = {
   Home: {
@@ -83,6 +84,7 @@ const NotesScreen = () => {
     subject.length > 20 ? subject.slice(0, 25) + '...' : subject;
 
   useEffect(() => {
+    dispatch(setResourceLoader(false));
     const getRecents = async () => {
       AsyncStorage.getItem('RecentsManagement').then(res => {
         if (res !== null || res !== undefined) {
