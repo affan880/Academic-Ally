@@ -2,19 +2,15 @@ import { StyleSheet, Dimensions } from "react-native";
 
 const { width, height } = Dimensions.get('window');
 
-const createStyles = () =>
+const createStyles = (theme: string, sizes:string) =>
     StyleSheet.create({
         container: {
             position: 'absolute',
-            top: 0,
-            left: 0,
             width: '100%',
             height: '100%'
         },
         LinearGradient: {
             position: 'absolute',
-            top: 0,
-            left: 0,
             width: '100%',
             height: '100%',
         },
@@ -29,7 +25,7 @@ const createStyles = () =>
             color: '#fff',
             fontSize: 15,
             fontWeight: 'bold',
-            margin: 20
+            margin: height * 0.02
         },
         buttonContainer: {
             flexDirection: 'row',
@@ -152,8 +148,8 @@ const createStyles = () =>
              width: width - 50,
             justifyContent: 'flex-start',
             alignItems: 'center',
-            marginTop: 10,
-            height: 60,
+            marginTop: height * 0.02,
+            height: height * 0.07,
             backgroundColor: '#FFF',
             borderRadius: 10,
             elevation: 3,
@@ -164,19 +160,17 @@ const createStyles = () =>
             flexDirection: 'row',
             paddingLeft: 20,
         },
-             gridContainer: {
-            flex: 1,
+        gridContainer: {
             flexDirection: "row",
             flexWrap: "wrap",
-            justifyContent: "space-around",
-            paddingHorizontal: 20,
-            paddingTop: 25,
+            justifyContent: "center",
+            paddingHorizontal: width * 0.02,
+            paddingTop: height * 0.02,
+            gridTemplateColumn: "repeat(2, 1fr)",
         },
         gridItem: {
-            margin: 5,
-            marginBottom: 20,
+            margin: width * 0.025,
             alignItems: "center",
-            justifyContent: "center",
         },
     }
     )

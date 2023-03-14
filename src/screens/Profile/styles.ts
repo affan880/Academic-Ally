@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions, StatusBar } from "react-native";
 
 const { width, height } = Dimensions.get('window');
 const statusBarHeight :any = StatusBar.currentHeight;
-const createStyles = () =>
+const createStyles = (theme: any, sizes:any) =>
     StyleSheet.create({
         container: {
             flex: 1,
@@ -14,27 +14,27 @@ const createStyles = () =>
             alignItems: "flex-start",
             flexDirection: "column",
             paddingHorizontal: 20,
-            paddingBottom: 30,
+            paddingBottom: height * 0.05,
             paddingTop: statusBarHeight + 20,
             alignContent: "flex-start",
         },
         headerText: {
-            fontSize: 18,
+            fontSize: sizes.title,
             color: "#FCFCFF",
             fontWeight: "700",
             marginLeft: 10,
         },
         body: {
-            flex: 1,
+            flex: 1, 
             backgroundColor: "#FCFCFF",
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
             width: width,
-            paddingBottom: 80,
+            paddingBottom: height * 0.15,
         },
         bodyContent: {
-            flex: 1,
-            paddingTop: 20,
+            // flex: 1,
+            paddingTop: height * 0.05,
         },
         name: {
             fontSize: 24,
@@ -56,11 +56,11 @@ const createStyles = () =>
             alignSelf: "center",
         },
         settingsTitleText: {
-            fontSize: 12,
+            fontSize: sizes.textSmall,
             color: "#91919F",
         },
         settingsText: {
-            fontSize: 14,
+            fontSize: sizes.subtitle,
             color: "#161719",
             fontWeight: "500",
         },

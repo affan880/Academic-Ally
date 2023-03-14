@@ -1,181 +1,113 @@
-import {StyleSheet, Text, View, Dimensions, Alert} from 'react-native';
-import React, {useMemo, useState} from 'react';
-import ScreenLayout from '../../interfaces/screenLayout';
-import {CustomTextInput} from '../../components/CustomFormComponents/CustomTextInput';
-import Form from '../../components/Forms/form';
 import {
-  CustomBtn,
-  NavBtn,
-} from '../../components/CustomFormComponents/CustomBtn';
-import DropdownComponent from '../../components/CustomFormComponents/Dropdown';
-import {UploadvalidationSchema} from '../../utilis/validation';
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Alert,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useMemo, useState, useRef, useEffect} from 'react';
+import ScreenLayout from '../../interfaces/screenLayout';
 import createStyles from './styles';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import {useSelector, useDispatch} from 'react-redux';
+import {FlatList} from 'react-native-gesture-handler';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Feather from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import LottieView from 'lottie-react-native';
+import {Toast} from 'native-base';
+import { userFirestoreData } from '../../services/fetch';
+import { setResourceLoader } from '../../redux/reducers/userState';
 
-const Upload = () => {
-  const height = Dimensions.get('screen').height;
-  const width = Dimensions.get('screen').width;
-  const styles = useMemo(() => createStyles(), []);
-  const onSubmitBTN = (values: any) => {
-    // const createUserDocument = async (values: any) => { /Resources/OU/B.E/CSE/1/Mathematics-1
-    firestore()
-      .collection('Resources')
-      .doc('OU')
-      .collection(`${values.course}`)
-      .doc(`${values.branch}`)
-      .collection(`${values.sem}`)
-      .doc('Subjects')
-      .collection(`${values.subjectName}`)
-      .doc('Notes')
-      .update({
-        Notes: firestore.FieldValue.arrayUnion({
-          college: values.college,
-          facultyName: values.facultyName,
-          notesId: values.did,
-          uploaderEmail: auth().currentUser?.email,
-          uploaderName: auth().currentUser?.displayName,
-          uploaderUid: auth().currentUser?.uid,
-          reviews: 0,
-          rating: 0,
-          ratingCount: 0,
-          comments: [],
-          likes: 0,
-          dislikes: 0,
-          likedBy: [],
-          dislikedBy: [],
-          views: 0,
-          viewedBy: [],
-          downloads: 0,
-          date: new Date().toDateString(),
-          time: new Date().toLocaleTimeString(),
-          shared: 0,
-          sharedBy: [],
-          sharedWith: [],
-        }),
-      })
-      .then(() => {
-        firestore()
-          .collection('Users')
-          .doc(auth().currentUser?.uid)
-          .update({
-            uploadedNotes: firestore.FieldValue.arrayUnion({
-              sem: values.sem,
-              branch: values.branch,
-              course: values.course,
-              subjectName: values.subjectName,
-              notesId: values.did,
-            }),
-          });
-      });
-    // };
+const Search = () => {
+  const theme = useSelector((state: any) => {
+    return state.theme;
+  });
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
+  const [selectedBranch, setSelectedBranch] = useState('');
+  const list = useSelector((state: any) => state.subjectsList.list);
+  const [subjectListDetail, setSubjectListDetail] = useState(list);
+  const [limit, setLimit] = useState(10);
+  const [filteredData, setFilteredData] = useState([]);
+  const dispatch = useDispatch();
+   
+  type MyStackParamList = {
+    SubjectResources: {userData: object; notesData: any; subject: string};
   };
+  type MyScreenNavigationProp = StackNavigationProp<
+    MyStackParamList,
+    'SubjectResources'
+  >;
+  type Props = {};
 
-  const initialValues = {
-    facultyName: '',
-    college: '',
-    notesId: '',
-    course: '',
-    branch: '',
-    sem: '',
-    subjectName: '',
-  };
-  const CourseData: any = [
-    {label: 'B.E', value: '1'},
-    {label: 'B.TECH', value: '2'},
-  ];
-  const SemData: any = [
-    {label: '1', value: '1'},
-    {label: '2', value: '2'},
-    {label: '3', value: '3'},
-    {label: '4', value: '4'},
-    {label: '5', value: '5'},
-    {label: '6', value: '6'},
-    {label: '7', value: '7'},
-    {label: '8', value: '8'},
+  const branches = [
+    {id: 1, name: 'IT'},
+    {id: 2, name: 'CSE'},
+    {id: 3, name: 'ECE'},
+    {id: 4, name: 'EEE'},
+    {id: 5, name: 'MECH'},
+    {id: 6, name: 'CIVIL'},
   ];
 
-  const BranchData: any = [
-    {label: 'IT', value: '1'},
-    {label: 'CSE', value: '2'},
-    {label: 'ECE', value: '3'},
-    {label: 'MECH', value: '4'},
-    {label: 'CIVIL', value: '5'},
-    {label: 'EEE', value: '6'},
-  ];
+  // const userFirestoreData = useSelector((state: any) => state.usersData);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigation = useNavigation<MyScreenNavigationProp>();
+
+  useEffect(() => {
+    setFilteredData(
+      subjectListDetail?.filter((item: any) => {
+        const words = item.subject.split(' ');
+        let abbreviation = '';
+        for (const word of words) {
+          abbreviation += word[0];
+        }
+
+        if (searchTerm === '' && selectedBranch !== '') {
+          return item.branch
+            .toLowerCase()
+            .includes(selectedBranch.toLowerCase());
+        }
+
+        if (selectedBranch !== '') {
+          return (
+            (item.branch.toLowerCase().includes(selectedBranch.toLowerCase()) &&
+              item.subject.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            abbreviation.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        } else {
+          return (
+            item.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            abbreviation.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        }
+      }),
+    );
+  }, [list, searchTerm, selectedBranch, subjectListDetail]);
+
   return (
-    <ScreenLayout>
-      <View style={styles.inputContainer}>
-        <Form
-          validationSchema={UploadvalidationSchema}
-          initialValues={initialValues}
-          onSubmit={values => {
-            onSubmitBTN(values);
-          }}>
-          <CustomTextInput
-            leftIcon="user"
-            placeholder="Faculty Name"
-            name="facultyName"
-          />
-          <CustomTextInput
-            leftIcon="user"
-            placeholder="College Name"
-            name="college"
-          />
-          <CustomTextInput
-            leftIcon="user"
-            placeholder="Notes ID"
-            name="notesId"
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              width: width - 50,
-              justifyContent: 'space-between',
-            }}>
-            <DropdownComponent
-              name="course"
-              data={CourseData}
-              placeholder={'Course'}
-              leftIcon="Safety"
-              width={width / 2.5}
-            />
-            <DropdownComponent
-              name="branch"
-              data={BranchData}
-              placeholder={'Branch'}
-              leftIcon="bars"
-              width={width / 2.5}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              width: width - 50,
-              justifyContent: 'space-between',
-            }}>
-            <DropdownComponent
-              name="sem"
-              data={SemData}
-              placeholder={'Sem'}
-              leftIcon="bars"
-              width={width / 2.5}
-            />
-          </View>
-          <CustomTextInput
-            leftIcon="user"
-            placeholder="Subject Name"
-            name="subjectName"
-          />
-          <View style={styles.SignupButton}>
-            <CustomBtn title="Sign Up" color="#19647E" />
-          </View>
-        </Form>
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <View style={styles.header}>
+          <Ionicons name="cloud-upload" size={theme.sizes.iconMedium} color="#FFFFFF" />
+          <Text style={styles.headerText}>Upload</Text>
+        </View>
       </View>
-    </ScreenLayout>
+      <View style={styles.body}>
+        <View style={styles.bodyContent}>
+          
+        </View>
+      </View>
+    </View>
   );
 };
 
-export default Upload;
+export default Search;
 
 const styles = StyleSheet.create({});

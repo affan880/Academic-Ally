@@ -2,18 +2,17 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import createStyles from './styles';
 import {useSelector} from 'react-redux';
-import auth, {firebase} from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
-import {Toast} from 'native-base';
 import { setReccommendSubjects, setReccommendSubjectsLoaded, setVisitedSubjects } from '../../../redux/reducers/subjectsList';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userAddToRecents } from '../../../redux/reducers/usersRecentPdfsManager';
 import { fetchSubjectList, userFirestoreData} from '../../../services/fetch'
+import {setDarkTheme, setLightTheme} from '../../../redux/reducers/theme';
+import { sizes } from '../../../utilis/colors';
 
 type MyStackParamList = {
   SubjectResources: {userData: object; notesData: any; subject: string};
@@ -55,29 +54,47 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
   const visitedList = useSelector((state: any) => {
     return state.subjectsList.visitedSubjects.Syllabus;
   });
-  const styles = useMemo(() => createStyles(), []);
+  const theme = useSelector((state: any) => {
+    return state.theme;
+  });
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const navigation = useNavigation<MyScreenNavigationProp>();
   const [list, setList] = useState<any[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [filteresList, setFilteresList] = useState<any[]>(list);
   const dispatch = useDispatch();
+
   useEffect(() => {
+    console.log('selected', selected);
+    const a = list.filter(obj => obj[selected] === true);
+    setFilteresList(a);
+  }, [selected, list]);
+
+  useEffect(() => {
+    dispatch(setLightTheme());
+  }, [theme.theme]);
+  useEffect(() => {
+    
     AsyncStorage.getItem('reccommendSubjects').then(data => {
       if (data && data !== '[]') {
         setList(JSON.parse(data));
+        setFilteresList(JSON.parse(data));
         setLoaded(true);
       } else {
         setList([]);
+        setFilteresList([]);
         setLoaded(false);
         fetchData();
       }
     });
   }, [userData]);
 
+
   // console.log('list', visitedList);
 
   async function fetchData() {
-    fetchSubjectList(setList,dispatch, setReccommendSubjects, setReccommendSubjectsLoaded, setLoaded,userData);
+    fetchSubjectList(setList,dispatch, setReccommendSubjects, setReccommendSubjectsLoaded, setLoaded,userData)
   }
 
   useEffect(() => {
@@ -135,7 +152,7 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
   return (
     <View style={styles.body}>
       {loaded ? (
-        list.map((item: any, index) => {
+        (selected === "All" ? list : filteresList).map((item: any, index) => {
           return (
             <View style={styles.reccomendationContainer} key={index}>
               <View style={styles.reccomendationStyle}>
@@ -152,22 +169,14 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
                   }}
                   >
                   <View
-                    style={{
-                      width: '75%',
-                      height: '100%',
-                      justifyContent: 'space-evenly',
-                      alignItems: 'flex-start',
-                      margin: 2,
-                      paddingVertical: 15,
-                    }}>
+                    style={styles.main}>
                     <Text style={styles.subjectName}>{item.subjectName}</Text>
                     <View
                       style={{
-                        width: '100%',
+                        width: '95%',
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        paddingRight: 10,
                       }}>
                       <View style={styles.subjectCategory}>
                         <Text style={styles.subjectCategoryText}>Notes</Text>
@@ -228,7 +237,7 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
-            height: 450,
+            height: theme.sizes.lottieIconHeight,
           }}>
           <LottieView
             source={require('../../../assets/lottie/loading.json')}

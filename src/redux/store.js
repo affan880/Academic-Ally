@@ -4,6 +4,7 @@ import userBookmarkManagementReducer from './reducers/userBookmarkManagement';
 import userRecentViewsManagementReducer from './reducers/usersRecentPdfsManager';
 import SubjectsList from './reducers/subjectsList';
 import userState from './reducers/userState';
+import theme from './reducers/theme';
 
 export default configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export default configureStore({
     userRecentPdfs: userRecentViewsManagementReducer,
     subjectsList: SubjectsList,
     userState: userState,
+    theme: theme,
   },
 });

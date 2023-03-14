@@ -1,38 +1,34 @@
 import {StyleSheet, Dimensions} from 'react-native';
 
 const {width, height} = Dimensions.get('window');
-const createStyles = () =>
+const createStyles = (theme:any, sizes:any) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#6360FF',
+      backgroundColor: theme.primary,
     },
-    headerContainer: {
-      height: height * 0.15,
+     headerContainer: {
+      height: height * 0.14,
       width: width,
       justifyContent: 'space-between',
       alignItems: 'flex-end',
       flexDirection: 'row',
-      paddingHorizontal: 20,
+      paddingHorizontal: width * 0.05,
       position: 'relative',
-      paddingBottom: 30,
+      paddingBottom: height * 0.015,
     },
     body: {
       flex: 1,
-      backgroundColor: '#F5F5F5',
-      borderTopLeftRadius: 40,
-      borderTopRightRadius: 40,
+      backgroundColor: theme.secondary,
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
       width: width,
-      justifyContent: 'space-around',
     },
     bodyContent: {
       flex: 1,
-      justifyContent: 'space-around',
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      paddingHorizontal: 20,
-      paddingTop: 20,
+      paddingTop: height * 0.02,
     },
+    
     categoryBtns: {
       width: width * 0.4,
       height: height * 0.25,
@@ -55,7 +51,7 @@ const createStyles = () =>
     },
     categoryBtnClicked: {
       transform: [{scale: 1.1}],
-      borderColor: '#6360FF',
+      borderColor: theme.primary,
       borderWidth: 2,
     },
     selectBtn: {
@@ -63,12 +59,12 @@ const createStyles = () =>
       height: height * 0.25,
       justifyContent: 'center',
       alignItems: 'center',
-      paddingTop: 120,
+      paddingTop: height * 0.05,
     },
     btnText: {
-      fontSize: 16,
+      fontSize: sizes.text,
       fontWeight: '600',
-      color: '#161719',
+      color: theme.primaryText,
       textAlign: 'center',
       lineHeight: 20,
       marginTop: 10,
@@ -95,29 +91,9 @@ const createStyles = () =>
     },
     disabledBtnClicked: {
       transform: [{scale: 1.1}],
-      borderColor: '#FF8181',
+      borderColor: theme.tertiary,
       borderWidth: 2,
       backgroundColor: '#fff',
-    },
-
-    reccomendationContainer: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: 20,
-      width: width / 1.1,
-      height: height / 7,
-      alignSelf: 'center',
-      borderRadius: 10,
-      marginBottom: 20,
-    },
-    reccomendationStyle: {
-      width: width / 1.1,
-      height: height / 7,
-      backgroundColor: '#FCFCFF',
-      borderColor: '#0000000',
-      borderRadius: 10,
-      justifyContent: 'space-around',
-      alignItems: 'center',
     },
     containerText: {
       fontSize: 18,
@@ -173,15 +149,15 @@ const createStyles = () =>
       justifyContent: 'space-evenly',
       alignItems: 'center',
       flexDirection: 'row',
-      paddingHorizontal: 20,
+      paddingHorizontal: height * 0.03,
     },
     notesListHeaderText: {
-      fontSize: 16,
+      fontSize: sizes.text,
       fontWeight: '500',
       color: '#161719',
     },
     notesListValueText: {
-      fontSize: 14,
+      fontSize: sizes.text,
       fontWeight: 'bold',
       color: '#91919F',
     },
@@ -190,14 +166,33 @@ const createStyles = () =>
       height: height * 0.08,
       justifyContent: 'center',
       alignItems: 'center',
-      marginVertical: 10,
+      marginVertical: height * 0.02,
     },
     headerText: {
-      fontSize: 22,
-      fontWeight: 'bold',
-      color: '#161719',
-      textDecorationLine: 'underline',
+      fontSize: sizes.title,
+      fontWeight: 'bold', 
+      color: theme.primaryText,
     },
-  });
+    btn:{
+        position: 'absolute',
+        bottom: 10,
+        alignSelf: 'center',
+        backgroundColor: theme.tertiary,
+        width: '90%',
+        height: height * 0.07,
+        borderRadius: height * 0.015,
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 0,
+        shadowOpacity: 0.5,
+        },
+        uploadBtnText:{
+          color: '#fff',
+          fontSize: sizes.text,
+          fontWeight: 'bold',
+          textAlign: 'center',
+          paddingVertical: 10,
+        }
+  })
 
 export default createStyles;

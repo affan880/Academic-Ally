@@ -10,6 +10,7 @@ import createStyles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 interface Props {
   children?: React.ReactNode;
@@ -20,7 +21,8 @@ interface Props {
 
 const navigationLayout = ({children, rightIconFalse, title, handleScroll}: Props) => {
   const navigation = useNavigation();
-  const styles = useMemo(() => createStyles(), []);
+  const theme = useSelector((state: any) => state.theme);
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -30,12 +32,7 @@ const navigationLayout = ({children, rightIconFalse, title, handleScroll}: Props
           alignItems: 'center',
         }} >
         <TouchableOpacity
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: 30,
-          height: 30,
-        }}
+        style={styles.backBtn}
           onPress={() => {
             navigation.goBack();
           }}>

@@ -10,6 +10,7 @@ import {
 import React, {useMemo} from 'react';
 import {Syllabus, Notes, Qp, OtherRes} from '../../../assets/images/icons';
 import createStyles from './styles';
+import {useSelector} from 'react-redux';
 
 type Props = {
   selected: string;
@@ -17,7 +18,10 @@ type Props = {
 };
 
 const QuickAccess = ({selected, setSelectedCategory}:Props) => {
-  const styles = useMemo(() => createStyles(), []);
+  const theme = useSelector((state: any) => {
+    return state.theme;
+  });
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), []);
 
   return (
     <View style={styles.categories}>
@@ -25,12 +29,7 @@ const QuickAccess = ({selected, setSelectedCategory}:Props) => {
         setSelectedCategory('Syllabus');
       }}>
         <View style={
-          selected === 'Syllabus' ? [styles.syllabusIconContainer, {
-          transform: [{scale: 1.2}],
-          borderColor: '#6360FF',
-          borderWidth: 2,
-          padding: 5,
-        }]: styles.syllabusIconContainer
+          selected === 'Syllabus' ? [styles.syllabusIconContainer, styles.selectedIconContainer]: styles.syllabusIconContainer
         }>
           <Syllabus />
         </View>
@@ -40,12 +39,7 @@ const QuickAccess = ({selected, setSelectedCategory}:Props) => {
          setSelectedCategory('Notes');
       }} >
         <View style={
-          selected === 'Notes' ? [styles.notesIconContainer, {
-          transform: [{scale: 1.2}],
-          borderColor: '#6360FF',
-          borderWidth: 2,
-          padding: 5,
-        }]: styles.notesIconContainer
+          selected === 'Notes' ? [styles.notesIconContainer, styles.selectedIconContainer]: styles.notesIconContainer
         }>
           <Notes />
         </View>
@@ -55,12 +49,7 @@ const QuickAccess = ({selected, setSelectedCategory}:Props) => {
          setSelectedCategory('QuestionPapers');
       }} >
         <View style={
-          selected === 'QuestionPapers' ? [styles.questionsIconContainer, {
-          transform: [{scale: 1.2}],
-          borderColor: '#6360FF',
-          borderWidth: 2,
-          padding: 5,
-        }]: styles.questionsIconContainer
+          selected === 'QuestionPapers' ? [styles.questionsIconContainer,  styles.selectedIconContainer]: styles.questionsIconContainer
         }>
           <Qp />
         </View>
@@ -70,12 +59,7 @@ const QuickAccess = ({selected, setSelectedCategory}:Props) => {
          setSelectedCategory('OtherResources');
       }}>
         <View style={
-          selected === 'OtherResources' ? [styles.otherResourcesIconContainer, {
-          transform: [{scale: 1.2}],
-          borderColor: '#6360FF',
-          borderWidth: 2,
-          padding: 5,
-        }]: styles.otherResourcesIconContainer
+          selected === 'OtherResources' ? [styles.otherResourcesIconContainer,  styles.selectedIconContainer]: styles.otherResourcesIconContainer
         }>
           <OtherRes />
         </View>

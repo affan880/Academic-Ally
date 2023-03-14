@@ -4,6 +4,7 @@ import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { Toast, CheckIcon } from 'native-base';
 import { setCustomLoader } from '../../../redux/reducers/userState';
+import { setUsersData } from '../../../redux/reducers/usersData';
 
 export const firestoreDB = () => {
   return firestore();
@@ -201,14 +202,14 @@ export const getFirestoreData = async (uid, updateReduxData) => {
     });
 };
 
-export const updateFirestoreData = async (uid, data) => {
+export const updateFirestoreData = async (uid, data, dispatch) => {
+  console.log('updating data', data);
   firestore()
     .collection('Users')
     .doc(`${uid}`)
     .update(data)
     .then(() => {
-      // getFirestoreData(uid);
-      // console.log('User Data updated!');
+      dispatch(setUsersData(data));
       Toast.show({
         title: 'Profile Updated',
         type: 'success',

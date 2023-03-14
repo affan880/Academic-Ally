@@ -51,7 +51,8 @@ type MyStackParamList = {
 type pdfViewer = StackNavigationProp<MyStackParamList, 'PdfViewer'>;
 
 const Bookmark = () => {
-  const styles = useMemo(() => createStyles(), []);
+  const theme = useSelector((state: any) => state.theme);
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [listData, setListData] = useState([]);
   const [sortedList, setSortedList] = useState([]);
   const bookmarkList = useSelector(
@@ -68,7 +69,7 @@ const Bookmark = () => {
     });
   }, []);
 function remove(filename: string) {
-  if (filename.endsWith(".pdf")) {
+  if (filename?.includes(".pdf")) {
   filename = filename.slice(0, -4); 
   if (filename.length > 15) {
     return filename.substring(0, 20) ;
@@ -134,13 +135,7 @@ useEffect(() => {
   // };
 
   const renderItem = ({item, index}: any) => (
-    <Box
-      height={height / 7}
-      width={"92%"}
-      borderRadius={10}
-      backgroundColor={'#FFFFFF'}
-      justifyContent={'center'}
-      alignSelf={'center'}>
+    <Box style={styles.mainContainer}>
       <Pressable
         onPress={() => {
           navigation.navigate('PdfViewer', {
@@ -154,24 +149,24 @@ useEffect(() => {
             subject: item.subject,
           });
         }}>
-        <HStack px={15}>
+        <HStack style={styles.subjectItem} >
           <View style={styles.containerBox}>
             <View style={styles.containerText}/>
           </View>
-          <HStack width={'80%'} px={5} justifyContent={'space-between'} >
+          <HStack >
             <VStack  >
               <Box
-                style={{
-                  width: '100%',
-                  height: 80,
-                  justifyContent: 'space-evenly',
-                  alignItems: 'flex-start',
-                }}>
-                <Text style={styles.name}>{remove(item.name)}</Text>
+                style={styles.subjectItemTextContainer}>
+                  {
+                    item.name !== 'undefined' ?
+                <Text style={styles.name}>{remove(item?.name)}</Text> : null
+                  }
                 <Text
                   style={{
-                    fontSize: 14,
-                    color: '#161719',
+                    fontSize: theme.sizes.subTitle,
+                    color: theme.colors.primaryText,
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}
                   fontWeight={400}>
                   {item?.category === 'otherResources'
@@ -179,10 +174,10 @@ useEffect(() => {
                     : item?.category?.charAt(0).toUpperCase() +
                       item?.category?.slice(1)}
                 </Text>
-                <HStack>
+                <HStack >
                   <Text style={styles.subjectName}>{item?.units === "" ? "Units: Unknown" : `Units: ${item.units}`}</Text>
                   <Text style={[styles.subjectName, {
-                    marginLeft: 10,
+                    marginLeft: theme.sizes.width * 0.03,
                   }]}>Semester: {`${item.sem}`}</Text>
                 </HStack>
                 <Text style={styles.subjectName}>Branch: {item?.branch}</Text>
@@ -246,13 +241,11 @@ useEffect(() => {
           {
             sortedList?.map((item:any, index:any) => {
               return (
-                <View key={index} style={{
-                  marginBottom: 20,
-                }}>
+                <View key={index}>
                   <Text style={{
-                    fontSize: 18,
+                    fontSize: theme.sizes.title,
                     fontWeight: 'bold',
-                    color: '#161719',
+                    color: theme.colors.primaryText,
                     marginLeft: 10,
                     marginTop: 20,
                     marginBottom: 10,
@@ -262,9 +255,6 @@ useEffect(() => {
                   data={item}
                   renderItem={renderItem}
                   scrollEnabled={true}
-                  renderSectionHeader={({section}) => (
-                    <Text style={styles.header}>{section.title}</Text>
-                  )}
                   ItemSeparatorComponent={() => (
                     <View style={{height: 20, width: '100%'}} />
                   )}
@@ -290,10 +280,14 @@ useEffect(() => {
       </View>
     </View>
   ) : (
-    <View style={styles.container}>
+    <View style={{
+      flex: 1,
+      backgroundColor: theme.colors.primary,
+      justifyContent: 'center',
+    }}>
       <View
         style={{
-          height: 450,
+          height: theme.sizes.height * 0.3,
         }}>
         <LottieView
           source={require('../../assets/lottie/NoBookMarks.json')}
@@ -303,14 +297,14 @@ useEffect(() => {
       </View>
       <Text
         style={{
-          fontSize: 20,
+          fontSize: theme.sizes.title,
           fontWeight: 'bold',
           color: '#FFFFFF',
           marginBottom: 20,
           alignSelf: 'center',
-          margin: 25,
+          margin: height * 0.06,
           textAlign: 'center',
-          lineHeight: 30,
+          lineHeight: height * 0.05,
         }}>
        No bookmarks to show. Start bookmarking your favorite notes for easy access later!</Text>
     </View>

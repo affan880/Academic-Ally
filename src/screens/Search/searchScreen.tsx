@@ -26,14 +26,17 @@ import { userFirestoreData } from '../../services/fetch';
 import { setResourceLoader } from '../../redux/reducers/userState';
 
 const Search = () => {
-  const styles = useMemo(() => createStyles(), []);
+  const theme = useSelector((state: any) => {
+    return state.theme;
+  });
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [selectedBranch, setSelectedBranch] = useState('');
   const list = useSelector((state: any) => state.subjectsList.list);
   const [subjectListDetail, setSubjectListDetail] = useState(list);
   const [limit, setLimit] = useState(10);
   const [filteredData, setFilteredData] = useState([]);
   const dispatch = useDispatch();
-
+   
   type MyStackParamList = {
     SubjectResources: {userData: object; notesData: any; subject: string};
   };
@@ -104,10 +107,10 @@ const Search = () => {
           sem : item.sem
         }
       const notesData = {
-        notes: await userFirestoreData(customizedData,'Notes', { subjectName: item.subject}),
-        otherResources: await userFirestoreData(customizedData,'OtherResources', { subjectName: item.subject}),
-        questionPapers: await userFirestoreData(customizedData,'QuestionPapers', { subjectName: item.subject}),
-        syllabus: await userFirestoreData(customizedData,'Syllabus', { subjectName: item.subject}),
+        notes: await userFirestoreData(customizedData,'Notes', { subjectName: item.subject}, dispatch),
+        otherResources: await userFirestoreData(customizedData,'OtherResources', { subjectName: item.subject}, dispatch),
+        questionPapers: await userFirestoreData(customizedData,'QuestionPapers', { subjectName: item.subject}, dispatch),
+        syllabus: await userFirestoreData(customizedData,'Syllabus', { subjectName: item.subject}, dispatch),
         subjectName: item.subject,
       };
       dispatch(setResourceLoader(false));
@@ -132,7 +135,7 @@ const Search = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <Ionicons name="search-circle-sharp" size={30} color="#FFFFFF" />
+          <Ionicons name="search-circle-sharp" size={theme.sizes.iconMedium} color="#FFFFFF" />
           <Text style={styles.headerText}>Explore</Text>
         </View>
       </View>
@@ -163,7 +166,7 @@ const Search = () => {
                 />
                 <Feather
                   name="search"
-                  size={20}
+                  size={theme.sizes.iconSmall}
                   color="#161719"
                   style={styles.searchIcon}
                 />
@@ -179,8 +182,8 @@ const Search = () => {
                         {
                           backgroundColor:
                             selectedBranch === branch.name
-                              ? '#FF8181'
-                              : '#6360FF',
+                              ? theme.colors.tertiary
+                              : theme.colors.primary,
                         },
                       ]}
                       onPress={() => {
@@ -206,15 +209,15 @@ const Search = () => {
                       onPress={() => selectedSubject(item)}>
                       <View style={styles.containerBox}>
                         <View style={styles.containerText}>
-                          <Ionicons
+                          {/* <Ionicons
                             name="eye-sharp"
-                            size={20}
+                            size={theme.sizes.iconSmall}
                             color="#fff"
                             style={{
                               alignSelf: 'center',
                               transform: [{rotate: '135deg'}],
                             }}
-                          />
+                          /> */}
                         </View>
                       </View>
                       <View style={styles.subjectItemTextContainer}>
@@ -246,7 +249,7 @@ const Search = () => {
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    height: 450,
+                    height: theme.sizes.lottieIconHeight,
                   }}>
                   <LottieView
                     source={require('../../assets/lottie/loading.json')}

@@ -1,18 +1,18 @@
 import {StyleSheet, Dimensions} from 'react-native';
 
 const {width, height} = Dimensions.get('window');
-const createStyles = () =>
+const createStyles = (theme:any, sizes:any) =>
   StyleSheet.create({
     body: {
-      backgroundColor: '#F1F1FA',
+      backgroundColor: theme.secondary,
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,
-      marginBottom: 10,
+      marginBottom: height * 0.02,
     },
     reccomendationContainer: {
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: 20,
+      marginTop: height * 0.02,
       width: width / 1.1,
       height: height / 7,
       alignSelf: 'center',
@@ -21,28 +21,26 @@ const createStyles = () =>
     reccomendationStyle: {
       width: '100%',
       height: height / 7,
-      backgroundColor: '#FCFCFF',
-      borderColor: '#0000000',
+      backgroundColor: theme.quaternary,
       borderRadius: 10,
       justifyContent: 'space-around',
       alignItems: 'center',
     },
     containerText: {
-      fontSize: 16,
+      fontSize: sizes.text,
       color: '#FFF',
       fontWeight: '400',
       backgroundColor: 'rgba(255, 255, 255, 0.17)',
-      width: 30,
-      height: 30,
+      width: width * 0.08,
+      height: width * 0.08,
       borderRadius: 20,
       textAlign: 'center',
       textAlignVertical: 'center',
-      position: 'absolute',
     },
     container: {
-      backgroundColor: '#FF8181',
-      width: 80,
-      height: 80,
+      backgroundColor: theme.tertiary,
+      width: height * 0.1,
+      height: height * 0.1,
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
@@ -57,23 +55,31 @@ const createStyles = () =>
       position: 'relative',
       shadowColor: '#000',
       borderRadius: 10,
-      paddingHorizontal: 15,
+      paddingHorizontal: width * 0.05,
     },
     subjectName: {
-      fontSize: 20,
+      fontSize: sizes.title,
       fontWeight: '700',
-      color: '#161719',
+      color: theme.primaryText,
       fontFamily: 'DM Sans',
       fontStyle: 'normal',
     },
     subjectCategory: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingTop: 5,
+      paddingTop: height * 0.01,
     },
-    subjectCategoryText: {color: '#706f6f', fontSize: 12, fontWeight: '700'},
-    subjectCategoryCheckIcon: {color: '#7DC579'},
-    subjectCategoryUnCheckIcon: {color: '#FF0000'},
+    main:{
+      width: width * 0.6,
+      height: '100%',
+      justifyContent: 'space-evenly',
+      alignItems: 'flex-start',
+      margin: height * 0.006,
+      paddingVertical: height * 0.01,
+    },
+    subjectCategoryText: {color: theme.terinaryText, fontSize: sizes.textSmall, fontWeight: '700'},
+    subjectCategoryCheckIcon: {color: theme.greenSuccess},
+    subjectCategoryUnCheckIcon: {color: theme.redError},
   });
 
 export default createStyles;

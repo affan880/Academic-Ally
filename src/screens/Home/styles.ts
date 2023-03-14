@@ -2,43 +2,59 @@ import { StyleSheet } from "react-native";
 import { Dimensions } from "react-native";
 
 const { width, height } = Dimensions.get('window');
-const createStyles = () =>
+const createStyles = (theme:any, sizes:any) =>
     StyleSheet.create({
         header: {
-            flex: 1,
-            backgroundColor: '#6360FF',
-            height: height / 4.5,
+            backgroundColor: theme.primary,
+            height: height * 0.22,
             borderBottomLeftRadius: 20,
             borderBottomRightRadius: 20,
-            paddingTop:30
+            paddingTop: height * 0.03,
         },
         userInfo: {
             flexDirection: "row",
             alignItems: "center",
             width: "100%",
-            paddingHorizontal: 20,
+            paddingHorizontal: width * 0.05,
             justifyContent: "space-between",
         },
         userImgContainer: {
-            backgroundColor: "#fff",
+            backgroundColor: "#fff", 
             borderRadius: 50,
         },
         userImg: {
-            width: 60,
-            height: 60,
+            width: width * 0.15,
+            height: width * 0.15,
             borderRadius: 50,
         },
         salutation: {
             color: "#fff",
-            fontSize: 12,
+            fontSize: sizes.title,
             fontWeight: "700",
-            lineHeight: 30
+            lineHeight: height * 0.04,
         },
         userName: {
             color: "#fff",
-            fontSize: 16,
+            fontSize: sizes.subtitle,
             fontWeight: "700",
-        }
+        },
+        recommendedContainer: {
+            marginTop: -height * 0.16,
+            backgroundColor: theme.secondary,
+            paddingTop: height * 0.1,
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            minHeight: height * 0.8,
+          },
+          recommendedText: {
+              color: theme.primaryText,
+              lineHeight: height * 0.04,
+              fontSize: sizes.title,
+              fontWeight: '700',
+              fontFamily: 'DM Sans',
+              paddingLeft: 20,
+              fontStyle: 'normal',
+            }
     })
 
 export default createStyles;

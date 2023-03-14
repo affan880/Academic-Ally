@@ -22,6 +22,7 @@ type Props = {
 };
 
 const Width = Dimensions.get('screen').width;
+const Height = Dimensions.get('screen').height;
 
 export const CustomTextInput = ({
   leftIcon,
@@ -47,7 +48,7 @@ export const CustomTextInput = ({
         ]}>
         {name === 'college' ? (
           <FontAwesome
-            size={16}
+            size={Height * 0.025}
             color={touched[name] && errors[name] ? '#FF2E00' : '#000000'}
             style={{paddingRight: 15, alignSelf: 'center'}}
             name={'university'}
@@ -83,7 +84,7 @@ export const CustomTextInput = ({
         errors[name] &&
         name !== 'password' &&
         name !== 'confirmPassword' ? (
-          <Feather name="alert-circle" size={18} color="#FF2E00" />
+          <Feather name="alert-circle" size={Height * 0.025} color="#FF2E00" />
         ) : null}
         {name === 'password' || name === 'confirmPassword' ? (
           <TouchableOpacity
@@ -91,7 +92,7 @@ export const CustomTextInput = ({
             style={{paddingRight: 25, alignSelf: 'center'}}>
             <Feather
               name={passwordVisibility ? 'eye' : 'eye-off'}
-              size={18}
+              size={Height * 0.025}
               color={touched[name] && errors[name] ? '#FF2E00' : '#000000'}
             />
           </TouchableOpacity>
@@ -101,7 +102,7 @@ export const CustomTextInput = ({
         <Text
           style={{
             color: '#FFFFFF',
-            fontSize: 12,
+            fontSize: Height * 0.015,
             fontFamily: 'Poppins-Regular',
             paddingLeft: 20,
             fontWeight: 'bold',
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: '#fff',
     width: Width - 50,
-    height: 60,
+    height: Height * 0.07,
     borderRadius: 10,
     elevation: 3,
     paddingLeft: 20,
@@ -131,10 +132,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   textInput: {
-    height: 60,
+    height: Height * 0.07,
     width: '78%',
-    fontSize: 16,
+    fontSize:  Height * 0.022,
     color: '#000000',
     fontFamily: 'Poppins-Regular',
+    alignItems: 'center',
   },
 });

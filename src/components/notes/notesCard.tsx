@@ -21,7 +21,6 @@ import { ViewCount, submitRating, submitReport, getMailId, shareNotes, ratedReso
 
 type Props = {
   item: any;
-  key: number;
   userData: any;
   notesData: any;
   selected: string;
@@ -89,9 +88,10 @@ function KbsToMB(bits :any) {
   return megabytes.toFixed(2) + " MB";
 }
 
-const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) => {
+const NotesCard = ({item, userData, notesData, selected, subject}: Props) => {
   const {isOpen,onOpen,onClose} = useDisclose();
-  const styles = useMemo(() => createStyles(), []);
+  const theme = useSelector((state: any) => state.theme);
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const navigation = useNavigation<pdfViewer>();
   const dispatch = useDispatch();
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -162,7 +162,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
   }
 
   return (
-            <View style={styles.reccomendationContainer}>
+            <View style={styles.notesContainer}>
               <View style={styles.reccomendationStyle}>
                 <TouchableOpacity
                   style={styles.subjectContainer}
@@ -199,24 +199,24 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                       height: '90%',
                       justifyContent: 'space-evenly',
                       alignItems: 'flex-start',
-                      paddingTop: 5,
-                      paddingLeft: 10,
+                      paddingTop: theme.sizes.height * 0.01,
+                      paddingLeft: theme.sizes.width * 0.02,
                     }}>
                     <Text style={styles.subjectName}>
                       {remove(item.name)}
                     </Text>
                     <Text
                       style={{
-                        fontSize: 16,
-                        color: '#161719',
+                        fontSize: theme.sizes.subtitle,
+                        color: theme.colors.primaryText,
                         fontWeight: '400',
                       }}>
                       {selected.charAt(0).toUpperCase() + selected.slice(1)}
                     </Text>
                     <Text
                       style={{
-                        fontSize: 16,
-                        color: item.units === "" ? "#91919F" : "#161719",
+                        fontSize: theme.sizes.subtitle,
+                        color: item.units === "" ? theme.colors.textSecondary : theme.colors.primaryText,
                         fontWeight: '400',
                       }}>
                       {item.units === "" ? "Units: Unknown" : item.units + " Units"}
@@ -226,7 +226,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                         width: '100%',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        paddingRight: 10,
+                        paddingRight: theme.sizes.width * 0.02,
                         maxWidth: '100%',
                       }}>
                       <View
@@ -234,17 +234,17 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                           flexDirection: 'row',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          marginRight: 10,
+                          marginRight: theme.sizes.width * 0.02,
                         }}>
-                        <Ionicons name="md-eye-outline" size={13} color="#161719" style={{
-                          paddingTop: 2,
+                        <Ionicons name="md-eye-outline" size={theme.sizes.height*0.018} color={theme.colors.primaryText} style={{
+                          paddingTop: theme.sizes.height * 0.002,
                         }} />
                         <Text
                           style={{
-                            fontSize: 14,
-                            color: '#161719',
+                            fontSize: theme.sizes.subtitle,
+                            color: theme.colors.primaryText,
                             fontWeight: '600',
-                            paddingLeft: 5,
+                            paddingLeft: theme.sizes.width * 0.01,
                           }}>{
                           item?.views ? formatViewCount(item.views) : 0
                           }
@@ -255,15 +255,15 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                           flexDirection: 'row',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          paddingHorizontal: 5,
+                          paddingHorizontal: theme.sizes.width * 0.02,
                         }}>
-                        <AntDesign name="star" size={13} color="#FFC960" />
+                        <AntDesign name="star" size={theme.sizes.height*0.018} color={theme.colors.yellowWarning} />
                         <Text
                           style={{
                             fontSize: 14,
-                            color: item.rating < 1 ? "#91919F" : "#161719",
+                            color: item.rating < 1 ? theme.colors.textSecondary : theme.colors.primaryText,
                             fontWeight: '600',
-                            paddingLeft: 5,
+                            paddingLeft: theme.sizes.width * 0.01,
                           }}>
                           {item.rating < 1 ? "Unrated" : item.rating}
                         </Text>
@@ -280,7 +280,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                         <Text
                           style={{
                             fontSize: 14,
-                            color: '#91919F',
+                            color: theme.colors.textSecondary,
                             fontWeight: '400',
                             paddingLeft: 0,
                             alignItems: 'center',
@@ -321,8 +321,8 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                           ? 'bookmark'
                           : 'bookmark-o'
                       }
-                      size={25}
-                      color={'#6360FF'}
+                      size={theme.sizes.height*0.035}
+                      color={theme.colors.primary}
                     />
                   </TouchableOpacity>
                 </TouchableOpacity>
@@ -339,7 +339,7 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
                   }
                 }} >
                   <Text style={styles.cardOptionText}>Rate</Text>
-                  <AntDesign name={RatedStatus(item.did) ? 'star' : 'staro' } size={20} color={RatedStatus(item.did) ? '#FFC960' : "#FFF" } />    
+                  <AntDesign name={RatedStatus(item.did) ? 'star' : 'staro' } size={theme.sizes.iconSmall} color={RatedStatus(item.did) ? '#FFC960' : "#FFF" } />    
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.cardOptionContainer} onPress={onOpen} >
                   <Text style={styles.cardOptionText}>Report</Text>
@@ -361,14 +361,14 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
           <Stack direction="row" space={2} marginY={10} alignItems="center" justifyContent="center" >
                 <SwipeableRating
                   rating={ratingCount}
-                  size={50}
-                  gap={4}
+                  size={theme.sizes.height*0.05}
+                  gap={theme.sizes.width*0.02}
                   onPress={(rating: any)=>{
                     setRatingCount(rating)
                   }}
                   swipeable={true}
-                  color="#FFC960"
-                  emptyColor="#91919F"
+                  color={theme.colors.yellowWarning}
+                  emptyColor={theme.colors.textSecondary}
                   maxRating={5}
                   allowHalves={true}
                   style={{
@@ -393,19 +393,19 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
              <TouchableOpacity onPress={()=>{
               setModalVisible(false);
             }} >
-              <Text fontSize={'16px'} fontWeight={'700'} textAlign="center" color={"#6360FF"} >
+              <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={theme.colors.textSecondary} >
                 Cancel
               </Text>
             </TouchableOpacity>
              <TouchableOpacity style={{
-              backgroundColor: '#6360FF',
+              backgroundColor: theme.colors.primary,
               borderRadius: 10,
-              paddingHorizontal: 25,
+              paddingHorizontal: theme.sizes.width*0.06,
               paddingVertical: 10,
              }} onPress={()=>{
               setModalVisible(false);
             }} >
-              <Text fontSize={'16px'} fontWeight={'700'} textAlign="center" color={"#FFF"} onPress={()=>{
+              <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#FFF"} onPress={()=>{
                 submitRatingCount();
               }} >
                 Confirm
@@ -429,37 +429,37 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
               borderTopRightRadius: 20,
             }}>
             <ReportIconBlack /> 
-          <Box w="100%" h={60} px={4} my={4} justifyContent="center" alignItems={"center"} >
-            <Text fontSize="16" color="#161719" fontWeight={700} >
+          <Box w="100%" h={theme.sizes.height *0.1} px={4} my={4} justifyContent="center" alignItems={"center"} >
+            <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} >
             Why are you reporting this resource?
             </Text>
-            <Text fontSize="12" color="#91919F" textAlign={"center"} fontWeight={700} >
+            <Text fontSize={theme.sizes.textSmall} color="#91919F" textAlign={"center"} fontWeight={700} >
             Your report is anonymous, except if you are reporting an intellectual property infringement
             </Text>
           </Box>
           <Box w="100%" px={0} my={4} justifyContent="center" alignItems={"center"} >
           <Actionsheet.Item style={{
             borderBottomWidth: 0.9,
-            borderBottomColor: "#91919F",
-            backgroundColor: "#FFF",
+            borderBottomColor: theme.colors.textSecondary,
+            backgroundColor: theme.colors.quaternary,
           }} onPress={()=>{
             setChecked1(!checked1);
           }}>
             <Checkbox _android={{
               _checked: {
-                bg: "#6360FF",
-                borderColor: "#6360FF",
-                color: "white",
+                bg: theme.colors.primary,
+                borderColor: theme.colors.primary,
+                color: theme.colors.quaternary,
               },
               _unchecked: {
-                bg: "white",
-                borderColor: "#6360FF",
-                color: "#6360FF",
+                bg: theme.colors.quaternary,
+                borderColor: theme.colors.primary,
+                color: theme.colors.primary,
               },
             }} onChange={(value)=>{
               setChecked1(!checked1);
             }} value={"Checked 1"}  colorScheme="green" >
-              <Text fontSize="14" color="#161719" fontWeight={700} paddingLeft={4} width={'95%'} >
+              <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={'95%'} >
               Copyrights: The notes or this resource file contain copyrighted material
               </Text>
             </Checkbox>
@@ -472,20 +472,20 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
             setChecked2(!checked2);
           }}>
             <Checkbox _android={{
-              _checked: {
-                bg: "#6360FF",
-                borderColor: "#6360FF",
-                color: "white",
+             _checked: {
+                bg: theme.colors.primary,
+                borderColor: theme.colors.primary,
+                color: theme.colors.quaternary,
               },
               _unchecked: {
-                bg: "white",
-                borderColor: "#6360FF",
-                color: "#6360FF",
+                bg: theme.colors.quaternary,
+                borderColor: theme.colors.primary,
+                color: theme.colors.primary,
               },
             }}  onChange={(value)=>{
               setChecked2(!checked2);
             }} value={"Checked 1"}  colorScheme="green" >
-              <Text fontSize="14" color="#161719" fontWeight={700} paddingLeft={4} width={'95%'} >
+              <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={'95%'} >
               Misleading resource: The uploaded source contains inaccurate and false information.
               </Text>
             </Checkbox>
@@ -500,42 +500,42 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
             <Checkbox 
             _android={{
               _checked: {
-                bg: "#6360FF",
-                borderColor: "#6360FF",
-                color: "white",
+                bg: theme.colors.primary,
+                borderColor: theme.colors.primary,
+                color: theme.colors.quaternary,
               },
               _unchecked: {
-                bg: "white",
-                borderColor: "#6360FF",
-                color: "#6360FF",
+                bg: theme.colors.quaternary,
+                borderColor: theme.colors.primary,
+                color: theme.colors.primary,
               },
             }}
              onChange={(value)=>{
               setChecked3(!checked3);
             }} value={"Checked 1"}  colorScheme="green" >
-              <Text fontSize="14" color="#161719" fontWeight={700} paddingLeft={4} width={"92%"}>
+              <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={"92%"}>
               Spam: This file contains content other than notes and resources.
               </Text>
             </Checkbox>
           </Actionsheet.Item>
           </Box>
-          <Box w="100%" h={60} px={4} my={2} justifyContent="center" alignItems={"center"} >
-            <Text fontSize="16" color="#6360FF" fontWeight={700} onPress={()=>{
+          <Box w="100%" h={theme.sizes.height *0.1} px={4} my={2} justifyContent="center" alignItems={"center"} >
+            <Text fontSize={theme.sizes.title} color={theme.colors.primary} fontWeight={700} onPress={()=>{
               mail()
             }} >
               Reason not listed here? Write to Us
             </Text>
           </Box>
-          <Stack direction="row" space={2} marginY={5} paddingX={5} alignItems="center" justifyContent="space-evenly" width={"100%"} >
+          <Stack direction="row" space={2} marginY={0} paddingX={5} alignItems="center" justifyContent="space-evenly" width={"100%"} >
              <TouchableOpacity onPress={onClose} >
-              <Text fontSize={'16px'} fontWeight={'700'} textAlign="center" color={"#6360FF"} >
+              <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={theme.colors.textSecondary} >
                 Cancel
               </Text>
             </TouchableOpacity>
              <TouchableOpacity style={{
-              backgroundColor: '#6360FF',
+              backgroundColor: theme.colors.primary,
               borderRadius: 10,
-              paddingHorizontal: 25,
+              paddingHorizontal: theme.sizes.width * 0.05,
               paddingVertical: 10,
              }} onPress={()=>{
               submitReport(userFirestoreData?.usersData, {
@@ -545,12 +545,12 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
               });
               setSubmitted(true);
             }} >
-              <Text fontSize={'16px'} fontWeight={'700'} textAlign="center" color={"#FFF"} >
+              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={theme.colors.quaternary} >
                 Confirm
               </Text>
             </TouchableOpacity>
           </Stack>  
-          <Ionicons name="close-circle" size={30} onPress={onClose} color="#BCC4CC" style={{
+          <Ionicons name="close-circle" size={theme.sizes.height * 0.05} onPress={onClose} color="#BCC4CC" style={{
               position: "absolute",
               top: 15,
               right: 15,
@@ -559,37 +559,37 @@ const NotesCard = ({item, key, userData, notesData, selected, subject}: Props) =
           ) : (
             <Card style={{
               height: 400,
-              backgroundColor: "#FFF",
+              backgroundColor: theme.colors.quaternary,
               width: "100%",
               alignItems: "center",
               justifyContent: "center",
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
             }} >
-            <AntDesign name="checkcircle" size={50} color="#6360FF" />
-            <Box w="100%" h={60} px={4} my={4} justifyContent="center" alignItems={"center"} marginBottom={20} >
-              <Text fontSize="16" color="#161719" fontWeight={700} >
+            <AntDesign name="checkcircle" size={50} color={theme.colors.primary} />
+            <Box w="100%" h={theme.sizes.height *0.1} px={4} my={4} justifyContent="center" alignItems={"center"} marginBottom={20} >
+              <Text fontSize={theme.sizes.title} color={theme.colors.primaryText} fontWeight={700} >
               Thanks for letting us know!
               </Text>
-              <Text fontSize="14" padding={2} paddingTop={4} color="#91919F" textAlign={"center"} fontWeight={700} >
+              <Text fontSize={theme.sizes.subtitle} padding={theme.sizes.height *0.01} paddingTop={theme.sizes.height *0.01} color={theme.colors.textSecondary} textAlign={"center"} fontWeight={700} >
               We will review your report and take appropriate action.
               </Text>
             </Box>
             <TouchableOpacity style={{
-              backgroundColor: '#6360FF',
+              backgroundColor: theme.colors.primary,
               borderRadius: 10,
               width: "100%",
-              paddingVertical: 10,
-              marginVertical: 50,
+              paddingVertical: theme.sizes.height *0.02,
+              marginVertical: theme.sizes.height *0.02,
               position: "absolute",
-              height: 50,
+              height: theme.sizes.height *0.07,
               bottom: 0,
               justifyContent: "center",
               alignItems: "center",
              }} onPress={()=>{
               onClose();
             }} >
-              <Text fontSize={'16px'} fontWeight={'700'} textAlign="center" color={"#FFF"} >
+              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={theme.colors.quaternary} >
                 Close
               </Text>
             </TouchableOpacity>

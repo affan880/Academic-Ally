@@ -2,19 +2,9 @@ import {StyleSheet, Text, View, TouchableOpacity, Animated} from 'react-native';
 import React, {useMemo, useState, useRef} from 'react';
 import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import {useDispatch, useSelector} from 'react-redux';
 import NavigationLayout from '../../interfaces/navigationLayout';
 import createStyles from './styles';
-import {manageBookmarks} from '../../Modules/auth/firebase/firebase';
-import {userAddToRecentsStart} from '../../redux/reducers/usersRecentPdfsManager';
-import {
-  userAddBookMarks,
-  userRemoveBookMarks,
-} from '../../redux/reducers/userBookmarkManagement';
-import {NavBtn} from '../../components/CustomFormComponents/CustomBtn';
 import NotesCard from '../../components/notes/notesCard';
 
 type Props = {};
@@ -64,7 +54,8 @@ function remove(str: string) {
 }
 
 const NotesList = (props: Props) => {
-  const styles = useMemo(() => createStyles(), []);
+  const theme = useSelector((state: any) => state.theme);
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const navigation = useNavigation<pdfViewer>();
   const dispatch = useDispatch();
 
@@ -122,7 +113,7 @@ const NotesList = (props: Props) => {
         {notesData.map((item: any, index: number) => {
           return (
             <View key={item.id}>
-            <NotesCard key={index} item={item} userData={userData} notesData={notesData} selected={selected} subject={subject} />
+            <NotesCard item={item} userData={userData} notesData={notesData} selected={selected} subject={subject} />
             </View>
           );
         })}
@@ -137,27 +128,9 @@ const NotesList = (props: Props) => {
               subject: subject,
             });
           }}
-          style={{
-            position: 'absolute',
-            bottom: 10,
-            alignSelf: 'center',
-            backgroundColor: '#FF8181',
-            width: '90%',
-            height: 60,
-            borderRadius: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            elevation: 0,
-            shadowOpacity: 0.5,
-          }}>
+          style={styles.btn}>
           <Text
-            style={{
-              color: '#fff',
-              fontSize: 20,
-              fontWeight: 'bold',
-              textAlign: 'center',
-              paddingVertical: 10,
-            }}>
+            style={styles.uploadBtnText}>
             Upload
           </Text>
         </TouchableOpacity>

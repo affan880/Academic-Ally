@@ -25,7 +25,7 @@ import {  setSubjectsList,  setListLoaded,} from '../../redux/reducers/subjectsL
 import { setResourceLoader } from '../../redux/reducers/userState';
 import {Toast} from 'native-base';
 import { fetchNotesList } from '../../services/fetch';
-
+import { setDarkTheme } from '../../redux/reducers/theme';
 type MyStackParamList = {
   Notes: {itemId: number};
   PdfViewer: {
@@ -44,17 +44,22 @@ type MyStackParamList = {
       name: string;
     };
   };
+  Profile: undefined
 };
 type MyScreenNavigationProp = StackNavigationProp<MyStackParamList, 'Notes'>;
 type Props = {};
 
 const HomeScreen = (props: Props) => {
-  const styles = useMemo(() => createStyles(), []);
+  const theme = useSelector((state: any) => {
+    return state.theme;
+  });
+  
+  const dispatch = useDispatch();
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [resourcesLoaded, setResourcesLoaded] = useState(false);
   const navigation =
     useNavigation<StackNavigationProp<MyStackParamList, 'Notes'>>();
-  const dispatch = useDispatch();
   const userFirestoreData = useSelector((state: any) => state.usersData);
   const userDataLoaded = useSelector(
     (state: any) => state.usersData.usersDataLoaded,
@@ -83,6 +88,7 @@ const HomeScreen = (props: Props) => {
       notesData,
     });
   };
+
 
   useEffect(() => {
     dynamicLinks()
@@ -128,7 +134,7 @@ const HomeScreen = (props: Props) => {
         style={{
           flex: 1,
           marginBottom: 70,
-          backgroundColor: '#6360FF',
+          backgroundColor: theme.colors.primary,
         }}>
         <View style={styles.header}>
           <View>
@@ -138,11 +144,13 @@ const HomeScreen = (props: Props) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                <View style={styles.userImgContainer}>
+                <TouchableOpacity style={styles.userImgContainer} onPress={()=>{
+                  navigation.navigate('Profile')
+                }} >
                   <Image source={{
                     uri: userFirestoreData.userProfile || auth().currentUser?.photoURL,
                   }} style={styles.userImg} />
-                </View>
+                </TouchableOpacity>
                 <View
                   style={{
                     marginLeft: 10,
@@ -167,24 +175,9 @@ const HomeScreen = (props: Props) => {
           setSelectedCategory(option)
         }} />
         <View
-          style={{
-            marginTop: -120,
-            backgroundColor: '#F1F1FA',
-            paddingTop: 80,
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-            minHeight: 600,
-          }}>
+          style={styles.recommendedContainer}>
           <Text
-            style={{
-              color: '#161719',
-              lineHeight: 30,
-              fontSize: 16,
-              fontWeight: '700',
-              fontFamily: 'DM Sans',
-              paddingLeft: 20,
-              fontStyle: 'normal',
-            }}>
+            style={styles.recommendedText}>
             Recommended
           </Text>
           <View>
@@ -199,3 +192,4 @@ const HomeScreen = (props: Props) => {
 };
 
 export default HomeScreen;
+ 

@@ -27,6 +27,8 @@ import UpdateInformation from '../../screens/Profile/AccountSettings/UpdateInfor
 import Search from '../../screens/Search/searchScreen'
 import PrivacyPolicy from '../../screens/Profile/Support/PrivacyPolicy'
 import TermsAndConditions from '../../screens/Profile/Support/Terms&Conditions'
+import { useSelector } from 'react-redux'
+import { UploadIcon } from '../../assets/images/icons'
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
@@ -69,7 +71,7 @@ const DrawerScreen: FC<IProps> = ({navigation}) => {
     )
 }
 export const BottomTabBar = () => {
-    const [activeState, setActiveState] = useState(false)
+    const theme = useSelector((state: any) => state.theme)
     return (
         <>
             <StatusBar barStyle="light-content" />
@@ -96,7 +98,7 @@ export const BottomTabBar = () => {
                             return (
                                 //label and icon
                                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                    <Feather name='home' size={25} color={focused ? '#FF8181' : '#161719'} style={{
+                                    <Feather name='home' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused? 3 : 0,
                                     }} />
                                     {
@@ -116,7 +118,7 @@ export const BottomTabBar = () => {
                             return (
                                 //label and icon
                                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                    <Feather name='search' size={25} color={focused ? '#FF8181' : '#161719'} style={{
+                                    <Feather name='search' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
                                     {
@@ -130,13 +132,33 @@ export const BottomTabBar = () => {
                     component={Search}
                 />
                 <Tab.Screen
+                    name="Upload"
+                    options={{
+                        tabBarIcon: (({ focused }) => {
+                            return (
+                                //label and icon
+                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                    <Feather name='upload' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
+                                        bottom: focused ? 3 : 0,
+                                    }} />
+                                    {
+                                        focused ? <Text style={{ color: '#FF8181', fontSize: 10, fontWeight: '400', textAlign: "center", bottom: 0 }}>Upload</Text> : null
+                                    }
+                                </View>
+
+                            )
+                        })
+                    }}
+                    component={Upload}
+                />
+                <Tab.Screen
                     name="BookMark"
                     options={{
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
                                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                    <Fontisto name={focused ? 'bookmark-alt' : 'bookmark'} size={25} color={focused ? '#FF8181' : '#161719'} style={{
+                                    <Fontisto name={focused ? 'bookmark-alt' : 'bookmark'} size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
                                     {
@@ -150,13 +172,13 @@ export const BottomTabBar = () => {
                     component={Bookmark}
                 />
                 <Tab.Screen
-                    name="Profle"
+                    name="Profile"
                     options={{
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
                                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                    <Feather name="user" size={25} color={focused ? '#FF8181' : '#161719'} style={{
+                                    <Feather name="user" size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
                                     {

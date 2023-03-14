@@ -32,6 +32,7 @@ type MyStackParamList = {
 };
 
 const screenWidth = Dimensions.get('screen').width;
+const screenHeight = Dimensions.get('screen').height;
 
   type MyScreenNavigationProp = StackNavigationProp<
     MyStackParamList,
@@ -55,7 +56,8 @@ const UpdateInformation = () => {
     return state.usersData.userProfile;
   });
   const user = auth().currentUser;
-  const styles = createStyles();
+  const theme = useSelector((state: any) => state.theme);
+  const styles = createStyles(theme.colors, theme.sizes);
   const initialValues :any = {
     name: userFirestoreData.usersData.name,
     course: userFirestoreData.usersData.course,
@@ -177,12 +179,12 @@ const handleYearChange = (event: any) => {
   }
 });
 
-  const updateReduxData = (data: any) => {
-    dispatch(setUsersData(data));
-    navigation.navigate('BottomTabBar', {
-        screen: 'Home',
-        });
-  };
+  // const updateReduxData = (data: any) => {
+  //   dispatch(setUsersData(data));
+  //   navigation.navigate('BottomTabBar', {
+  //       screen: 'Home',
+  //       });
+  // };
 
   const updateData = async (values: any) => {
     const data = {
@@ -190,11 +192,16 @@ const handleYearChange = (event: any) => {
       course: values.course,
       sem: values.sem,
       branch: values.branch,
-      Year: values.year,
+      Year: values.Year,
       college: values.college,
+      university: userFirestoreData.usersData.university,
+      pfp: userFirestoreData.usersData.pfp,
+      email: userFirestoreData.usersData.email,
     };
-    updateFirestoreData(uid, data);
-    getFirestoreData(uid, updateReduxData);
+    updateFirestoreData(uid, data, dispatch);
+    navigation.navigate('BottomTabBar', {
+        screen: 'Home',
+        });
     AsyncStorage.setItem('reccommendSubjects', JSON.stringify([]));
   };
 
@@ -233,22 +240,27 @@ function getOrdinalSuffix(text :string) {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          marginTop: 20,
+          marginTop: theme.sizes.height * 0.03,
+          marginBottom: theme.sizes.height * 0.03,
         }}>
         <Avatar source={{
               uri: userImage||user?.photoURL
-            }}size={'2xl'} alignSelf={'center'}/>
-            <AntDesign
-              name="pluscircle"
-              size={20}
-              color="#FF8181"
+            }}size={'2xl'} alignSelf={'center'} style={{
+              borderWidth: 2,
+              borderColor: '#6360FF',
+            }} />
+            <Feather
+              name="edit-3"
+              size={13}
+              color={'#FFFFFF'}
               onPress={onOpen}
               style={{
                 position: 'relative',
                 bottom: 32,
-                left: 40,
+                left: 45,
                 zIndex: 999,
-                backgroundColor: '#ffffff',
+                padding: 5,
+                backgroundColor: '#6360FF',
                 borderRadius: 50,
               }}
             />
@@ -266,7 +278,7 @@ function getOrdinalSuffix(text :string) {
           <View
             style={{
               flexDirection: 'row',
-              width: screenWidth - 50,
+              width: screenWidth -50,
               flex: 1,
               justifyContent: 'space-between',
             }}>
@@ -314,8 +326,8 @@ function getOrdinalSuffix(text :string) {
           {
             userFirestoreData.usersData?.college !== '' ? (
               <View style={styles.disabledIp} >
-                <FontAwesome5 name = "university" size = {20} color = "#91919F" />
-                <Text style = {{fontSize: 16, color: '#91919F', marginLeft: 10}} >{userFirestoreData.usersData.college}</Text>
+                <FontAwesome5 name = "university" size = {theme.sizes.iconSmall} color = "#91919F" />
+                <Text style = {{fontSize: theme.sizes.subtitle, color: '#91919F', marginLeft: 10}} >{userFirestoreData.usersData.college}</Text>
               </View>
             ) :
             (
@@ -327,8 +339,8 @@ function getOrdinalSuffix(text :string) {
             )
           }
           <View style={styles.disabledIp} >
-                <Feather name = "mail" size = {20} color = "#91919F" />
-                <Text style = {{fontSize: 16, color: '#91919F', marginLeft: 10}} >{userFirestoreData.usersData.email}</Text>
+                <Feather name = "mail" size = {theme.sizes.iconSmall} color = "#91919F" />
+                <Text style = {{fontSize: theme.sizes.subtitle, color: '#91919F', marginLeft: 10}} >{userFirestoreData.usersData.email}</Text>
               </View>
               <View style={styles.SignupButton}>
             <CustomBtn title="Update" color="#6360FF" />
@@ -336,12 +348,12 @@ function getOrdinalSuffix(text :string) {
         </Form>
       </View>
       <Actionsheet isOpen={isOpen} onClose={onClose} borderRadius={0}  > 
-        <Actionsheet.Content height={550}>
+        <Actionsheet.Content height={screenHeight * 0.65}>
           <Avatar source ={{
               uri: selectedAvatar
-            }}size={'2xl'} alignSelf={'center'} marginTop={5} />
-            <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 25}}>
-              <Text style={{fontSize: 14, color: '#000', fontWeight: 'bold', textAlign:"center" }}>select from a variety of avatars to represent yourself</Text>
+            }}size={screenHeight * 0.14} alignSelf={'center'} marginTop={screenHeight * 0.01} />
+            <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: screenHeight * 0.05}}>
+              <Text style={{fontSize: theme.sizes.subtitle, color: '#000', fontWeight: 'bold', textAlign:"center" }}>select from a variety of avatars to represent yourself</Text>
             </View>
             <Stack style={styles.gridContainer} >
                    {
@@ -354,7 +366,7 @@ function getOrdinalSuffix(text :string) {
                               {
                                 uri: item.image
                               }
-                           } size={'lg'} style={[styles.gridItem, {
+                           } size={screenHeight * 0.07} style={[styles.gridItem, {
                             borderWidth: selectedAvatar === item.image ? 2 : 0,
                             borderColor: '#6360FF'
                            }]} alignSelf={'center'} />
@@ -363,22 +375,22 @@ function getOrdinalSuffix(text :string) {
                       })
                    }
               </Stack>
-              <Stack direction="row" space={2} marginY={5} paddingX={5} alignItems="center" justifyContent="space-evenly" width={"100%"} >
+              <Stack direction="row" space={2} marginY={screenHeight * 0.05} paddingX={screenWidth * 0.02} alignItems="center" justifyContent="space-evenly" width={"100%"} >
              <TouchableOpacity onPress={onClose} >
-              <Text fontSize={'16px'} fontWeight={'700'} textAlign="center" color={"#91919F"} >
+              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={"#91919F"} >
                 Cancel
               </Text>
             </TouchableOpacity>
              <TouchableOpacity style={{
               backgroundColor: '#6360FF',
               borderRadius: 10,
-              paddingHorizontal: 25,
-              paddingVertical: 10,
+              paddingHorizontal: screenWidth * 0.1,
+              paddingVertical: screenHeight * 0.012,
              }} onPress={()=>{
               updateUserImage(selectedAvatar)
               onClose()
             }}>
-              <Text fontSize={'16px'} fontWeight={'700'} textAlign="center" color={"#FFF"} >
+              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={"#FFF"} >
                 Confirm
               </Text>
             </TouchableOpacity>

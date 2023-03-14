@@ -1,9 +1,11 @@
 import { StyleSheet, Text, View, StatusBar, Dimensions, ScrollView } from 'react-native'
 import React from 'react'
+import { useSelector } from 'react-redux';
 
 const ScreenLayout = (props) => {
     const height = Dimensions.get("screen").height;
     const width = Dimensions.get("screen").width;
+    const theme = useSelector(state => state.theme);
     const statusBarHeight = StatusBar.currentHeight;
     return (
         <View
@@ -13,12 +15,12 @@ const ScreenLayout = (props) => {
             flex: 1,
             width: '100%',
             height: height,
-            backgroundColor: '#6360FF',
+            backgroundColor: theme.colors.primary,
             marginTop:statusBarHeight 
         }} >
             <StatusBar
                 translucent={true}
-                backgroundColor={'#6360FF'}
+                backgroundColor={theme.colors.primary}
                 barStyle={'light-content'}
 
             />

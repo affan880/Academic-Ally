@@ -74,11 +74,11 @@ const NotesScreen = () => {
   const [qpbtnStyle, setQpStyle] = useState(false);
   const [otherResbtnStyle, setOtherResStyle] = useState(false);
   const [selected, setSelected] = useState('');
-  const styles = useMemo(() => createStyles(), []);
   const navigation = useNavigation<MyScreenNavigationProp>();
   const dispatch = useDispatch();
-  const recentViews = useSelector((state: any) => state.userRecentPdfs);
+  const theme = useSelector((state: any) => state.theme);
   const [loading, setLoading] = useState(false);
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
 
   const subjectTitle : string =
     subject.length > 20 ? subject.slice(0, 25) + '...' : subject;
@@ -117,7 +117,7 @@ const NotesScreen = () => {
   }
 
   return !loading ? (
-    <NavigationLayout rightIconFalse={true} title={subjectTitle} >
+    <NavigationLayout rightIconFalse={true} title={subjectTitle} handleScroll={()=>{}} >
       <View style={styles.header}>
         <Text style={styles.headerText}>Resources</Text>
       </View>
@@ -217,7 +217,7 @@ const NotesScreen = () => {
                 handleNavigation('questionPapers');
               }}>
               <Qp />
-              <Text style={styles.btnText}>QP</Text>
+              <Text style={styles.btnText}>Question Papers</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -235,7 +235,7 @@ const NotesScreen = () => {
                 handleNavigation('questionPapers');
               }}>
               <Qp />
-              <Text style={styles.btnText}>QP</Text>
+              <Text style={styles.btnText}>Question Papers</Text>
             </TouchableOpacity>
           )}
         </View>

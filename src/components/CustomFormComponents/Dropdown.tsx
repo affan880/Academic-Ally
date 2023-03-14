@@ -99,7 +99,7 @@ export const CustomDropdown = ({
             borderBottomColor: '#e5e5e5',
           }}
           itemTextStyle={{
-            fontSize: 16,
+            fontSize:  height * 0.0235,
             color: '#000000',
           }}
           onChange={item => {
@@ -114,14 +114,14 @@ export const CustomDropdown = ({
                 style={styles.icon}
                 color={isFocus ? 'blue' : 'black'}
                 name={'university'}
-                size={16}
+                size={height * 0.025}
               />
             ) : (
               <AntDesign
                 style={styles.icon}
                 color={isFocus ? 'blue' : 'black'}
                 name={leftIcon}
-                size={20}
+                size={height * 0.025}
               />
             )
           }
@@ -131,7 +131,7 @@ export const CustomDropdown = ({
         <Text
           style={{
             color: '#FFFFFF',
-            fontSize: 12,
+            fontSize: height * 0.015,
             fontFamily: 'Poppins-Regular',
             alignSelf: 'center',
             fontWeight: 'bold',
@@ -148,7 +148,7 @@ export default CustomDropdown;
 const styles = StyleSheet.create({
   input: {
     backgroundColor: '#fff',
-    height: 60,
+    height: height * 0.07,
     borderRadius: 10,
     elevation: 3,
     paddingLeft: 20,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: 250,
-    fontSize: 16,
+    fontSize:  height * 0.0235,
     color: '#000000',
     fontFamily: 'Poppins-Regular',
   },
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     top: 4,
     zIndex: 999,
     paddingHorizontal: 8,
-    fontSize: 14,
+    fontSize: height * 0.018,
     borderRadius: 5,
     color: '#FFFFFF',
   },
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     color: '#808080',
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize:  height * 0.0235,
     color: '#000000',
     flexWrap: 'nowrap',
   },
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 16,
+    fontSize:  height * 0.0235,
     color: '#000000',
     fontFamily: 'Poppins-Regular',
   },

@@ -27,7 +27,8 @@ const height = Dimensions.get('screen').height;
 const width = Dimensions.get('screen').width;
 
 const Profile = () => {
-  const styles = createStyles();
+  const theme = useSelector((state: any) => { return state.theme });
+  const styles = createStyles(theme.colors, theme.sizes);
   const user = auth().currentUser;
   const [isOpen, setIsOpen] = React.useState(false);
   const [password, setPassword] = useState<string>('');
@@ -116,16 +117,15 @@ const Profile = () => {
           /> */}
           <Text style={styles.headerText}>Account</Text>
         </View>
-         <VStack alignItems="center" space={2} marginY={8} width={"100%"} justifyContent={"center"} >
+         <VStack alignItems="center" space={0} marginY={theme.sizes.height * 0.023} width={"100%"} justifyContent={"center"} >
             <Avatar source={{
               uri: userImage||user?.photoURL
-            }}size={'2xl'} alignSelf={'center'}/>
+            }}size={theme.sizes.height * 0.16} alignSelf={'center'}/>
          </VStack>
         <Text style={styles.name}>{userFirestoreData.usersData.name}</Text>
         <Text style={styles.email}>{userFirestoreData.usersData.email}</Text>
       </View>
       <View style={styles.body}>
-
         <View style={styles.bodyContent}>
             <View style={styles.menuContainer}>
               <VStack>
