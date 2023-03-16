@@ -23,6 +23,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import { fetchBookmarksList, shareNotes } from '../../services/fetch';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 
 const {width, height} = Dimensions.get('window');
 
@@ -130,10 +131,6 @@ useEffect(() => {
  groupBySubject(listData);
 }, [listData]);
 
-  // const onRowDidOpen = (rowKey: any) => {
-  //   console.log('This row opened', rowKey);
-  // };
-
   const renderItem = ({item, index}: any) => (
     <Box style={styles.mainContainer}>
       <Pressable
@@ -232,12 +229,14 @@ useEffect(() => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
+          <Fontisto name="bookmark-alt" size={theme.sizes.iconMedium} color="#FFFFFF" />
           <Text style={styles.headerText}>Bookmarks</Text>
         </View>
       </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>
           {/* <ScrollView> */}
+          <ScrollView>
           {
             sortedList?.map((item:any, index:any) => {
               return (
@@ -276,6 +275,7 @@ useEffect(() => {
             })
           }
           {/* </ScrollView>2. */}
+          </ScrollView>
         </View>
       </View>
     </View>

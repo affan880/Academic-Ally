@@ -70,7 +70,7 @@ export const CustomDropdown = ({
           iconStyle={styles.iconStyle}
           data={data}
           search={
-            name === 'branch' || name === 'Year' || name === 'sem' ? false : true
+            name === 'branch' || name === 'Year' || name === 'sem' || name === 'Syllabus' ? false : true
           }
           maxHeight={300}
           labelField="label"
@@ -83,6 +83,7 @@ export const CustomDropdown = ({
           onBlur={() => {
             setIsFocus(false);
             setFieldTouched(name);
+            value !== null || value !== '' || value !== undefined ? handleOptions(value) : null;
           }}
           dropdownPosition="auto"
           {...other}
@@ -127,10 +128,10 @@ export const CustomDropdown = ({
           }
         />
       </View>
-      {touched[name] && errors[name] ? (
+      {touched[name] && errors[name] && values[name] === "" ? (
         <Text
           style={{
-            color: '#FFFFFF',
+            color: '#FF5000',
             fontSize: height * 0.015,
             fontFamily: 'Poppins-Regular',
             alignSelf: 'center',
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
     color: '#808080',
   },
   selectedTextStyle: {
-    fontSize:  height * 0.0235,
+    fontSize:  height * 0.018,
     color: '#000000',
     flexWrap: 'nowrap',
   },

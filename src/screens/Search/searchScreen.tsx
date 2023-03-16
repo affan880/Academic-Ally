@@ -119,6 +119,7 @@ const Search = () => {
           course: userData.data().course,
           branch: item.branch,
           sem: item.sem,
+          university: userData.data().university,
         },
         notesData: notesData,
         subject: item.subject,
@@ -135,7 +136,7 @@ const Search = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <Ionicons name="search-circle-sharp" size={theme.sizes.iconMedium} color="#FFFFFF" />
+          <Feather name="search" size={theme.sizes.iconMedium} color="#FFFFFF" />
           <Text style={styles.headerText}>Explore</Text>
         </View>
       </View>

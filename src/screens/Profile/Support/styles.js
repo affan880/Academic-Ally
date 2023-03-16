@@ -63,6 +63,8 @@ const createStyles = () =>
             color: '#000',
             textAlign: 'left',
             paddingBottom: 5,
+            flexWrap: 'wrap',
+            flex: 1,
         },
         headerText: {
             fontSize: 20,
@@ -91,6 +93,13 @@ const createStyles = () =>
             textDecorationColor: '#6360FF',
             textDecorationLine: 'underline',
         },
+        image: {
+            alignSelf: 'center',
+            width: width * 0.6,
+            height: height * 0.2,
+            resizeMode: 'contain',
+            marginVertical: 20,
+        }
     });
 
 export default createStyles;

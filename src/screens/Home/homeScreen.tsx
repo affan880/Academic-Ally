@@ -67,7 +67,6 @@ const HomeScreen = (props: Props) => {
   const subjectsList = useSelector((state: any) => state.subjectsList);
   const handleDynamicLink = (link: any) => {
     const parts = link?.url.split('/');
-    console.log('parts', parts);
     const userData = {
       Course: parts[4],
       branch: parts[5],
@@ -108,6 +107,7 @@ const HomeScreen = (props: Props) => {
       .then((data: any) => {
         dispatch(setUsersData(data?.data()));
         dispatch(setUsersDataLoaded(true));
+        fetchNotesList(dispatch, setSubjectsList, setListLoaded, data?.data().university); 
       })
       .catch(error => {
         console.log('error ar homescreen.js', error);
@@ -117,11 +117,6 @@ const HomeScreen = (props: Props) => {
           duration: 3000,
         });
       });
-
-    const getData = async () => {
-      fetchNotesList(dispatch, setSubjectsList, setListLoaded); 
-    };
-    getData();
     const unsubscribe = dynamicLinks().onLink(handleDynamicLink);
     return () => unsubscribe();
   }, []);

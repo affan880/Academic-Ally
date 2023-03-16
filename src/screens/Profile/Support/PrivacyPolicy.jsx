@@ -13,7 +13,7 @@ const PrivacyPolicy = () => {
         <View style={styles.body}>
             <View style={styles.bodyContent} >
             <Text style={styles.title}>Privacy Policy</Text>
-            <Text style={styles.subTitle}>Last updated: 2021-05-01</Text>
+            <Text style={styles.subTitle}>Last updated: 2023-03-03</Text>
             <View style={styles.content} >
                 <Text style={styles.normalText} >
                     Academic Ally built the Academic Ally app as a Free app. This SERVICE is provided by Academic Ally at no cost and is intended for use as is.
@@ -109,7 +109,7 @@ const PrivacyPolicy = () => {
                     We may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page.
                 </Text>
                 <Text style={styles.label}>
-                    This policy is effective as of 2021-05-01
+                    This policy is effective as of 2023-03-03
                 </Text>
             </View>
             </View>

@@ -157,8 +157,7 @@ const NotesCard = ({item, userData, notesData, selected, subject}: Props) => {
   }
 
   async function mail() {
-    const mailId = await getMailId();
-    Linking.openURL(`mailto:${mailId}?body=Report for notes Id : ${item.id}, ${userData.Course} ${userData.Branch}, Semester ${item.sem} ${selected.charAt(0).toUpperCase() + selected.slice(1)} of ${subject}  `)
+    Linking.openURL(`mailto:support@getacademically.co?body=Report for notes Id : ${item.id}, ${userData.Course} ${userData.Branch}, Semester ${item.sem} ${selected.charAt(0).toUpperCase() + selected.slice(1)} of ${subject}  `)
   }
 
   return (
@@ -519,8 +518,8 @@ const NotesCard = ({item, userData, notesData, selected, subject}: Props) => {
             </Checkbox>
           </Actionsheet.Item>
           </Box>
-          <Box w="100%" h={theme.sizes.height *0.1} px={4} my={2} justifyContent="center" alignItems={"center"} >
-            <Text fontSize={theme.sizes.title} color={theme.colors.primary} fontWeight={700} onPress={()=>{
+          <Box w="100%" h={theme.sizes.height *0.08} px={4} my={0} justifyContent="center" alignItems={"center"} >
+            <Text fontSize={theme.sizes.subtitle} mt={-6} color={theme.colors.primary} fontWeight={700} onPress={()=>{
               mail()
             }} >
               Reason not listed here? Write to Us

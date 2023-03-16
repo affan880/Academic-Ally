@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  Linking,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -22,6 +23,7 @@ type MyStackParamList = {
   'UpdateInformation': undefined;
   'PrivacyPolicy': undefined;
   'TermsAndConditions': undefined;
+  'AboutUs': undefined;
 };
 const height = Dimensions.get('screen').height;
 const width = Dimensions.get('screen').width;
@@ -176,6 +178,7 @@ const Profile = () => {
                   }]}>Support</Text>
                 </View>
                 <TouchableOpacity
+                  onPress={()=>{navigation.navigate('AboutUs')}}
                   style={styles.settingsContainer}>
                   <Text style={styles.settingsText}>About Us</Text>
                   <Ionicons
@@ -194,6 +197,9 @@ const Profile = () => {
                   />
                 </TouchableOpacity>
                  <TouchableOpacity
+                  onPress={()=>{
+                    Linking.openURL('mailto:contact@getacademically.co')
+                  }}
                   style={styles.settingsContainer}>
                   <Text style={styles.settingsText}>Get in Touch</Text>
                   <Ionicons

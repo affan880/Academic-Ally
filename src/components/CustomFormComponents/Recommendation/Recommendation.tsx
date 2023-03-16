@@ -66,7 +66,6 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('selected', selected);
     const a = list.filter(obj => obj[selected] === true);
     setFilteresList(a);
   }, [selected, list]);
@@ -89,9 +88,6 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
       }
     });
   }, [userData]);
-
-
-  // console.log('list', visitedList);
 
   async function fetchData() {
     fetchSubjectList(setList,dispatch, setReccommendSubjects, setReccommendSubjectsLoaded, setLoaded,userData)
@@ -246,6 +242,22 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
           />
         </View>
       )}
+      {
+        filteresList.length === 0 && list.length !== 0 ? (
+           selected !== 'All' ? (
+            <LottieView
+           style={{
+            height: theme.sizes.lottieIconHeight,
+            alignSelf: 'center',
+           }}
+          source={require('../../../assets/lottie/NoBookMarks.json')}
+          autoPlay
+          loop
+        />
+           ):null
+        
+        ) : null
+      }
     </View>
   );
 };

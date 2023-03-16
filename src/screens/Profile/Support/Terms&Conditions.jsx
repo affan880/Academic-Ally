@@ -10,7 +10,7 @@ const TermsAndConditions = () => {
         <View style={styles.body}>
             <View style={styles.bodyContent} >
             <Text style={styles.title}>Terms & Conditions</Text>
-            <Text style={styles.subTitle}>Last updated: 2021-05-01</Text>
+            <Text style={styles.subTitle}>Last updated: 2023-03-03</Text>
             <View style={styles.content} >
                 <Text style={styles.normalText} >
                     By downloading or using the app, these terms will automatically apply to you – you should make sure therefore that you read them carefully before using the app. You’re not allowed to copy or modify the app, any part of the app, or our trademarks in any way. You’re not allowed to attempt to extract the source code of the app, and you also shouldn’t try to translate the app into other languages or make derivative versions. The app itself, and all the trademarks, copyright, database rights, and other intellectual property rights related to it, still belong to Academic Ally.    
@@ -64,7 +64,7 @@ const TermsAndConditions = () => {
                     We may update our Terms and Conditions from time to time. Thus, you are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Terms and Conditions on this page.
                 </Text>
                 <Text style={styles.normalText}>
-                    These terms and conditions are effective as of 2021-05-01
+                    These terms and conditions are effective as of 202-03-03
                 </Text>
                 <Text style={styles.normalText}>
                     Contact Us
@@ -73,7 +73,7 @@ const TermsAndConditions = () => {
                     If you have any questions or suggestions about our Terms and Conditions, do not hesitate to contact us at
                 </Text>
                 <Text style={styles.linkText} onPress={()=>{
-                    Linking.openURL('mailto:academicly.app@gmail.com');
+                    Linking.openURL('mailto:contact@getacademically.co');
                 }} >
                     academicly.app@gmail.com
                 </Text>

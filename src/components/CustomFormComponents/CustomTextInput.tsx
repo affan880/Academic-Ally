@@ -101,7 +101,7 @@ export const CustomTextInput = ({
       {touched[name] && errors[name] ? (
         <Text
           style={{
-            color: '#FFFFFF',
+            color: '#FF2E00',
             fontSize: Height * 0.015,
             fontFamily: 'Poppins-Regular',
             paddingLeft: 20,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   textInput: {
     height: Height * 0.07,
     width: '78%',
-    fontSize:  Height * 0.022,
+    fontSize:  Height * 0.018,
     color: '#000000',
     fontFamily: 'Poppins-Regular',
     alignItems: 'center',

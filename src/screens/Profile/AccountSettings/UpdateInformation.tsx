@@ -104,10 +104,14 @@ const [selectedAvatar, setSelectedAvatar] = React.useState<any>(auth().currentUs
     },
   ];
 
-const CourseData: any = [
+  const CourseData: any = [
     {label: 'B.E', value: 'BE'},
-    {label: 'B.TECH', value: 'BTECH'},
   ];
+  const CourseData1: any = [
+   {label: 'B.TECH', value: 'BTECH'},
+  ];
+  
+
   const SemList: any = [
     {label: '1', value: '1'},
     {label: '2', value: '2'},
@@ -284,7 +288,7 @@ function getOrdinalSuffix(text :string) {
             }}>
             <DropdownComponent
               name="course"
-              data={CourseData}
+              data={userFirestoreData.usersData.university === 'OU' ? CourseData : CourseData1 }
               placeholder={userFirestoreData.usersData.course}
               leftIcon="bars"
               width={screenWidth / 2.5}

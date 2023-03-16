@@ -15,7 +15,12 @@ const DeleteAcc = async () => {
     .auth()
     .currentUser.delete(Email, Password)
     .then(() => {
-      console.log('User deleted');
+      Toast.show({
+        title: 'Account Deleted',
+        type: 'success',
+        placement: 'top-right',
+        backgroundColor: '#00b300',
+      });
     })
     .catch(error => {
       console.log(error);
@@ -203,7 +208,6 @@ export const getFirestoreData = async (uid, updateReduxData) => {
 };
 
 export const updateFirestoreData = async (uid, data, dispatch) => {
-  console.log('updating data', data);
   firestore()
     .collection('Users')
     .doc(`${uid}`)
@@ -245,7 +249,6 @@ export const removeBookmark = async item => {
 
 export const createList = (item) => {
   const sep = item.fullPath.split('/');
-  console.log(sep);
   sep.length === 3 && item.type === 'Folder'
     ? firestore()
       .collection('Universities')

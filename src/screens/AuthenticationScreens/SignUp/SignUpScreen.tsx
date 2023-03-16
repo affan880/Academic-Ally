@@ -41,6 +41,10 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
   const formRef: any = useRef();
    const [selectedYear, setSelectedYear] = useState('');
   const [selectedSem, setSelectedSem] = useState('');
+  const [selectedCourse, setSelectedCourse] = useState([
+    {label: 'B.E', value: 'BE'},
+    {label: 'B.TECH', value: 'BTECH'}
+  ]);
 
   const initialValues = {
     name: '',
@@ -56,8 +60,11 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
   };
   const CourseData: any = [
     {label: 'B.E', value: 'BE'},
+  ];
+  const CourseData1: any = [
     {label: 'B.TECH', value: 'BTECH'},
   ];
+
   const SemList: any = [
     {label: '1', value: '1'},
     {label: '2', value: '2'},
@@ -85,19 +92,27 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
     {label: 'EEE', value: 'EEE'},
   ];
 
-  const UniversityData: any = [{label: 'Osmania University', value: 'OU'}];
+  const UniversityData: any = [
+    {label: 'Osmania University', value: 'OU'},
+    {label: 'JNTU', value: 'JNTU'},
+  ];
 
     const handleYearChange = (event: any) => {
-    const yearValue = event.value;
+      if(event?.value === '' || event?.value === undefined || event?.value === null){
+        return;
+      }
+    const yearValue = event?.value;
     setSelectedYear(yearValue);
 
-    // Reset selected semester when year is changed
     setSelectedSem('');
     formRef.current?.setFieldValue('sem', '');
   };
 
   const handleSemChange = (event :any) => {
-    const semValue = event.value;
+     if(event?.value === '' || event?.value === undefined || event?.value === null){
+        return;
+      }
+    const semValue = event?.value;
     setSelectedSem(semValue);
      if (!selectedYear) {
       if (semValue <= 2) {
@@ -201,7 +216,17 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
                 placeholder={'Select the name of your university'}
                 leftIcon="ellipsis1"
                 width={screenWidth - 50}
-                handleOptions = {()=>{}}
+                handleOptions = {(item:any)=>{
+                  if(item.value === 'OU'){
+                    formRef.current?.setFieldValue('course', 'OU');
+                      setSelectedCourse(CourseData)
+                    }
+                    if(item.value === 'JNTU'){
+                      formRef.current?.setFieldValue('course', 'JNTU');
+                      setSelectedCourse(CourseData1)
+                    }
+                    
+                }}
               />
               <View
                 style={{
@@ -212,7 +237,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
                 }}>
                 <DropdownComponent
                   name="course"
-                  data={CourseData}
+                  data={selectedCourse}
                   placeholder={'Course'}
                   leftIcon="Safety"
                   width={screenWidth / 2.5}

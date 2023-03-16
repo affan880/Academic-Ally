@@ -34,7 +34,7 @@ const ResourceLoader = () => {
         loop
       />
       <LottieView
-        style={{position: 'absolute', bottom: 0, marginTop: 300}}
+        style={{position: 'absolute', bottom: 0, marginTop: height/2.5}}
         source={require('../../assets/lottie/loading-text.json')}
         autoPlay
         loop

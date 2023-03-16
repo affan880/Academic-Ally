@@ -31,6 +31,7 @@ type RootStackParamList = {
       course: any;
       branch: any;
       sem: any;
+      university: any;
     };
     notesData: any;
     selected: any;
@@ -46,9 +47,10 @@ const UploadPDF = () => {
   const subject = route.params.subject;
   const {userData} = route.params;
   const {notesData}: any = route.params;
-  const path = `${userData?.course}/${userData?.branch}/${
+  const randomNum:any = Math.floor(Math.random())
+  const path = `${userData.university}/${userData?.course}/${userData?.branch}/${
     userData?.sem
-  }/${subject}/${selected}/${auth().currentUser?.uid}`;
+  }/${subject}/${selected}/${auth().currentUser?.uid}/${randomNum}`;
   const storageRef = storage().ref(path);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [uploadingResult, setUploadingResult] = React.useState(null);
@@ -58,7 +60,6 @@ const UploadPDF = () => {
   const [completed, setCompleted] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const theme = useSelector((state: any) => { return state.theme });
-  
   useEffect(() => {
     try {
       if (uploadingResult !== null) {
@@ -75,7 +76,7 @@ const UploadPDF = () => {
         };
         firestore()
           .collection('UsersUploads')
-          .doc('OU')
+          .doc(userData.university)
           .collection(userData.course)
           .doc(userData.branch)
           .collection(userData.sem)
@@ -88,7 +89,7 @@ const UploadPDF = () => {
               // Update the existing array
               firestore()
                 .collection('UsersUploads')
-                .doc('OU')
+                .doc(userData.university)
                 .collection(userData.course)
                 .doc(userData.branch)
                 .collection(userData.sem)
@@ -97,10 +98,9 @@ const UploadPDF = () => {
                 .doc('list')
                 .update(updateData);
             } else {
-              // Create a new array
               firestore()
                 .collection('UsersUploads')
-                .doc('OU')
+                .doc(userData.university)
                 .collection(userData.course)
                 .doc(userData.branch)
                 .collection(userData.sem)

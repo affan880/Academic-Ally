@@ -121,7 +121,7 @@ const PdfViewer = () => {
   async function createDynamicLink() {
          const link = await dynamicLinks().buildShortLink(
       {
-        link: `https://academically.com/${notesData.category}/${notesData.course}/${notesData.branch}/${notesData.sem}/${notesData.subject}/${notesData.did}/${notesData.units}/${notesData.name}`,
+        link: `https://getacademically.co/${notesData.category}/${notesData.course}/${notesData.branch}/${notesData.sem}/${notesData.subject}/${notesData.did}/${notesData.units}/${notesData.name}`,
         domainUriPrefix: 'https://academicallyapp.page.link',
         android: {
           packageName: 'com.academically',
@@ -235,7 +235,6 @@ const PdfViewer = () => {
                   </View>
                 );
               }}
-              // page={JSON.parse(currentPage)}
               onError={error => {
                 Toast.show({
                   title: 'Error Loading Pdf',
@@ -304,7 +303,7 @@ const PdfViewer = () => {
                     BookmarkStatus(notesData.did)
                       ? 'bookmark-alt'
                       : 'bookmark'
-                  }
+                  } 
                   size={25}
                   color={'#6360FF'}
                 />

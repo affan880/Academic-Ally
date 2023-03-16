@@ -26,8 +26,9 @@ const createStyles = (theme:any, sizes:any) =>
       width: width,
     },
     bodyContent: {
-      flex: 1,
-      paddingTop: height * 0.02,
+      height: height * 0.8,
+      justifyContent: 'center',
+      
     },
     searchContainer: {
       width: width * 0.9,
@@ -177,6 +178,26 @@ const createStyles = (theme:any, sizes:any) =>
       flexDirection: 'row',
       alignItems: 'center',
     },
+            SignupButton: {
+            marginTop: 20,
+        },
+
+        disabledIp: {
+             width: width - 50,
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            marginTop: height * 0.02,
+            height: height * 0.07,
+            backgroundColor: '#FFF',
+            borderRadius: 10,
+            elevation: 3,
+            shadowColor: '#000',
+            shadowOffset: {width: 0, height: 2},
+            shadowOpacity: 0.8,
+            shadowRadius: 2,
+            flexDirection: 'row',
+            paddingLeft: 20,
+        },
   });
 
 export default createStyles;

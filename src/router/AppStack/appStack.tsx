@@ -27,6 +27,7 @@ import UpdateInformation from '../../screens/Profile/AccountSettings/UpdateInfor
 import Search from '../../screens/Search/searchScreen'
 import PrivacyPolicy from '../../screens/Profile/Support/PrivacyPolicy'
 import TermsAndConditions from '../../screens/Profile/Support/Terms&Conditions'
+import AboutUs from '../../screens/Profile/Support/AboutUs'
 import { useSelector } from 'react-redux'
 import { UploadIcon } from '../../assets/images/icons'
 
@@ -222,6 +223,9 @@ const AppStack = () => {
                 headerShown: false,
             }} />
             <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} options={{
+                headerShown: false,
+            }} />
+            <Stack.Screen name="AboutUs" component={AboutUs} options={{
                 headerShown: false,
             }} />
         </Stack.Navigator>
