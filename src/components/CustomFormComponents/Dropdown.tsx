@@ -85,6 +85,9 @@ export const CustomDropdown = ({
             setFieldTouched(name);
             value !== null || value !== '' || value !== undefined ? handleOptions(value) : null;
           }}
+          onConfirmSelectItem={item => {
+            value !== null || value !== '' || value !== undefined ? handleOptions(value) : null;
+          }}
           dropdownPosition="auto"
           {...other}
           containerStyle={{
@@ -100,7 +103,7 @@ export const CustomDropdown = ({
             borderBottomColor: '#e5e5e5',
           }}
           itemTextStyle={{
-            fontSize:  height * 0.0235,
+            fontSize:  height * 0.0205,
             color: '#000000',
           }}
           onChange={item => {
@@ -173,6 +176,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 0,
+    fontSize:  height * 0.0135,
     color: '#000000',
   },
   icon: {

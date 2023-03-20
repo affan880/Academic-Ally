@@ -17,6 +17,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { AddtoUserUploads } from '../../Modules/auth/firebase/firebase';
 
 const {width, height} = Dimensions.get('window');
 
@@ -121,6 +122,16 @@ const UploadPDF = () => {
                   ],
                 });
             }
+             AddtoUserUploads({
+              name: pdf?.name,
+              uploaderName: auth().currentUser?.displayName,
+              uploaderEmail: auth().currentUser?.email,
+              uploaderUid: auth().currentUser?.uid,
+              subject: subject,
+              selected: selected,
+              path: path,
+              verified: false,
+            })
           });
       }
     } catch (err) {
@@ -139,19 +150,36 @@ const UploadPDF = () => {
     const task: any = storageRef.putFile(pdf?.uri);
     setUploadTask(task);
     task.on('state_changed', (snapshot:any) => {
-      setUploadProgress(
-        Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 10),
-      );
-    });
+      let progress =
+        Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+    },
+    (error:any) => {
+      setUploadTask(null);
+      setModalVisible(false);
+      Toast.show({
+        title: 'Error',
+        description: 'Something went wrong. Please try again.',
+        placement: 'bottom',
+        duration: 2000,
+      });
+    },
+    () => {
+    const totalMBs = task.snapshot.totalBytes / (1024 * 1024);
+   setUploadProgress(totalMBs);
+  }
+    );
      try {
     await task;
     task.then((snapshot:any)=>{
       setUploadingResult(snapshot);
+      setUploadProgress(0);
     })
   } catch (error) {
     setUploadTask(null);
+    setUploadProgress (0);
   } finally {
     setCompleted(true);
+    setUploadProgress(0);
   }
   };
 
@@ -160,6 +188,7 @@ const UploadPDF = () => {
     if (uploadTask) {
       uploadTask.cancel(); // Call the cancel() method on the upload task reference
       setUploadTask(null); // Reset the state variable
+      setCompleted(false);
     }
   };
 
@@ -279,7 +308,7 @@ const UploadPDF = () => {
           justifyContent: 'center',
           alignItems: 'center',
           position: 'absolute',
-          bottom: 0,
+          bottom: 5,
           borderRadius: 10,
           alignSelf: 'center',
           flexDirection: 'row',

@@ -276,6 +276,7 @@ const PdfViewer = () => {
                 onPress={() => {
                   setSaved(!saved);
                   const status = BookmarkStatus(notesData.did);
+                  manageBookmarks(notesData, status);
                   !status
                     ? dispatch(
                         userAddBookMarks({
@@ -294,7 +295,6 @@ const PdfViewer = () => {
                           ...notesData,
                         }),
                       );
-                  manageBookmarks(notesData, status);
                 }}
                 colorScheme="red"
                 variant="outline">

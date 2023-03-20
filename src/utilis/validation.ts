@@ -5,7 +5,7 @@ export const validationSchema = yup.object().shape({
     .string()
     .required('Please enter a valid full name.')
     .min(3, 'Full name must be between 3 and 20 characters long')
-    .max(20, 'Full name must be between 3 and 20 characters long only'),
+    .max(30, 'Full name must be between 3 and 20 characters long only'),
   email: yup.string().email().required(),
   password: yup
     .string()

@@ -24,11 +24,13 @@ const createStyles = (theme:any, sizes:any) =>
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,
       width: width,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     bodyContent: {
       height: height * 0.8,
       justifyContent: 'center',
-      
+      alignItems: 'center',
     },
     searchContainer: {
       width: width * 0.9,

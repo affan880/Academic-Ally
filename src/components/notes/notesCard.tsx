@@ -293,6 +293,7 @@ const NotesCard = ({item, userData, notesData, selected, subject}: Props) => {
                     onPress={() => {
                       setSaved(!saved);
                       const status = BookmarkStatus(item.did);
+                      manageBookmarks(item, status);
                       !status
                         ? dispatch(
                             userAddBookMarks({
@@ -312,7 +313,6 @@ const NotesCard = ({item, userData, notesData, selected, subject}: Props) => {
                               ...item,
                             }),
                           );
-                      manageBookmarks(item, status);
                     }}>
                     <FontAwesome
                       name={

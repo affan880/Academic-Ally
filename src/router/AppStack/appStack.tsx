@@ -83,7 +83,7 @@ export const BottomTabBar = () => {
                     headerShown: false,
                     tabBarStyle: {
                         position: "absolute",
-                        height: 70,
+                        height: height * 0.08,
                         width:"100%",
                         backgroundColor: "#FCFCFF",
                         borderTopLeftRadius: 30,
@@ -98,12 +98,12 @@ export const BottomTabBar = () => {
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
-                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                <View style={{ alignItems: 'center', justifyContent: 'center', width: width*0.23}}>
                                     <Feather name='home' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused? 3 : 0,
                                     }} />
                                     {
-                                        focused ? <Text style={{ color: '#FF8181', fontSize: 10, fontWeight: '400', textAlign:"center", bottom: 0 }}>Home</Text> : null
+                                        focused ? <Text style={{ color: '#FF8181', fontSize: theme.sizes.textSmall, fontWeight: '400', textAlign:"center", bottom: 0 }}>Home</Text> : null
                                     }
                                 </View>
 
@@ -118,7 +118,7 @@ export const BottomTabBar = () => {
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
-                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                <View style={{ alignItems: 'center', justifyContent: 'center', width: width*0.23 }}>
                                     <Feather name='search' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
@@ -138,7 +138,7 @@ export const BottomTabBar = () => {
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
-                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                <View style={{ alignItems: 'center', justifyContent: 'center',  width: width*0.23 }}>
                                     <Feather name='upload' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
@@ -158,7 +158,7 @@ export const BottomTabBar = () => {
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
-                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                <View style={{ alignItems: 'center', justifyContent: 'center',  width: width*0.23 }}>
                                     <Fontisto name={focused ? 'bookmark-alt' : 'bookmark'} size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
@@ -178,7 +178,7 @@ export const BottomTabBar = () => {
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
-                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                <View style={{ alignItems: 'center', justifyContent: 'center', width: width*0.23}}>
                                     <Feather name="user" size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />

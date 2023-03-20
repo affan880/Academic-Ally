@@ -8,7 +8,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LottieView from 'lottie-react-native';
-import { ShareIconImg } from '../../assets/images/images';
+import { ShareIconImg } from '../../assets/images/icons';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {
   getCurrentUser,

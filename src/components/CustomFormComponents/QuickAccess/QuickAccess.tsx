@@ -11,6 +11,8 @@ import React, {useMemo} from 'react';
 import {Syllabus, Notes, Qp, OtherRes} from '../../../assets/images/icons';
 import createStyles from './styles';
 import {useSelector} from 'react-redux';
+// import {listBase, list, QueryList, SubjectList} from '../../../Modules/auth/firebase/firebase';
+// import { notes } from '../../../utilis/data';
 
 type Props = {
   selected: string;
@@ -26,6 +28,9 @@ const QuickAccess = ({selected, setSelectedCategory}:Props) => {
   return (
     <View style={styles.categories}>
       <TouchableOpacity style={styles.itemContainer} onPress={() => {
+        // QueryList(notes);
+        // listBase( notes )
+        // SubjectList(notes);
         setSelectedCategory('Syllabus');
       }}>
         <View style={

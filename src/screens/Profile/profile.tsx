@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   Linking,
+  Share
 } from 'react-native';
 import React, {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -18,6 +19,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
 import { setUserProfile } from '../../redux/reducers/usersData';
 import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type MyStackParamList = {
   'UpdateInformation': undefined;
@@ -188,8 +190,15 @@ const Profile = () => {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
+                   onPress={()=>{
+                    Share.share({
+                      title: 'Academic Ally',
+                      message: 
+                      'Hey, I am using Academic Ally to help me with my studies. It is a great app that helps me with my studies. You can know more about it here: https://getacademically.co/',
+                    })
+                  }}
                   style={styles.settingsContainer}>
-                  <Text style={styles.settingsText}>Share AcademicAlly</Text>
+                  <Text style={styles.settingsText}>Share Academic Ally</Text>
                   <Ionicons
                     name="chevron-forward-outline"
                     size={20}
@@ -284,6 +293,7 @@ const Profile = () => {
                   auth()
                     ?.currentUser?.delete()
                     .then(() => {
+                      AsyncStorage.clear();
                       Toast.show({
                         title: 'Account Deleted',
                         backgroundColor: '#F44336',
@@ -292,6 +302,7 @@ const Profile = () => {
                     })
                     .catch(error => {
                       auth().signOut();
+                      AsyncStorage.clear();
                       Toast.show({
                         title: 'Error',
                         description: error.message,
@@ -348,6 +359,7 @@ const Profile = () => {
                 colorScheme="danger"
                 onPress={() => {
                   auth().signOut();
+                  AsyncStorage.clear();
                 }}>
                 Log Out
               </Button>

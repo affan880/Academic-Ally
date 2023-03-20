@@ -4,8 +4,8 @@ const { width, height } = Dimensions.get('window');
 const createStyles = (theme:any, sizes:any) =>
     StyleSheet.create({
         categories: {
-            width: width / 1.1,
-            height: height / 6,
+            width: width * 0.85,
+            height: height * 0.16,
             backgroundColor: theme.quaternary,
             borderRadius: 10,
             flexDirection: 'row',
@@ -16,11 +16,13 @@ const createStyles = (theme:any, sizes:any) =>
             top: -height * 0.09,
             zIndex: 1,
             alignSelf: "center",
+            //box elements should not get cut off
+            overflow: 'hidden',
         },
 
         itemContainer: {
-            width: width / 4.5,
-            height: width / 4.5,
+            width: width / 5,
+            height: width * 0.2 ,
             flexDirection: "column",
             justifyContent: 'space-between',
             alignItems: 'center',

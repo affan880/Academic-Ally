@@ -142,29 +142,32 @@ const [selectedAvatar, setSelectedAvatar] = React.useState<any>(auth().currentUs
   const UniversityData: any = [{label: 'Osmania University', value: 'OU'}];
   
 
-const handleYearChange = (event: any) => {
-    const yearValue = event.value;
+    const handleYearChange = (event: any) => {
+      if(event?.value === '' || event?.value === undefined || event?.value === null){
+        return;
+      }
+    const yearValue = event?.value;
     setSelectedYear(yearValue);
+
     setSelectedSem('');
     formRef.current?.setFieldValue('sem', '');
   };
 
   const handleSemChange = (event :any) => {
-    const semValue = event.value;
+     if(event?.value === '' || event?.value === undefined || event?.value === null){
+        return;
+      }
+    const semValue = event?.value;
     setSelectedSem(semValue);
-     if (!selectedYear || selectedYear === initialValues.year) {
+     if (!selectedYear) {
       if (semValue <= 2) {
         setSelectedYear('1');
-        initialValues.year = '1';
       } else if (semValue <= 4) {
         setSelectedYear('2');
-        initialValues.year = '2';
       } else if (semValue <= 6) {
         setSelectedYear('3');
-        initialValues.year = '3';
       } else {
         setSelectedYear('4');
-        initialValues.year = '4';
       }
     }
   };
@@ -192,15 +195,15 @@ const handleYearChange = (event: any) => {
 
   const updateData = async (values: any) => {
     const data = {
-      name: values.name,
-      course: values.course,
-      sem: values.sem,
-      branch: values.branch,
-      Year: values.Year,
-      college: values.college,
-      university: userFirestoreData.usersData.university,
-      pfp: userFirestoreData.usersData.pfp,
-      email: userFirestoreData.usersData.email,
+      name: values?.name,
+      course: values?.course,
+      sem: values?.sem,
+      branch: values?.branch,
+      Year: values?.Year,
+      college: values?.college,
+      university: userFirestoreData?.usersData?.university,
+      pfp: userFirestoreData?.usersData?.pfp,
+      email: userFirestoreData?.usersData?.email,
     };
     updateFirestoreData(uid, data, dispatch);
     navigation.navigate('BottomTabBar', {

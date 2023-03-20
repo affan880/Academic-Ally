@@ -16,6 +16,7 @@ import createStyles from './styles';
 import {Actionsheet, Avatar, useDisclose, Toast, Stack, Text, Box, Modal} from 'native-base';
 import auth from '@react-native-firebase/auth';
 import {
+  AddtoUserUploads,
   getFirestoreData,
   logOut,
   updateFirestoreData,
@@ -245,6 +246,17 @@ function getOrdinalSuffix(text :string) {
                   ],
                 });
             }
+            AddtoUserUploads({
+              name: pdf?.name,
+              uploaderName: auth().currentUser?.displayName,
+              uploaderEmail: auth().currentUser?.email,
+              uploaderUid: auth().currentUser?.uid,
+              subject: pdf.subject,
+              selected: pdf.type,
+              path: pdf.path,
+              units : pdf.units,
+              verified: false,
+            })
           });
 }
 
@@ -257,14 +269,29 @@ function getOrdinalSuffix(text :string) {
     const task: any = storageRef.putFile(pdf?.uri);
     setUploadTask(task);
     task.on('state_changed', (snapshot:any) => {
-      setUploadProgress(
-        Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 10),
-      );
-    });
+      let progress =
+        Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+    },
+    
+    (error:any) => {
+      setUploadTask(null);
+      setModalVisible(false);
+      Toast.show({
+        title: 'Error',
+        description: 'Something went wrong. Please try again.',
+        placement: 'bottom',
+        duration: 2000,
+      });
+    },
+    () => {
+    const totalMBs = task.snapshot.totalBytes / (1024 * 1024);
+   setUploadProgress(totalMBs);
+  }
+    );
      try {
     await task;
     task.then((snapshot:any)=>{
-        setUploadProgress(100);
+        setUploadProgress(0);
         setUploadTask(null);
         setChoosenPdf(null);
         setPdf(null);
@@ -275,6 +302,7 @@ function getOrdinalSuffix(text :string) {
     setUploadTask(null);
   } finally {
     setCompleted(true);
+    setUploadProgress(0);
   }
   };
 

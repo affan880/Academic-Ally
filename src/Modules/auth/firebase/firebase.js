@@ -252,8 +252,8 @@ export const createList = (item) => {
   sep.length === 3 && item.type === 'Folder'
     ? firestore()
       .collection('Universities')
-      .doc('OU')
-      .collection('BE')
+      .doc('JNTUH')
+      .collection('BTECH')
       .doc(sep[0])
       .collection(sep[1])
       .doc('SubjectsList')
@@ -264,4 +264,188 @@ export const createList = (item) => {
         }),
       })
     : null
+  console.log(sep);
 }
+
+export const AddtoUserUploads = async (notesData) => {
+  console.log(notesData);
+  await firestore()
+    .collection('Users')
+    .doc(`${getCurrentUser().uid}`)
+    .collection('UserUploads')
+    .doc(`${notesData.uploaderUid + Math.random().toFixed(3)}`)
+    .set({
+      ...notesData
+    })
+};
+
+
+export function listBase(notes) {
+  notes.map(item => {
+    const sep = item.fullPath.split('/');
+
+    sep.length === 5 && item.type !== 'Folder'
+      ? firestore()
+        .collection('Universities')
+        .doc('JNTUH')
+        .collection('BTECH')
+        .doc(sep[0])
+        .collection(sep[1])
+        .doc(sep[3])
+        .collection(sep[2]).doc().set(
+          {
+            Year: "",
+            category: sep[3],
+            college: "",
+            course: "",
+            date: Date.now(),
+            department: "",
+            did: item.id,
+            dlink: '',
+            name: sep[4],
+            rating: 0,
+            sem: sep[1],
+            size: item.size,
+            status: "verified",
+            subject: sep[3],
+            time: new Date().getTime(),
+            units: "",
+            uploaderId: "8056itcLayZY8yDbNdi7KbqXnsw2",
+            uploaderName: "Affan",
+          }
+        )
+      : null;
+    // /"I.T/5/Computer Networks/OtherResources/CNQuestion bank.pdf"
+
+    console.log('list start', sep[1]);
+    sep.length === 3 && item.type === 'Folder'
+      ? firestore()
+        .collection('Universities')
+        .doc('JNTUH')
+        .collection('BTECH')
+        .doc(sep[0])
+        .collection(sep[1])
+        .doc('SubjectsList')
+        .set({
+          list: [],
+        })
+      : null;
+  });
+}
+
+export function list(notes) {
+  console.log('list start', notes.length);
+  notes.map(item => {
+    const sep = item.fullPath.split('/');
+
+    sep.length === 5 && item.type === 'Files' && sep[4] !== 'desktop.ini'
+      ? firestore()
+        .collection('Universities')
+        .doc('JNTUH')
+        .collection('BTECH')
+        .doc(sep[0])
+        .collection(sep[1])
+        .doc('Subjects')
+        .collection(sep[2])
+        .doc(sep[3])
+        .update({
+          list: firebase.firestore.FieldValue.arrayUnion({
+            fileName: item.name,
+            college: null,
+            facultyName: null,
+            notesId: item.id,
+            url: item.url,
+            uploaderEmail: item.ownerEmail,
+            uploaderName: 'Affan',
+            uploaderUid: 'KkCC5dwzvEeNXnRSXLMWFXxs4b32',
+            reviews: 0,
+            rating: 0,
+            ratingCount: 0,
+            comments: [],
+            likes: 0,
+            dislikes: 0,
+            likedBy: [],
+            dislikedBy: [],
+            views: 0,
+            viewedBy: [],
+            downloads: 0,
+            date: Date.now(),
+            time: new Date().getTime(),
+            shared: 0,
+            sharedBy: [],
+            sharedWith: [],
+            size: item.size,
+            subject: sep[2],
+            sem: sep[1],
+            branch: sep[0],
+          }),
+        })
+      : null;
+
+    console.log('list start', sep[1], item.type, item.name, sep[4], sep[3]);
+
+    sep.length === 3 && item.type === 'Folder'
+      ? firestore()
+        .collection('Universities')
+        .doc('JNTUH')
+        .collection('BTECH')
+        .doc(sep[0])
+        .collection(sep[1])
+        .doc('SubjectsList')
+        .update({
+          list: firebase.firestore.FieldValue.arrayUnion({
+            subjectName: item.name,
+            subjectId: item.id,
+          }),
+        })
+      : null;
+
+    console.log('list start', sep[1]);
+    console.log('list start Done');
+  }, []);
+}
+
+
+export const SubjectList = async (notes) => {
+  notes.map(item => {
+    const sep = item.fullPath.split('/');
+    console.log(sep[0], sep[1], sep[2]);
+    sep.length === 3 && item.type === 'Folder'
+      ? firestore()
+        .collection('Universities')
+        .doc('JNTUH')
+        .collection('BTECH')
+        .doc(sep[0])
+        .collection(sep[1])
+        .doc('SubjectsList')
+        .update({
+          list: firebase.firestore.FieldValue.arrayUnion({
+            subjectName: sep[2],
+            subjectId: item.id,
+          }),
+        })
+      : null;
+  });
+  console.log('list start Done');
+};
+export const QueryList = async (notes) => {
+  notes.map(item => {
+    const sep = item.fullPath.split('/');
+    console.log(sep[0], sep[1], sep[2]);
+    sep.length === 3 && item.type === 'Folder'
+      ? firestore()
+        .collection('QueryList')
+        .doc('JNTUH')
+        .collection('BTECH')
+        .doc('SubjectsListDetail')
+        .update({
+          list: firebase.firestore.FieldValue.arrayUnion({
+            subject: sep[2],
+            sem: sep[1],
+            branch: sep[0],
+          }),
+        })
+      : null;
+  });
+  console.log('list start Done');
+};

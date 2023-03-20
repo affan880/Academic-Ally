@@ -94,7 +94,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
 
   const UniversityData: any = [
     {label: 'Osmania University', value: 'OU'},
-    {label: 'JNTU', value: 'JNTU'},
+    {label: 'Jawaharlal Nehru Technological University', value: 'JNTUH'},
   ];
 
     const handleYearChange = (event: any) => {
@@ -187,7 +187,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
               initialValues={initialValues}
               onSubmit={values => {
                 dispatch(setCustomLoader(true));
-                onSubmit(values.email, values.password, values);
+                onSubmit(values?.email, values?.password, values);
               }}>
               <CustomTextInput
                 leftIcon="user"
@@ -217,12 +217,12 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
                 leftIcon="ellipsis1"
                 width={screenWidth - 50}
                 handleOptions = {(item:any)=>{
-                  if(item.value === 'OU'){
+                  if(item?.value === 'OU'){
                     formRef.current?.setFieldValue('course', 'OU');
                       setSelectedCourse(CourseData)
                     }
-                    if(item.value === 'JNTU'){
-                      formRef.current?.setFieldValue('course', 'JNTU');
+                    if(item?.value === 'JNTUH'){
+                      formRef.current?.setFieldValue('course', 'JNTUH');
                       setSelectedCourse(CourseData1)
                     }
                     

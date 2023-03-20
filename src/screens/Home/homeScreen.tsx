@@ -14,7 +14,7 @@ import ScreenLayout from '../../interfaces/screenLayout';
 import {useSelector, useDispatch} from 'react-redux';
 import {setUsersData, setUsersDataLoaded} from '../../redux/reducers/usersData';
 import firestore from '@react-native-firebase/firestore';
-import auth, {firebase} from '@react-native-firebase/auth';
+import auth, {firebase} from '@react-native-firebase/auth'; 
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,7 +24,8 @@ import ResourceLoader from '../../components/loaders/ResourceLoader';
 import {  setSubjectsList,  setListLoaded,} from '../../redux/reducers/subjectsList';
 import { setResourceLoader } from '../../redux/reducers/userState';
 import {Toast} from 'native-base';
-import { fetchNotesList } from '../../services/fetch';
+import { fetchNotesList, getFcmToken, fetchBookmarksList } from '../../services/fetch';
+import { setBookmarks } from '../../redux/reducers/userBookmarkManagement';
 import { setDarkTheme } from '../../redux/reducers/theme';
 type MyStackParamList = {
   Notes: {itemId: number};
@@ -64,7 +65,16 @@ const HomeScreen = (props: Props) => {
   const userDataLoaded = useSelector(
     (state: any) => state.usersData.usersDataLoaded,
   );
-  const subjectsList = useSelector((state: any) => state.subjectsList);
+  const bookmarks = useSelector((state: any) => state.userBookmarkManagement.bookmarks);
+  const [listData, setListData] = useState([]);
+  const bookmarkList = useSelector(
+    (state: any) => state.userBookmarkManagement,
+  ).userBookMarks;
+
+  useEffect(() => {
+    getFcmToken()
+  },[])
+
   const handleDynamicLink = (link: any) => {
     const parts = link?.url.split('/');
     const userData = {
@@ -107,10 +117,9 @@ const HomeScreen = (props: Props) => {
       .then((data: any) => {
         dispatch(setUsersData(data?.data()));
         dispatch(setUsersDataLoaded(true));
-        fetchNotesList(dispatch, setSubjectsList, setListLoaded, data?.data().university); 
+        fetchNotesList(dispatch, setSubjectsList, setListLoaded, data?.data()); 
       })
       .catch(error => {
-        console.log('error ar homescreen.js', error);
         dispatch(setUsersDataLoaded(false));
         Toast.show({
           title: 'Check your internet connection and try again later',
@@ -119,6 +128,27 @@ const HomeScreen = (props: Props) => {
       });
     const unsubscribe = dynamicLinks().onLink(handleDynamicLink);
     return () => unsubscribe();
+  }, []);
+
+  const getListData = async () => {
+        fetchBookmarksList(dispatch, setBookmarks, setListData);
+    };
+
+  useEffect(() => {
+    if(bookmarkList.length === 0){
+    AsyncStorage.getItem('userBookMarks').then(data => {
+      if (data && data !== '[]') {
+        const list = JSON.parse(data);
+        dispatch(setBookmarks(list));
+      }
+      else{
+        getListData();
+      }
+    });
+  }
+  else{
+    return;
+  }
   }, []);
 
   return (

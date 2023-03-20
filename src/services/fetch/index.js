@@ -1,4 +1,4 @@
-import { Share } from 'react-native';
+import { Share, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import { firebase } from '@react-native-firebase/auth';
@@ -7,6 +7,7 @@ import { Toast, CheckIcon } from 'native-base';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import { useDispatch } from 'react-redux';
 import { setVisitedSubjects } from '../../redux/reducers/subjectsList';
+// import messaging from '@react-native-firebase/messaging';
 
 export const userFirestoreData = async (userData, type, item, dispatch) => {
   let list = [];
@@ -63,7 +64,7 @@ export const fetchSubjectList = async (setList, dispatch, setReccommendSubjects,
       let updatedList = [];
       await firestore()
         .collection('Universities')
-        .doc(userFirestoreData.data().university).collection(userFirestoreData.data().course === 'BE' ? 'B.E' : userFirestoreData.data().course)
+        .doc(userFirestoreData.data().university).collection(userFirestoreData.data().course)
         .doc(userFirestoreData.data().branch)
         .collection(userFirestoreData.data().sem)
         .doc('SubjectsList')
@@ -85,9 +86,9 @@ export const fetchSubjectList = async (setList, dispatch, setReccommendSubjects,
                 self.indexOf(item) === index,
             ),
           );
+          setLoaded(true);
           dispatch(setReccommendSubjects(updatedList));
           dispatch(setReccommendSubjectsLoaded(true));
-          setLoaded(true);
         })
     }).catch((error) => {
       console.log("Error getting document:", error);
@@ -119,7 +120,7 @@ export const fetchBookmarksList = async (dispatch, setBookmarks, setListData) =>
     );
 }
 
-export const fetchNotesList = async (dispatch, setSubjectsList, setListLoaded, university) => {
+export const fetchNotesList = async (dispatch, setSubjectsList, setListLoaded, data) => {
   try {
     const list = await AsyncStorage.getItem('subjectsList');
     if (list?.length !== 0 && list !== null) {
@@ -128,8 +129,8 @@ export const fetchNotesList = async (dispatch, setSubjectsList, setListLoaded, u
     } else {
       firestore()
         .collection('QueryList')
-        .doc(`${university}`)
-        .collection('BE')
+        .doc(`${data.university}`)
+        .collection(`${data.course}`)
         .doc('SubjectsListDetail')
         .get()
         .then((doc) => {
@@ -328,3 +329,43 @@ export const ratedResourcesList = async () => {
     );
   return list;
 }
+
+async function requestPermisssion() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+}
+
+export const getFcmToken = async () => {
+  let fcmToken = await AsyncStorage.getItem('fcmToken');
+  if (!fcmToken) {
+    try {
+      const fcmToken = await messaging().getToken();
+      // if (fcmToken) {
+      //   console.log(fcmToken);
+      //   await AsyncStorage.setItem('fcmToken', fcmToken);
+      //   firestore()
+      //     .collection('Users')
+      //     .doc(auth().currentUser?.uid)
+      //     .set({
+      //       fcmToken: fcmToken,
+      //     })
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return fcmToken;
+}
+
+// export const NotificationListner = async () => {
+//   const unsubscribe = messaging().onMessage(async remoteMessage => {
+//     Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+//   });
+//   return unsubscribe;
+// }
