@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View, Linking } from 'react-native'
-import React, {useRef} from 'react';
+import React, { useRef } from 'react';
+import { Linking, StyleSheet, Text, View } from 'react-native'
+
 import NavigationLayout from '../../../interfaces/navigationLayout';
 import createStyles from './styles';
 
@@ -75,7 +76,7 @@ const TermsAndConditions = () => {
                 <Text style={styles.linkText} onPress={()=>{
                     Linking.openURL('mailto:contact@getacademically.co');
                 }} >
-                    academicly.app@gmail.com
+                    contact@getacademically.co
                 </Text>
             </View>
             </View>

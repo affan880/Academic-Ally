@@ -1,35 +1,29 @@
-import React, { useEffect, useReducer, useRef, FC, useState } from 'react'
-import {
-    Pressable,
-    StatusBar,
-    StyleSheet,
-    View,
-    Text,
-    Dimensions,
-} from 'react-native'
-import { NavigationProp, ParamListBase, DrawerActions } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import Svg, { G, Path } from "react-native-svg"
-import HomeScreen from '../../screens/Home/homeScreen'
-import Upload from '../../screens/Upload/upload'
-import Bookmark from '../../screens/Bookmark/Bookmark'
-import Profile from '../../screens/Profile/profile'
-import SubjectResources from '../../screens/Notes/SubjectResources'
+import { DrawerActions, NavigationProp, ParamListBase } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
+import React, { FC, useEffect, useReducer, useRef, useState } from 'react'
+import { Dimensions, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native'
+import Svg, { G, Path } from "react-native-svg"
 import Feather from "react-native-vector-icons/Feather"
 import Fontisto from "react-native-vector-icons/Fontisto"
 import Ionicons from "react-native-vector-icons/Ionicons"
+import { useSelector } from 'react-redux'
+
+import { UploadIcon } from '../../assets/images/icons'
+import Bookmark from '../../screens/Bookmark/Bookmark'
+import HomeScreen from '../../screens/Home/homeScreen'
 import NotesList from '../../screens/Notes/NotesList'
-import UploadScreen from '../../screens/Notes/uploadScreen'
 import PdfViewer from '../../screens/Notes/PdfViewer/pdfViewer'
+import SubjectResources from '../../screens/Notes/SubjectResources'
+import UploadScreen from '../../screens/Notes/uploadScreen'
 import UpdateInformation from '../../screens/Profile/AccountSettings/UpdateInformation'
-import Search from '../../screens/Search/searchScreen'
+import Profile from '../../screens/Profile/profile'
+import AboutUs from '../../screens/Profile/Support/AboutUs'
 import PrivacyPolicy from '../../screens/Profile/Support/PrivacyPolicy'
 import TermsAndConditions from '../../screens/Profile/Support/Terms&Conditions'
-import AboutUs from '../../screens/Profile/Support/AboutUs'
-import { useSelector } from 'react-redux'
-import { UploadIcon } from '../../assets/images/icons'
+import Search from '../../screens/Search/searchScreen'
+import Upload from '../../screens/Upload/upload'
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
@@ -40,7 +34,7 @@ interface IProps {
     navigation: NavigationProp<ParamListBase>
 }
 
-const DrawerScreen: FC<IProps> = ({navigation}) => {
+const DrawerScreen: FC<IProps> = ({ navigation }) => {
     return (
         <drawer.Navigator>
             <drawer.Screen name="Home" component={HomeScreen} options={{
@@ -49,7 +43,7 @@ const DrawerScreen: FC<IProps> = ({navigation}) => {
                     backgroundColor: '#6360FF',
                     elevation: 0,
                 },
-                headerLeft: ({props}:any) => (
+                headerLeft: ({ props }: any) => (
                     <View style={{ flexDirection: 'row', marginLeft: 20 }}>
                         <Pressable onPress={() => {
                             navigation.dispatch(DrawerActions.openDrawer());
@@ -63,7 +57,7 @@ const DrawerScreen: FC<IProps> = ({navigation}) => {
                         <Pressable onPress={() => {
                             navigation.navigate('Notes')
                         }} >
-                            <Ionicons name='ios-notifications-outline' color={"#ffffff"}  size={20}/>
+                            <Ionicons name='ios-notifications-outline' color={"#ffffff"} size={20} />
                         </Pressable>
                     </View>
                 )
@@ -84,7 +78,7 @@ export const BottomTabBar = () => {
                     tabBarStyle: {
                         position: "absolute",
                         height: height * 0.08,
-                        width:"100%",
+                        width: "100%",
                         backgroundColor: "#FCFCFF",
                         borderTopLeftRadius: 30,
                         borderTopRightRadius: 30,
@@ -98,12 +92,12 @@ export const BottomTabBar = () => {
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
-                                <View style={{ alignItems: 'center', justifyContent: 'center', width: width*0.23}}>
+                                <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
                                     <Feather name='home' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
-                                        bottom: focused? 3 : 0,
+                                        bottom: focused ? 3 : 0,
                                     }} />
                                     {
-                                        focused ? <Text style={{ color: '#FF8181', fontSize: theme.sizes.textSmall, fontWeight: '400', textAlign:"center", bottom: 0 }}>Home</Text> : null
+                                        focused ? <Text style={{ color: '#FF8181', fontSize: theme.sizes.textSmall, fontWeight: '400', textAlign: "center", bottom: 0 }}>Home</Text> : null
                                     }
                                 </View>
 
@@ -118,7 +112,7 @@ export const BottomTabBar = () => {
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
-                                <View style={{ alignItems: 'center', justifyContent: 'center', width: width*0.23 }}>
+                                <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
                                     <Feather name='search' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
@@ -138,7 +132,7 @@ export const BottomTabBar = () => {
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
-                                <View style={{ alignItems: 'center', justifyContent: 'center',  width: width*0.23 }}>
+                                <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
                                     <Feather name='upload' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
@@ -158,7 +152,7 @@ export const BottomTabBar = () => {
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
-                                <View style={{ alignItems: 'center', justifyContent: 'center',  width: width*0.23 }}>
+                                <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
                                     <Fontisto name={focused ? 'bookmark-alt' : 'bookmark'} size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
@@ -178,7 +172,7 @@ export const BottomTabBar = () => {
                         tabBarIcon: (({ focused }) => {
                             return (
                                 //label and icon
-                                <View style={{ alignItems: 'center', justifyContent: 'center', width: width*0.23}}>
+                                <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
                                     <Feather name="user" size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
@@ -203,7 +197,7 @@ const AppStack = () => {
             headerShown: false,
             animationEnabled: false
         }} >
-            <Stack.Screen name="BottomTabBar" component={BottomTabBar}/>
+            <Stack.Screen name="BottomTabBar" component={BottomTabBar} />
             <Stack.Screen name="SubjectResources" component={SubjectResources} options={{
                 headerShown: false,
             }} />
@@ -275,6 +269,6 @@ const styles = StyleSheet.create({
     icon: {
         height: 25,
         width: 25,
-        color:"#ffffff"
+        color: "#ffffff"
     }
 })

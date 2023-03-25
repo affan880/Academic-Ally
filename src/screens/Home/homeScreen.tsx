@@ -1,34 +1,29 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  useColorScheme,
-} from 'react-native';
-import React, {useEffect, useState, useMemo} from 'react';
-import createStyles from './styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth, { firebase } from '@react-native-firebase/auth';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import firestore from '@react-native-firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import LottieView from 'lottie-react-native';
+import { Toast } from 'native-base';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Image, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+
 import QuickAccess from '../../components/CustomFormComponents/QuickAccess/QuickAccess';
 import Recommendation from '../../components/CustomFormComponents/Recommendation/Recommendation';
-import ScreenLayout from '../../interfaces/screenLayout';
-import {useSelector, useDispatch} from 'react-redux';
-import {setUsersData, setUsersDataLoaded} from '../../redux/reducers/usersData';
-import firestore from '@react-native-firebase/firestore';
-import auth, {firebase} from '@react-native-firebase/auth'; 
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import dynamicLinks from '@react-native-firebase/dynamic-links';
-import LottieView from 'lottie-react-native';
 import ResourceLoader from '../../components/loaders/ResourceLoader';
-import {  setSubjectsList,  setListLoaded,} from '../../redux/reducers/subjectsList';
-import { setResourceLoader } from '../../redux/reducers/userState';
-import {Toast} from 'native-base';
-import { fetchNotesList, getFcmToken, fetchBookmarksList } from '../../services/fetch';
-import { setBookmarks } from '../../redux/reducers/userBookmarkManagement';
+import ScreenLayout from '../../interfaces/screenLayout';
+import { setListLoaded, setSubjectsList, setVersion } from '../../redux/reducers/subjectsList';
 import { setDarkTheme } from '../../redux/reducers/theme';
+import { setBookmarks } from '../../redux/reducers/userBookmarkManagement';
+import { setUsersData, setUsersDataLoaded } from '../../redux/reducers/usersData';
+import { setResourceLoader } from '../../redux/reducers/userState';
+import { fetchBookmarksList, fetchNotesList, getFcmToken } from '../../services/fetch';
+import createStyles from './styles';
+
 type MyStackParamList = {
-  Notes: {itemId: number};
+  Notes: { itemId: number };
   PdfViewer: {
     userData: {
       Course: string;
@@ -54,7 +49,7 @@ const HomeScreen = (props: Props) => {
   const theme = useSelector((state: any) => {
     return state.theme;
   });
-  
+
   const dispatch = useDispatch();
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -73,7 +68,7 @@ const HomeScreen = (props: Props) => {
 
   useEffect(() => {
     getFcmToken()
-  },[])
+  }, [])
 
   const handleDynamicLink = (link: any) => {
     const parts = link?.url.split('/');
@@ -90,7 +85,7 @@ const HomeScreen = (props: Props) => {
       category: parts[3],
       did: parts[8],
       name: parts[11],
-      units : parts[9]
+      units: parts[9]
     };
     navigation.navigate('PdfViewer', {
       userData,
@@ -117,7 +112,7 @@ const HomeScreen = (props: Props) => {
       .then((data: any) => {
         dispatch(setUsersData(data?.data()));
         dispatch(setUsersDataLoaded(true));
-        fetchNotesList(dispatch, setSubjectsList, setListLoaded, data?.data()); 
+        fetchNotesList(dispatch, setSubjectsList, setListLoaded, data?.data());
       })
       .catch(error => {
         dispatch(setUsersDataLoaded(false));
@@ -131,28 +126,28 @@ const HomeScreen = (props: Props) => {
   }, []);
 
   const getListData = async () => {
-        fetchBookmarksList(dispatch, setBookmarks, setListData);
-    };
+    fetchBookmarksList(dispatch, setBookmarks, setListData);
+  };
 
   useEffect(() => {
-    if(bookmarkList.length === 0){
-    AsyncStorage.getItem('userBookMarks').then(data => {
-      if (data && data !== '[]') {
-        const list = JSON.parse(data);
-        dispatch(setBookmarks(list));
-      }
-      else{
-        getListData();
-      }
-    });
-  }
-  else{
-    return;
-  }
+    if (bookmarkList.length === 0) {
+      AsyncStorage.getItem('userBookMarks').then(data => {
+        if (data && data !== '[]') {
+          const list = JSON.parse(data);
+          dispatch(setBookmarks(list));
+        }
+        else {
+          getListData();
+        }
+      });
+    }
+    else {
+      return;
+    }
   }, []);
 
   return (
- <ScreenLayout>
+    <ScreenLayout>
       <ResourceLoader />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -169,7 +164,7 @@ const HomeScreen = (props: Props) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                <TouchableOpacity style={styles.userImgContainer} onPress={()=>{
+                <TouchableOpacity style={styles.userImgContainer} onPress={() => {
                   navigation.navigate('Profile')
                 }} >
                   <Image source={{
@@ -196,7 +191,7 @@ const HomeScreen = (props: Props) => {
             </View>
           </View>
         </View>
-        <QuickAccess selected={selectedCategory} setSelectedCategory={(option)=>{
+        <QuickAccess selected={selectedCategory} setSelectedCategory={(option) => {
           setSelectedCategory(option)
         }} />
         <View
@@ -206,7 +201,7 @@ const HomeScreen = (props: Props) => {
             Recommended
           </Text>
           <View>
-            <Recommendation selected={selectedCategory} setResourcesLoaded = {(option :boolean)=>{
+            <Recommendation selected={selectedCategory} setResourcesLoaded={(option: boolean) => {
               dispatch(setResourceLoader(option))
             }} />
           </View>
@@ -217,4 +212,3 @@ const HomeScreen = (props: Props) => {
 };
 
 export default HomeScreen;
- 

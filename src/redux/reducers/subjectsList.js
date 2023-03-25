@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createSlice } from '@reduxjs/toolkit';
 
 export const createUserDataSlice = createSlice({
   name: 'SubjectsList',
@@ -20,6 +20,7 @@ export const createUserDataSlice = createSlice({
       OtherResources: '',
       Syllabus: '',
     },
+    version: 0,
   },
   reducers: {
     setSubjectsList: (state, action) => {
@@ -59,6 +60,11 @@ export const createUserDataSlice = createSlice({
         }
       });
     },
+    setVersion: (state, action) => {
+      state.version = action.payload;
+      console.log('setVersion', state.version);
+      AsyncStorage.setItem('version', JSON.stringify(action.payload));
+    },
   },
 });
 
@@ -67,7 +73,8 @@ export const {
   setListLoaded,
   setReccommendSubjects,
   setReccommendSubjectsLoaded,
-  setVisitedSubjects
+  setVisitedSubjects,
+  setVersion,
 } = createUserDataSlice.actions;
 
 export default createUserDataSlice.reducer;

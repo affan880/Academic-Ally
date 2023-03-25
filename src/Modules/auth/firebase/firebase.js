@@ -2,9 +2,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { Toast, CheckIcon } from 'native-base';
-import { setCustomLoader } from '../../../redux/reducers/userState';
+import { CheckIcon, Toast } from 'native-base';
+
 import { setUsersData } from '../../../redux/reducers/usersData';
+import { setCustomLoader } from '../../../redux/reducers/userState';
 
 export const firestoreDB = () => {
   return firestore();
@@ -62,7 +63,7 @@ export const createUser = async (email, password, values, dispatch) => {
       createUserDocument(userID.user.uid, values, dispatch).then(() => {
         auth().currentUser.updateProfile({
           displayName: values.name,
-          photoURL: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2FAvatar9.png?alt=media&token=f588e0f2-3319-4cec-ad60-8053a03c3172',
+          photoURL: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2Fdefault.png?alt=media&token=b8e8a831-811e-4132-99bc-e6c2e01461da',
         });
         userCredential.user.sendEmailVerification();
         Toast.show({
@@ -78,6 +79,7 @@ export const createUser = async (email, password, values, dispatch) => {
     })
     .catch(error => {
       console.log('Error: ', error);
+      dispatch(setCustomLoader(false));
       var errorCode = error.code;
       var errorMessage = error.message;
       const msg = errorMessage.includes(
@@ -176,14 +178,14 @@ export const getCurrentUser = () => {
 export const forgotPassword = email => {
   auth()
     .sendPasswordResetEmail(email)
-    .then(() => {
-      Toast.show({
-        title: 'Password reset link sent to your email',
-        type: 'success',
-        placement: 'top-right',
-        backgroundColor: '#00b300',
-      });
-    })
+    // .then(() => {
+    //   Toast.show({
+    //     title: 'Password reset link sent to your email',
+    //     type: 'success',
+    //     placement: 'top-right',
+    //     backgroundColor: '#00b300',
+    //   });
+    // })
     .catch(error => {
       var errorCode = error.code;
       var errorMessage = error.message;

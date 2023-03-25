@@ -1,12 +1,14 @@
-import { Share, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import { firebase } from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import { Toast, CheckIcon } from 'native-base';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
+import firestore from '@react-native-firebase/firestore';
+import { CheckIcon, Toast } from 'native-base';
+import { Alert, Share } from 'react-native';
 import { useDispatch } from 'react-redux';
+
 import { setVisitedSubjects } from '../../redux/reducers/subjectsList';
+
 // import messaging from '@react-native-firebase/messaging';
 
 export const userFirestoreData = async (userData, type, item, dispatch) => {
@@ -120,10 +122,11 @@ export const fetchBookmarksList = async (dispatch, setBookmarks, setListData) =>
     );
 }
 
-export const fetchNotesList = async (dispatch, setSubjectsList, setListLoaded, data) => {
+export const fetchNotesList = async (dispatch, setSubjectsList, setListLoaded, data, val) => {
+  // console.log("updatedVersion", updatedVersion, "ver", version);
   try {
     const list = await AsyncStorage.getItem('subjectsList');
-    if (list?.length !== 0 && list !== null) {
+    if (list?.length !== 0 && list !== null && val === true) {
       dispatch(setSubjectsList(JSON.parse(list)));
       dispatch(setListLoaded(true));
     } else {
@@ -241,7 +244,7 @@ export async function submitRating(data, newRating) {
   }
 }
 
-export async function submitReport(userData, ReportData) {
+export async function submitReport(userData, ReportData, notesData) {
   try {
     await firestore()
       .collection('userReports')
@@ -254,6 +257,15 @@ export async function submitReport(userData, ReportData) {
         ...userData,
         uid: auth().currentUser?.uid,
         report: ReportData,
+        subjectName: notesData.name,
+        subjectDid: notesData.did,
+        subjectId: notesData.id,
+        date: new Date().getTime(),
+        sCourse: userData.course,
+        sBranch: userData.branch,
+        sSem: userData.sem,
+        sUniversity: userData.university,
+        sCategory: notesData.category,
       })
   }
   catch (error) {
@@ -284,6 +296,7 @@ export async function getMailId() {
 }
 
 export const shareNotes = async (notesData) => {
+  console.log(notesData);
   const link = await dynamicLinks().buildShortLink(
     {
       link: `https://getacademically.co/${notesData.category}/${notesData.course}/${notesData.branch}/${notesData.sem}/${notesData.subject}/${notesData.did}/${notesData.units}//${notesData.name}`,
@@ -300,8 +313,8 @@ export const shareNotes = async (notesData) => {
     })
   });
   Share.share({
-    title: `${notesData.subject} ${notesData.category} `,
-    message: `I just discovered some amazing ${notesData.course} ${notesData.sem}th semester ${notesData.subject} on Academic Ally! Check them out 📚!
+    title: notesData.subject,
+    message: `If you're studying ${notesData.subject}, you might find these ${notesData.category} on Academic Ally helpful. I did! Check them out:
       ${link}`,
   });
 }

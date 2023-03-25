@@ -1,22 +1,23 @@
-import {View, Text, TouchableOpacity} from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
-import createStyles from './styles';
-import {useSelector} from 'react-redux';
-import Entypo from 'react-native-vector-icons/Entypo';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import LottieView from 'lottie-react-native';
-import { setReccommendSubjects, setReccommendSubjectsLoaded, setVisitedSubjects } from '../../../redux/reducers/subjectsList';
-import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import LottieView from 'lottie-react-native';
+import { HStack, Skeleton, VStack } from 'native-base';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { setReccommendSubjects, setReccommendSubjectsLoaded, setVisitedSubjects } from '../../../redux/reducers/subjectsList';
+import { setDarkTheme, setLightTheme } from '../../../redux/reducers/theme';
 import { userAddToRecents } from '../../../redux/reducers/usersRecentPdfsManager';
-import { fetchSubjectList, userFirestoreData} from '../../../services/fetch'
-import {setDarkTheme, setLightTheme} from '../../../redux/reducers/theme';
+import { fetchSubjectList, userFirestoreData } from '../../../services/fetch'
 import { sizes } from '../../../utilis/colors';
+import createStyles from './styles';
 
 type MyStackParamList = {
-  SubjectResources: {userData: object; notesData: any; subject: string};
-   NotesList: {
+  SubjectResources: { userData: object; notesData: any; subject: string };
+  NotesList: {
     userData: {
       Course: string;
       Branch: string;
@@ -43,11 +44,11 @@ type MyScreenNavigationProp = StackNavigationProp<
   'SubjectResources'
 >;
 type Props = {
-  selected : string,
-  setResourcesLoaded : any,
+  selected: string,
+  setResourcesLoaded: any,
 };
 
-const Recommendation = ({setResourcesLoaded,selected}: Props) => {
+const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
   const userData = useSelector((state: any) => {
     return state.usersData;
   });
@@ -73,8 +74,12 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
   useEffect(() => {
     dispatch(setLightTheme());
   }, [theme.theme]);
+
+  async function fetchData() {
+    await fetchSubjectList(setList, dispatch, setReccommendSubjects, setReccommendSubjectsLoaded, setLoaded, userData)
+  }
+
   useEffect(() => {
-    
     AsyncStorage.getItem('reccommendSubjects').then(data => {
       if (data && data !== '[]') {
         setList(JSON.parse(data));
@@ -89,10 +94,6 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
     });
   }, [userData]);
 
-  async function fetchData() {
-    fetchSubjectList(setList,dispatch, setReccommendSubjects, setReccommendSubjectsLoaded, setLoaded,userData)
-  }
-
   useEffect(() => {
     const getRecents = async () => {
       AsyncStorage.getItem('RecentsManagement').then(res => {
@@ -106,10 +107,10 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
   }, []);
 
   async function handleNavigation(item: any, category: string) {
-    item[category]? (
+    item[category] ? (
       navigation.navigate('NotesList', {
         userData: userData.usersData,
-        notesData: await userFirestoreData(userData.usersData, category, item, dispatch).then(res =>{
+        notesData: await userFirestoreData(userData.usersData, category, item, dispatch).then(res => {
           setResourcesLoaded(false);
           return res
         }),
@@ -117,29 +118,29 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
         subject: item.subjectName,
       })
     ) : (navigation.navigate('UploadScreen', {
-          userData: userData.usersData,
-          notesData: {
-            subject : item.subjectName,
-            course : userData.usersData.Course,
-            branch : userData.usersData.Branch,
-            sem : userData.usersData.Sem,
-          },
-          selected: category,
-          subject: item.subjectName,
-        }),
-        setResourcesLoaded(false)
+      userData: userData.usersData,
+      notesData: {
+        subject: item.subjectName,
+        course: userData.usersData.Course,
+        branch: userData.usersData.Branch,
+        sem: userData.usersData.Sem,
+      },
+      selected: category,
+      subject: item.subjectName,
+    }),
+      setResourcesLoaded(false)
     )
     setResourcesLoaded(false);
   }
 
-  async function handleNavigationToRes(item:any) {
-     navigation.navigate('SubjectResources', {
+  async function handleNavigationToRes(item: any) {
+    navigation.navigate('SubjectResources', {
       userData: userData.usersData,
       notesData: {
-        notes :  await userFirestoreData(userData.usersData, 'Notes', item, dispatch),
-        syllabus :  await userFirestoreData(userData.usersData, 'Syllabus', item, dispatch),
-        questionPapers :  await userFirestoreData(userData.usersData, 'QuestionPapers', item, dispatch),
-        otherResources :  await userFirestoreData(userData.usersData, 'OtherResources', item, dispatch ),
+        notes: await userFirestoreData(userData.usersData, 'Notes', item, dispatch),
+        syllabus: await userFirestoreData(userData.usersData, 'Syllabus', item, dispatch),
+        questionPapers: await userFirestoreData(userData.usersData, 'QuestionPapers', item, dispatch),
+        otherResources: await userFirestoreData(userData.usersData, 'OtherResources', item, dispatch),
       },
       subject: item.subjectName,
     })
@@ -160,10 +161,10 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
                       handleNavigationToRes(item)
                     ) : (
                       setResourcesLoaded(true),
-                    handleNavigation(item, selected)
+                      handleNavigation(item, selected)
                     )
                   }}
-                  >
+                >
                   <View
                     style={styles.main}>
                     <Text style={styles.subjectName}>{item.subjectName}</Text>
@@ -228,34 +229,72 @@ const Recommendation = ({setResourcesLoaded,selected}: Props) => {
           );
         })
       ) : (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: theme.sizes.lottieIconHeight,
-          }}>
+        <VStack space={2}>
+          {
+            [1, 2, 3, 4].map((item, index) => {
+              return (
+                <VStack style={styles.reccomendationContainer} key={index} borderWidth="1" space={8} overflow="hidden" rounded="md" _dark={{
+                  borderColor: "coolGray.500"
+                }} _light={{
+                  borderColor: "coolGray.200"
+                }}>
+                  <HStack style={styles.reccomendationStyle}>
+                    <VStack space={6} alignItems="flex-start" w={'70%'}>
+                      <Skeleton.Text px="4" lines={2} />
+                      <HStack space="6" alignItems="center" w={'60%'} justifyContent="space-around" px="4" >
+                        <Skeleton h="3" flex="1" rounded="full" startColor="coolGray.100" />
+                        <Skeleton h="3" flex="1" rounded="full" startColor="coolGray.100" />
+                        <Skeleton h="3" flex="1" rounded="full" startColor="coolGray.100" />
+                      </HStack>
+                    </VStack>
+                    <Skeleton borderColor="coolGray.600" endColor="warmGray.50" size="20" marginRight={4} rounded="md" />
+                  </HStack>
+                </VStack>
+              )
+            })
+          }
+        </VStack>
+        // <View
+        //   style={{
+        //     flex: 1,
+        //     justifyContent: 'center',
+        //     alignItems: 'center',
+        //     height: theme.sizes.lottieIconHeight,
+        //   }}>
+        //   <LottieView
+        //     source={require('../../../assets/lottie/loading.json')}
+        //     autoPlay
+        //     loop
+        //   />
+        // </View>
+      )}
+      {
+        loaded && filteresList.length === 0 && list.length === 0 ? (
           <LottieView
-            source={require('../../../assets/lottie/loading.json')}
+            style={{
+              height: theme.sizes.lottieIconHeight,
+              alignSelf: 'center',
+            }}
+            source={require('../../../assets/lottie/NoBookMarks.json')}
             autoPlay
             loop
           />
-        </View>
-      )}
+        ) : null
+      }
       {
         filteresList.length === 0 && list.length !== 0 ? (
-           selected !== 'All' ? (
+          selected !== 'All' ? (
             <LottieView
-           style={{
-            height: theme.sizes.lottieIconHeight,
-            alignSelf: 'center',
-           }}
-          source={require('../../../assets/lottie/NoBookMarks.json')}
-          autoPlay
-          loop
-        />
-           ):null
-        
+              style={{
+                height: theme.sizes.lottieIconHeight,
+                alignSelf: 'center',
+              }}
+              source={require('../../../assets/lottie/NoBookMarks.json')}
+              autoPlay
+              loop
+            />
+          ) : null
+
         ) : null
       }
     </View>

@@ -1,53 +1,26 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {
-  StyleSheet,
-  Dimensions,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Share,
-  Linking,
-  ActivityIndicator,
-} from 'react-native';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import LottieView from 'lottie-react-native';
+import { Actionsheet, Box, Button, Center, Fab, HStack, Icon, Popover, Text, Toast, useDisclose, VStack } from 'native-base';
+import React, { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Dimensions, Linking, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
 import Pdf from 'react-native-pdf';
-import createStyles from './styles';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {
-  Fab,
-  Icon,
-  Popover,
-  Button,
-  VStack,
-  Actionsheet,
-  useDisclose,
-  Text,
-  Box,
-  Center,
-  HStack,
-  Toast,
-} from 'native-base';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  userRemoveFromRecents,
-  userClearRecents,
-} from '../../../redux/reducers/usersRecentPdfsManager';
-import {
-  userAddBookMarks,
-  userRemoveBookMarks,
-} from '../../../redux/reducers/userBookmarkManagement';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import {manageBookmarks} from '../../../Modules/auth/firebase/firebase';
-import dynamicLinks from '@react-native-firebase/dynamic-links';
-import usersData from '../../../redux/reducers/usersData';
-import {TextInput} from 'react-native-gesture-handler';
-import LottieView from 'lottie-react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useDispatch, useSelector } from 'react-redux';
 
-const {width, height} = Dimensions.get('window');
+import { manageBookmarks } from '../../../Modules/auth/firebase/firebase';
+import { userAddBookMarks, userRemoveBookMarks } from '../../../redux/reducers/userBookmarkManagement';
+import usersData from '../../../redux/reducers/usersData';
+import { userClearRecents, userRemoveFromRecents } from '../../../redux/reducers/usersRecentPdfsManager';
+import createStyles from './styles';
+
+const { width, height } = Dimensions.get('window');
 type RootStackParamList = {
   NotesList: {
     userData: {
@@ -82,12 +55,13 @@ type MyScreenNavigationProp = StackNavigationProp<
 const PdfViewer = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage]:any = useState(0);
+  const [currentPage, setCurrentPage]: any = useState(0);
   const [saved, setSaved] = useState(false);
-  const {isOpen, onOpen, onClose} = useDisclose();
-  const {userData} = route.params;
-  const {notesData} = route.params;
-  const {selected} = route.params;
+  const { isOpen, onOpen, onClose } = useDisclose();
+  const { userData } = route.params;
+  const { notesData } = route.params;
+  const { subject } = route.params;
+  const { selected } = route.params;
   const [pageNo, setPageNo] = useState(0);
   const [loading, setLoading] = useState(true);
   const source = {
@@ -119,7 +93,7 @@ const PdfViewer = () => {
     setUserRecents(recentsList);
   }, [recentsList]);
   async function createDynamicLink() {
-         const link = await dynamicLinks().buildShortLink(
+    const link = await dynamicLinks().buildShortLink(
       {
         link: `https://getacademically.co/${notesData.category}/${notesData.course}/${notesData.branch}/${notesData.sem}/${notesData.subject}/${notesData.did}/${notesData.units}/${notesData.name}`,
         domainUriPrefix: 'https://academicallyapp.page.link',
@@ -135,9 +109,9 @@ const PdfViewer = () => {
       })
     });
     Share.share({
-      title: `${notesData.subject} ${notesData.category} `,
-      message: `I just discovered some amazing ${notesData.course} ${notesData.sem}th semester ${notesData.subject} on Academic Ally! Check them out 📚!
-      ${link}`,
+      title: `${subject}`,
+      message: `If you're studying ${subject}, you might find these ${notesData.category} on Academic Ally helpful. I did! Check them out:
+      ${link}`
     });
   }
 
@@ -187,14 +161,14 @@ const PdfViewer = () => {
               top: -1,
             }}
             value={`${currentPage}`}
-            onChangeText={(text:any) => setCurrentPage(text)}
+            onChangeText={(text: any) => setCurrentPage(text)}
             keyboardType="number-pad"
             maxLength={3}
             onSubmitEditing={() => {
               setPageNo(parseInt(currentPage));
             }}
           />
-          <Text style={{fontSize: 18, color: '#ffffff', fontWeight: 'bold'}}>
+          <Text style={{ fontSize: 18, color: '#ffffff', fontWeight: 'bold' }}>
             /{totalPages}
           </Text>
         </View>
@@ -229,7 +203,7 @@ const PdfViewer = () => {
                       color="#FF8181"
                       size="large"
                     />
-                    <Text style={{textAlign: 'center'}}>
+                    <Text style={{ textAlign: 'center' }}>
                       {progressBar.toFixed(2)}% Loaded
                     </Text>
                   </View>
@@ -279,22 +253,22 @@ const PdfViewer = () => {
                   manageBookmarks(notesData, status);
                   !status
                     ? dispatch(
-                        userAddBookMarks({
-                          name: notesData.name,
-                          subject: notesData.subject,
-                          did: notesData.did,
-                          ...notesData,
-                        }),
-                      )
+                      userAddBookMarks({
+                        name: notesData.name,
+                        subject: notesData.subject,
+                        did: notesData.did,
+                        ...notesData,
+                      }),
+                    )
                     : dispatch(
-                        userRemoveBookMarks({
-                          name: notesData.name,
-                          subject: notesData.subject,
-                          notesId: notesData.did,
-                          category: selected,
-                          ...notesData,
-                        }),
-                      );
+                      userRemoveBookMarks({
+                        name: notesData.name,
+                        subject: notesData.subject,
+                        notesId: notesData.did,
+                        category: selected,
+                        ...notesData,
+                      }),
+                    );
                 }}
                 colorScheme="red"
                 variant="outline">
@@ -303,7 +277,7 @@ const PdfViewer = () => {
                     BookmarkStatus(notesData.did)
                       ? 'bookmark-alt'
                       : 'bookmark'
-                  } 
+                  }
                   size={25}
                   color={'#6360FF'}
                 />

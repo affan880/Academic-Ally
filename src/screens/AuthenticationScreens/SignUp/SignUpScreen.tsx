@@ -1,34 +1,22 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Dimensions,
-  StatusBar,
-  Image,
-  ScrollView,
-  Alert,
-} from 'react-native';
-import {NavigationProp, ParamListBase} from '@react-navigation/native';
-import React, {FC, useMemo, useEffect, useState, useRef,} from 'react';
-import LinearGradient from 'react-native-linear-gradient';
-import {SIGNUPILLUSTRATION} from '../../../assets';
-import {
-  CustomBtn,
-  NavBtn,
-} from '../../../components/CustomFormComponents/CustomBtn';
-import {CustomTextInput} from '../../../components/CustomFormComponents/CustomTextInput';
-import Form from '../../../components/Forms/form';
-import DropdownComponent from '../../../components/CustomFormComponents/Dropdown';
-import {validationSchema} from '../../../utilis/validation';
-import createStyles from './styles';
-import {createUser} from '../../../Modules/auth/firebase/firebase';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {useDispatch} from 'react-redux';
-import {setUsersData} from '../../../redux/reducers/usersData';
+import { NavigationProp, ParamListBase } from '@react-navigation/native';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, Dimensions, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { useDispatch } from 'react-redux';
+
+import { SIGNUPILLUSTRATION } from '../../../assets';
+import { CustomBtn, NavBtn } from '../../../components/CustomFormComponents/CustomBtn';
+import { CustomTextInput } from '../../../components/CustomFormComponents/CustomTextInput';
+import DropdownComponent from '../../../components/CustomFormComponents/Dropdown';
+import Form from '../../../components/Forms/form';
 import CustomLoader from '../../../components/loaders/CustomLoader';
-import {setCustomLoader} from '../../../redux/reducers/userState';
+import { createUser } from '../../../Modules/auth/firebase/firebase';
+import { setUsersData } from '../../../redux/reducers/usersData';
+import { setCustomLoader } from '../../../redux/reducers/userState';
+import { validationSchema } from '../../../utilis/validation';
+import createStyles from './styles';
 
 const screenWidth = Dimensions.get('screen').width;
 
@@ -155,6 +143,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
           });
       })
       .catch(error => {
+        dispatch(setCustomLoader(false));
         Alert.alert(error.message);
       });
   };

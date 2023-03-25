@@ -1,26 +1,20 @@
-import {
-  Text,
-  View,
-  StatusBar,
-  Image,
-  Alert,
-  TouchableOpacity,
-} from 'react-native';
-import {NavigationProp, ParamListBase} from '@react-navigation/native';
-import React, {FC, useMemo, useRef, useState} from 'react';
+import { NavigationProp, ParamListBase } from '@react-navigation/native';
+import { Toast } from 'native-base';
+import React, { FC, useMemo, useRef, useState } from 'react';
+import { Alert, Image, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import LinearGradient from 'react-native-linear-gradient';
-import createStyles from './styles';
-import {LOGINILLUSTRATION} from '../../../assets';
-import {CustomTextInput} from '../../../components/CustomFormComponents/CustomTextInput';
-import {CustomBtn,NavBtn,} from '../../../components/CustomFormComponents/CustomBtn';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { LOGINILLUSTRATION } from '../../../assets';
+import { CustomBtn, NavBtn } from '../../../components/CustomFormComponents/CustomBtn';
+import { CustomTextInput } from '../../../components/CustomFormComponents/CustomTextInput';
 import Form from '../../../components/Forms/form';
-import {LoginvalidationSchema} from '../../../utilis/validation';
-import {  logIn,  forgotPassword,  getCurrentUser,  logOut,  ResendVerification,} from '../../../Modules/auth/firebase/firebase';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Toast} from 'native-base';
-import {useSelector, useDispatch} from 'react-redux';
 import CustomLoader from '../../../components/loaders/CustomLoader';
+import { forgotPassword, getCurrentUser, logIn, logOut, ResendVerification } from '../../../Modules/auth/firebase/firebase';
 import { setCustomLoader } from '../../../redux/reducers/userState';
+import { LoginvalidationSchema } from '../../../utilis/validation';
+import createStyles from './styles';
 
 interface IProps {
   navigation: NavigationProp<ParamListBase>;

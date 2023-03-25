@@ -1,16 +1,9 @@
-import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  TextProps,
-  TextInput,
-  View,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
-import {useFormikContext} from 'formik';
-import {Dropdown} from 'react-native-element-dropdown';
+import { useFormikContext } from 'formik';
+import React, { useState } from 'react';
+import { Dimensions, StyleSheet, Text, TextInput, TextProps, TouchableOpacity, View } from 'react-native';
+import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 type Props = {
@@ -25,7 +18,7 @@ type Props = {
   handleOptions?: any;
 };
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 export const CustomDropdown = ({
   leftIcon,
   placeholder,
@@ -35,14 +28,14 @@ export const CustomDropdown = ({
   handleOptions,
   ...other
 }: Props) => {
-  const {values, errors, touched, setFieldValue, setFieldTouched} =
+  const { values, errors, touched, setFieldValue, setFieldTouched } =
     useFormikContext<any>();
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
   const renderLabel = () => {
     if (values[name] || isFocus) {
       return (
-        <Text style={[styles.label, isFocus && {color: '#FFFFFF'}]}>
+        <Text style={[styles.label, isFocus && { color: '#FFFFFF' }]}>
           {name.charAt(0).toUpperCase() + name.slice(1)}
         </Text>
       );
@@ -56,12 +49,12 @@ export const CustomDropdown = ({
         <Dropdown
           style={[
             styles.input,
-            {width: width},
+            { width: width },
             touched[name] && errors[name]
               ? {
-                  borderColor: '#FF2E00',
-                  borderWidth: 2,
-                }
+                borderColor: '#FF2E00',
+                borderWidth: 2,
+              }
               : null,
           ]}
           placeholderStyle={styles.placeholderStyle}
@@ -70,7 +63,7 @@ export const CustomDropdown = ({
           iconStyle={styles.iconStyle}
           data={data}
           search={
-            name === 'branch' || name === 'Year' || name === 'sem' || name === 'Syllabus' ? false : true
+            name === 'branch' || name === 'Year' || name === 'year' || name === 'sem' || name === 'Syllabus' || name === 'course' || name === 'university' ? false : true
           }
           maxHeight={300}
           labelField="label"
@@ -103,7 +96,7 @@ export const CustomDropdown = ({
             borderBottomColor: '#e5e5e5',
           }}
           itemTextStyle={{
-            fontSize:  height * 0.0205,
+            fontSize: height * 0.0205,
             color: '#000000',
           }}
           onChange={item => {
@@ -111,12 +104,19 @@ export const CustomDropdown = ({
             setIsFocus(false);
             setFieldValue(name, item.value);
             handleOptions(item);
-          }}
+          }} renderRightIcon={() => (
+            <Feather
+              style={styles.icon}
+              color={isFocus ? '#6360FF' : '#706f6f'}
+              name={'chevron-down'}
+              size={height * 0.028}
+            />
+          )}
           renderLeftIcon={() =>
             name === 'university' ? (
               <FontAwesome
                 style={styles.icon}
-                color={isFocus ? 'blue' : 'black'}
+                color={isFocus ? '#6360FF' : 'black'}
                 name={'university'}
                 size={height * 0.025}
               />
@@ -134,13 +134,14 @@ export const CustomDropdown = ({
       {touched[name] && errors[name] && values[name] === "" ? (
         <Text
           style={{
-            color: '#FF5000',
+            color: '#000000',
             fontSize: height * 0.015,
             fontFamily: 'Poppins-Regular',
-            alignSelf: 'center',
+            alignSelf: 'flex-start',
+            marginLeft: 20,
             fontWeight: 'bold',
           }}>
-          {errors[name] + ' '}
+          *{errors[name] + ' '}
         </Text>
       ) : null}
     </View>
@@ -162,12 +163,12 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: 250,
-    fontSize:  height * 0.0235,
+    fontSize: height * 0.0235,
     color: '#000000',
     fontFamily: 'Poppins-Regular',
   },
   container: {
-    marginTop: 10,
+    marginTop: 1,
     color: '#000000',
   },
   dropdown: {
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 0,
-    fontSize:  height * 0.0135,
+    fontSize: height * 0.0135,
     color: '#000000',
   },
   icon: {
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     color: '#808080',
   },
   selectedTextStyle: {
-    fontSize:  height * 0.018,
+    fontSize: height * 0.018,
     color: '#000000',
     flexWrap: 'nowrap',
   },
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 40,
-    fontSize:  height * 0.0235,
+    fontSize: height * 0.0235,
     color: '#000000',
     fontFamily: 'Poppins-Regular',
   },

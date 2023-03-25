@@ -1,22 +1,17 @@
-import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
-import React, {useEffect, useState, useMemo} from 'react';
-import {
-  RouteProp,
-  useNavigation,
-  useRoute,
-  NavigationProp,
-  ParamListBase,
-} from '@react-navigation/native';
-import {StackNavigationProp, StackScreenProps} from '@react-navigation/stack';
-import NavigationLayout from '../../interfaces/navigationLayout';
-import createStyles from './styles';
-import {NavBtn} from '../../components/CustomFormComponents/CustomBtn';
-import {Syllabus, Notes, Qp, OtherRes} from '../../assets/images/icons';
-import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {userAddToRecents} from '../../redux/reducers/usersRecentPdfsManager';
+import { NavigationProp, ParamListBase, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Notes, OtherRes, Qp, Syllabus } from '../../assets/images/icons';
+import { NavBtn } from '../../components/CustomFormComponents/CustomBtn';
+import NavigationLayout from '../../interfaces/navigationLayout';
+import { userAddToRecents } from '../../redux/reducers/usersRecentPdfsManager';
 import { setResourceLoader } from '../../redux/reducers/userState';
+import createStyles from './styles';
 
 type RootStackParamList = {
   Home: {

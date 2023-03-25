@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 const createStyles = (theme:any, sizes:any) =>
@@ -6,7 +6,7 @@ const createStyles = (theme:any, sizes:any) =>
     container: {
       flex: 1,
       backgroundColor: theme.primary,
-      marginBottom: 70,
+      marginBottom: 0,
     },
     headerContainer: {
       height: height * 0.14,

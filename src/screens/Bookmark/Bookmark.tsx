@@ -1,31 +1,27 @@
-import {StyleSheet, View, Dimensions, ScrollView, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect, useMemo} from 'react';
-import ScreenLayout from '../../interfaces/screenLayout';
-import {Box, Text, Pressable, Icon, HStack, VStack, Divider} from 'native-base';
-import {SwipeListView} from 'react-native-swipe-list-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import LottieView from 'lottie-react-native';
-import { ShareIconImg } from '../../assets/images/icons';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {
-  getCurrentUser,
-  removeBookmark,
-} from '../../Modules/auth/firebase/firebase';
-import {useDispatch, useSelector} from 'react-redux';
-import createStyles from './styles';
-import {
-  userRemoveBookMarks,
-  setBookmarks,
-} from '../../redux/reducers/userBookmarkManagement';
-import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
-import { fetchBookmarksList, shareNotes } from '../../services/fetch';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import LottieView from 'lottie-react-native';
+import { Box, Divider, HStack, Icon, Pressable, Text, VStack } from 'native-base';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Dimensions, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { SwipeListView } from 'react-native-swipe-list-view';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useDispatch, useSelector } from 'react-redux';
 
-const {width, height} = Dimensions.get('window');
+import { ShareIconImg } from '../../assets/images/icons';
+import ScreenLayout from '../../interfaces/screenLayout';
+import { getCurrentUser, removeBookmark } from '../../Modules/auth/firebase/firebase';
+import { setBookmarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
+import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
+import { fetchBookmarksList, shareNotes } from '../../services/fetch';
+import createStyles from './styles';
+
+const { width, height } = Dimensions.get('window');
 
 type MyStackParamList = {
   NotesList: {
@@ -69,15 +65,15 @@ const Bookmark = () => {
       }
     });
   }, []);
-function remove(filename: string) {
-  if (filename?.includes(".pdf")) {
-  filename = filename.slice(0, -4); 
-  if (filename.length > 15) {
-    return filename.substring(0, 20) ;
+  function remove(filename: string) {
+    if (filename?.includes(".pdf")) {
+      filename = filename.slice(0, -4);
+      if (filename.length > 15) {
+        return filename.substring(0, 20);
+      }
+      return filename;
+    }
   }
-  return filename;
-  }
-}
 
   useEffect(() => {
     const getListData = async () => {
@@ -113,25 +109,25 @@ function remove(filename: string) {
     removeBookmark(item.item);
   };
 
-  function groupBySubject(array:any) {
-  const groupedArray:any = {};
-  for (const item of array) {
-    const subject = item.subject;
-    if (groupedArray[subject]) {
-      groupedArray[subject].push(item);
-    } else {
-      groupedArray[subject] = [item];
+  function groupBySubject(array: any) {
+    const groupedArray: any = {};
+    for (const item of array) {
+      const subject = item.subject;
+      if (groupedArray[subject]) {
+        groupedArray[subject].push(item);
+      } else {
+        groupedArray[subject] = [item];
+      }
     }
+    setSortedList(Object.values(groupedArray));
+    return Object.values(groupedArray);
   }
-  setSortedList(Object.values(groupedArray));
-  return Object.values(groupedArray);
-}
 
-useEffect(() => {
- groupBySubject(listData);
-}, [listData]);
+  useEffect(() => {
+    groupBySubject(listData);
+  }, [listData]);
 
-  const renderItem = ({item, index}: any) => (
+  const renderItem = ({ item, index }: any) => (
     <Box style={styles.mainContainer}>
       <Pressable
         onPress={() => {
@@ -145,19 +141,20 @@ useEffect(() => {
             selected: item.category,
             subject: item.subject,
           });
+          dispatch(userAddToRecentsStart({ ...item, "viewedTime": `${new Date()}`, "category": item.category }));
         }}>
         <HStack style={styles.subjectItem} >
           <View style={styles.containerBox}>
-            <View style={styles.containerText}/>
+            <View style={styles.containerText} />
           </View>
           <HStack >
             <VStack  >
               <Box
                 style={styles.subjectItemTextContainer}>
-                  {
-                    item.name !== 'undefined' ?
-                <Text style={styles.name}>{remove(item?.name)}</Text> : null
-                  }
+                {
+                  item.name !== 'undefined' ?
+                    <Text style={styles.name}>{remove(item?.name)}</Text> : null
+                }
                 <Text
                   style={{
                     fontSize: theme.sizes.subTitle,
@@ -169,7 +166,7 @@ useEffect(() => {
                   {item?.category === 'otherResources'
                     ? 'Other Resources'
                     : item?.category?.charAt(0).toUpperCase() +
-                      item?.category?.slice(1)}
+                    item?.category?.slice(1)}
                 </Text>
                 <HStack >
                   <Text style={styles.subjectName}>{item?.units === "" ? "Units: Unknown" : `Units: ${item.units}`}</Text>
@@ -180,12 +177,12 @@ useEffect(() => {
                 <Text style={styles.subjectName}>Branch: {item?.branch}</Text>
               </Box>
             </VStack>
-            <TouchableOpacity onPress={()=>{
+            <TouchableOpacity onPress={() => {
               shareNotes(item)
             }} style={{
               justifyContent: 'center',
             }}  >
-              <ShareIconImg /> 
+              <ShareIconImg />
             </TouchableOpacity>
           </HStack>
         </HStack>
@@ -195,14 +192,14 @@ useEffect(() => {
 
   const renderHiddenItem = (data: any, rowMap: any) => (
     <HStack
-      height={height / 7}
+      height={height * 0.15}
       width={width / 1.1}
       pl="2"
       borderRadius={10}
       backgroundColor={'#FFFFFF'}
       justifyContent={'center'}
       alignSelf={'center'}>
-        <Box width={"78%"} borderRadius={10} backgroundColor={"#FFF"} zIndex={999} />
+      <Box width={"78%"} borderRadius={10} backgroundColor={"#FFF"} zIndex={999} />
       <Pressable
         w="90"
         height={"100%"}
@@ -237,44 +234,44 @@ useEffect(() => {
         <View style={styles.bodyContent}>
           {/* <ScrollView> */}
           <ScrollView>
-          {
-            sortedList?.map((item:any, index:any) => {
-              return (
-                <View key={index}>
-                  <Text style={{
-                    fontSize: theme.sizes.title,
-                    fontWeight: 'bold',
-                    color: theme.colors.primaryText,
-                    marginLeft: 10,
-                    marginTop: 20,
-                    marginBottom: 10,
-                    width: '95%',
-                  }}>{item[0].subject}</Text>
-                  <SwipeListView
-                  data={item}
-                  renderItem={renderItem}
-                  scrollEnabled={true}
-                  ItemSeparatorComponent={() => (
-                    <View style={{height: 20, width: '100%'}} />
-                  )}
-                  showsVerticalScrollIndicator={false}
-                  renderHiddenItem={renderHiddenItem}
-                  rightOpenValue={-100}
-                  previewRowKey={'0'}
-                  previewOpenValue={-40}
-                  previewOpenDelay={3000}
-                  // onRowDidOpen={onRowDidOpen}
-                  />
-                  <Divider style={{
-                    marginTop: 20,
-                    width: '90%',
-                    alignSelf: 'center',
-                  }} />
-                </View>
-              );
-            })
-          }
-          {/* </ScrollView>2. */}
+            {
+              sortedList?.map((item: any, index: any) => {
+                return (
+                  <View key={index}>
+                    <Text style={{
+                      fontSize: theme.sizes.title,
+                      fontWeight: 'bold',
+                      color: theme.colors.primaryText,
+                      marginLeft: 10,
+                      marginTop: 20,
+                      marginBottom: 10,
+                      width: '95%',
+                    }}>{item[0].subject}</Text>
+                    <SwipeListView
+                      data={item}
+                      renderItem={renderItem}
+                      scrollEnabled={true}
+                      ItemSeparatorComponent={() => (
+                        <View style={{ height: 20, width: '100%' }} />
+                      )}
+                      showsVerticalScrollIndicator={false}
+                      renderHiddenItem={renderHiddenItem}
+                      rightOpenValue={-100}
+                      previewRowKey={'0'}
+                      previewOpenValue={-40}
+                      previewOpenDelay={3000}
+                    // onRowDidOpen={onRowDidOpen}
+                    />
+                    <Divider style={{
+                      marginTop: 20,
+                      width: '90%',
+                      alignSelf: 'center',
+                    }} />
+                  </View>
+                );
+              })
+            }
+            {/* </ScrollView>2. */}
           </ScrollView>
         </View>
       </View>
@@ -306,7 +303,7 @@ useEffect(() => {
           textAlign: 'center',
           lineHeight: height * 0.05,
         }}>
-       No bookmarks to show. Start bookmarking your favorite notes for easy access later!</Text>
+        No bookmarks to show. Start bookmarking your favorite notes for easy access later!</Text>
     </View>
   );
 };

@@ -1,23 +1,24 @@
-import {StyleSheet, View, TouchableOpacity, Animated, Linking} from 'react-native';
-import React, {useMemo, useState, useRef, useEffect} from 'react';
-import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { Actionsheet, Box, Card, Center, Checkbox, Icon, Modal, Stack, Text, Toast, useDisclose } from 'native-base';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
+import SwipeableRating from 'react-native-swipeable-rating';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {useDispatch, useSelector} from 'react-redux';
-import NavigationLayout from '../../interfaces/navigationLayout';
-import createStyles from './styles';
-import {manageBookmarks} from '../../Modules/auth/firebase/firebase';
-import {userAddToRecentsStart} from '../../redux/reducers/usersRecentPdfsManager';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { ShareIcon } from '../../assets/images/icons';
 import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
-import SwipeableRating from 'react-native-swipeable-rating';
-import {Box,Icon,Text,Modal,Actionsheet,useDisclose,Stack,Center,Checkbox,Toast,Card} from 'native-base';
-import  { userAddBookMarks,  userRemoveBookMarks} from '../../redux/reducers/userBookmarkManagement';
-import {NavBtn} from '../CustomFormComponents/CustomBtn';
-import { ViewCount, submitRating, submitReport, getMailId, shareNotes, ratedResourcesList } from '../../services/fetch';
+import NavigationLayout from '../../interfaces/navigationLayout';
+import { manageBookmarks } from '../../Modules/auth/firebase/firebase';
+import { userAddBookMarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
+import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
+import { getMailId, ratedResourcesList, shareNotes, submitRating, submitReport, ViewCount } from '../../services/fetch';
+import { NavBtn } from '../CustomFormComponents/CustomBtn';
+import createStyles from './styles';
 
 type Props = {
   item: any;
@@ -75,21 +76,21 @@ type pdfViewer = StackNavigationProp<MyStackParamList, 'PdfViewer'>;
 
 function remove(filename: string) {
   if (filename.endsWith(".pdf")) {
-  filename = filename.slice(0, -4); 
-  if (filename.length > 15) {
-    return filename.substring(0, 20) ;
-  }
-  return filename;
+    filename = filename.slice(0, -4);
+    if (filename.length > 15) {
+      return filename.substring(0, 20);
+    }
+    return filename;
   }
 }
 
-function KbsToMB(bits :any) {
-  const megabytes = bits / 1024 ;
+function KbsToMB(bits: any) {
+  const megabytes = bits / 1024;
   return megabytes.toFixed(2) + " MB";
 }
 
-const NotesCard = ({item, userData, notesData, selected, subject}: Props) => {
-  const {isOpen,onOpen,onClose} = useDisclose();
+const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
+  const { isOpen, onOpen, onClose } = useDisclose();
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const navigation = useNavigation<pdfViewer>();
@@ -97,7 +98,7 @@ const NotesCard = ({item, userData, notesData, selected, subject}: Props) => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const [saved, setSaved] = useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [ratingCount , setRatingCount] = useState(0);
+  const [ratingCount, setRatingCount] = useState(0);
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
   const [checked3, setChecked3] = useState(false);
@@ -111,7 +112,7 @@ const NotesCard = ({item, userData, notesData, selected, subject}: Props) => {
 
   useEffect(() => {
     async function getRatedList() {
-      const ratedList:any = await ratedResourcesList();
+      const ratedList: any = await ratedResourcesList();
       setRatedList(ratedList);
     }
     getRatedList();
@@ -142,17 +143,17 @@ const NotesCard = ({item, userData, notesData, selected, subject}: Props) => {
   function submitRatingCount() {
     setModalVisible(false);
     submitRating({
-          university : userData.University,
-          branch: userData.Branch,
-          course: userData.Course,
-          sem: userData.Sem,
-          type: selected.charAt(0).toUpperCase() + selected.slice(1),
-          subjectName: subject,
-          id : item.id,
-          rating : item.rating,
-          ...item
-        },
-        ratingCount
+      university: userData.University,
+      branch: userData.Branch,
+      course: userData.Course,
+      sem: userData.Sem,
+      type: selected.charAt(0).toUpperCase() + selected.slice(1),
+      subjectName: subject,
+      id: item.id,
+      rating: item.rating,
+      ...item
+    },
+      ratingCount
     )
   }
 
@@ -161,222 +162,226 @@ const NotesCard = ({item, userData, notesData, selected, subject}: Props) => {
   }
 
   return (
-            <View style={styles.notesContainer}>
-              <View style={styles.reccomendationStyle}>
-                <TouchableOpacity
-                  style={styles.subjectContainer}
-                  onPress={() => {
-                     ViewCount({
-                      university : userFirestoreData.usersData.university,
-                      branch: userData.Branch || item.branch,
-                      course: userData.Course || userData.course,
-                      sem: userData.Sem || item.sem,
-                      type: selected.charAt(0).toUpperCase() + selected.slice(1),
-                      subjectName: subject,
-                      id : item.id,
-                    })
-                    navigation.navigate('PdfViewer', {
-                      userData: {
-                        Course: userData.Course,
-                        Branch: userData.Branch,
-                        Sem: userData.Sem,
-                      },
-                      notesData: item,
-                      selected: selected,
-                      subject: subject,
-                    });
-                    dispatch(userAddToRecentsStart({...item, "viewedTime": `${new Date()}`, "category": selected}));
-                  }}>
-                  <View style={styles.containerBox}>
-                    <View style={styles.containerText}>
-                      
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      width: '65%',
-                      height: '90%',
-                      justifyContent: 'space-evenly',
-                      alignItems: 'flex-start',
-                      paddingTop: theme.sizes.height * 0.01,
-                      paddingLeft: theme.sizes.width * 0.02,
-                    }}>
-                    <Text style={styles.subjectName}>
-                      {remove(item.name)}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: theme.sizes.subtitle,
-                        color: theme.colors.primaryText,
-                        fontWeight: '400',
-                      }}>
-                      {selected.charAt(0).toUpperCase() + selected.slice(1)}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: theme.sizes.subtitle,
-                        color: item.units === "" ? theme.colors.textSecondary : theme.colors.primaryText,
-                        fontWeight: '400',
-                      }}>
-                      {item.units === "" ? "Units: Unknown" : item.units + " Units"}
-                    </Text>
-                    <View
-                      style={{
-                        width: '100%',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingRight: theme.sizes.width * 0.02,
-                        maxWidth: '100%',
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginRight: theme.sizes.width * 0.02,
-                        }}>
-                        <Ionicons name="md-eye-outline" size={theme.sizes.height*0.018} color={theme.colors.primaryText} style={{
-                          paddingTop: theme.sizes.height * 0.002,
-                        }} />
-                        <Text
-                          style={{
-                            fontSize: theme.sizes.subtitle,
-                            color: theme.colors.primaryText,
-                            fontWeight: '600',
-                            paddingLeft: theme.sizes.width * 0.01,
-                          }}>{
-                          item?.views ? formatViewCount(item.views) : 0
-                          }
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          paddingHorizontal: theme.sizes.width * 0.02,
-                        }}>
-                        <AntDesign name="star" size={theme.sizes.height*0.018} color={theme.colors.yellowWarning} />
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            color: item.rating < 1 ? theme.colors.textSecondary : theme.colors.primaryText,
-                            fontWeight: '600',
-                            paddingLeft: theme.sizes.width * 0.01,
-                          }}>
-                          {item.rating < 1 ? "Unrated" : item.rating}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}>
-                        <Entypo name="dot-single" size={20} color="#91919F" style={{
-                          paddingTop: 2,
-                        }} />
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            color: theme.colors.textSecondary,
-                            fontWeight: '400',
-                            paddingLeft: 0,
-                            alignItems: 'center',
-                          }}>
-                            {KbsToMB(item.size)}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSaved(!saved);
-                      const status = BookmarkStatus(item.did);
-                      manageBookmarks(item, status);
-                      !status
-                        ? dispatch(
-                            userAddBookMarks({
-                              name: item.name,
-                              subject: subject,
-                              did: item.did,
-                              category: selected,
-                              ...item,
-                            }),
-                          )
-                        : dispatch(
-                            userRemoveBookMarks({
-                              name: item.name,
-                              subject: subject,
-                              did: item.did,
-                              category: selected,
-                              ...item,
-                            }),
-                          );
-                    }}>
-                    <FontAwesome
-                      name={
-                        BookmarkStatus(item.did)
-                          ? 'bookmark'
-                          : 'bookmark-o'
-                      }
-                      size={theme.sizes.height*0.035}
-                      color={theme.colors.primary}
-                    />
-                  </TouchableOpacity>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.cardOptions}>
-                <TouchableOpacity style={styles.cardOptionContainer} onPress={()=>{
-                  {
-                    RatedStatus(item.did) ? (
-                      Toast.show({
-                        title: "You can only rate once",
-                        duration: 2000,
-                      })
-                    ) : setModalVisible(true)
+    <View style={styles.notesContainer}>
+      <View style={styles.reccomendationStyle}>
+        <TouchableOpacity
+          style={styles.subjectContainer}
+          onPress={() => {
+            ViewCount({
+              university: userFirestoreData.usersData.university,
+              branch: userData.Branch || item.branch,
+              course: userData.Course || userData.course,
+              sem: userData.Sem || item.sem,
+              type: selected.charAt(0).toUpperCase() + selected.slice(1),
+              subjectName: subject,
+              id: item.id,
+            })
+            navigation.navigate('PdfViewer', {
+              userData: {
+                Course: userData.Course,
+                Branch: userData.Branch,
+                Sem: userData.Sem,
+              },
+              notesData: item,
+              selected: selected,
+              subject: subject,
+            });
+            dispatch(userAddToRecentsStart({ ...item, "viewedTime": `${new Date()}`, "category": selected }));
+          }}>
+          <View style={styles.containerBox}>
+            <View style={styles.containerText}>
+
+            </View>
+          </View>
+          <View
+            style={{
+              width: '65%',
+              height: '90%',
+              justifyContent: 'space-evenly',
+              alignItems: 'flex-start',
+              paddingTop: theme.sizes.height * 0.01,
+              paddingLeft: theme.sizes.width * 0.02,
+            }}>
+            <Text style={styles.subjectName}>
+              {remove(item.name)}
+            </Text>
+            <Text
+              style={{
+                fontSize: theme.sizes.subtitle,
+                color: theme.colors.primaryText,
+                fontWeight: '400',
+              }}>
+              {selected.charAt(0).toUpperCase() + selected.slice(1)}
+            </Text>
+            <Text
+              style={{
+                fontSize: theme.sizes.subtitle,
+                color: item.units === "" ? theme.colors.textSecondary : theme.colors.primaryText,
+                fontWeight: '400',
+              }}>
+              {item.units === "" ? "Units: Unknown" : item.units + " Units"}
+            </Text>
+            <View
+              style={{
+                width: '100%',
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingRight: theme.sizes.width * 0.02,
+                maxWidth: '100%',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: theme.sizes.width * 0.02,
+                }}>
+                <Ionicons name="md-eye-outline" size={theme.sizes.height * 0.018} color={theme.colors.primaryText} style={{
+                  paddingTop: theme.sizes.height * 0.002,
+                }} />
+                <Text
+                  style={{
+                    fontSize: theme.sizes.subtitle,
+                    color: theme.colors.primaryText,
+                    fontWeight: '600',
+                    paddingLeft: theme.sizes.width * 0.01,
+                  }}>{
+                    item?.views ? formatViewCount(item.views) : 0
                   }
-                }} >
-                  <Text style={styles.cardOptionText}>Rate</Text>
-                  <AntDesign name={RatedStatus(item.did) ? 'star' : 'staro' } size={theme.sizes.iconSmall} color={RatedStatus(item.did) ? '#FFC960' : "#FFF" } />    
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cardOptionContainer} onPress={onOpen} >
-                  <Text style={styles.cardOptionText}>Report</Text>
-                  <ReportIconWhite /> 
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cardOptionContainer} onPress={()=>{
-                  shareNotes(item)
-                }} >
-                  <Text style={styles.cardOptionText}>Share</Text>
-                  <ShareIcon />    
-                </TouchableOpacity>
+                </Text>
               </View>
-          <Modal isOpen={modalVisible} onClose={setModalVisible} size={'xl'}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: theme.sizes.width * 0.02,
+                }}>
+                <AntDesign name="star" size={theme.sizes.height * 0.018} color={theme.colors.yellowWarning} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: item.rating < 1 ? theme.colors.textSecondary : theme.colors.primaryText,
+                    fontWeight: '600',
+                    paddingLeft: theme.sizes.width * 0.01,
+                  }}>
+                  {item.rating < 1 ? "Unrated" : item.rating}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <Entypo name="dot-single" size={20} color="#91919F" style={{
+                  paddingTop: 2,
+                }} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: theme.colors.textSecondary,
+                    fontWeight: '400',
+                    paddingLeft: 0,
+                    alignItems: 'center',
+                  }}>
+                  {KbsToMB(item.size)}
+                </Text>
+              </View>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              setSaved(!saved);
+              const status = BookmarkStatus(item.did);
+              manageBookmarks(item, status);
+              !status
+                ? dispatch(
+                  userAddBookMarks({
+                    ...item,
+                    name: item.name,
+                    subject: subject,
+                    did: item.did,
+                    category: selected,
+                  }),
+                )
+                : dispatch(
+                  userRemoveBookMarks({
+                    name: item.name,
+                    subject: subject,
+                    did: item.did,
+                    category: selected,
+                    ...item,
+                  }),
+                );
+            }}>
+            <FontAwesome
+              name={
+                BookmarkStatus(item.did)
+                  ? 'bookmark'
+                  : 'bookmark-o'
+              }
+              size={theme.sizes.height * 0.035}
+              color={theme.colors.primary}
+            />
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.cardOptions}>
+        <TouchableOpacity style={styles.cardOptionContainer} onPress={() => {
+          {
+            RatedStatus(item.did) ? (
+              Toast.show({
+                title: "You can only rate once",
+                duration: 2000,
+              })
+            ) : setModalVisible(true)
+          }
+        }} >
+          <Text style={styles.cardOptionText}>Rate</Text>
+          <AntDesign name={RatedStatus(item.did) ? 'star' : 'staro'} size={theme.sizes.iconSmall} color={RatedStatus(item.did) ? '#FFC960' : "#FFF"} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.cardOptionContainer} onPress={onOpen} >
+          <Text style={styles.cardOptionText}>Report</Text>
+          <ReportIconWhite />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.cardOptionContainer} onPress={() => {
+          console.log("454", item)
+          shareNotes({
+            ...item,
+            subject: subject,
+          })
+        }} >
+          <Text style={styles.cardOptionText}>Share</Text>
+          <ShareIcon />
+        </TouchableOpacity>
+      </View>
+      <Modal isOpen={modalVisible} onClose={setModalVisible} size={'xl'}>
         <Modal.Content >
           <Box margin={2} >
             <Text fontSize={'14px'} fontWeight={'700'} marginTop={3} textAlign="center" >
-            How likely are you to recommend this resources to your friends/colleagues?
-          </Text>
-          <Stack direction="row" space={2} marginY={10} alignItems="center" justifyContent="center" >
-                <SwipeableRating
-                  rating={ratingCount}
-                  size={theme.sizes.height*0.05}
-                  gap={theme.sizes.width*0.02}
-                  onPress={(rating: any)=>{
-                    setRatingCount(rating)
-                  }}
-                  swipeable={true}
-                  color={theme.colors.yellowWarning}
-                  emptyColor={theme.colors.textSecondary}
-                  maxRating={5}
-                  allowHalves={true}
-                  style={{
-                      alignSelf: 'center',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                />
-             {/* {
+              How likely are you to recommend this resources to your friends/colleagues?
+            </Text>
+            <Stack direction="row" space={2} marginY={10} alignItems="center" justifyContent="center" >
+              <SwipeableRating
+                rating={ratingCount}
+                size={theme.sizes.height * 0.05}
+                gap={theme.sizes.width * 0.02}
+                onPress={(rating: any) => {
+                  setRatingCount(rating)
+                }}
+                swipeable={true}
+                color={theme.colors.yellowWarning}
+                emptyColor={theme.colors.textSecondary}
+                maxRating={5}
+                allowHalves={true}
+                style={{
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              />
+              {/* {
               [1,2,3,4,5].map((item, index)=>{
                 return(
                  <AntDesign onMagicTap={()=>{
@@ -387,221 +392,221 @@ const NotesCard = ({item, userData, notesData, selected, subject}: Props) => {
                 )  
               })    
              }  */}
-          </Stack>
-          <Stack direction="row" space={2} marginY={5} alignItems="center" justifyContent="space-evenly" >
-             <TouchableOpacity onPress={()=>{
-              setModalVisible(false);
-            }} >
-              <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={theme.colors.textSecondary} >
-                Cancel
-              </Text>
-            </TouchableOpacity>
-             <TouchableOpacity style={{
-              backgroundColor: theme.colors.primary,
-              borderRadius: 10,
-              paddingHorizontal: theme.sizes.width*0.06,
-              paddingVertical: 10,
-             }} onPress={()=>{
-              setModalVisible(false);
-            }} >
-              <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#FFF"} onPress={()=>{
-                submitRatingCount();
+            </Stack>
+            <Stack direction="row" space={2} marginY={5} alignItems="center" justifyContent="space-evenly" >
+              <TouchableOpacity onPress={() => {
+                setModalVisible(false);
               }} >
-                Confirm
-              </Text>
-            </TouchableOpacity>
-             
-          </Stack>  
+                <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={theme.colors.textSecondary} >
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{
+                backgroundColor: theme.colors.primary,
+                borderRadius: 10,
+                paddingHorizontal: theme.sizes.width * 0.06,
+                paddingVertical: 10,
+              }} onPress={() => {
+                setModalVisible(false);
+              }} >
+                <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#FFF"} onPress={() => {
+                  submitRatingCount();
+                }} >
+                  Confirm
+                </Text>
+              </TouchableOpacity>
+
+            </Stack>
           </Box>
         </Modal.Content>
       </Modal>
-       <Center>
-      <Actionsheet isOpen={isOpen} onClose={onClose} borderRadius={0}>
-        {
-          !submitted ? (
-            <Card style={{
-              backgroundColor: "#FFF",
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-            }}>
-            <ReportIconBlack /> 
-          <Box w="100%" h={theme.sizes.height *0.1} px={4} my={4} justifyContent="center" alignItems={"center"} >
-            <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} >
-            Why are you reporting this resource?
-            </Text>
-            <Text fontSize={theme.sizes.textSmall} color="#91919F" textAlign={"center"} fontWeight={700} >
-            Your report is anonymous, except if you are reporting an intellectual property infringement
-            </Text>
-          </Box>
-          <Box w="100%" px={0} my={4} justifyContent="center" alignItems={"center"} >
-          <Actionsheet.Item style={{
-            borderBottomWidth: 0.9,
-            borderBottomColor: theme.colors.textSecondary,
-            backgroundColor: theme.colors.quaternary,
-          }} onPress={()=>{
-            setChecked1(!checked1);
-          }}>
-            <Checkbox _android={{
-              _checked: {
-                bg: theme.colors.primary,
-                borderColor: theme.colors.primary,
-                color: theme.colors.quaternary,
-              },
-              _unchecked: {
-                bg: theme.colors.quaternary,
-                borderColor: theme.colors.primary,
-                color: theme.colors.primary,
-              },
-            }} onChange={(value)=>{
-              setChecked1(!checked1);
-            }} value={"Checked 1"}  colorScheme="green" >
-              <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={'95%'} >
-              Copyrights: The notes or this resource file contain copyrighted material
-              </Text>
-            </Checkbox>
-          </Actionsheet.Item>
-          <Actionsheet.Item style={{
-            borderBottomWidth: 0.9,
-            borderBottomColor: "#91919F",
-            backgroundColor: "#FFF",
-          }} onPress={()=>{
-            setChecked2(!checked2);
-          }}>
-            <Checkbox _android={{
-             _checked: {
-                bg: theme.colors.primary,
-                borderColor: theme.colors.primary,
-                color: theme.colors.quaternary,
-              },
-              _unchecked: {
-                bg: theme.colors.quaternary,
-                borderColor: theme.colors.primary,
-                color: theme.colors.primary,
-              },
-            }}  onChange={(value)=>{
-              setChecked2(!checked2);
-            }} value={"Checked 1"}  colorScheme="green" >
-              <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={'95%'} >
-              Misleading resource: The uploaded source contains inaccurate and false information.
-              </Text>
-            </Checkbox>
-          </Actionsheet.Item>
-          <Actionsheet.Item style={{
-            borderBottomWidth: 0.9,
-            borderBottomColor: "#91919F",
-            backgroundColor: "#FFF",
-          }} onPress={()=>{
-            setChecked3(!checked3);
-          }}>
-            <Checkbox 
-            _android={{
-              _checked: {
-                bg: theme.colors.primary,
-                borderColor: theme.colors.primary,
-                color: theme.colors.quaternary,
-              },
-              _unchecked: {
-                bg: theme.colors.quaternary,
-                borderColor: theme.colors.primary,
-                color: theme.colors.primary,
-              },
-            }}
-             onChange={(value)=>{
-              setChecked3(!checked3);
-            }} value={"Checked 1"}  colorScheme="green" >
-              <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={"92%"}>
-              Spam: This file contains content other than notes and resources.
-              </Text>
-            </Checkbox>
-          </Actionsheet.Item>
-          </Box>
-          <Box w="100%" h={theme.sizes.height *0.08} px={4} my={0} justifyContent="center" alignItems={"center"} >
-            <Text fontSize={theme.sizes.subtitle} mt={-6} color={theme.colors.primary} fontWeight={700} onPress={()=>{
-              mail()
-            }} >
-              Reason not listed here? Write to Us
-            </Text>
-          </Box>
-          <Stack direction="row" space={2} marginY={0} paddingX={5} alignItems="center" justifyContent="space-evenly" width={"100%"} >
-             <TouchableOpacity onPress={onClose} >
-              <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={theme.colors.textSecondary} >
-                Cancel
-              </Text>
-            </TouchableOpacity>
-             <TouchableOpacity style={{
-              backgroundColor: theme.colors.primary,
-              borderRadius: 10,
-              paddingHorizontal: theme.sizes.width * 0.05,
-              paddingVertical: 10,
-             }} onPress={()=>{
-              submitReport(userFirestoreData?.usersData, {
-                checked1,
-                checked2,
-                checked3
-              });
-              setSubmitted(true);
-            }} >
-              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={theme.colors.quaternary} >
-                Confirm
-              </Text>
-            </TouchableOpacity>
-          </Stack>  
-          <Ionicons name="close-circle" size={theme.sizes.height * 0.05} onPress={onClose} color="#BCC4CC" style={{
-              position: "absolute",
-              top: 15,
-              right: 15,
-            }} />
-        </Card>
-          ) : (
-            <Card style={{
-              height: 400,
-              backgroundColor: theme.colors.quaternary,
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-            }} >
-            <AntDesign name="checkcircle" size={50} color={theme.colors.primary} />
-            <Box w="100%" h={theme.sizes.height *0.1} px={4} my={4} justifyContent="center" alignItems={"center"} marginBottom={20} >
-              <Text fontSize={theme.sizes.title} color={theme.colors.primaryText} fontWeight={700} >
-              Thanks for letting us know!
-              </Text>
-              <Text fontSize={theme.sizes.subtitle} padding={theme.sizes.height *0.01} paddingTop={theme.sizes.height *0.01} color={theme.colors.textSecondary} textAlign={"center"} fontWeight={700} >
-              We will review your report and take appropriate action.
-              </Text>
-            </Box>
-            <TouchableOpacity style={{
-              backgroundColor: theme.colors.primary,
-              borderRadius: 10,
-              width: "100%",
-              paddingVertical: theme.sizes.height *0.02,
-              marginVertical: theme.sizes.height *0.02,
-              position: "absolute",
-              height: theme.sizes.height *0.07,
-              bottom: 0,
-              justifyContent: "center",
-              alignItems: "center",
-             }} onPress={()=>{
-              onClose();
-            }} >
-              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={theme.colors.quaternary} >
-                Close
-              </Text>
-            </TouchableOpacity>
-            <Ionicons name="close-circle" size={30} onPress={onClose} color="#BCC4CC" style={{
-              position: "absolute",
-              top: 15,
-              right: 15,
-            }} />
-            </Card>
-          ) 
-        }
-      </Actionsheet>
-    </Center>
+      <Center>
+        <Actionsheet isOpen={isOpen} onClose={onClose} borderRadius={0}>
+          {
+            !submitted ? (
+              <Card style={{
+                backgroundColor: "#FFF",
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+              }}>
+                <ReportIconBlack />
+                <Box w="100%" h={theme.sizes.height * 0.1} px={4} my={4} justifyContent="center" alignItems={"center"} >
+                  <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} >
+                    Why are you reporting this resource?
+                  </Text>
+                  <Text fontSize={theme.sizes.textSmall} color="#91919F" textAlign={"center"} fontWeight={700} >
+                    Your report is anonymous, except if you are reporting an intellectual property infringement
+                  </Text>
+                </Box>
+                <Box w="100%" px={0} my={4} justifyContent="center" alignItems={"center"} >
+                  <Actionsheet.Item style={{
+                    borderBottomWidth: 0.9,
+                    borderBottomColor: theme.colors.textSecondary,
+                    backgroundColor: theme.colors.quaternary,
+                  }} onPress={() => {
+                    setChecked1(!checked1);
+                  }}>
+                    <Checkbox _android={{
+                      _checked: {
+                        bg: theme.colors.primary,
+                        borderColor: theme.colors.primary,
+                        color: theme.colors.quaternary,
+                      },
+                      _unchecked: {
+                        bg: theme.colors.quaternary,
+                        borderColor: theme.colors.primary,
+                        color: theme.colors.primary,
+                      },
+                    }} onChange={(value) => {
+                      setChecked1(!checked1);
+                    }} value={"Checked 1"} colorScheme="green" >
+                      <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={'95%'} >
+                        Copyrights: The notes or this resource file contain copyrighted material
+                      </Text>
+                    </Checkbox>
+                  </Actionsheet.Item>
+                  <Actionsheet.Item style={{
+                    borderBottomWidth: 0.9,
+                    borderBottomColor: "#91919F",
+                    backgroundColor: "#FFF",
+                  }} onPress={() => {
+                    setChecked2(!checked2);
+                  }}>
+                    <Checkbox _android={{
+                      _checked: {
+                        bg: theme.colors.primary,
+                        borderColor: theme.colors.primary,
+                        color: theme.colors.quaternary,
+                      },
+                      _unchecked: {
+                        bg: theme.colors.quaternary,
+                        borderColor: theme.colors.primary,
+                        color: theme.colors.primary,
+                      },
+                    }} onChange={(value) => {
+                      setChecked2(!checked2);
+                    }} value={"Checked 1"} colorScheme="green" >
+                      <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={'95%'} >
+                        Misleading resource: The uploaded source contains inaccurate and false information.
+                      </Text>
+                    </Checkbox>
+                  </Actionsheet.Item>
+                  <Actionsheet.Item style={{
+                    borderBottomWidth: 0.9,
+                    borderBottomColor: "#91919F",
+                    backgroundColor: "#FFF",
+                  }} onPress={() => {
+                    setChecked3(!checked3);
+                  }}>
+                    <Checkbox
+                      _android={{
+                        _checked: {
+                          bg: theme.colors.primary,
+                          borderColor: theme.colors.primary,
+                          color: theme.colors.quaternary,
+                        },
+                        _unchecked: {
+                          bg: theme.colors.quaternary,
+                          borderColor: theme.colors.primary,
+                          color: theme.colors.primary,
+                        },
+                      }}
+                      onChange={(value) => {
+                        setChecked3(!checked3);
+                      }} value={"Checked 1"} colorScheme="green" >
+                      <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={"92%"}>
+                        Spam: This file contains content other than notes and resources.
+                      </Text>
+                    </Checkbox>
+                  </Actionsheet.Item>
+                </Box>
+                <Box w="100%" h={theme.sizes.height * 0.08} px={4} my={0} justifyContent="center" alignItems={"center"} >
+                  <Text fontSize={theme.sizes.subtitle} mt={-6} color={theme.colors.primary} fontWeight={700} onPress={() => {
+                    mail()
+                  }} >
+                    Reason not listed here? Write to Us
+                  </Text>
+                </Box>
+                <Stack direction="row" space={2} marginY={0} paddingX={5} alignItems="center" justifyContent="space-evenly" width={"100%"} >
+                  <TouchableOpacity onPress={onClose} >
+                    <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={theme.colors.textSecondary} >
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{
+                    backgroundColor: theme.colors.primary,
+                    borderRadius: 10,
+                    paddingHorizontal: theme.sizes.width * 0.05,
+                    paddingVertical: 10,
+                  }} onPress={() => {
+                    submitReport(userFirestoreData?.usersData, {
+                      checked1,
+                      checked2,
+                      checked3,
+                    }, item);
+                    setSubmitted(true);
+                  }} >
+                    <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={theme.colors.quaternary} >
+                      Confirm
+                    </Text>
+                  </TouchableOpacity>
+                </Stack>
+                <Ionicons name="close-circle" size={theme.sizes.height * 0.05} onPress={onClose} color="#BCC4CC" style={{
+                  position: "absolute",
+                  top: 15,
+                  right: 15,
+                }} />
+              </Card>
+            ) : (
+              <Card style={{
+                height: 400,
+                backgroundColor: theme.colors.quaternary,
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+              }} >
+                <AntDesign name="checkcircle" size={50} color={theme.colors.primary} />
+                <Box w="100%" h={theme.sizes.height * 0.1} px={4} my={4} justifyContent="center" alignItems={"center"} marginBottom={20} >
+                  <Text fontSize={theme.sizes.title} color={theme.colors.primaryText} fontWeight={700} >
+                    Thank you for letting us know!
+                  </Text>
+                  <Text fontSize={theme.sizes.subtitle} padding={theme.sizes.height * 0.01} paddingTop={theme.sizes.height * 0.01} color={theme.colors.textSecondary} textAlign={"center"} fontWeight={700} >
+                    We will review your report and take appropriate action.
+                  </Text>
+                </Box>
+                <TouchableOpacity style={{
+                  backgroundColor: theme.colors.primary,
+                  borderRadius: 10,
+                  width: "100%",
+                  paddingVertical: theme.sizes.height * 0.02,
+                  marginVertical: theme.sizes.height * 0.02,
+                  position: "absolute",
+                  height: theme.sizes.height * 0.07,
+                  bottom: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }} onPress={() => {
+                  onClose();
+                }} >
+                  <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={theme.colors.quaternary} >
+                    Close
+                  </Text>
+                </TouchableOpacity>
+                <Ionicons name="close-circle" size={30} onPress={onClose} color="#BCC4CC" style={{
+                  position: "absolute",
+                  top: 15,
+                  right: 15,
+                }} />
+              </Card>
+            )
+          }
+        </Actionsheet>
+      </Center>
     </View>
   );
 };

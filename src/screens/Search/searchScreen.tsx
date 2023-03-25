@@ -1,29 +1,21 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Alert,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
-import React, {useMemo, useState, useRef, useEffect} from 'react';
-import ScreenLayout from '../../interfaces/screenLayout';
-import createStyles from './styles';
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
-import {useSelector, useDispatch} from 'react-redux';
-import {FlatList} from 'react-native-gesture-handler';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Feather from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
-import {Toast} from 'native-base';
-import { userFirestoreData } from '../../services/fetch';
+import { Toast } from 'native-base';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
+import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useDispatch, useSelector } from 'react-redux';
+
+import ScreenLayout from '../../interfaces/screenLayout';
 import { setResourceLoader } from '../../redux/reducers/userState';
+import { userFirestoreData } from '../../services/fetch';
+import createStyles from './styles';
 
 const Search = () => {
   const theme = useSelector((state: any) => {
@@ -36,9 +28,9 @@ const Search = () => {
   const [limit, setLimit] = useState(10);
   const [filteredData, setFilteredData] = useState([]);
   const dispatch = useDispatch();
-   
+
   type MyStackParamList = {
-    SubjectResources: {userData: object; notesData: any; subject: string};
+    SubjectResources: { userData: object; notesData: any; subject: string };
   };
   type MyScreenNavigationProp = StackNavigationProp<
     MyStackParamList,
@@ -47,12 +39,12 @@ const Search = () => {
   type Props = {};
 
   const branches = [
-    {id: 1, name: 'IT'},
-    {id: 2, name: 'CSE'},
-    {id: 3, name: 'ECE'},
-    {id: 4, name: 'EEE'},
-    {id: 5, name: 'MECH'},
-    {id: 6, name: 'CIVIL'},
+    { id: 1, name: 'IT' },
+    { id: 2, name: 'CSE' },
+    { id: 3, name: 'ECE' },
+    { id: 4, name: 'EEE' },
+    { id: 5, name: 'MECH' },
+    { id: 6, name: 'CIVIL' },
   ];
 
   // const userFirestoreData = useSelector((state: any) => state.usersData);
@@ -100,17 +92,17 @@ const Search = () => {
         .collection('Users')
         .doc(auth().currentUser?.uid)
         .get();
-        const customizedData = {
-          university : userData.data().university,
-          course : userData.data().course,
-          branch : item.branch,
-          sem : item.sem
-        }
+      const customizedData = {
+        university: userData.data().university,
+        course: userData.data().course,
+        branch: item.branch,
+        sem: item.sem
+      }
       const notesData = {
-        notes: await userFirestoreData(customizedData,'Notes', { subjectName: item.subject}, dispatch),
-        otherResources: await userFirestoreData(customizedData,'OtherResources', { subjectName: item.subject}, dispatch),
-        questionPapers: await userFirestoreData(customizedData,'QuestionPapers', { subjectName: item.subject}, dispatch),
-        syllabus: await userFirestoreData(customizedData,'Syllabus', { subjectName: item.subject}, dispatch),
+        notes: await userFirestoreData(customizedData, 'Notes', { subjectName: item.subject }, dispatch),
+        otherResources: await userFirestoreData(customizedData, 'OtherResources', { subjectName: item.subject }, dispatch),
+        questionPapers: await userFirestoreData(customizedData, 'QuestionPapers', { subjectName: item.subject }, dispatch),
+        syllabus: await userFirestoreData(customizedData, 'Syllabus', { subjectName: item.subject }, dispatch),
         subjectName: item.subject,
       };
       dispatch(setResourceLoader(false));
@@ -126,10 +118,10 @@ const Search = () => {
       });
     } catch (error) {
       setResourceLoader(false),
-      Toast.show({
-        title: 'Please check your internet connection',
-        duration: 3000,
-      });
+        Toast.show({
+          title: 'Please check your internet connection',
+          duration: 3000,
+        });
     }
   };
   return (
@@ -147,11 +139,11 @@ const Search = () => {
             onScrollAnimationEnd={() => {
               setLimit(limit + 6);
             }}
-            onMomentumScrollEnd={({nativeEvent}) => {
+            onMomentumScrollEnd={({ nativeEvent }) => {
               if (
                 nativeEvent.contentOffset.y >=
                 nativeEvent.contentSize.height -
-                  nativeEvent.layoutMeasurement.height
+                nativeEvent.layoutMeasurement.height
               ) {
                 setLimit(limit + 6);
               }
@@ -253,7 +245,7 @@ const Search = () => {
                     height: theme.sizes.lottieIconHeight,
                   }}>
                   <LottieView
-                    source={require('../../assets/lottie/loading.json')}
+                    source={require('../../assets/lottie/NoBookMarks.json')}
                     autoPlay
                     loop
                   />

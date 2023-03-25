@@ -1,25 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  PermissionsAndroid,
-  Dimensions,
-  Image
-} from 'react-native';
-import storage from '@react-native-firebase/storage';
-import DocumentPicker from 'react-native-document-picker';
-import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
-import NavigationLayout from '../../interfaces/navigationLayout';
-import LottieView from 'lottie-react-native';
-import {Box,Icon,Text,Modal,HStack,Input,FormControl,Center,Button,VStack,Toast, Spinner, Stack} from 'native-base';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
+import { Box, Button, Center, FormControl, HStack, Icon, Input, Modal, Spinner, Stack, Text, Toast, VStack } from 'native-base';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, Image, PermissionsAndroid, TouchableOpacity, View } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from 'react-redux';
+
+import NavigationLayout from '../../interfaces/navigationLayout';
 import { AddtoUserUploads } from '../../Modules/auth/firebase/firebase';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 interface Result {
   uri: any;
@@ -46,12 +41,11 @@ const UploadPDF = () => {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const selected = route.params.selected;
   const subject = route.params.subject;
-  const {userData} = route.params;
-  const {notesData}: any = route.params;
-  const randomNum:any = Math.floor(Math.random())
-  const path = `${userData.university}/${userData?.course}/${userData?.branch}/${
-    userData?.sem
-  }/${subject}/${selected}/${auth().currentUser?.uid}/${randomNum}`;
+  const { userData } = route.params;
+  const { notesData }: any = route.params;
+  const randomNum: any = Math.floor(Math.random())
+  const path = `${userData.university}/${userData?.course}/${userData?.branch}/${userData?.sem
+    }/${subject}/${selected}/${auth().currentUser?.uid}/${randomNum}`;
   const storageRef = storage().ref(path);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [uploadingResult, setUploadingResult] = React.useState(null);
@@ -122,7 +116,7 @@ const UploadPDF = () => {
                   ],
                 });
             }
-             AddtoUserUploads({
+            AddtoUserUploads({
               name: pdf?.name,
               uploaderName: auth().currentUser?.displayName,
               uploaderEmail: auth().currentUser?.email,
@@ -145,46 +139,51 @@ const UploadPDF = () => {
   }, [uploadingResult]);
 
 
-  const uploadPDF = async (pdf:any) => {
+  const uploadPDF = async (pdf: any) => {
     setModalVisible(true);
     const task: any = storageRef.putFile(pdf?.uri);
     setUploadTask(task);
-    task.on('state_changed', (snapshot:any) => {
+    task.on('state_changed', (snapshot: any) => {
       let progress =
         Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+
+      setUploadProgress(progress);
     },
-    (error:any) => {
-      setUploadTask(null);
-      setModalVisible(false);
-      Toast.show({
-        title: 'Error',
-        description: 'Something went wrong. Please try again.',
-        placement: 'bottom',
-        duration: 2000,
-      });
-    },
-    () => {
-    const totalMBs = task.snapshot.totalBytes / (1024 * 1024);
-   setUploadProgress(totalMBs);
-  }
+      (error: any) => {
+        setUploadTask(null);
+        setModalVisible(false);
+        Toast.show({
+          title: 'Error',
+          description: 'Something went wrong. Please try again.',
+          placement: 'bottom',
+          duration: 2000,
+        });
+      },
+      () => {
+        const totalMBs = task.snapshot.totalBytes / (1024 * 1024);
+        //  setUploadProgress(totalMBs);
+      }
     );
-     try {
-    await task;
-    task.then((snapshot:any)=>{
-      setUploadingResult(snapshot);
+    try {
+      await task;
+      task.then((snapshot: any) => {
+        setUploadingResult(snapshot);
+        setUploadProgress(0);
+        setCompleted(true);
+      })
+    } catch (error) {
+      setUploadTask(null);
       setUploadProgress(0);
-    })
-  } catch (error) {
-    setUploadTask(null);
-    setUploadProgress (0);
-  } finally {
-    setCompleted(true);
-    setUploadProgress(0);
-  }
+    } finally {
+      setUploadProgress(0);
+    }
   };
 
   const cancelUpload = () => {
     setModalVisible(false);
+    setUploadProgress(0);
+    setCompleted(false);
+    setUploadTask(null);
     if (uploadTask) {
       uploadTask.cancel(); // Call the cancel() method on the upload task reference
       setUploadTask(null); // Reset the state variable
@@ -192,20 +191,20 @@ const UploadPDF = () => {
     }
   };
 
-  
+
   const pickPDF = async () => {
     try {
-      const result:any = await DocumentPicker.pickSingle({
+      const result: any = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.pdf],
         copyTo: 'cachesDirectory',
       });
-      setPdf({uri: result.fileCopyUri, name: result.name});
-      if(result !== undefined && result !== null && result.uri !== undefined && result.uri !== null ){
+      setPdf({ uri: result.fileCopyUri, name: result.name });
+      if (result !== undefined && result !== null && result.uri !== undefined && result.uri !== null) {
         setChoosenPdf(result);
-        uploadPDF({uri: result.fileCopyUri, name: result.name});
+        uploadPDF({ uri: result.fileCopyUri, name: result.name });
         return result;
       }
-      else{
+      else {
         return null;
       }
     } catch (error) {
@@ -240,23 +239,24 @@ const UploadPDF = () => {
       // await pickPDF();
     }
     catch (err) {
-      Toast.show({
-        title: 'Error',
-        description: 'Something went wrong. Please try again.',
-        placement: 'bottom',
-        duration: 2000,
-      });
+
+      // Toast.show({
+      //   title: 'Error',
+      //   description: 'Something went wrong. Please try again.',
+      //   placement: 'bottom',
+      //   duration: 2000,
+      // });
     }
   };
-  function bytesToMB(bits :any) {
-  const megabytes = bits / 1000000 ;
-  return megabytes.toFixed(2) + " MB";
-}
+  function bytesToMB(bits: any) {
+    const megabytes = bits / 1000000;
+    return megabytes.toFixed(2) + " MB";
+  }
 
 
 
   return (
-    <NavigationLayout rightIconFalse={true} title="" handleScroll={()=>{}}>
+    <NavigationLayout rightIconFalse={true} title="" handleScroll={() => { }}>
       <View
         style={{
           width: width,
@@ -266,7 +266,7 @@ const UploadPDF = () => {
           style={{
             width: width,
             alignItems: 'center',
-            padding : height * 0.019,
+            padding: height * 0.019,
           }}>
           <Text
             style={{
@@ -286,14 +286,14 @@ const UploadPDF = () => {
               textAlign: 'center',
               lineHeight: height * 0.040,
             }}>
-            Looks like you don't have what you're looking for.
-            Mind sharing them with rest of the community 
+            Looks like we don't have what you're looking for.
+            Mind sharing them with rest of the community
             if you have it?
           </Text>
           <Image source={require('../../assets/images/uploadBg.webp')} style={{
-            width : width * 0.9,
-            height : height * 0.4,
-            resizeMode : 'contain',
+            width: width * 0.9,
+            height: height * 0.4,
+            resizeMode: 'contain',
             alignSelf: 'center',
             marginTop: height * 0.05,
           }} />
@@ -324,54 +324,54 @@ const UploadPDF = () => {
           {
             !completed && (
               <>
-              <Stack
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              flexDirection: 'column',
-              padding: 10,
-              paddingBottom: 0,
-            }}>
-            <Text fontSize={height * 0.0235} fontWeight={'700'} color={theme.colors.primaryText} lineHeight={height*0.052} >
-              Uploading
-            </Text>
+                <Stack
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    padding: 10,
+                    paddingBottom: 0,
+                  }}>
+                  <Text fontSize={height * 0.0235} fontWeight={'700'} color={theme.colors.primaryText} lineHeight={height * 0.052} >
+                    Uploading
+                  </Text>
 
-            <Text fontSize={height * 0.0235} fontWeight={'700'} color={theme.colors.primaryText}lineHeight={height*0.05}>
-              {choosenPdf?.name}
-            </Text>
-            <Text fontSize={height * 0.015} fontWeight={'300'} color={theme.colors.primaryText}lineHeight={height*0.05}>
-              {(uploadProgress).toFixed(1)}MB of {bytesToMB(choosenPdf?.size)}
-            </Text> 
-          </Stack>
-          <Modal.Body
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <LottieView
-              source={require('../../assets/lottie/upload.json')}
-              style={{
-                width: width,
-                height: height / 2.5,
-              }}
-              autoPlay
-              loop
-            />
-          </Modal.Body>
-          <Box 
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              flexDirection: 'column',
-              padding: 10,
-              paddingTop: 0,
-            }}>
-            <TouchableOpacity onPress={cancelUpload}>
-              <Text fontWeight={700} fontSize={theme.sizes.title} color={theme.colors.primary}>
-                Cancel{' '}
-              </Text>
-              </TouchableOpacity>
-          </Box>
+                  <Text fontSize={height * 0.0235} fontWeight={'700'} color={theme.colors.primaryText} lineHeight={height * 0.05}>
+                    {choosenPdf?.name}
+                  </Text>
+                  <Text fontSize={height * 0.015} fontWeight={'300'} color={theme.colors.primaryText} lineHeight={height * 0.05}>
+                    {(uploadProgress).toFixed(1)}% of 100%
+                  </Text>
+                </Stack>
+                <Modal.Body
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <LottieView
+                    source={require('../../assets/lottie/upload.json')}
+                    style={{
+                      width: width,
+                      height: height / 2.5,
+                    }}
+                    autoPlay
+                    loop
+                  />
+                </Modal.Body>
+                <Box
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    padding: 10,
+                    paddingTop: 0,
+                  }}>
+                  <TouchableOpacity onPress={cancelUpload}>
+                    <Text fontWeight={700} fontSize={theme.sizes.title} color={theme.colors.primary}>
+                      Cancel{' '}
+                    </Text>
+                  </TouchableOpacity>
+                </Box>
               </>
             )
           }
@@ -383,17 +383,17 @@ const UploadPDF = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                    <Box w="100%" h={theme.sizes.height *0.2} px={2} my={4} justifyContent="center" alignItems={"center"} >
-                      <AntDesign name="checkcircle" size={50} color={theme.colors.primary} />
-                      <Text fontSize={theme.sizes.title} color={theme.colors.primaryText} fontWeight={700} marginTop={4} >
-                        Uploaded Successful
-                      </Text>
-                      <Text fontSize={theme.sizes.textSmall} padding={theme.sizes.height *0.01} paddingTop={theme.sizes.height *0.01} color={theme.colors.textSecondary} textAlign={"center"} fontWeight={700} >
+                  <Box w="100%" h={theme.sizes.height * 0.2} px={2} my={4} justifyContent="center" alignItems={"center"} >
+                    <AntDesign name="checkcircle" size={50} color={theme.colors.primary} />
+                    <Text fontSize={theme.sizes.title} color={theme.colors.primaryText} fontWeight={700} marginTop={4} >
+                      Uploaded Successful
+                    </Text>
+                    <Text fontSize={theme.sizes.textSmall} padding={theme.sizes.height * 0.01} paddingTop={theme.sizes.height * 0.01} color={theme.colors.textSecondary} textAlign={"center"} fontWeight={700} >
                       Thank you! The file has been uploaded successfully. It will be available for others to download once we finish verifying the contents of the file
-                      </Text>
-                    </Box>
+                    </Text>
+                  </Box>
                 </Modal.Body>
-                <Box 
+                <Box
                   style={{
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -401,17 +401,17 @@ const UploadPDF = () => {
                     padding: 10,
                     paddingTop: 0,
                   }}>
-                  <TouchableOpacity onPress={()=>{
+                  <TouchableOpacity onPress={() => {
                     setModalVisible(false);
                     setCompleted(false);
                   }}>
                     <Text fontWeight={700} fontSize={theme.sizes.title} color={theme.colors.primary}>
                       Cancel{' '}
                     </Text>
-                    </TouchableOpacity>
+                  </TouchableOpacity>
                 </Box>
-                    </>
-                  )
+              </>
+            )
           }
         </Modal.Content>
       </Modal>

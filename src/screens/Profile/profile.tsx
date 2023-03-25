@@ -1,25 +1,16 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-  Linking,
-  Share
-} from 'react-native';
-import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import createStyles from './styles';
-import {Avatar, VStack, AlertDialog, Button, Toast, Modal, Box, Stack} from 'native-base';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {useSelector, useDispatch} from 'react-redux';
-import { setUserProfile } from '../../redux/reducers/usersData';
-import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AlertDialog, Avatar, Box, Button, Modal, Stack, Toast, VStack } from 'native-base';
+import React, { useState } from 'react';
+import { Dimensions, Linking, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { setUserProfile } from '../../redux/reducers/usersData';
+import createStyles from './styles';
 
 type MyStackParamList = {
   'UpdateInformation': undefined;
@@ -88,7 +79,7 @@ const Profile = () => {
     return state.usersData;
   });
 
-  const updateUserImage = (img:string) => {
+  const updateUserImage = (img: string) => {
     auth()
       .currentUser?.updateProfile({
         photoURL: img,
@@ -106,12 +97,12 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.headerContainer}>
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
-          {/* <Ionicons
+        <View style={styles.headerContainer}>
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
+            {/* <Ionicons
             name="chevron-back-outline"
             size={20}
             color="#ffffff"
@@ -119,18 +110,18 @@ const Profile = () => {
               navigation.goBack();
             }}
           /> */}
-          <Text style={styles.headerText}>Account</Text>
-        </View>
-         <VStack alignItems="center" space={0} marginY={theme.sizes.height * 0.023} width={"100%"} justifyContent={"center"} >
+            <Text style={styles.headerText}>Account</Text>
+          </View>
+          <VStack alignItems="center" space={0} marginY={theme.sizes.height * 0.023} width={"100%"} justifyContent={"center"} >
             <Avatar source={{
-              uri: userImage||user?.photoURL
-            }}size={theme.sizes.height * 0.16} alignSelf={'center'}/>
-         </VStack>
-        <Text style={styles.name}>{userFirestoreData.usersData.name}</Text>
-        <Text style={styles.email}>{userFirestoreData.usersData.email}</Text>
-      </View>
-      <View style={styles.body}>
-        <View style={styles.bodyContent}>
+              uri: userImage || user?.photoURL
+            }} size={theme.sizes.height * 0.16} alignSelf={'center'} />
+          </VStack>
+          <Text style={styles.name}>{userFirestoreData.usersData.name}</Text>
+          <Text style={styles.email}>{userFirestoreData.usersData.email}</Text>
+        </View>
+        <View style={styles.body}>
+          <View style={styles.bodyContent}>
             <View style={styles.menuContainer}>
               <VStack>
                 <View>
@@ -175,12 +166,12 @@ const Profile = () => {
             <View style={styles.menuContainer}>
               <VStack>
                 <View>
-                  <Text style = {[styles.settingsTitleText, {
+                  <Text style={[styles.settingsTitleText, {
                     marginTop: 10,
                   }]}>Support</Text>
                 </View>
                 <TouchableOpacity
-                  onPress={()=>{navigation.navigate('AboutUs')}}
+                  onPress={() => { navigation.navigate('AboutUs') }}
                   style={styles.settingsContainer}>
                   <Text style={styles.settingsText}>About Us</Text>
                   <Ionicons
@@ -190,11 +181,10 @@ const Profile = () => {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
-                   onPress={()=>{
+                  onPress={() => {
                     Share.share({
                       title: 'Academic Ally',
-                      message: 
-                      'Hey, I am using Academic Ally to help me with my studies. It is a great app that helps me with my studies. You can know more about it here: https://getacademically.co/',
+                      message: "Are you tired of spending hours searching for academic resources for your courses? Let Academic Ally make it easy for you! Our app provides a vast collection of notes, question papers, question banks, syllabi, and other resources for a wide range of courses, from BE to BTech and more incoming! With Academic Ally, you can access high-quality resources at your fingertips, bookmark your preferred notes, share resources with classmates, and even upload your own notes to help others. Say goodbye to the hassle of finding the right academic resources and download Academic Ally now! \n \nGet Your Ally Right Away!: https://play.google.com/store/apps/details?id=com.academically",
                     })
                   }}
                   style={styles.settingsContainer}>
@@ -205,8 +195,8 @@ const Profile = () => {
                     color="#91919F"
                   />
                 </TouchableOpacity>
-                 <TouchableOpacity
-                  onPress={()=>{
+                <TouchableOpacity
+                  onPress={() => {
                     Linking.openURL('mailto:contact@getacademically.co')
                   }}
                   style={styles.settingsContainer}>
@@ -217,10 +207,10 @@ const Profile = () => {
                     color="#91919F"
                   />
                 </TouchableOpacity>
-                <TouchableOpacity 
-                onPress={()=>{
-                  navigation.navigate('PrivacyPolicy')
-                }}
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('PrivacyPolicy')
+                  }}
                   style={styles.settingsContainer}>
                   <Text style={styles.settingsText}>Privacy Policy</Text>
                   <Ionicons
@@ -230,7 +220,7 @@ const Profile = () => {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.settingsContainer} onPress={()=>{
+                  style={styles.settingsContainer} onPress={() => {
                     navigation.navigate('TermsAndConditions')
                   }} >
                   <Text style={styles.settingsText}>Terms & Conditions</Text>
@@ -240,27 +230,27 @@ const Profile = () => {
                     color="#91919F"
                   />
                 </TouchableOpacity>
-               
+
               </VStack>
             </View>
-        </View>
+          </View>
 
-      </View>
-      <AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={isOpen}
-        onClose={onClose}>
-        <AlertDialog.Content>
-          <AlertDialog.CloseButton />
-          <AlertDialog.Header>Delete Account</AlertDialog.Header>
-          <AlertDialog.Body>
-            <Text style={{color: '#91919F', fontSize: 16}} >
-             By proceeding with this action, you will be permanently deleting all account data. This action cannot be undone. Once the data is deleted, it cannot be recovered.
-            </Text>
-            <Text style={{color: '#161719', fontSize: 16, marginTop: 10}} >
-               Are you sure you want to proceed?
-            </Text>
-            {/* <TextInput
+        </View>
+        <AlertDialog
+          leastDestructiveRef={cancelRef}
+          isOpen={isOpen}
+          onClose={onClose}>
+          <AlertDialog.Content>
+            <AlertDialog.CloseButton />
+            <AlertDialog.Header>Delete Account</AlertDialog.Header>
+            <AlertDialog.Body>
+              <Text style={{ color: '#91919F', fontSize: 16 }} >
+                By proceeding with this action, you will be permanently deleting all account data. This action cannot be undone. Once the data is deleted, it cannot be recovered.
+              </Text>
+              <Text style={{ color: '#161719', fontSize: 16, marginTop: 10 }} >
+                Are you sure you want to proceed?
+              </Text>
+              {/* <TextInput
               onChangeText={text => {
                 setPassword(text);
               }}
@@ -277,58 +267,58 @@ const Profile = () => {
                 width: width * 0.6,
               }}
             /> */}
-          </AlertDialog.Body>
-          <AlertDialog.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="unstyled"
-                colorScheme="coolGray"
-                onPress={onClose}
-                ref={cancelRef}>
-                Cancel
-              </Button>
-              <Button
-                colorScheme="danger"
-                onPress={() => {
-                  auth()
-                    ?.currentUser?.delete()
-                    .then(() => {
-                      AsyncStorage.clear();
-                      Toast.show({
-                        title: 'Account Deleted',
-                        backgroundColor: '#F44336',
-                        color: '#ffffff',
+            </AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button.Group space={2}>
+                <Button
+                  variant="unstyled"
+                  colorScheme="coolGray"
+                  onPress={onClose}
+                  ref={cancelRef}>
+                  Cancel
+                </Button>
+                <Button
+                  colorScheme="danger"
+                  onPress={() => {
+                    auth()
+                      ?.currentUser?.delete()
+                      .then(() => {
+                        AsyncStorage.clear();
+                        Toast.show({
+                          title: 'Account Deleted',
+                          backgroundColor: '#F44336',
+                          color: '#ffffff',
+                        });
+                      })
+                      .catch(error => {
+                        auth().signOut();
+                        AsyncStorage.clear();
+                        Toast.show({
+                          title: 'Error',
+                          description: error.message,
+                          backgroundColor: '#F44336',
+                          color: '#ffffff',
+                        });
                       });
-                    })
-                    .catch(error => {
-                      auth().signOut();
-                      AsyncStorage.clear();
-                      Toast.show({
-                        title: 'Error',
-                        description: error.message,
-                        backgroundColor: '#F44336',
-                        color: '#ffffff',
-                      });
-                    });
-                }}>
-                Delete
-              </Button>
-            </Button.Group>
-          </AlertDialog.Footer>
-        </AlertDialog.Content>
-      </AlertDialog>
-      <AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={logOutAlert}
-        onClose={onCloseLogout}>
-        <AlertDialog.Content>
-          <AlertDialog.CloseButton />
-          <AlertDialog.Header>Log Out</AlertDialog.Header>
-          <AlertDialog.Body>
-            <Text style={{color: '#91919F', fontSize: 16}} >
-              Are you sure you want to log out?
-            </Text>
-            {/* <TextInput
+                  }}>
+                  Delete
+                </Button>
+              </Button.Group>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
+        <AlertDialog
+          leastDestructiveRef={cancelRef}
+          isOpen={logOutAlert}
+          onClose={onCloseLogout}>
+          <AlertDialog.Content>
+            <AlertDialog.CloseButton />
+            <AlertDialog.Header>Log Out</AlertDialog.Header>
+            <AlertDialog.Body>
+              <Text style={{ color: '#91919F', fontSize: 16 }} >
+                Are you sure you want to log out?
+              </Text>
+              {/* <TextInput
               onChangeText={text => {
                 setPassword(text);
               }}
@@ -345,28 +335,28 @@ const Profile = () => {
                 width: width * 0.6,
               }}
             /> */}
-          </AlertDialog.Body>
-          <AlertDialog.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="unstyled"
-                colorScheme="coolGray"
-                onPress={onCloseLogout}
-                ref={cancelRef}>
-                Cancel
-              </Button>
-              <Button
-                colorScheme="danger"
-                onPress={() => {
-                  auth().signOut();
-                  AsyncStorage.clear();
-                }}>
-                Log Out
-              </Button>
-            </Button.Group>
-          </AlertDialog.Footer>
-        </AlertDialog.Content>
-      </AlertDialog>
+            </AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button.Group space={2}>
+                <Button
+                  variant="unstyled"
+                  colorScheme="coolGray"
+                  onPress={onCloseLogout}
+                  ref={cancelRef}>
+                  Cancel
+                </Button>
+                <Button
+                  colorScheme="danger"
+                  onPress={() => {
+                    auth().signOut();
+                    AsyncStorage.clear();
+                  }}>
+                  Log Out
+                </Button>
+              </Button.Group>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
       </ScrollView>
     </View>
   );
