@@ -54,12 +54,7 @@ const Search = () => {
 
   useEffect(() => {
     setFilteredData(
-      subjectListDetail?.filter((item: any) => {
-        const words = item.subject.split(' ');
-        let abbreviation = '';
-        for (const word of words) {
-          abbreviation += word[0];
-        }
+      list?.filter((item) => {
 
         if (searchTerm === '' && selectedBranch !== '') {
           return item.branch
@@ -69,14 +64,14 @@ const Search = () => {
 
         if (selectedBranch !== '') {
           return (
-            (item.branch.toLowerCase().includes(selectedBranch.toLowerCase()) &&
-              item.subject.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            abbreviation.toLowerCase().includes(searchTerm.toLowerCase())
+            (item?.branch?.toLowerCase().includes(selectedBranch.toLowerCase()) &&
+              item?.subject?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            abbreviation?.toLowerCase().includes(searchTerm.toLowerCase())
           );
         } else {
           return (
-            item.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            abbreviation.toLowerCase().includes(searchTerm.toLowerCase())
+            item?.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            abbreviation?.toLowerCase().includes(searchTerm.toLowerCase())
           );
         }
       }),

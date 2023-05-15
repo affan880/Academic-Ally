@@ -1,6 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
+import { Toast } from 'native-base';
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Dimensions, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -23,16 +24,13 @@ const screenWidth = Dimensions.get('screen').width;
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
-const SignUpScreen: FC<IProps> = ({navigation}) => {
+const SignUpScreen: FC<IProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   const styles = useMemo(() => createStyles(), []);
   const formRef: any = useRef();
-   const [selectedYear, setSelectedYear] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
   const [selectedSem, setSelectedSem] = useState('');
-  const [selectedCourse, setSelectedCourse] = useState([
-    {label: 'B.E', value: 'BE'},
-    {label: 'B.TECH', value: 'BTECH'}
-  ]);
+  const [selectedCourse, setSelectedCourse] = useState<{ label: string; value: string; }[]>([]);
 
   const initialValues = {
     name: '',
@@ -46,49 +44,57 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
     university: '',
     college: '',
   };
+  const courses: any = {
+    OU: [
+      { label: 'B.E', value: 'BE' },
+    ],
+    JNTUH: [
+      { label: 'B.TECH', value: 'BTECH' },
+    ]
+  }
   const CourseData: any = [
-    {label: 'B.E', value: 'BE'},
+    { label: 'B.E', value: 'BE' },
   ];
   const CourseData1: any = [
-    {label: 'B.TECH', value: 'BTECH'},
+    { label: 'B.TECH', value: 'BTECH' },
   ];
 
   const SemList: any = [
-    {label: '1', value: '1'},
-    {label: '2', value: '2'},
-    {label: '3', value: '3'},
-    {label: '4', value: '4'},
-    {label: '5', value: '5'},
-    {label: '6', value: '6'},
-    {label: '7', value: '7'},
-    {label: '8', value: '8'},
+    { label: '1', value: '1' },
+    { label: '2', value: '2' },
+    { label: '3', value: '3' },
+    { label: '4', value: '4' },
+    { label: '5', value: '5' },
+    { label: '6', value: '6' },
+    { label: '7', value: '7' },
+    { label: '8', value: '8' },
   ];
 
   const YearData: any = [
-    {label: '1', value: '1'},
-    {label: '2', value: '2'},
-    {label: '3', value: '3'},
-    {label: '4', value: '4'},
+    { label: '1', value: '1' },
+    { label: '2', value: '2' },
+    { label: '3', value: '3' },
+    { label: '4', value: '4' },
   ];
 
   const BranchData: any = [
-    {label: 'IT', value: 'IT'},
-    {label: 'CSE', value: 'CSE'},
-    {label: 'ECE', value: 'ECE'},
-    {label: 'MECH', value: 'MECH'},
-    {label: 'CIVIL', value: 'CIVIL'},
-    {label: 'EEE', value: 'EEE'},
+    { label: 'IT', value: 'IT' },
+    { label: 'CSE', value: 'CSE' },
+    { label: 'ECE', value: 'ECE' },
+    { label: 'MECH', value: 'MECH' },
+    { label: 'CIVIL', value: 'CIVIL' },
+    { label: 'EEE', value: 'EEE' },
   ];
 
   const UniversityData: any = [
-    {label: 'Osmania University', value: 'OU'},
-    {label: 'Jawaharlal Nehru Technological University', value: 'JNTUH'},
+    { label: 'Osmania University', value: 'OU' },
+    { label: 'Jawaharlal Nehru Technological University', value: 'JNTUH' },
   ];
 
-    const handleYearChange = (event: any) => {
-      if(event?.value === '' || event?.value === undefined || event?.value === null){
-        return;
-      }
+  const handleYearChange = (event: any) => {
+    if (event?.value === '' || event?.value === undefined || event?.value === null) {
+      return;
+    }
     const yearValue = event?.value;
     setSelectedYear(yearValue);
 
@@ -96,13 +102,13 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
     formRef.current?.setFieldValue('sem', '');
   };
 
-  const handleSemChange = (event :any) => {
-     if(event?.value === '' || event?.value === undefined || event?.value === null){
-        return;
-      }
+  const handleSemChange = (event: any) => {
+    if (event?.value === '' || event?.value === undefined || event?.value === null) {
+      return;
+    }
     const semValue = event?.value;
     setSelectedSem(semValue);
-     if (!selectedYear) {
+    if (!selectedYear) {
       if (semValue <= 2) {
         setSelectedYear('1');
       } else if (semValue <= 4) {
@@ -116,18 +122,18 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
   };
 
   const filteredSemList = SemList.filter((sem: any) => {
-  if (selectedYear === '1') {
-    return sem.value === '1' || sem.value === '2';
-  } else if (selectedYear === '2') {
-    return sem.value === '3' || sem.value === '4';
-  } else if (selectedYear === '3') {
-    return sem.value === '5' || sem.value === '6';
-  } else if (selectedYear === '4') {
-    return sem.value === '7' || sem.value === '8';
-  } else {
-    return true;
-  }
-});
+    if (selectedYear === '1') {
+      return sem.value === '1' || sem.value === '2';
+    } else if (selectedYear === '2') {
+      return sem.value === '3' || sem.value === '4';
+    } else if (selectedYear === '3') {
+      return sem.value === '5' || sem.value === '6';
+    } else if (selectedYear === '4') {
+      return sem.value === '7' || sem.value === '8';
+    } else {
+      return true;
+    }
+  });
 
   const onSubmit = (email: string, password: string, initialValues: any) => {
     createUser(email, password, initialValues, dispatch)
@@ -148,9 +154,17 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
       });
   };
 
+  useEffect(() => {
+    firestore()
+      .collection('utils').doc('meta-data').get().then((doc) => {
+        console.log(doc.data());
+      }
+      )
+  }, []);
+
   return (
-    <SafeAreaView style={[styles.container, {flex: 1}]}>
-      <CustomLoader/>
+    <SafeAreaView style={[styles.container, { flex: 1 }]}>
+      <CustomLoader />
       <StatusBar
         animated={true}
         translucent={true}
@@ -159,12 +173,12 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
 
       <LinearGradient
         colors={['#FF8181', '#6360ff']}
-        start={{x: 0.5, y: 0.5}}
-        end={{x: 0.5, y: 1}}
+        start={{ x: 0.5, y: 0.5 }}
+        end={{ x: 0.5, y: 1 }}
         style={styles.LinearGradient}>
         <ScrollView
-          style={{flex: 1}}
-          contentContainerStyle={{flexGrow: 1}}
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flexGrow: 1 }}
           scrollEnabled={true}>
           <Image source={SIGNUPILLUSTRATION} style={styles.studyIcon} />
           <Text style={styles.welcomeText}> Hi there!</Text>
@@ -205,16 +219,10 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
                 placeholder={'Select the name of your university'}
                 leftIcon="ellipsis1"
                 width={screenWidth - 50}
-                handleOptions = {(item:any)=>{
-                  if(item?.value === 'OU'){
-                    formRef.current?.setFieldValue('course', 'OU');
-                      setSelectedCourse(CourseData)
-                    }
-                    if(item?.value === 'JNTUH'){
-                      formRef.current?.setFieldValue('course', 'JNTUH');
-                      setSelectedCourse(CourseData1)
-                    }
-                    
+                handleOptions={(item: any) => {
+                  if (item?.value) {
+                    setSelectedCourse(courses[item?.value])
+                  }
                 }}
               />
               <View
@@ -230,7 +238,15 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
                   placeholder={'Course'}
                   leftIcon="Safety"
                   width={screenWidth / 2.5}
-                  handleOptions = {()=>{}}
+                  handleOptions={() => {
+                    if (formRef.current?.values?.course === '' && formRef.current?.values?.university === '') {
+                      Toast.show({
+                        title: 'Please Select a university first',
+                        duration: 4000,
+                        backgroundColor: '#FF0101',
+                      })
+                    }
+                  }}
                 />
                 <DropdownComponent
                   name="branch"
@@ -238,7 +254,7 @@ const SignUpScreen: FC<IProps> = ({navigation}) => {
                   placeholder={'Branch'}
                   leftIcon="bars"
                   width={screenWidth / 2.5}
-                  handleOptions = {()=>{}}
+                  handleOptions={() => { }}
                 />
               </View>
               <View

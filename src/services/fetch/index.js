@@ -57,6 +57,19 @@ const checkIfDocExists = async (item, type, usersData) => {
   return status;
 }
 
+const updateFirebstore = async (item, userFirestoreData) => {
+  await firestore()
+    .collection('Universities')
+    .doc(userFirestoreData.data().university).collection(userFirestoreData.data().course)
+    .doc(userFirestoreData.data().branch)
+    .collection(userFirestoreData.data().sem)
+    .doc('SubjectsList').set(
+      {
+        list: item,
+      },
+    )
+}
+
 export const fetchSubjectList = async (setList, dispatch, setReccommendSubjects, setReccommendSubjectsLoaded, setLoaded, usersData) => {
   await firestore()
     .collection('Users')
@@ -71,17 +84,7 @@ export const fetchSubjectList = async (setList, dispatch, setReccommendSubjects,
         .collection(userFirestoreData.data().sem)
         .doc('SubjectsList')
         .get().then(async (item) => {
-          for (const items of item.data().list) {
-            updatedList.push(
-              {
-                subjectName: items.subjectName,
-                Notes: await checkIfDocExists(items, 'Notes', usersData),
-                OtherResources: await checkIfDocExists(items, 'OtherResources', usersData),
-                QuestionPapers: await checkIfDocExists(items, 'QuestionPapers', usersData),
-                Syllabus: await checkIfDocExists(items, 'Syllabus', usersData)
-              }
-            )
-          };
+          updatedList.push(...item.data().list);
           setList(
             updatedList.filter(
               (item, index, self) =>
@@ -314,7 +317,7 @@ export const shareNotes = async (notesData) => {
   });
   Share.share({
     title: notesData.subject,
-    message: `If you're studying ${notesData.subject}, you might find these ${notesData.category} on Academic Ally helpful. I did! Check them out:
+    message: `If you're studying ${notesData.subject}, you might find these ${notesData.category} on Academic Ally helpfull. I did! Check them out:
       ${link}`,
   });
 }

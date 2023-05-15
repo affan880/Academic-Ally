@@ -1,6 +1,6 @@
-import { Dimensions } from 'react-native';
-import { createSlice, } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createSlice } from '@reduxjs/toolkit';
+import { Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -8,7 +8,7 @@ export const createThemeSlice = createSlice({
     name: 'theme',
     initialState: {
         theme: 'light',
-        light: {
+        dark: {
             primary: "#6360FF",
             secondary: "#F1F1FA",
             tertiary: "#FF8181",
@@ -22,7 +22,7 @@ export const createThemeSlice = createSlice({
             yellowWarning: "#FFD700",
             SearchCategory: "#6360FF",
         },
-        dark: {
+        light: {
             primary: "#292B2D",
             secondary: "#161719",
             tertiary: "#FF8181",
@@ -78,10 +78,10 @@ export const createThemeSlice = createSlice({
             state.theme = action.payload;
         },
         setLightTheme: (state) => {
-            state.theme = 'light';
-            state.colors = state.light;
-            AsyncStorage.setItem('theme', 'light');
-            AsyncStorage.setItem('colors', JSON.stringify(state.light));
+            state.theme = 'dark';
+            state.colors = state.dark;
+            AsyncStorage.setItem('theme', 'dark');
+            AsyncStorage.setItem('colors', JSON.stringify(state.dark));
         },
         setDarkTheme: (state) => {
             state.theme = 'dark';

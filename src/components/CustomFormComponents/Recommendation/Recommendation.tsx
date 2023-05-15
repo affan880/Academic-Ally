@@ -71,9 +71,9 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
     setFilteresList(a);
   }, [selected, list]);
 
-  useEffect(() => {
-    dispatch(setLightTheme());
-  }, [theme.theme]);
+  // useEffect(() => {
+  //   dispatch(setLightTheme());
+  // }, [theme.theme]);
 
   async function fetchData() {
     await fetchSubjectList(setList, dispatch, setReccommendSubjects, setReccommendSubjectsLoaded, setLoaded, userData)

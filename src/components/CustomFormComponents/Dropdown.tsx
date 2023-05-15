@@ -138,7 +138,7 @@ export const CustomDropdown = ({
             fontSize: height * 0.015,
             fontFamily: 'Poppins-Regular',
             alignSelf: 'flex-start',
-            marginLeft: 20,
+            marginLeft: 0,
             fontWeight: 'bold',
           }}>
           *{errors[name] + ' '}
