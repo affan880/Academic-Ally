@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, StatusBar } from "react-native";
+import { Dimensions, StatusBar, StyleSheet } from "react-native";
 
 const { width, height } = Dimensions.get('window');
 const statusBarHeight :any = StatusBar.currentHeight;
@@ -6,7 +6,7 @@ const createStyles = (theme: any, sizes:any) =>
     StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: "#6360FF"
+            backgroundColor: theme.primary,
         },
         headerContainer: {
             height: height * 0.45,
@@ -20,13 +20,13 @@ const createStyles = (theme: any, sizes:any) =>
         },
         headerText: {
             fontSize: sizes.title,
-            color: "#FCFCFF",
+            color: theme.white,
             fontWeight: "700",
             marginLeft: 10,
         },
         body: {
             flex: 1, 
-            backgroundColor: "#FCFCFF",
+            backgroundColor: theme.secondary,
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
             width: width,
@@ -38,7 +38,7 @@ const createStyles = (theme: any, sizes:any) =>
         },
         name: {
             fontSize: 24,
-            color: "#FCFCFF",
+            color: theme.white,
             fontWeight: "700",
             alignSelf: "center",
             marginBottom: 5,
@@ -46,22 +46,22 @@ const createStyles = (theme: any, sizes:any) =>
         },
         email: {
             fontSize: 16,
-            color: "#FCFCFF",
+            color: theme.white,
             fontWeight: "400",
             alignSelf: "center",
         },
         menuContainer: {
-            backgroundColor: "#FCFCFF",
+            backgroundColor: theme.sec,
             width: '90%',
             alignSelf: "center",
         },
         settingsTitleText: {
             fontSize: sizes.textSmall,
-            color: "#91919F",
+            color: theme.text,
         },
         settingsText: {
             fontSize: sizes.subtitle,
-            color: "#161719",
+            color: theme.primaryText,
             fontWeight: "500",
         },
         settingsContainer: {

@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 const createStyles = (theme: any, sizes: any) =>
@@ -6,7 +6,6 @@ const createStyles = (theme: any, sizes: any) =>
     container: {
       flex: 1,
       backgroundColor: theme.primary,
-      marginBottom: 70,
     },
     headerContainer: {
       height: height * 0.14,
@@ -24,6 +23,7 @@ const createStyles = (theme: any, sizes: any) =>
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,
       width: width,
+      paddingBottom: height * 0.08,
     },
     bodyContent: {
       flex: 1,
@@ -50,10 +50,11 @@ const createStyles = (theme: any, sizes: any) =>
     mainContainer:{
       width: width * 0.95,
       height: height * 0.15,
-      backgroundColor: '#fff',
+      backgroundColor: theme.quaternary,
       borderRadius: 10,
       justifyContent: 'center',
       alignSelf: 'center',
+      borderWidth: 0,
     },
     containerBox: {
       backgroundColor: '#FF8181',
@@ -63,9 +64,10 @@ const createStyles = (theme: any, sizes: any) =>
       justifyContent: 'center',
       borderRadius: 10,
       shadowColor: '#000',
+      borderWidth: 0,
     },
     subjectItem: {
-      backgroundColor: '#fff',
+      backgroundColor: theme.quaternary,
       borderRadius: 10,
       flexDirection: 'row',
       alignItems: 'center',
@@ -78,24 +80,25 @@ const createStyles = (theme: any, sizes: any) =>
     subjectItemTextContainer: {
       width: width * 0.58,
       height: height * 0.1,
-      backgroundColor: '#fff',
+      backgroundColor: theme.quaternary,
       borderRadius: 10,
       flexDirection: 'column',
       justifyContent: 'center',
       paddingHorizontal: height * 0.015,
       alignSelf: 'center',
+      borderWidth: 0, 
     },
     subjectName: {
       fontSize: sizes.subtitle,
       fontWeight: '600',
-      color: theme.primaryText,
+      color: theme.text,
       fontFamily: 'DM Sans',
       fontStyle: 'normal',
     },
     headerText: {
       fontSize: sizes.title,
       fontWeight: 'bold',
-      color: theme.quaternary,
+      color: theme.white,
       textAlign: 'center',
       paddingLeft: 5,
     },

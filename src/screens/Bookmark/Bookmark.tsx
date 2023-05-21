@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import { Box, Divider, HStack, Icon, Pressable, Text, VStack } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Dimensions, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -13,7 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ShareIconImg } from '../../assets/images/icons';
+import { ShareIcon, ShareIconImg } from '../../assets/images/icons';
 import ScreenLayout from '../../interfaces/screenLayout';
 import { getCurrentUser, removeBookmark } from '../../Modules/auth/firebase/firebase';
 import { setBookmarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
@@ -52,6 +52,7 @@ const Bookmark = () => {
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [listData, setListData] = useState([]);
   const [sortedList, setSortedList] = useState([]);
+  const colorScheme = useColorScheme();
   const bookmarkList = useSelector(
     (state: any) => state.userBookmarkManagement,
   ).userBookMarks;
@@ -182,7 +183,10 @@ const Bookmark = () => {
             }} style={{
               justifyContent: 'center',
             }}  >
-              <ShareIconImg />
+              {
+                colorScheme === 'dark' ?
+                  <ShareIcon /> : <ShareIconImg />
+              }
             </TouchableOpacity>
           </HStack>
         </HStack>
@@ -256,7 +260,7 @@ const Bookmark = () => {
                       )}
                       showsVerticalScrollIndicator={false}
                       renderHiddenItem={renderHiddenItem}
-                      rightOpenValue={-100}
+                      rightOpenValue={-83}
                       previewRowKey={'0'}
                       previewOpenValue={-40}
                       previewOpenDelay={3000}

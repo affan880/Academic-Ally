@@ -172,7 +172,7 @@ const createStyles = (theme:any, sizes:any) =>
     headerText: {
       fontSize: sizes.title,
       fontWeight: 'bold',
-      color: theme.quaternary,
+      color: theme.white,
       textAlign: 'center',
       paddingLeft: 5,
     },

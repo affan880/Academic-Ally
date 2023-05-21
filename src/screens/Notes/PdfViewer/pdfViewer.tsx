@@ -3,7 +3,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import { Actionsheet, Box, Button, Center, Fab, HStack, Icon, Popover, Text, Toast, useDisclose, VStack } from 'native-base';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, Linking, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Pdf from 'react-native-pdf';
@@ -64,12 +64,18 @@ const PdfViewer = () => {
   const { selected } = route.params;
   const [pageNo, setPageNo] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [url, setUrl] = useState(`https://link.storjshare.io/s/juewbwfxqum6tp4n52v4rxadrpca/academic-ally/Universities/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${subject || notesData?.subject}/${notesData?.category || selected.charAt(0).toUpperCase() + selected.slice(1)}/${notesData?.name}?wrap=0`);
+  console.log(url);
   const source = {
-    uri: `https://drive.google.com/u/0/uc?id=${notesData.did}`,
+    uri: url,
+    // uri: `https://drive.google.com/u/0/uc?id=${notesData.did}`,
     cache: true,
     expiration: 60 * 60 * 24 * 7,
   };
-  const styles = createStyles();
+  const theme = useSelector((state: any) => {
+    return state.theme;
+  });
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const pdfRef = useRef(null);
   const navigation = useNavigation<MyScreenNavigationProp>();
   const dispatch = useDispatch();
@@ -155,7 +161,7 @@ const PdfViewer = () => {
               fontWeight: 'bold',
               color: '#ffffff',
               width: '50%',
-              paddingVertical: 5,
+              paddingVertical: -2,
               textAlign: 'right',
               left: 2,
               top: -1,
@@ -176,7 +182,7 @@ const PdfViewer = () => {
         <Fontisto name="history" size={20} color="#ffffff" onPress={onOpen} />
       </View>
       <View style={styles.body}>
-        <View style={styles.bodyContent}>
+        <View>
           <View style={pdfStyle.container}>
             <Pdf
               ref={pdfRef}
@@ -210,11 +216,18 @@ const PdfViewer = () => {
                 );
               }}
               onError={error => {
-                Toast.show({
-                  title: 'Error Loading Pdf',
-                  description: 'Please try again later or reload the page',
-                  duration: 3000,
-                });
+                if (error.toString().includes('canceled')) {
+                  return;
+                }
+                if (url === 'https://drive.google.com/u/0/uc?id=${notesData.did}') {
+                  Toast.show({
+                    title: 'Something went wrong, Please try again later',
+                    duration: 3000,
+                  })
+                }
+                else {
+                  setUrl(`https://drive.google.com/u/0/uc?id=${notesData.did}`);
+                }
               }}
               // onPressLink={(uri) => {
               //   console.log(`Link pressed: ${uri}`);
@@ -369,6 +382,6 @@ const pdfStyle = StyleSheet.create({
     width: width,
     height: height,
     borderRadius: 40,
-    marginBottom: height * 0.12,
+    marginBottom: 0,
   },
 });

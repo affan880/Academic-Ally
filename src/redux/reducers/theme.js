@@ -8,7 +8,7 @@ export const createThemeSlice = createSlice({
     name: 'theme',
     initialState: {
         theme: 'light',
-        dark: {
+        light: {
             primary: "#6360FF",
             secondary: "#F1F1FA",
             tertiary: "#FF8181",
@@ -21,8 +21,11 @@ export const createThemeSlice = createSlice({
             redError: "#FF0000",
             yellowWarning: "#FFD700",
             SearchCategory: "#6360FF",
+            white: "#FCFCFF",
+            categoryBtn: '#FCFCFF',
+            disabledCategoryBtn: '#D3D3D3',
         },
-        light: {
+        dark: {
             primary: "#292B2D",
             secondary: "#161719",
             tertiary: "#FF8181",
@@ -36,6 +39,9 @@ export const createThemeSlice = createSlice({
             redError: "#FF0000",
             yellowWarning: "#FFC960",
             SearchCategory: "#FFFFFF",
+            white: "#FCFCFF",
+            categoryBtn: '#6360FF',
+            disabledCategoryBtn: '#D3D3D3'
         },
         colors: {
             primary: "#6360FF",
@@ -53,7 +59,7 @@ export const createThemeSlice = createSlice({
             SearchCategory: "#6360FF",
         },
         sizes: {
-            title: height * 0.0235,
+            title: height * 0.021,
             subtitle: height * 0.018,
             text: height * 0.02,
             textSmall: height * 0.015,
@@ -78,10 +84,8 @@ export const createThemeSlice = createSlice({
             state.theme = action.payload;
         },
         setLightTheme: (state) => {
-            state.theme = 'dark';
-            state.colors = state.dark;
-            AsyncStorage.setItem('theme', 'dark');
-            AsyncStorage.setItem('colors', JSON.stringify(state.dark));
+            state.theme = 'light';
+            state.colors = state.light;
         },
         setDarkTheme: (state) => {
             state.theme = 'dark';

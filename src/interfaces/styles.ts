@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 const createStyles = (theme:any, sizes:any) =>
@@ -35,7 +35,7 @@ const createStyles = (theme:any, sizes:any) =>
       flexWrap: 'nowrap',
     },
     headerText: {
-      color: theme.quaternary,
+      color: theme.white,
       fontWeight: 'bold',
       fontSize: sizes.title,
       flexWrap: 'nowrap',

@@ -8,6 +8,8 @@ import LottieView from 'lottie-react-native';
 import { Toast } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import QuickAccess from '../../components/CustomFormComponents/QuickAccess/QuickAccess';
@@ -15,7 +17,7 @@ import Recommendation from '../../components/CustomFormComponents/Recommendation
 import ResourceLoader from '../../components/loaders/ResourceLoader';
 import ScreenLayout from '../../interfaces/screenLayout';
 import { setListLoaded, setSubjectsList, setVersion } from '../../redux/reducers/subjectsList';
-import { setDarkTheme } from '../../redux/reducers/theme';
+import { setDarkTheme, setLightTheme } from '../../redux/reducers/theme';
 import { setBookmarks } from '../../redux/reducers/userBookmarkManagement';
 import { setUsersData, setUsersDataLoaded } from '../../redux/reducers/usersData';
 import { setResourceLoader } from '../../redux/reducers/userState';
@@ -46,6 +48,7 @@ type MyScreenNavigationProp = StackNavigationProp<MyStackParamList, 'Notes'>;
 type Props = {};
 
 const HomeScreen = (props: Props) => {
+  const colorScheme = useColorScheme();
   const theme = useSelector((state: any) => {
     return state.theme;
   });
@@ -67,7 +70,11 @@ const HomeScreen = (props: Props) => {
   ).userBookMarks;
 
   useEffect(() => {
-    getFcmToken()
+    colorScheme === 'dark' ? dispatch(setDarkTheme()) : dispatch(setLightTheme());
+  }, [colorScheme])
+
+  useEffect(() => {
+    getFcmToken();
   }, [])
 
   const handleDynamicLink = (link: any) => {
@@ -153,7 +160,6 @@ const HomeScreen = (props: Props) => {
         showsVerticalScrollIndicator={false}
         style={{
           flex: 1,
-          marginBottom: 70,
           backgroundColor: theme.colors.primary,
         }}>
         <View style={styles.header}>
@@ -181,13 +187,27 @@ const HomeScreen = (props: Props) => {
                   </Text>
                 </View>
               </View>
-              {/* <TouchableOpacity>
-                <Ionicons
-                  name="ios-notifications-outline"
-                  color={'#ffffff'}
-                  size={20}
-                />
-              </TouchableOpacity> */}
+              <TouchableOpacity>
+                {
+                  theme.theme === 'light' ?
+                    <FontAwesome5
+                      onPress={() => {
+                        dispatch(setDarkTheme())
+                      }}
+                      name="cloud-moon"
+                      color={'#ffffff'}
+                      size={20}
+                    /> :
+                    <Ionicons
+                      onPress={() => {
+                        dispatch(setLightTheme())
+                      }}
+                      name="md-sunny"
+                      color={'#ffffff'}
+                      size={20}
+                    />
+                }
+              </TouchableOpacity>
             </View>
           </View>
         </View>

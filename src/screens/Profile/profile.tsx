@@ -3,7 +3,7 @@ import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AlertDialog, Avatar, Box, Button, Modal, Stack, Toast, VStack } from 'native-base';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Dimensions, Linking, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -23,7 +23,7 @@ const width = Dimensions.get('screen').width;
 
 const Profile = () => {
   const theme = useSelector((state: any) => { return state.theme });
-  const styles = createStyles(theme.colors, theme.sizes);
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const user = auth().currentUser;
   const [isOpen, setIsOpen] = React.useState(false);
   const [password, setPassword] = useState<string>('');
@@ -39,60 +39,11 @@ const Profile = () => {
     MyStackParamList,
     'UpdateInformation'
   >;
-  const avatarsList = [
-    {
-      id: 1,
-      image: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2FAvatar.png?alt=media&token=e2eb7fb7-88f0-4a9f-9033-e1d9f42027ec',
-    },
-    {
-      id: 2,
-      image: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2FAvatar2.png?alt=media&token=61ae44eb-bc9c-4140-b908-6b904f45be65',
-    },
-    {
-      id: 3,
-      image: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2FAvatar3.png?alt=media&token=5a38de8a-5892-422a-823c-69493a19d210',
-    },
-    {
-      id: 4,
-      image: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2FAvatar4.png?alt=media&token=55d92538-5eaa-4dc9-8c81-3d16a64e6a94',
-    },
-    {
-      id: 5,
-      image: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2FAvatar5.png?alt=media&token=bf17dc7c-55c8-4d0e-9451-42a1e5292c9a',
-    },
-    {
-      id: 6,
-      image: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2FAvatar6.png?alt=media&token=197ddb9f-5a78-42fd-b956-6ca44d4085a0',
-    },
-    {
-      id: 7,
-      image: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2FAvatar7.png?alt=media&token=936a3b53-3c0c-489a-8cb3-a599847e9cf6',
-    },
-    {
-      id: 8,
-      image: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2FAvatar8.png?alt=media&token=2fc7c467-aaa0-41ac-aad1-f8c8d1b300c7',
-    },
-  ];
   const dispatch = useDispatch();
   const navigation = useNavigation<MyScreenNavigationProp>();
   const userFirestoreData = useSelector((state: any) => {
     return state.usersData;
   });
-
-  const updateUserImage = (img: string) => {
-    auth()
-      .currentUser?.updateProfile({
-        photoURL: img,
-      })
-      .then(() => {
-        dispatch(setUserProfile(img));
-        Toast.show({
-          title: 'Avatar updated successfully',
-          duration: 3000,
-          backgroundColor: '#00b300',
-        });
-      });
-  };
 
   return (
     <View style={styles.container}>

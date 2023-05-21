@@ -45,6 +45,7 @@ const createStyles = (theme:any, sizes:any) =>
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
             minHeight: height * 0.8,
+            paddingBottom: height * 0.08,
           },
           recommendedText: {
               color: theme.primaryText,

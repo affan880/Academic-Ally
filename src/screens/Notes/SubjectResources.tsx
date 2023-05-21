@@ -61,9 +61,9 @@ type notesTypes = {
 
 const NotesScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'Home'>>();
-  const {userData} = route.params;
-  const {notesData}: any = route.params;
-  const {subject}: any = route.params;
+  const { userData } = route.params;
+  const { notesData }: any = route.params;
+  const { subject }: any = route.params;
   const [notesbtnStyle, setNotesStyle] = useState(false);
   const [syllabusbtnStyle, setSyllabusStyle] = useState(false);
   const [qpbtnStyle, setQpStyle] = useState(false);
@@ -75,7 +75,7 @@ const NotesScreen = () => {
   const [loading, setLoading] = useState(false);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
 
-  const subjectTitle : string =
+  const subjectTitle: string =
     subject.length > 20 ? subject.slice(0, 25) + '...' : subject;
 
   useEffect(() => {
@@ -96,23 +96,23 @@ const NotesScreen = () => {
     setLoading(true);
     notesData[category]?.length > 0
       ? (navigation.navigate('NotesList', {
-          userData: userData,
-          notesData: notesData[category],
-          selected: category,
-          subject: subject,
-        }),
+        userData: userData,
+        notesData: notesData[category],
+        selected: category,
+        subject: subject,
+      }),
         setLoading(false))
       : (navigation.navigate('UploadScreen', {
-          userData: userData,
-          notesData: notesData,
-          selected: category,
-          subject: subject,
-        }),
+        userData: userData,
+        notesData: notesData,
+        selected: category,
+        subject: subject,
+      }),
         setLoading(false));
   }
 
   return !loading ? (
-    <NavigationLayout rightIconFalse={true} title={subjectTitle} handleScroll={()=>{}} >
+    <NavigationLayout rightIconFalse={true} title={subjectTitle} handleScroll={() => { }} >
       <View style={styles.header}>
         <Text style={styles.headerText}>Resources</Text>
       </View>
@@ -324,7 +324,7 @@ const NotesScreen = () => {
         loop
       />
       <LottieView
-        style={{position: 'absolute', bottom: 0, marginTop: 300}}
+        style={{ position: 'absolute', bottom: 0, marginTop: 300 }}
         source={require('../../assets/lottie/loading-text.json')}
         autoPlay
         loop

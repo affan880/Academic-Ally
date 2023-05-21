@@ -1,14 +1,16 @@
-import { Button, Text } from 'native-base';
-import React, { useState } from 'react';
-import { View, StyleSheet, ActivityIndicator, Modal, Dimensions, StatusBar } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import { setCustomLoader } from '../../redux/reducers/userState';
 import LottieView from 'lottie-react-native';
+import { Button, Text } from 'native-base';
+import React, { useMemo } from 'react';
+import { ActivityIndicator, Dimensions, Modal, StatusBar, StyleSheet, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { setCustomLoader } from '../../redux/reducers/userState';
 
 const { width, height } = Dimensions.get('window');
 
 const ResourceLoader = () => {
   const loading = useSelector((state) => state.userState.resourceLoader);
+  const theme = useSelector((state) => state.theme);
   const dispatch = useDispatch();
 
   return (
@@ -26,7 +28,7 @@ const ResourceLoader = () => {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100%',
-        backgroundColor: '#fff',
+        backgroundColor: theme.colors.secondary,
       }}>
       <LottieView
         source={require('../../assets/lottie/loading-doc.json')}
@@ -43,15 +45,5 @@ const ResourceLoader = () => {
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width,
-    height,
-  },
-});
 
 export default ResourceLoader;

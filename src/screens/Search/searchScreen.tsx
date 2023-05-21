@@ -17,6 +17,7 @@ import { setResourceLoader } from '../../redux/reducers/userState';
 import { userFirestoreData } from '../../services/fetch';
 import createStyles from './styles';
 
+const { width, height } = Dimensions.get('screen');
 const Search = () => {
   const theme = useSelector((state: any) => {
     return state.theme;
@@ -54,7 +55,7 @@ const Search = () => {
 
   useEffect(() => {
     setFilteredData(
-      list?.filter((item) => {
+      list?.filter((item: any) => {
 
         if (searchTerm === '' && selectedBranch !== '') {
           return item.branch
@@ -65,13 +66,13 @@ const Search = () => {
         if (selectedBranch !== '') {
           return (
             (item?.branch?.toLowerCase().includes(selectedBranch.toLowerCase()) &&
-              item?.subject?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            abbreviation?.toLowerCase().includes(searchTerm.toLowerCase())
+              item?.subject?.toLowerCase().includes(searchTerm.toLowerCase()))
+            // abbreviation?.toLowerCase().includes(searchTerm.toLowerCase())
           );
         } else {
           return (
-            item?.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            abbreviation?.toLowerCase().includes(searchTerm.toLowerCase())
+            item?.subject?.toLowerCase().includes(searchTerm.toLowerCase())
+            // abbreviation?.toLowerCase().includes(searchTerm.toLowerCase())
           );
         }
       }),
@@ -149,13 +150,13 @@ const Search = () => {
                   value={searchTerm}
                   onChangeText={text => setSearchTerm(text)}
                   placeholder="Search"
-                  placeholderTextColor={'#000000'}
+                  placeholderTextColor={theme.colors.primaryText}
                   style={styles.searchInput}
                 />
                 <Feather
                   name="search"
                   size={theme.sizes.iconSmall}
-                  color="#161719"
+                  color={theme.colors.primaryText}
                   style={styles.searchIcon}
                 />
               </View>
@@ -187,7 +188,9 @@ const Search = () => {
                 </View>
               </View>
             </View>
-            <View>
+            <View style={{
+              paddingBottom: height * 0.08
+            }} >
               {limitedData?.length > 0 ? (
                 limitedData?.map((item: any, index: any) => {
                   return (

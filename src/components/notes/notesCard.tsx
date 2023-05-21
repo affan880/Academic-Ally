@@ -322,7 +322,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   : 'bookmark-o'
               }
               size={theme.sizes.height * 0.035}
-              color={theme.colors.primary}
+              color={theme.colors.SearchCategory}
             />
           </TouchableOpacity>
         </TouchableOpacity>
@@ -346,7 +346,6 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
           <ReportIconWhite />
         </TouchableOpacity>
         <TouchableOpacity style={styles.cardOptionContainer} onPress={() => {
-          console.log("454", item)
           shareNotes({
             ...item,
             subject: subject,

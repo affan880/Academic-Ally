@@ -55,7 +55,7 @@ const createStyles = (theme:any, sizes:any) =>
       position: 'relative',
       shadowColor: '#000',
       borderRadius: 10,
-      paddingHorizontal: width * 0.05,
+      paddingHorizontal: width * 0.02,
     },
     subjectName: {
       fontSize: sizes.title,

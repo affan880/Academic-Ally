@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 const createStyles = (theme:any, sizes:any) =>
@@ -32,7 +32,7 @@ const createStyles = (theme:any, sizes:any) =>
     categoryBtns: {
       width: width * 0.4,
       height: height * 0.25,
-      backgroundColor: '#fff',
+      backgroundColor: theme.categoryBtn,
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
@@ -72,13 +72,12 @@ const createStyles = (theme:any, sizes:any) =>
     disabledBtn: {
       width: width * 0.4,
       height: height * 0.25,
-      backgroundColor: '#D3D3D3',
+      backgroundColor:  theme.disabledCategoryBtn,
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
       marginHorizontal: 0,
       marginVertical: 10,
-      //change btn position on hover
       transform: [{scale: 1}],
       shadowColor: '#000',
       shadowOffset: {
@@ -93,11 +92,11 @@ const createStyles = (theme:any, sizes:any) =>
       transform: [{scale: 1.1}],
       borderColor: theme.tertiary,
       borderWidth: 2,
-      backgroundColor: '#fff',
+      backgroundColor: theme.disabledCategoryBtn,
     },
     containerText: {
       fontSize: 18,
-      color: 'white',
+      color: theme.primaryText,
       fontWeight: 'bold',
       backgroundColor: 'rgba(255, 255, 255, 0.17)',
       width: 30,

@@ -78,10 +78,15 @@ export const BottomTabBar = () => {
                     tabBarStyle: {
                         position: "absolute",
                         height: height * 0.08,
-                        width: "100%",
-                        backgroundColor: "#FCFCFF",
+                        backgroundColor: theme.colors.quaternary,
                         borderTopLeftRadius: 30,
                         borderTopRightRadius: 30,
+                        elevation: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        overflow: "hidden",
+                        borderTopWidth: 0,
                     }
                 }
                 }
@@ -93,7 +98,7 @@ export const BottomTabBar = () => {
                             return (
                                 //label and icon
                                 <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
-                                    <Feather name='home' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
+                                    <Feather name='home' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : theme.colors.primaryText} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
                                     {
@@ -104,7 +109,8 @@ export const BottomTabBar = () => {
                             )
                         })
                     }}
-                    component={DrawerScreen}
+                    // component={DrawerScreen}
+                    component={HomeScreen}
                 />
                 <Tab.Screen
                     name="Search"
@@ -113,7 +119,7 @@ export const BottomTabBar = () => {
                             return (
                                 //label and icon
                                 <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
-                                    <Feather name='search' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
+                                    <Feather name='search' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : theme.colors.primaryText} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
                                     {
@@ -133,7 +139,7 @@ export const BottomTabBar = () => {
                             return (
                                 //label and icon
                                 <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
-                                    <Feather name='upload' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
+                                    <Feather name='upload' size={theme.sizes.iconMedium} color={focused ? '#FF8181' : theme.colors.primaryText} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
                                     {
@@ -153,7 +159,7 @@ export const BottomTabBar = () => {
                             return (
                                 //label and icon
                                 <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
-                                    <Fontisto name={focused ? 'bookmark-alt' : 'bookmark'} size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
+                                    <Fontisto name={focused ? 'bookmark-alt' : 'bookmark'} size={theme.sizes.iconMedium} color={focused ? '#FF8181' : theme.colors.primaryText} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
                                     {
@@ -173,7 +179,7 @@ export const BottomTabBar = () => {
                             return (
                                 //label and icon
                                 <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
-                                    <Feather name="user" size={theme.sizes.iconMedium} color={focused ? '#FF8181' : '#161719'} style={{
+                                    <Feather name="user" size={theme.sizes.iconMedium} color={focused ? '#FF8181' : theme.colors.primaryText} style={{
                                         bottom: focused ? 3 : 0,
                                     }} />
                                     {

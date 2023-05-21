@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 const createStyles = (theme:any, sizes:any) =>
@@ -6,7 +6,6 @@ const createStyles = (theme:any, sizes:any) =>
     container: {
       flex: 1,
       backgroundColor: theme.primary,
-      marginBottom: 70,
     },
     headerContainer: {
       height: height * 0.14,
@@ -32,7 +31,7 @@ const createStyles = (theme:any, sizes:any) =>
     searchContainer: {
       width: width * 0.9,
       height: height * 0.06,
-      backgroundColor: '#fff',
+      backgroundColor: theme.quaternary,
       borderRadius: 10,
       flexDirection: 'row',
       alignItems: 'center',
@@ -50,7 +49,7 @@ const createStyles = (theme:any, sizes:any) =>
       paddingHorizontal: width * 0.03,
       marginVertical: height * 0.01,
       alignSelf: 'center',
-      color: '#000000',
+      color: theme.primaryText,
     },
     searchIcon: {
       width: width * 0.05,
@@ -119,7 +118,7 @@ const createStyles = (theme:any, sizes:any) =>
     subjectItem: {
       width: width * 0.9,
       height: height * 0.15,
-      backgroundColor: '#fff',
+      backgroundColor: theme.quaternary,
       borderRadius: 10,
       flexDirection: 'row',
       alignItems: 'center',
@@ -131,7 +130,7 @@ const createStyles = (theme:any, sizes:any) =>
     subjectItemTextContainer: {
       width: width * 0.65,
       height: height * 0.1,
-      backgroundColor: '#fff',
+      backgroundColor: theme.quaternary,
       borderRadius: 10,
       flexDirection: 'column',
       alignItems: 'flex-start',
@@ -169,7 +168,7 @@ const createStyles = (theme:any, sizes:any) =>
     headerText: {
       fontSize: sizes.title,
       fontWeight: 'bold',
-      color: theme.quaternary,
+      color: "#FCFCFF",
       textAlign: 'center',
       paddingLeft: 5,
     },

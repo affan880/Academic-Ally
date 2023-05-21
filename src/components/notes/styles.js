@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 const createStyles = (theme, sizes) =>
@@ -186,7 +186,7 @@ const createStyles = (theme, sizes) =>
       flexDirection: 'row',
     },
     cardOptionText: {
-      color: theme.quaternary,
+      color: theme.white,
       fontSize: sizes.subtitle,
       fontWeight: '600',
       paddingRight: 5,
