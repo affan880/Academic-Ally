@@ -17,6 +17,7 @@ import { manageBookmarks } from '../../Modules/auth/firebase/firebase';
 import { userAddBookMarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
 import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
 import { getMailId, ratedResourcesList, shareNotes, submitRating, submitReport, ViewCount } from '../../services/fetch';
+import NavigationService from '../../services/NavigationService';
 import { NavBtn } from '../CustomFormComponents/CustomBtn';
 import createStyles from './styles';
 
@@ -176,7 +177,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
               subjectName: subject,
               id: item.id,
             })
-            navigation.navigate('PdfViewer', {
+            NavigationService.navigate(NavigationService.screens.PdfViewer, {
               userData: {
                 Course: userData.Course,
                 Branch: userData.Branch,
@@ -371,7 +372,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                 }}
                 swipeable={true}
                 color={theme.colors.yellowWarning}
-                emptyColor={theme.colors.textSecondary}
+                emptyColor={theme.colors.terinaryText}
                 maxRating={5}
                 allowHalves={true}
                 style={{
@@ -396,7 +397,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
               <TouchableOpacity onPress={() => {
                 setModalVisible(false);
               }} >
-                <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={theme.colors.textSecondary} >
+                <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={theme.colors.terinaryText} >
                   Cancel
                 </Text>
               </TouchableOpacity>
@@ -444,7 +445,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   <Actionsheet.Item style={{
                     borderBottomWidth: 0.9,
                     borderBottomColor: theme.colors.textSecondary,
-                    backgroundColor: theme.colors.quaternary,
+                    // backgroundColor: theme.colors.quaternary,
                   }} onPress={() => {
                     setChecked1(!checked1);
                   }}>
@@ -462,7 +463,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                     }} onChange={(value) => {
                       setChecked1(!checked1);
                     }} value={"Checked 1"} colorScheme="green" >
-                      <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={'95%'} >
+                      <Text fontSize={theme.sizes.subtitle} color={theme.colors.black} fontWeight={700} paddingLeft={4} width={'95%'} >
                         Copyrights: The notes or this resource file contain copyrighted material
                       </Text>
                     </Checkbox>
@@ -488,7 +489,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                     }} onChange={(value) => {
                       setChecked2(!checked2);
                     }} value={"Checked 1"} colorScheme="green" >
-                      <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={'95%'} >
+                      <Text fontSize={theme.sizes.subtitle} color={theme.colors.black} fontWeight={700} paddingLeft={4} width={'95%'} >
                         Misleading resource: The uploaded source contains inaccurate and false information.
                       </Text>
                     </Checkbox>
@@ -516,7 +517,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                       onChange={(value) => {
                         setChecked3(!checked3);
                       }} value={"Checked 1"} colorScheme="green" >
-                      <Text fontSize={theme.sizes.subtitle} color={theme.colors.primaryText} fontWeight={700} paddingLeft={4} width={"92%"}>
+                      <Text fontSize={theme.sizes.subtitle} color={theme.colors.black} fontWeight={700} paddingLeft={4} width={"92%"}>
                         Spam: This file contains content other than notes and resources.
                       </Text>
                     </Checkbox>
@@ -531,7 +532,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                 </Box>
                 <Stack direction="row" space={2} marginY={0} paddingX={5} alignItems="center" justifyContent="space-evenly" width={"100%"} >
                   <TouchableOpacity onPress={onClose} >
-                    <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={theme.colors.textSecondary} >
+                    <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={theme.colors.terinaryText} >
                       Cancel
                     </Text>
                   </TouchableOpacity>
@@ -548,7 +549,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                     }, item);
                     setSubmitted(true);
                   }} >
-                    <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={theme.colors.quaternary} >
+                    <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={theme.colors.white} >
                       Confirm
                     </Text>
                   </TouchableOpacity>

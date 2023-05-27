@@ -1,13 +1,15 @@
-import {StyleSheet, Text, View, Dimensions, Linking} from 'react-native';
-import React, {useRef} from 'react';
+import React, { useMemo } from 'react';
+import { Dimensions, Linking, StyleSheet, Text, View } from 'react-native';
+import { useSelector } from 'react-redux';
+
 import NavigationLayout from '../../../interfaces/navigationLayout';
 import createStyles from './styles';
 
 const screenWidth = Dimensions.get('screen').width;
 
 const PrivacyPolicy = () => {
-  const styles = createStyles();
-
+  const theme = useSelector((state) => state.theme);
+  const styles= useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   return (
     <NavigationLayout rightIconFalse={true}>
         <View style={styles.body}>

@@ -10,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setUserProfile } from '../../redux/reducers/usersData';
+import NavigationService from '../../services/NavigationService';
 import createStyles from './styles';
 
 type MyStackParamList = {
@@ -81,7 +82,7 @@ const Profile = () => {
                 <TouchableOpacity
                   style={styles.settingsContainer}
                   onPress={() => {
-                    navigation.navigate('UpdateInformation');
+                    NavigationService.navigate(NavigationService.screens.UpdateProfile);
                   }}>
                   <Text style={styles.settingsText}>Update Profile</Text>
                   <Ionicons
@@ -122,7 +123,7 @@ const Profile = () => {
                   }]}>Support</Text>
                 </View>
                 <TouchableOpacity
-                  onPress={() => { navigation.navigate('AboutUs') }}
+                  onPress={() => { NavigationService.navigate(NavigationService.screens.AboutUs) }}
                   style={styles.settingsContainer}>
                   <Text style={styles.settingsText}>About Us</Text>
                   <Ionicons
@@ -160,7 +161,7 @@ const Profile = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('PrivacyPolicy')
+                    NavigationService.navigate(NavigationService.screens.PrivacyPolicy)
                   }}
                   style={styles.settingsContainer}>
                   <Text style={styles.settingsText}>Privacy Policy</Text>
@@ -172,7 +173,7 @@ const Profile = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.settingsContainer} onPress={() => {
-                    navigation.navigate('TermsAndConditions')
+                    NavigationService.navigate(NavigationService.screens.TermsAndConditions)
                   }} >
                   <Text style={styles.settingsText}>Terms & Conditions</Text>
                   <Ionicons

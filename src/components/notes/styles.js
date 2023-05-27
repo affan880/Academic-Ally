@@ -139,6 +139,7 @@ const createStyles = (theme, sizes) =>
       justifyContent: 'center',
       borderRadius: 15,
       shadowColor: '#000',
+      marginRight: 5,
     },
     subjectName: {
       fontSize: theme.title,
@@ -152,7 +153,7 @@ const createStyles = (theme, sizes) =>
       width: width / 1.1,
       height: height / 7,
       flexDirection: 'row',
-      justifyContent: 'space-between',
+      justifyContent: 'flex-start',
       alignItems: 'center',
       position: 'relative',
       shadowColor: '#000',

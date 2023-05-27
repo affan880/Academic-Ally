@@ -11,6 +11,7 @@ import { NavBtn } from '../../components/CustomFormComponents/CustomBtn';
 import NavigationLayout from '../../interfaces/navigationLayout';
 import { userAddToRecents } from '../../redux/reducers/usersRecentPdfsManager';
 import { setResourceLoader } from '../../redux/reducers/userState';
+import NavigationService from '../../services/NavigationService';
 import createStyles from './styles';
 
 type RootStackParamList = {
@@ -95,14 +96,14 @@ const NotesScreen = () => {
     setSelected(category);
     setLoading(true);
     notesData[category]?.length > 0
-      ? (navigation.navigate('NotesList', {
+      ? (NavigationService.navigate(NavigationService.screens.Resources, {
         userData: userData,
         notesData: notesData[category],
         selected: category,
         subject: subject,
       }),
         setLoading(false))
-      : (navigation.navigate('UploadScreen', {
+      : (NavigationService.navigate(NavigationService.screens.Upload, {
         userData: userData,
         notesData: notesData,
         selected: category,
@@ -274,41 +275,6 @@ const NotesScreen = () => {
           )}
         </View>
       </View>
-      {/* <View style={styles.selectBtn}>
-        <NavBtn
-          title={
-            selected === ''
-              ? 'Select'
-              : notesData[selected]?.length > 0
-              ? 'Select'
-              : 'Upload'
-          }
-          color={
-            selected === ''
-              ? '#7A7D7D'
-              : notesData[selected]?.length > 0
-              ? '#6360FF'
-              : '#FF8181'
-          }
-          onPress={() => {
-            selected === ''
-              ? null
-              : notesData[selected]?.length > 0
-              ? navigation.navigate('NotesList', {
-                  userData: userData,
-                  notesData: notesData,
-                  selected: selected,
-                  subject: subject,
-                })
-              : navigation.navigate('UploadScreen', {
-                  userData: userData,
-                  notesData: notesData,
-                  selected: selected,
-                  subject: subject,
-                });
-          }}
-        />
-      </View> */}
     </NavigationLayout>
   ) : (
     <View

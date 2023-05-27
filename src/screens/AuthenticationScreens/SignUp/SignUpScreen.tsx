@@ -16,6 +16,7 @@ import CustomLoader from '../../../components/loaders/CustomLoader';
 import { createUser } from '../../../Modules/auth/firebase/firebase';
 import { setUsersData } from '../../../redux/reducers/usersData';
 import { setCustomLoader } from '../../../redux/reducers/userState';
+import NavigationService from '../../../services/NavigationService';
 import { validationSchema } from '../../../utilis/validation';
 import createStyles from './styles';
 
@@ -295,7 +296,7 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
                 <NavBtn
                   title="Log In"
                   onPress={() => {
-                    navigation.navigate('LoginScreen');
+                    NavigationService.navigate(NavigationService.screens.Login);
                   }}
                   color="#FF8181"
                 />

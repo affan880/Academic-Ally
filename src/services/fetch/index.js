@@ -3,13 +3,12 @@ import auth from '@react-native-firebase/auth';
 import { firebase } from '@react-native-firebase/auth';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import firestore from '@react-native-firebase/firestore';
+import messaging from '@react-native-firebase/messaging';
 import { CheckIcon, Toast } from 'native-base';
 import { Alert, Share } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { setVisitedSubjects } from '../../redux/reducers/subjectsList';
-
-// import messaging from '@react-native-firebase/messaging';
 
 export const userFirestoreData = async (userData, type, item, dispatch) => {
   let list = [];
@@ -361,17 +360,15 @@ export const getFcmToken = async () => {
   let fcmToken = await AsyncStorage.getItem('fcmToken');
   if (!fcmToken) {
     try {
-      const fcmToken = await messaging().getToken();
-      // if (fcmToken) {
-      //   console.log(fcmToken);
-      //   await AsyncStorage.setItem('fcmToken', fcmToken);
-      //   firestore()
-      //     .collection('Users')
-      //     .doc(auth().currentUser?.uid)
-      //     .set({
-      //       fcmToken: fcmToken,
-      //     })
-      // }
+      if (fcmToken) {
+        await AsyncStorage.setItem('fcmToken', fcmToken);
+        firestore()
+          .collection('Users')
+          .doc(auth().currentUser?.uid)
+          .update({
+            fcmToken: fcmToken,
+          })
+      }
     } catch (error) {
       console.log(error);
     }
@@ -379,9 +376,9 @@ export const getFcmToken = async () => {
   return fcmToken;
 }
 
-// export const NotificationListner = async () => {
-//   const unsubscribe = messaging().onMessage(async remoteMessage => {
-//     Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-//   });
-//   return unsubscribe;
-// }
+export const NotificationListner = async () => {
+  const unsubscribe = messaging().onMessage(async remoteMessage => {
+    Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  });
+  return unsubscribe;
+}

@@ -1,11 +1,13 @@
-import {StyleSheet, Text, View, TouchableOpacity, Animated} from 'react-native';
-import React, {useMemo, useState, useRef} from 'react';
-import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {useDispatch, useSelector} from 'react-redux';
-import NavigationLayout from '../../interfaces/navigationLayout';
-import createStyles from './styles';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useMemo, useRef, useState } from 'react';
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+
 import NotesCard from '../../components/notes/notesCard';
+import NavigationLayout from '../../interfaces/navigationLayout';
+import NavigationService from '../../services/NavigationService';
+import createStyles from './styles';
 
 type Props = {};
 type RootStackParamList = {
@@ -78,10 +80,10 @@ const NotesList = (props: Props) => {
   }
 
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
-  const {userData} = route.params;
-  const {notesData} = route.params;
-  const {selected} = route.params;
-  const {subject} = route.params;
+  const { userData } = route.params;
+  const { notesData } = route.params;
+  const { selected } = route.params;
+  const { subject } = route.params;
 
   return (
     <>
@@ -113,15 +115,15 @@ const NotesList = (props: Props) => {
         {notesData.map((item: any, index: number) => {
           return (
             <View key={item.id}>
-            <NotesCard item={item} userData={userData} notesData={notesData} selected={selected} subject={subject} />
+              <NotesCard item={item} userData={userData} notesData={notesData} selected={selected} subject={subject} />
             </View>
           );
         })}
       </NavigationLayout>
-      <Animated.View style={{opacity: fadeAnim}}>
+      <Animated.View style={{ opacity: fadeAnim }}>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('UploadScreen', {
+            NavigationService.navigate(NavigationService.screens.Upload, {
               userData: userData,
               notesData: notesData,
               selected: selected,

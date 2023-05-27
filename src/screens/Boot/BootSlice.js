@@ -6,7 +6,7 @@ const BootSlice = createSlice({
         appBooting: true,
         authToken: null,
         showIntro: true,
-        company: null
+        customClaims: null,
     },
     reducers: {
         setAppBooting: (state, action) => {
@@ -18,8 +18,11 @@ const BootSlice = createSlice({
         setCompany: (state, action) => {
             state.company = action.payload;
         },
+        setCustomClaims: (state, action) => {
+            state.customClaims = action.payload;
+        }
     },
 });
-export const { setAppBooting, setAuthToken, setShowIntro, setCompany } = BootSlice.actions;
+export const { setAppBooting, setAuthToken, setShowIntro, setCustomClaims } = BootSlice.actions;
 
 export default BootSlice.reducer;

@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ScreenLayout from '../../interfaces/screenLayout';
 import { setResourceLoader } from '../../redux/reducers/userState';
 import { userFirestoreData } from '../../services/fetch';
+import NavigationService from '../../services/NavigationService';
 import createStyles from './styles';
 
 const { width, height } = Dimensions.get('screen');
@@ -102,7 +103,7 @@ const Search = () => {
         subjectName: item.subject,
       };
       dispatch(setResourceLoader(false));
-      navigation.navigate('SubjectResources', {
+      NavigationService.navigate(NavigationService.screens.ResourcesCategories, {
         userData: {
           course: userData.data().course,
           branch: item.branch,

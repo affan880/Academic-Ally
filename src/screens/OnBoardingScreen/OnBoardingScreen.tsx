@@ -1,19 +1,11 @@
-import React, {FC} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  StatusBar,
-  Dimensions,
-} from 'react-native';
-import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import { NavigationProp, ParamListBase } from '@react-navigation/native';
+import React, { FC } from 'react';
+import { Dimensions, Image, StatusBar, StyleSheet, Text, View } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
-import {
-  FIRSTONBOARDINGSCREEN,
-  SECONDONBOARDINGSCREEN,
-  THIRDONBOARDINGSCREEN,
-} from '../../assets';
+
+import { FIRSTONBOARDINGSCREEN, SECONDONBOARDINGSCREEN, THIRDONBOARDINGSCREEN } from '../../assets';
+import NavigationService from '../../services/NavigationService';
+
 const Bar_Height: any = StatusBar.currentHeight;
 const Full_Screen_Height = Dimensions.get('screen').height;
 const Full_Screen_Width = Dimensions.get('screen').width;
@@ -29,8 +21,8 @@ const OnBoardingScreen: FC<IProps> = ({navigation}) => {
         backgroundColor={'transparent'}
       />
       <Onboarding
-        onSkip={() => navigation.navigate('LoginScreen')}
-        onDone={() => navigation.navigate('LoginScreen')}
+        onSkip={() => NavigationService.navigate(NavigationService.screens.Login)}
+        onDone={() => navigation.navigate(NavigationService.screens.Login)}
         nextLabel={
           <Text
             style={{

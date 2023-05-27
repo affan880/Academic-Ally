@@ -11,13 +11,13 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { manageBookmarks } from '../../../Modules/auth/firebase/firebase';
 import { userAddBookMarks, userRemoveBookMarks } from '../../../redux/reducers/userBookmarkManagement';
 import usersData from '../../../redux/reducers/usersData';
 import { userClearRecents, userRemoveFromRecents } from '../../../redux/reducers/usersRecentPdfsManager';
+import NavigationService from '../../../services/NavigationService';
 import createStyles from './styles';
 
 const { width, height } = Dimensions.get('window');
@@ -63,12 +63,17 @@ const PdfViewer = () => {
   const { subject } = route.params;
   const { selected } = route.params;
   const [pageNo, setPageNo] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [url, setUrl] = useState(`https://link.storjshare.io/s/juewbwfxqum6tp4n52v4rxadrpca/academic-ally/Universities/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${subject || notesData?.subject}/${notesData?.category || selected.charAt(0).toUpperCase() + selected.slice(1)}/${notesData?.name}?wrap=0`);
-  console.log(url);
+
+  function replace(str: string) {
+    if (str.includes('&')) {
+      const text = str.replace(/&/g, '_');
+      return text;
+    }
+    return str;
+  }
+  const [url, setUrl] = useState(`https://link.storjshare.io/s/jx6mask5nzricqlpbzxbn7h7ecba/academic-ally/Universities/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${replace(notesData?.subject || subject)}/${notesData?.category || selected.charAt(0).toUpperCase() + selected.slice(1)}/${replace(notesData?.name)}?wrap=0`);
   const source = {
     uri: url,
-    // uri: `https://drive.google.com/u/0/uc?id=${notesData.did}`,
     cache: true,
     expiration: 60 * 60 * 24 * 7,
   };
@@ -189,12 +194,11 @@ const PdfViewer = () => {
               trustAllCerts={false}
               source={source}
               scale={1}
+              minScale={0.5}
+              maxScale={5.0}
               spacing={10}
               enableRTL={true}
               enableAnnotationRendering={true}
-              onLoadComplete={(numberOfPages, filePath) => {
-                setLoading(false);
-              }}
               onPageChanged={(page, numberOfPages) => {
                 setCurrentPage(page);
                 setTotalPages(numberOfPages);
@@ -209,25 +213,16 @@ const PdfViewer = () => {
                       color="#FF8181"
                       size="large"
                     />
-                    <Text style={{ textAlign: 'center' }}>
+                    <Text style={{ textAlign: 'center', color: "#FF8181" }}>
                       {progressBar.toFixed(2)}% Loaded
                     </Text>
                   </View>
                 );
               }}
               onError={error => {
-                if (error.toString().includes('canceled')) {
-                  return;
-                }
-                if (url === 'https://drive.google.com/u/0/uc?id=${notesData.did}') {
-                  Toast.show({
-                    title: 'Something went wrong, Please try again later',
-                    duration: 3000,
-                  })
-                }
-                else {
-                  setUrl(`https://drive.google.com/u/0/uc?id=${notesData.did}`);
-                }
+                console.log(error);
+                console.log(url);
+                setUrl(`https://drive.google.com/u/0/uc?id=${notesData.did}`);
               }}
               // onPressLink={(uri) => {
               //   console.log(`Link pressed: ${uri}`);
@@ -332,7 +327,7 @@ const PdfViewer = () => {
                   width={'100%'}
                   paddingTop={5}
                   onPress={() => {
-                    navigation.navigate('PdfViewer', {
+                    NavigationService.navigate(NavigationService.screens.PdfViewer, {
                       userData: userData,
                       notesData: item,
                       selected: selected,

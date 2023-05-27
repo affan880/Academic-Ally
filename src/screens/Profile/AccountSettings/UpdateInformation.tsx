@@ -1,30 +1,25 @@
-import {StyleSheet, View, Dimensions, Image, TouchableOpacity} from 'react-native';
-import React, {useRef, useState} from 'react';
-import NavigationLayout from '../../../interfaces/navigationLayout';
-import {
-  CustomBtn,
-  NavBtn,
-} from '../../../components/CustomFormComponents/CustomBtn';
-import {CustomTextInput} from '../../../components/CustomFormComponents/CustomTextInput';
-import Form from '../../../components/Forms/form';
-import DropdownComponent from '../../../components/CustomFormComponents/Dropdown';
-import {updatevalidationSchema} from '../../../utilis/validation';
-import createStyles from './styles';
-import {Actionsheet, Avatar, useDisclose, Toast, Stack, Text} from 'native-base';
-import auth from '@react-native-firebase/auth';
-import {
-  getFirestoreData,
-  logOut,
-  updateFirestoreData,
-} from '../../../Modules/auth/firebase/firebase';
-import {useSelector, useDispatch} from 'react-redux';
-import {setUsersData, setUserProfile} from '../../../redux/reducers/usersData';
-import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { Actionsheet, Avatar, Stack, Text, Toast, useDisclose } from 'native-base';
+import React, { useRef, useState } from 'react';
+import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {StackNavigationProp} from '@react-navigation/stack';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { CustomBtn, NavBtn } from '../../../components/CustomFormComponents/CustomBtn';
+import { CustomTextInput } from '../../../components/CustomFormComponents/CustomTextInput';
+import DropdownComponent from '../../../components/CustomFormComponents/Dropdown';
+import Form from '../../../components/Forms/form';
+import NavigationLayout from '../../../interfaces/navigationLayout';
+import { getFirestoreData, logOut, updateFirestoreData } from '../../../Modules/auth/firebase/firebase';
+import { setUserProfile, setUsersData } from '../../../redux/reducers/usersData';
+import NavigationService from '../../../services/NavigationService';
+import { updatevalidationSchema } from '../../../utilis/validation';
+import createStyles from './styles';
 
 type MyStackParamList = {
   'BottomTabBar': any;
@@ -206,8 +201,8 @@ const [selectedAvatar, setSelectedAvatar] = React.useState<any>(auth().currentUs
       email: userFirestoreData?.usersData?.email,
     };
     updateFirestoreData(uid, data, dispatch);
-    navigation.navigate('BottomTabBar', {
-        screen: 'Home',
+    NavigationService.navigate(NavigationService.screens.BottomTabNavigator, {
+        screen: NavigationService.screens.Home,
         });
     AsyncStorage.setItem('reccommendSubjects', JSON.stringify([]));
   };

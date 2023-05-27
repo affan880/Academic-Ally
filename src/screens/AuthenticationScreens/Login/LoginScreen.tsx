@@ -13,6 +13,7 @@ import Form from '../../../components/Forms/form';
 import CustomLoader from '../../../components/loaders/CustomLoader';
 import { forgotPassword, getCurrentUser, logIn, logOut, ResendVerification } from '../../../Modules/auth/firebase/firebase';
 import { setCustomLoader } from '../../../redux/reducers/userState';
+import NavigationService from '../../../services/NavigationService';
 import { LoginvalidationSchema } from '../../../utilis/validation';
 import createStyles from './styles';
 
@@ -130,7 +131,7 @@ const LoginScreen: React.FC<IProps> = ({navigation}) => {
                 <NavBtn
                   title="Create an Account"
                   onPress={() => {
-                    navigation.navigate('SignUpScreen');
+                    NavigationService.navigate(NavigationService.screens.SignUp);
                   }}
                   color="#FF8181"
                 />

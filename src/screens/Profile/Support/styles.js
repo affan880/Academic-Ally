@@ -1,7 +1,7 @@
-import { StyleSheet, Dimensions, TouchableHighlight, Linking } from 'react-native';
+import { Dimensions, Linking, StyleSheet, TouchableHighlight } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
-const createStyles = () =>
+const createStyles = (theme, sizes) =>
     StyleSheet.create({
         container: {
             flex: 1,
@@ -32,7 +32,7 @@ const createStyles = () =>
         },
         title: {
             fontSize: 24,
-            color: '#000',
+            color: theme.text,
             fontWeight: 'bold',
             textAlign: 'center',
             marginBottom: 10,
@@ -52,7 +52,7 @@ const createStyles = () =>
         },
         label: {
             fontSize: 16,
-            color: '#000',
+            color: theme.text,
             fontWeight: 'bold',
             textAlign: 'left',
             paddingBottom: 5,
@@ -60,7 +60,7 @@ const createStyles = () =>
         },
         normalText: {
             fontSize: 16,
-            color: '#000',
+            color: theme.text,
             textAlign: 'left',
             paddingBottom: 5,
             flexWrap: 'wrap',

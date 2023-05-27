@@ -1,15 +1,33 @@
-import { createNavigationContainerRef, StackActions } from '@react-navigation/native';
+import { createNavigationContainerRef, StackActions, useNavigation } from '@react-navigation/native';
 
 class NavigationService {
     static navigationRef = createNavigationContainerRef();
-    static screens = {};
+    static screens = {
+        Intro: 'Intro',
+        Login: 'Login',
+        SignUp: 'SignUp',
+        ForgotPassword: 'ForgotPassword',
+        ConnectionError: 'ConnectionError',
+        BottomTabNavigator: 'BottomTabNavigator',
+        DrawerNavigator: 'DrawerNavigator',
+        Home: 'Home',
+        Search: 'Search',
+        Upload: 'Upload',
+        UploadScreen: 'UploadScreen',
+        Bookmark: 'Bookmark',
+        Profile: 'Profile',
+        ResourcesCategories: 'ResourcesCategories',
+        Resources: 'Resources',
+        PdfViewer: 'PdfViewer',
+        UpdateProfile: 'UpdateProfile',
+        AboutUs: 'AboutUs',
+        PrivacyPolicy: 'PrivacyPolicy',
+        TermsAndConditions: 'TermsAndConditions',
+        UserRequestsPdfViewer: 'UserRequestsPdfViewer',
+    };
 
     static navigate(name, params) {
-        if (this.navigationRef.isReady() &&
-            this.navigationRef.getCurrentRoute().name !== name
-        ) {
-            this.navigationRef.navigate(name, params);
-        }
+        this.navigationRef.navigate(name, params);
     }
 
     static goBack() {

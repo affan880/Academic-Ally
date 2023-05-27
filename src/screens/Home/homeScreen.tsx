@@ -22,6 +22,7 @@ import { setBookmarks } from '../../redux/reducers/userBookmarkManagement';
 import { setUsersData, setUsersDataLoaded } from '../../redux/reducers/usersData';
 import { setResourceLoader } from '../../redux/reducers/userState';
 import { fetchBookmarksList, fetchNotesList, getFcmToken } from '../../services/fetch';
+import NavigationService from '../../services/NavigationService';
 import createStyles from './styles';
 
 type MyStackParamList = {
@@ -94,7 +95,7 @@ const HomeScreen = (props: Props) => {
       name: parts[11],
       units: parts[9]
     };
-    navigation.navigate('PdfViewer', {
+    NavigationService.navigate(NavigationService.screens.PdfViewer, {
       userData,
       notesData,
     });
@@ -171,7 +172,7 @@ const HomeScreen = (props: Props) => {
                   alignItems: 'center',
                 }}>
                 <TouchableOpacity style={styles.userImgContainer} onPress={() => {
-                  navigation.navigate('Profile')
+                  NavigationService.navigate(NavigationService.screens.Profile)
                 }} >
                   <Image source={{
                     uri: userFirestoreData.userProfile || auth().currentUser?.photoURL,

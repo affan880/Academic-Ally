@@ -22,6 +22,7 @@ export const createThemeSlice = createSlice({
             yellowWarning: "#FFD700",
             SearchCategory: "#6360FF",
             white: "#FCFCFF",
+            black: "#161719",
             categoryBtn: '#FCFCFF',
             disabledCategoryBtn: '#D3D3D3',
         },
@@ -40,6 +41,7 @@ export const createThemeSlice = createSlice({
             yellowWarning: "#FFC960",
             SearchCategory: "#FFFFFF",
             white: "#FCFCFF",
+            black: "#161719",
             categoryBtn: '#6360FF',
             disabledCategoryBtn: '#D3D3D3'
         },
@@ -57,6 +59,8 @@ export const createThemeSlice = createSlice({
             redError: "#FF0000",
             yellowWarning: "#FFC960",
             SearchCategory: "#6360FF",
+            white: "#FCFCFF",
+            black: "#161719",
         },
         sizes: {
             title: height * 0.021,

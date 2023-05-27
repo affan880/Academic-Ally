@@ -12,6 +12,7 @@ import { setReccommendSubjects, setReccommendSubjectsLoaded, setVisitedSubjects 
 import { setDarkTheme, setLightTheme } from '../../../redux/reducers/theme';
 import { userAddToRecents } from '../../../redux/reducers/usersRecentPdfsManager';
 import { fetchSubjectList, userFirestoreData } from '../../../services/fetch'
+import NavigationService from '../../../services/NavigationService';
 import { sizes } from '../../../utilis/colors';
 import createStyles from './styles';
 
@@ -108,7 +109,7 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
 
   async function handleNavigation(item: any, category: string) {
     item[category] ? (
-      navigation.navigate('NotesList', {
+      NavigationService.navigate(NavigationService.screens.Resources, {
         userData: userData.usersData,
         notesData: await userFirestoreData(userData.usersData, category, item, dispatch).then(res => {
           setResourcesLoaded(false);
@@ -117,7 +118,7 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
         selected: category,
         subject: item.subjectName,
       })
-    ) : (navigation.navigate('UploadScreen', {
+    ) : (NavigationService.navigate(NavigationService.screens.Upload, {
       userData: userData.usersData,
       notesData: {
         subject: item.subjectName,
@@ -134,7 +135,7 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
   }
 
   async function handleNavigationToRes(item: any) {
-    navigation.navigate('SubjectResources', {
+    NavigationService.navigate(NavigationService.screens.ResourcesCategories, {
       userData: userData.usersData,
       notesData: {
         notes: await userFirestoreData(userData.usersData, 'Notes', item, dispatch),
