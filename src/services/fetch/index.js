@@ -301,7 +301,7 @@ export const shareNotes = async (notesData) => {
   console.log(notesData);
   const link = await dynamicLinks().buildShortLink(
     {
-      link: `https://getacademically.co/${notesData.category}/${notesData.course}/${notesData.branch}/${notesData.sem}/${notesData.subject}/${notesData.did}/${notesData.units}//${notesData.name}`,
+      link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}`,
       domainUriPrefix: 'https://academicallyapp.page.link',
       android: {
         packageName: 'com.academically',

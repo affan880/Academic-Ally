@@ -7,6 +7,10 @@ const BootSlice = createSlice({
         authToken: null,
         showIntro: true,
         customClaims: null,
+        protectedUtils: null,
+        utilis: null,
+        currentVersion: null,
+        requiredVersion: null,
     },
     reducers: {
         setAppBooting: (state, action) => {
@@ -15,14 +19,23 @@ const BootSlice = createSlice({
         setShowIntro: (state, action) => {
             state.showIntro = action.payload;
         },
-        setCompany: (state, action) => {
-            state.company = action.payload;
-        },
         setCustomClaims: (state, action) => {
             state.customClaims = action.payload;
+        },
+        setProtectedUtils: (state, action) => {
+            state.protectedUtils = action.payload;
+        },
+        setUtilis: (state, action) => {
+            state.utilis = action.payload;
+        },
+        setCurrentVersion: (state, action) => {
+            state.currentVersion = action.payload;
+        },
+        setRequiredVersion: (state, action) => {
+            state.requiredVersion = action.payload;
         }
     },
 });
-export const { setAppBooting, setAuthToken, setShowIntro, setCustomClaims } = BootSlice.actions;
+export const { setAppBooting, setAuthToken, setShowIntro, setCustomClaims, setProtectedUtils, setUtilis, setRequiredVersion, setCurrentVersion } = BootSlice.actions;
 
 export default BootSlice.reducer;

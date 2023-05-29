@@ -3,7 +3,7 @@ import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
-import { Box, Divider, HStack, Icon, Pressable, Text, VStack } from 'native-base';
+import { Box, Divider, FlatList, HStack, Icon, Pressable, Text, VStack } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -70,7 +70,7 @@ const Bookmark = () => {
     if (filename?.includes(".pdf")) {
       filename = filename.slice(0, -4);
       if (filename.length > 15) {
-        return filename.substring(0, 20);
+        return filename.substring(0, 25);
       }
       return filename;
     }
@@ -236,47 +236,45 @@ const Bookmark = () => {
       </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>
-          {/* <ScrollView> */}
-          <ScrollView>
-            {
-              sortedList?.map((item: any, index: any) => {
-                return (
-                  <View key={index}>
-                    <Text style={{
-                      fontSize: theme.sizes.title,
-                      fontWeight: 'bold',
-                      color: theme.colors.primaryText,
-                      marginLeft: 10,
-                      marginTop: 20,
-                      marginBottom: 10,
-                      width: '95%',
-                    }}>{item[0].subject}</Text>
-                    <SwipeListView
-                      data={item}
-                      renderItem={renderItem}
-                      scrollEnabled={true}
-                      ItemSeparatorComponent={() => (
-                        <View style={{ height: 20, width: '100%' }} />
-                      )}
-                      showsVerticalScrollIndicator={false}
-                      renderHiddenItem={renderHiddenItem}
-                      rightOpenValue={-83}
-                      previewRowKey={'0'}
-                      previewOpenValue={-40}
-                      previewOpenDelay={3000}
-                    // onRowDidOpen={onRowDidOpen}
-                    />
-                    <Divider style={{
-                      marginTop: 20,
-                      width: '90%',
-                      alignSelf: 'center',
-                    }} />
-                  </View>
-                );
-              })
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={sortedList}
+            renderItem={({ item, index }: any) =>
+              <View key={index}>
+                <Text style={{
+                  fontSize: theme.sizes.title,
+                  fontWeight: 'bold',
+                  color: theme.colors.primaryText,
+                  marginLeft: 10,
+                  marginTop: 20,
+                  marginBottom: 10,
+                  width: '95%',
+                }}>{item[0]?.subject}</Text>
+                <SwipeListView
+                  data={item}
+                  renderItem={renderItem}
+                  scrollEnabled={true}
+                  ItemSeparatorComponent={() => (
+                    <View style={{ height: 20, width: '100%' }} />
+                  )}
+                  showsVerticalScrollIndicator={false}
+                  renderHiddenItem={renderHiddenItem}
+                  rightOpenValue={-83}
+                  previewRowKey={'0'}
+                  previewOpenValue={-40}
+                  previewOpenDelay={3000}
+                // onRowDidOpen={onRowDidOpen}
+                />
+                <Divider style={{
+                  marginTop: 20,
+                  width: '90%',
+                  alignSelf: 'center',
+                }} />
+              </View>
             }
-            {/* </ScrollView>2. */}
-          </ScrollView>
+            keyExtractor={(item, index) => index.toString()}
+          />
+
         </View>
       </View>
     </View>

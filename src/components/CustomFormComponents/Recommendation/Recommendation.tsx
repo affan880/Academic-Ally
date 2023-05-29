@@ -72,10 +72,6 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
     setFilteresList(a);
   }, [selected, list]);
 
-  // useEffect(() => {
-  //   dispatch(setLightTheme());
-  // }, [theme.theme]);
-
   async function fetchData() {
     await fetchSubjectList(setList, dispatch, setReccommendSubjects, setReccommendSubjectsLoaded, setLoaded, userData)
   }
@@ -168,7 +164,9 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
                 >
                   <View
                     style={styles.main}>
-                    <Text style={styles.subjectName}>{item.subjectName}</Text>
+                    <Text style={styles.subjectName}>{
+                      (item?.subjectName).toLowerCase().split(' ').map((s: string) => s.charAt(0).toUpperCase() + s.substring(1)).join(' ')
+                    }</Text>
                     <View
                       style={{
                         width: '95%',
@@ -182,7 +180,7 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
                           name={item?.Notes ? 'check' : 'cross'}
                           size={20}
                           color={
-                            item.Notes
+                            item?.Notes
                               ? styles.subjectCategoryCheckIcon.color
                               : styles.subjectCategoryUnCheckIcon.color
                           }
@@ -192,7 +190,7 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
                       <View style={styles.subjectCategory}>
                         <Text style={styles.subjectCategoryText}>Syllabus</Text>
                         <Entypo
-                          name={item.Syllabus ? 'check' : 'cross'}
+                          name={item?.Syllabus ? 'check' : 'cross'}
                           size={20}
                           color={
                             item.Syllabus
@@ -211,7 +209,7 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
                           }
                           size={20}
                           color={
-                            item.QuestionPapers
+                            item?.QuestionPapers
                               ? styles.subjectCategoryCheckIcon.color
                               : styles.subjectCategoryUnCheckIcon.color
                           }
@@ -221,7 +219,7 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
                   </View>
                   <View style={styles.container}>
                     <Text style={styles.containerText}>
-                      {item.subjectName.slice(0, 1)}
+                      {item?.subjectName.slice(0, 1)}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -255,19 +253,6 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
             })
           }
         </VStack>
-        // <View
-        //   style={{
-        //     flex: 1,
-        //     justifyContent: 'center',
-        //     alignItems: 'center',
-        //     height: theme.sizes.lottieIconHeight,
-        //   }}>
-        //   <LottieView
-        //     source={require('../../../assets/lottie/loading.json')}
-        //     autoPlay
-        //     loop
-        //   />
-        // </View>
       )}
       {
         loaded && filteresList.length === 0 && list.length === 0 ? (

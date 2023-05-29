@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { AlertDialog, Avatar, Box, Button, Modal, Stack, Toast, VStack } from 'native-base';
 import React, { useMemo, useState } from 'react';
 import { Dimensions, Linking, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -50,18 +50,10 @@ const Profile = () => {
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.headerContainer}>
-          <View
-            style={{
-              flexDirection: 'row',
-            }}>
-            {/* <Ionicons
-            name="chevron-back-outline"
-            size={20}
-            color="#ffffff"
-            onPress={() => {
-              navigation.goBack();
-            }}
-          /> */}
+          <View style={styles.header}>
+            <Feather name="user" style={{
+              marginHorizontal: -5,
+            }} size={theme.sizes.iconMedium} color="#FFFFFF" />
             <Text style={styles.headerText}>Account</Text>
           </View>
           <VStack alignItems="center" space={0} marginY={theme.sizes.height * 0.023} width={"100%"} justifyContent={"center"} >

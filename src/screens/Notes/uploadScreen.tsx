@@ -43,9 +43,8 @@ const UploadPDF = () => {
   const subject = route.params.subject;
   const { userData } = route.params;
   const { notesData }: any = route.params;
-  const randomNum: any = Math.floor(Math.random())
-  const path = `${userData.university}/${userData?.course}/${userData?.branch}/${userData?.sem
-    }/${subject}/${selected}/${auth().currentUser?.uid}/${randomNum}`;
+  const randomNum: any = Math.floor(Math.random() * 9133297438)
+  const path = `${userData.university}/${userData?.course}/${userData?.branch}/${userData?.sem}/${subject}/${selected}/${auth().currentUser?.uid}/${randomNum}`;
   const storageRef = storage().ref(path);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [uploadingResult, setUploadingResult] = React.useState(null);
@@ -54,6 +53,7 @@ const UploadPDF = () => {
   const [uploadTask, setUploadTask] = useState<any>(null);
   const [completed, setCompleted] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const userImage = useSelector((state: any) => { return state.usersData.userProfile });
   const theme = useSelector((state: any) => { return state.theme });
   useEffect(() => {
     try {
@@ -67,6 +67,8 @@ const UploadPDF = () => {
             subject: subject,
             selected: selected,
             path: path,
+            pfp: userImage,
+            date: new Date(),
           }),
         };
         firestore()
@@ -92,6 +94,15 @@ const UploadPDF = () => {
                 .collection(selected)
                 .doc('list')
                 .update(updateData);
+
+              firestore()
+                .collection('UsersUploads')
+                .doc(userData.university)
+                .collection(userData.course)
+                .doc('uploadList')
+                .update({
+                  paths: firestore.FieldValue.arrayUnion(`/UsersUploads/${userData.university}/${userData?.course}/${userData?.branch}/${userData?.sem}/${subject}/${selected}/list`),
+                })
             } else {
               firestore()
                 .collection('UsersUploads')
@@ -112,9 +123,20 @@ const UploadPDF = () => {
                       subject: subject,
                       selected: selected,
                       path: path,
+                      pfp: userImage,
+                      date: new Date(),
                     },
                   ],
                 });
+
+              firestore()
+                .collection('UsersUploads')
+                .doc(userData.university)
+                .collection(userData.course)
+                .doc('uploadList')
+                .update({
+                  paths: firestore.FieldValue.arrayUnion(`/UsersUploads/${userData.university}/${userData?.course}/${userData?.branch}/${userData?.sem}/${subject}/${selected}/list`),
+                })
             }
             AddtoUserUploads({
               name: pdf?.name,
@@ -125,6 +147,8 @@ const UploadPDF = () => {
               selected: selected,
               path: path,
               verified: false,
+              pfp: userImage,
+              date: new Date(),
             })
           });
       }

@@ -13,7 +13,7 @@ const AboutUs = () => {
   return (
     <NavigationLayout rightIconFalse={true} title="About Us" handleScroll={() => { }} >
       <View style={styles.body}>
-        <Image source={require('../../../assets/images/logo_black.png')} style={styles.image} />
+        <Image source={theme.theme === 'light' ? require('../../../assets/images/logo_black.png') : require('../../../assets/images/white-logo.png')} style={styles.image} />
         <View style={styles.bodyContent} >
           <View style={styles.content}>
             <Text style={styles.normalText}>

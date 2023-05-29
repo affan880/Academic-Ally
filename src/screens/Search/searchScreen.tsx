@@ -6,7 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import { Toast } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,10 +19,9 @@ import NavigationService from '../../services/NavigationService';
 import createStyles from './styles';
 
 const { width, height } = Dimensions.get('screen');
+
 const Search = () => {
-  const theme = useSelector((state: any) => {
-    return state.theme;
-  });
+  const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [selectedBranch, setSelectedBranch] = useState('');
   const list = useSelector((state: any) => state.subjectsList.list);
@@ -34,11 +33,7 @@ const Search = () => {
   type MyStackParamList = {
     SubjectResources: { userData: object; notesData: any; subject: string };
   };
-  type MyScreenNavigationProp = StackNavigationProp<
-    MyStackParamList,
-    'SubjectResources'
-  >;
-  type Props = {};
+  type MyScreenNavigationProp = StackNavigationProp<MyStackParamList, 'SubjectResources'>;
 
   const branches = [
     { id: 1, name: 'IT' },
@@ -49,7 +44,7 @@ const Search = () => {
     { id: 6, name: 'CIVIL' },
   ];
 
-  // const userFirestoreData = useSelector((state: any) => state.usersData);
+  const rendererItems: Array<string> = ['Search', 'Subjects'];
 
   const [searchTerm, setSearchTerm] = useState('');
   const navigation = useNavigation<MyScreenNavigationProp>();
@@ -57,26 +52,19 @@ const Search = () => {
   useEffect(() => {
     setFilteredData(
       list?.filter((item: any) => {
-
         if (searchTerm === '' && selectedBranch !== '') {
-          return item.branch
-            .toLowerCase()
-            .includes(selectedBranch.toLowerCase());
+          return item.branch.toLowerCase().includes(selectedBranch.toLowerCase());
         }
 
         if (selectedBranch !== '') {
           return (
-            (item?.branch?.toLowerCase().includes(selectedBranch.toLowerCase()) &&
-              item?.subject?.toLowerCase().includes(searchTerm.toLowerCase()))
-            // abbreviation?.toLowerCase().includes(searchTerm.toLowerCase())
+            item.branch.toLowerCase().includes(selectedBranch.toLowerCase()) &&
+            item.subject.toLowerCase().includes(searchTerm.toLowerCase())
           );
         } else {
-          return (
-            item?.subject?.toLowerCase().includes(searchTerm.toLowerCase())
-            // abbreviation?.toLowerCase().includes(searchTerm.toLowerCase())
-          );
+          return item.subject.toLowerCase().includes(searchTerm.toLowerCase());
         }
-      }),
+      })
     );
   }, [list, searchTerm, selectedBranch, subjectListDetail]);
 
@@ -85,16 +73,13 @@ const Search = () => {
   const selectedSubject = async (item: any) => {
     dispatch(setResourceLoader(true));
     try {
-      const userData: any = await firestore()
-        .collection('Users')
-        .doc(auth().currentUser?.uid)
-        .get();
+      const userData: any = await firestore().collection('Users').doc(auth().currentUser?.uid).get();
       const customizedData = {
         university: userData.data().university,
         course: userData.data().course,
         branch: item.branch,
-        sem: item.sem
-      }
+        sem: item.sem,
+      };
       const notesData = {
         notes: await userFirestoreData(customizedData, 'Notes', { subjectName: item.subject }, dispatch),
         otherResources: await userFirestoreData(customizedData, 'OtherResources', { subjectName: item.subject }, dispatch),
@@ -114,13 +99,14 @@ const Search = () => {
         subject: item.subject,
       });
     } catch (error) {
-      setResourceLoader(false),
-        Toast.show({
-          title: 'Please check your internet connection',
-          duration: 3000,
-        });
+      dispatch(setResourceLoader(false));
+      Toast.show({
+        title: 'Please check your internet connection',
+        duration: 3000,
+      });
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -131,127 +117,118 @@ const Search = () => {
       </View>
       <View style={styles.body}>
         <View style={styles.bodyContent}>
-          <ScrollView
+          <FlatList
+            data={rendererItems}
             showsVerticalScrollIndicator={false}
-            onScrollAnimationEnd={() => {
-              setLimit(limit + 6);
-            }}
-            onMomentumScrollEnd={({ nativeEvent }) => {
-              if (
-                nativeEvent.contentOffset.y >=
-                nativeEvent.contentSize.height -
-                nativeEvent.layoutMeasurement.height
-              ) {
-                setLimit(limit + 6);
-              }
-            }}>
-            <View>
-              <View style={styles.searchContainer}>
-                <TextInput
-                  value={searchTerm}
-                  onChangeText={text => setSearchTerm(text)}
-                  placeholder="Search"
-                  placeholderTextColor={theme.colors.primaryText}
-                  style={styles.searchInput}
-                />
-                <Feather
-                  name="search"
-                  size={theme.sizes.iconSmall}
-                  color={theme.colors.primaryText}
-                  style={styles.searchIcon}
-                />
-              </View>
-              <View style={styles.categoryContainer}>
-                <Text style={styles.categoryTitle}>Browse Branches</Text>
-                <View style={styles.categoryList}>
-                  {branches.map(branch => (
-                    <TouchableOpacity
-                      key={branch.id}
-                      style={[
-                        styles.categoryItem,
-                        {
-                          backgroundColor:
-                            selectedBranch === branch.name
-                              ? theme.colors.tertiary
-                              : theme.colors.primary,
-                        },
-                      ]}
-                      onPress={() => {
-                        if (selectedBranch === branch.name) {
-                          setSelectedBranch('');
-                        } else {
-                          setSelectedBranch(branch.name);
-                        }
-                      }}>
-                      <Text style={styles.categoryItemText}>{branch.name}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-            </View>
-            <View style={{
-              paddingBottom: height * 0.08
-            }} >
-              {limitedData?.length > 0 ? (
-                limitedData?.map((item: any, index: any) => {
+            renderItem={({ item }: { item: string }) => {
+              switch (item) {
+                case 'Search':
                   return (
-                    <TouchableOpacity
-                      key={index}
-                      style={styles.subjectItem}
-                      onPress={() => selectedSubject(item)}>
-                      <View style={styles.containerBox}>
-                        <View style={styles.containerText}>
-                          {/* <Ionicons
-                            name="eye-sharp"
-                            size={theme.sizes.iconSmall}
-                            color="#fff"
-                            style={{
-                              alignSelf: 'center',
-                              transform: [{rotate: '135deg'}],
-                            }}
-                          /> */}
+                    <View>
+                      <View style={styles.searchContainer}>
+                        <TextInput
+                          value={searchTerm}
+                          onChangeText={(text) => setSearchTerm(text)}
+                          placeholder="Search"
+                          placeholderTextColor={theme.colors.primaryText}
+                          style={styles.searchInput}
+                        />
+                        <Feather
+                          name="search"
+                          size={theme.sizes.iconSmall}
+                          color={theme.colors.primaryText}
+                          style={styles.searchIcon}
+                        />
+                      </View>
+                      <View style={styles.categoryContainer}>
+                        <Text style={styles.categoryTitle}>Browse Branches</Text>
+                        <View style={styles.categoryList}>
+                          {branches?.map((branch) => (
+                            <TouchableOpacity
+                              key={branch.id}
+                              style={[
+                                styles.categoryItem,
+                                {
+                                  backgroundColor:
+                                    selectedBranch === branch.name ? theme.colors.tertiary : theme.colors.primary,
+                                },
+                              ]}
+                              onPress={() => {
+                                if (selectedBranch === branch.name) {
+                                  setSelectedBranch('');
+                                } else {
+                                  setSelectedBranch(branch.name);
+                                }
+                              }}
+                            >
+                              <Text style={styles.categoryItemText}>{branch.name}</Text>
+                            </TouchableOpacity>
+                          ))}
                         </View>
                       </View>
-                      <View style={styles.subjectItemTextContainer}>
-                        <Text style={styles.subjectItemText}>
-                          {item.subject}
-                        </Text>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            width: '100%',
-                            alignItems: 'center',
-                          }}>
-                          <Text style={styles.subjectItemBranch}>branch:</Text>
-                          <Text style={styles.subjectItemBranchText}>
-                            {item.branch}
-                          </Text>
-                        </View>
-                        <Text style={styles.subjectItemSem}>
-                          sem: {item.sem}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
+                    </View>
                   );
-                })
-              ) : (
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: theme.sizes.lottieIconHeight,
-                  }}>
-                  <LottieView
-                    source={require('../../assets/lottie/NoBookMarks.json')}
-                    autoPlay
-                    loop
-                  />
-                </View>
-              )}
-            </View>
-          </ScrollView>
+                case 'Subjects':
+                  return (
+                    <View
+                      style={{
+                        paddingBottom: height * 0.08,
+                      }}
+                    >
+                      <FlatList
+                        data={filteredData}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({ item }: any) => {
+                          return (
+                            <TouchableOpacity style={styles.subjectItem} onPress={() => selectedSubject(item)}>
+                              <View style={styles.containerBox}>
+                                <View style={styles.containerText} />
+                              </View>
+                              <View style={styles.subjectItemTextContainer}>
+                                <Text style={styles.subjectItemText}>{item.subject}</Text>
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    width: '100%',
+                                    alignItems: 'center',
+                                  }}
+                                >
+                                  <Text style={styles.subjectItemBranch}>branch:</Text>
+                                  <Text style={styles.subjectItemBranchText}>{item.branch}</Text>
+                                </View>
+                                <Text style={styles.subjectItemSem}>sem: {item.sem}</Text>
+                              </View>
+                            </TouchableOpacity>
+                          );
+                        }}
+                        // If data is empty
+                        ListEmptyComponent={() => {
+                          return (
+                            <View
+                              style={{
+                                flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: theme.sizes.lottieIconHeight,
+                              }}
+                            >
+                              <LottieView
+                                source={require('../../assets/lottie/NoBookMarks.json')}
+                                autoPlay
+                                loop
+                              />
+                            </View>
+                          );
+                        }}
+                      />
+                    </View>
+                  );
+                default:
+                  return null;
+              }
+            }}
+          />
         </View>
       </View>
     </View>
@@ -259,5 +236,3 @@ const Search = () => {
 };
 
 export default Search;
-
-const styles = StyleSheet.create({});

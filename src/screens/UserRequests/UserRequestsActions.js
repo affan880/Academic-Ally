@@ -1,4 +1,5 @@
 import { Toast } from "native-base";
+import { Platform } from 'react-native';
 
 import { firestoreDB } from "../../Modules/auth/firebase/firebase";
 import { setNewRequests, setRequestNull } from "./UserRequestsSlice";

@@ -31,9 +31,6 @@ const screenHeight = Dimensions.get('screen').height;
 const Search = () => {
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
-  const [selectedBranch, setSelectedBranch] = useState('');
-  const [limit, setLimit] = useState(10);
-  const [filteredData, setFilteredData] = useState([]);
   const list: any = useSelector((state: any) => state.subjectsList.list || []);
   const [subjectListDetail, setSubjectListDetail] = useState<any[]>(list);
   const { isOpen, onOpen, onClose } = useDisclose();
@@ -189,6 +186,8 @@ const Search = () => {
         selected: pdf.type,
         path: pdf.path,
         units: pdf.units,
+        pfp: userImage,
+        date: new Date(),
       }),
     };
     firestore()
@@ -203,7 +202,6 @@ const Search = () => {
       .get()
       .then(docSnapshot => {
         if (docSnapshot?.exists) {
-          // Update the existing array
           firestore()
             .collection('UsersUploads')
             .doc(userFirestoreData.usersData.university)
@@ -214,6 +212,15 @@ const Search = () => {
             .collection(pdf.type)
             .doc('list')
             .update(updateData);
+
+          firestore()
+            .collection('UsersUploads')
+            .doc(userFirestoreData.usersData.university)
+            .collection(userFirestoreData.usersData.course)
+            .doc('uploadList')
+            .update({
+              paths: firestore.FieldValue.arrayUnion(`/UsersUploads/${userFirestoreData.usersData.university}/${userFirestoreData.usersData.course}/${pdf?.branch}/${pdf?.sem}/${pdf.subject}/${pdf.type}/list`),
+            })
         } else {
           firestore()
             .collection('UsersUploads')
@@ -235,20 +242,33 @@ const Search = () => {
                   selected: pdf.type,
                   path: pdf.path,
                   units: pdf.units,
+                  date: new Date(),
+                  pfp: userImage,
                 },
               ],
             });
+
+          firestore()
+            .collection('UsersUploads')
+            .doc(userFirestoreData.usersData.university)
+            .collection(userFirestoreData.usersData.course)
+            .doc('uploadList')
+            .update({
+              paths: firestore.FieldValue.arrayUnion(`/UsersUploads/${userFirestoreData.usersData.university}/${userFirestoreData.usersData.course}/${pdf?.branch}/${pdf?.sem}/${pdf.subject}/${pdf.type}/list`),
+            })
         }
         AddtoUserUploads({
           name: pdf?.name,
           uploaderName: auth().currentUser?.displayName,
           uploaderEmail: auth().currentUser?.email,
           uploaderUid: auth().currentUser?.uid,
+          pfp: userImage,
           subject: pdf.subject,
           selected: pdf.type,
           path: pdf.path,
           units: pdf.units,
           verified: false,
+          date: new Date(),
         })
       });
   }
@@ -256,7 +276,8 @@ const Search = () => {
   const uploadPDF = async (pdf: any) => {
     const formValues = formRef.current?.values;
     const { course, branch, Year, sem, type, subject, units } = formValues;
-    const path = `${userFirestoreData.usersData.university}/${course}/${branch}/${Year}/${sem}/${type}/${subject}/${units}/${pdf?.name}`;
+    const randomNum: any = Math.floor(Math.random() * 9133297438)
+    const path = `${userFirestoreData.usersData.university}/${course}/${branch}/${sem}/${subject}/${type}/${auth().currentUser?.uid}/${randomNum}`;
     const storageRef = storage().ref(path);
     setModalVisible(true);
     const task: any = storageRef.putFile(pdf?.uri);
@@ -266,7 +287,6 @@ const Search = () => {
         Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
       setUploadProgress(progress);
     },
-
       (error: any) => {
         setUploadTask(null);
         setModalVisible(false);
@@ -539,9 +559,10 @@ const Search = () => {
                       style={{
                         justifyContent: 'center',
                         alignItems: 'center',
+                        backgroundColor: theme.colors.quaternary,
                       }}>
-                      <Box w="100%" h={screenHeight * 0.2} px={2} my={4} justifyContent="center" alignItems={"center"} >
-                        <AntDesign name="checkcircle" size={50} color={theme.colors.primary} />
+                      <Box w="100%" h={screenHeight * 0.2} px={2} my={4} justifyContent="center" alignItems={"center"} bgColor={theme.colors.quaternary} >
+                        <AntDesign name="checkcircle" size={50} color={theme.colors.mainTheme} />
                         <Text fontSize={theme.sizes.title} color={theme.colors.primaryText} fontWeight={700} marginTop={4} >
                           Uploaded Successful
                         </Text>
@@ -556,12 +577,13 @@ const Search = () => {
                         alignItems: 'center',
                         flexDirection: 'column',
                         padding: 10,
+                        backgroundColor: theme.colors.quaternary,
                       }}>
                       <TouchableOpacity onPress={() => {
                         setModalVisible(false);
                         setCompleted(false);
                       }}>
-                        <Text fontWeight={700} paddingY={2} fontSize={theme.sizes.title} color={theme.colors.primary}>
+                        <Text fontWeight={700} paddingY={2} fontSize={theme.sizes.title} color={theme.colors.primaryText}>
                           Cancel{' '}
                         </Text>
                       </TouchableOpacity>

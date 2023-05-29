@@ -30,7 +30,7 @@ type RootStackParamList = {
     };
     notesData: any;
     selected: string;
-    subject: string;
+    subjectName: string;
   };
 };
 
@@ -43,7 +43,7 @@ type MyStackParamList = {
     };
     notesData: any;
     selected: string;
-    subject: string;
+    subjectName: string;
   };
 };
 
@@ -60,18 +60,51 @@ const PdfViewer = () => {
   const { isOpen, onOpen, onClose } = useDisclose();
   const { userData } = route.params;
   const { notesData } = route.params;
-  const { subject } = route.params;
+  const { subjectName } = route.params;
   const { selected } = route.params;
   const [pageNo, setPageNo] = useState(0);
+  const mainUrl = useSelector((state: any) => state.bootReducer.protectedUtils?.mainUrl);
+  const secondaryUrl = useSelector((state: any) => state.bootReducer.protectedUtils?.secondaryUrl);
+
 
   function replace(str: string) {
-    if (str.includes('&')) {
-      const text = str.replace(/&/g, '_');
+    if (str?.includes('&')) {
+      const text = str?.replace(/&/g, '_');
       return text;
     }
     return str;
   }
-  const [url, setUrl] = useState(`https://link.storjshare.io/s/jx6mask5nzricqlpbzxbn7h7ecba/academic-ally/Universities/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${replace(notesData?.subject || subject)}/${notesData?.category || selected.charAt(0).toUpperCase() + selected.slice(1)}/${replace(notesData?.name)}?wrap=0`);
+
+  const university = notesData?.university || "";
+  const course = notesData?.course || "";
+  const branch = notesData?.branch || "";
+  const sem = notesData?.sem || "";
+  const category = (notesData?.category).charAt(0).toUpperCase() + (notesData?.category).slice(1) || selected.charAt(0).toUpperCase() + selected.slice(1);
+  const name = replace(notesData?.name);
+  const subject = replace(notesData?.subject || subjectName);
+  const did = notesData?.did || "";
+  const uid = notesData?.uid || "";
+  const uid2 = notesData?.uid2 || "";
+  const uid3 = notesData?.uid3 || "";
+
+  function replaceLink(str: string) {
+    const placeholders = ['${university}', '${course}', '${branch}', '${sem}', '${category}', '${name}', '${subject}', '${did}', '${uid}', '${uid2}', '${uid3}'];
+    const placeholdersValues = [university, course, branch, sem, category, name, subject, did, uid, uid2, uid3];
+
+    let replacedStr = str;
+
+    for (const placeholder of placeholders) {
+      if (str.includes(placeholder)) {
+        const index = placeholders.indexOf(placeholder);
+        replacedStr = replacedStr.replace(placeholder, placeholdersValues[index]);
+      }
+    }
+
+
+    return replacedStr;
+  }
+
+  const [url, setUrl] = useState(replaceLink(mainUrl || ""));
   const source = {
     uri: url,
     cache: true,
@@ -106,7 +139,7 @@ const PdfViewer = () => {
   async function createDynamicLink() {
     const link = await dynamicLinks().buildShortLink(
       {
-        link: `https://getacademically.co/${notesData.category}/${notesData.course}/${notesData.branch}/${notesData.sem}/${notesData.subject}/${notesData.did}/${notesData.units}/${notesData.name}`,
+        link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}`,
         domainUriPrefix: 'https://academicallyapp.page.link',
         android: {
           packageName: 'com.academically',
@@ -121,7 +154,7 @@ const PdfViewer = () => {
     });
     Share.share({
       title: `${subject}`,
-      message: `If you're studying ${subject}, you might find these ${notesData.category} on Academic Ally helpful. I did! Check them out:
+      message: `If you're studying ${subject}, you might find these ${notesData.category} on Academic Ally helpfull. I did! Check them out:
       ${link}`
     });
   }
@@ -131,7 +164,7 @@ const PdfViewer = () => {
   };
 
   function remove(str: string) {
-    if (str.includes('(oufastupdates.com)') || str.includes('.pdf')) {
+    if (str?.includes('(oufastupdates.com)') || str.includes('.pdf')) {
       const text = str.replace(/\(oufastupdates.com\)|\.pdf/g, '');
       return text.slice(0, 35) + '...';
     }
@@ -214,15 +247,19 @@ const PdfViewer = () => {
                       size="large"
                     />
                     <Text style={{ textAlign: 'center', color: "#FF8181" }}>
-                      {progressBar.toFixed(2)}% Loaded
+                      {progressBar?.toFixed(2)}% Loaded
                     </Text>
                   </View>
                 );
               }}
               onError={error => {
+                Toast.show({
+                  title: error?.toString() || 'Something went wrong, Please try again later',
+                  duration: 3000,
+                })
                 console.log(error);
                 console.log(url);
-                setUrl(`https://drive.google.com/u/0/uc?id=${notesData.did}`);
+                setUrl(replaceLink(secondaryUrl));
               }}
               // onPressLink={(uri) => {
               //   console.log(`Link pressed: ${uri}`);

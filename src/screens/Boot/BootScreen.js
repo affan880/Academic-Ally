@@ -1,16 +1,15 @@
-import { firebase } from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Alert, Dimensions, Linking, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import Feather from "react-native-vector-icons/Feather";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from 'react-redux';
 
+import { name as app_name, version as app_version } from '../../../package.json';
 import { firestoreDB, getCurrentUser } from '../../Modules/auth/firebase/firebase';
 import UserRequestsPdfViewer from '../../sections/UserRequests/UserRequestsPdfViewer';
 import NavigationService from '../../services/NavigationService';
@@ -208,14 +207,58 @@ const AuthStack = () => {
 };
 
 const BootScreen = () => {
+    const requiredVersion = useSelector((state) => state.bootReducer.requiredVersion);
     const { user } = useAuthentication();
     const currentUser = getCurrentUser();
     const dispatch = useDispatch();
+    const [compatible, setCompatible] = useState(true);
+    const currentVersion = app_version;
+
+    const convertToNumber = (version) => {
+        const versionParts = version.split(".");
+        let number = 0;
+
+        for (let i = 0; i < versionParts.length; i++) {
+            const part = versionParts[i];
+            number += parseInt(part) / Math.pow(10, i + 1);
+        }
+
+        return number;
+    };
 
     useEffect(() => {
+        dispatch(BootActions.loadUtils());
         dispatch(BootActions.loadUserCustomClaims(user, currentUser));
+        dispatch(BootActions.loadProtectedUtils(user, currentUser));
     }, [user, currentUser]);
-    // return user && user.emailVerified || currentUser !== null && currentUser.emailVerified  ? <AppStack/> : <AuthStack/>
+
+    useEffect(() => {
+        if (requiredVersion !== null) {
+            if (convertToNumber(currentVersion) < convertToNumber(requiredVersion)) {
+                setCompatible(false);
+            }
+        }
+    }, [requiredVersion, currentVersion, user, currentUser]);
+
+    useEffect(() => {
+        if (compatible === false) {
+            Alert.alert(
+                "Update Required",
+                "Please update the app to continue using it.",
+                [
+                    {
+                        text: "Update",
+                        onPress: () => {
+                            Linking.openURL("https://play.google.com/store/apps/details?id=com.academically");
+                            setCompatible(false);
+                        },
+                    },
+                ],
+                { cancelable: false },
+            );
+        }
+    }, [compatible]);
+
     return (user || currentUser !== null) ? <AppStack /> : <AuthStack />;
 };
 

@@ -1,3 +1,4 @@
+import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -10,6 +11,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
+import UserRequestsActions from '../../screens/UserRequests/UserRequestsActions';
 import NavigationService from '../../services/NavigationService';
 import createStyles from './styles';
 
@@ -106,16 +108,17 @@ const NewRequestCard = ({ item, selected, subject }: Props) => {
         getDownloadUrl(item.path);
     }, []);
 
-    console.log(path);
     return (
         <View style={styles.notesContainer}>
             <View style={styles.reccomendationStyle}>
                 <TouchableOpacity
                     style={styles.subjectContainer}
                     onPress={() => {
-                        NavigationService.navigate('UserRequestsPdfViewer', {
-                            item: downloadUrl,
-                        });
+                        // NavigationService.navigate('UserRequestsPdfViewer', {
+                        //     item: downloadUrl,
+                        // });
+                        dispatch(UserRequestsActions.uploadPdfToDrive(downloadUrl, 'test.pdf', '1qu5Ocwbki7ZJRQUoOs08KafMQAQ2AUyf'));
+                        console.log(downloadUrl);
                     }}>
                     <View style={styles.containerBox}>
                         <View style={styles.containerText}>
@@ -508,7 +511,7 @@ const NewRequestCard = ({ item, selected, subject }: Props) => {
                     }
                 </Actionsheet>
             </Center>
-        </View>
+        </View >
     );
 };
 

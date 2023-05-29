@@ -25,6 +25,8 @@ export const createThemeSlice = createSlice({
             black: "#161719",
             categoryBtn: '#FCFCFF',
             disabledCategoryBtn: '#D3D3D3',
+            mainTheme: '#6360FF',
+            logo: '../../../assets/images/logo_black.png',
         },
         dark: {
             primary: "#292B2D",
@@ -43,7 +45,9 @@ export const createThemeSlice = createSlice({
             white: "#FCFCFF",
             black: "#161719",
             categoryBtn: '#6360FF',
-            disabledCategoryBtn: '#D3D3D3'
+            disabledCategoryBtn: '#D3D3D3',
+            mainTheme: '#6360FF',
+            logo: '../../../assets/images/white-logo.png',
         },
         colors: {
             primary: "#6360FF",
@@ -61,9 +65,13 @@ export const createThemeSlice = createSlice({
             SearchCategory: "#6360FF",
             white: "#FCFCFF",
             black: "#161719",
+            categoryBtn: '#FCFCFF',
+            disabledCategoryBtn: '#D3D3D3',
+            mainTheme: '#6360FF',
+            logo: '../../../assets/images/white-logo.png',
         },
         sizes: {
-            title: height * 0.021,
+            title: height * 0.020,
             subtitle: height * 0.018,
             text: height * 0.02,
             textSmall: height * 0.015,

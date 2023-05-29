@@ -8,6 +8,10 @@ const createStyles = (theme: any, sizes:any) =>
             flex: 1,
             backgroundColor: theme.primary,
         },
+        header: {
+          flexDirection: 'row',
+          alignItems: 'center',
+        },
         headerContainer: {
             height: height * 0.45,
             width: width,
@@ -17,6 +21,7 @@ const createStyles = (theme: any, sizes:any) =>
             paddingBottom: height * 0.05,
             paddingTop: statusBarHeight + 20,
             alignContent: "flex-start",
+            marginTop: 16,
         },
         headerText: {
             fontSize: sizes.title,

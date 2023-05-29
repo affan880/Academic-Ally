@@ -78,7 +78,7 @@ const createStyles = (theme: any, sizes: any) =>
       paddingHorizontal: height * 0.015,
     },
     subjectItemTextContainer: {
-      width: width * 0.58,
+      width: width * 0.62,
       height: height * 0.1,
       backgroundColor: theme.quaternary,
       borderRadius: 10,

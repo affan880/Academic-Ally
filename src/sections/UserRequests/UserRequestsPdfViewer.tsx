@@ -55,7 +55,6 @@ const UserRequestsPdfViewer = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage]: any = useState(0);
     const { item } = route.params;
-    console.log("rtyuio", item);
     const [pageNo, setPageNo] = useState(0);
     const [loading, setLoading] = useState(true);
     const [url, setUrl] = useState(`${item}`);

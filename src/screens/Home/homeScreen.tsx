@@ -12,6 +12,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { name as app_name, version as app_version } from '../../../package.json';
 import QuickAccess from '../../components/CustomFormComponents/QuickAccess/QuickAccess';
 import Recommendation from '../../components/CustomFormComponents/Recommendation/Recommendation';
 import ResourceLoader from '../../components/loaders/ResourceLoader';
@@ -81,19 +82,20 @@ const HomeScreen = (props: Props) => {
   const handleDynamicLink = (link: any) => {
     const parts = link?.url.split('/');
     const userData = {
-      Course: parts[4],
-      branch: parts[5],
-      sem: parts[6],
+      Course: parts[5],
+      branch: parts[6],
+      sem: parts[7],
     };
     const notesData = {
-      course: parts[4],
-      branch: parts[5],
-      sem: parts[6],
-      subject: parts[7],
+      course: parts[5],
+      branch: parts[6],
+      sem: parts[7],
+      subject: parts[8],
       category: parts[3],
-      did: parts[8],
+      did: parts[9],
       name: parts[11],
-      units: parts[9]
+      units: parts[10],
+      university: parts[4],
     };
     NavigationService.navigate(NavigationService.screens.PdfViewer, {
       userData,
