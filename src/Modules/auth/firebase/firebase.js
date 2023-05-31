@@ -285,12 +285,12 @@ export const AddtoUserUploads = async (notesData) => {
 export function listBase(notes) {
   notes.map(item => {
     const sep = item.fullPath.split('/');
-
+    console.log(sep[0], sep[1], sep[2]);
     sep.length === 5 && item.type !== 'Folder'
       ? firestore()
         .collection('Universities')
-        .doc('JNTUH')
-        .collection('BTECH')
+        .doc('OU')
+        .collection('BE')
         .doc(sep[0])
         .collection(sep[1])
         .doc(sep[3])
@@ -299,9 +299,9 @@ export function listBase(notes) {
             Year: "",
             category: sep[3],
             college: "",
-            course: "",
+            course: 'BE',
             date: Date.now(),
-            department: "",
+            department: "IT",
             did: item.id,
             dlink: '',
             name: sep[4],
@@ -309,29 +309,30 @@ export function listBase(notes) {
             sem: sep[1],
             size: item.size,
             status: "verified",
-            subject: sep[3],
+            subject: sep[2],
             time: new Date().getTime(),
             units: "",
             uploaderId: "8056itcLayZY8yDbNdi7KbqXnsw2",
             uploaderName: "Affan",
+            views: 29
           }
         )
       : null;
     // /"I.T/5/Computer Networks/OtherResources/CNQuestion bank.pdf"
 
-    console.log('list start', sep[1]);
-    sep.length === 3 && item.type === 'Folder'
-      ? firestore()
-        .collection('Universities')
-        .doc('JNTUH')
-        .collection('BTECH')
-        .doc(sep[0])
-        .collection(sep[1])
-        .doc('SubjectsList')
-        .set({
-          list: [],
-        })
-      : null;
+    // console.log('list start', sep[1]);
+    // sep.length === 3 && item.type === 'Folder'
+    //   ? firestore()
+    //     .collection('Universities')
+    //     .doc('JNTUH')
+    //     .collection('BTECH')
+    //     .doc(sep[0])
+    //     .collection(sep[1])
+    //     .doc('SubjectsList')
+    //     .set({
+    //       list: [],
+    //     })
+    //   : null;
   });
 }
 
@@ -402,8 +403,8 @@ export const UpdateItemInTheList = async (notes) => {
     sep.length === 5 && item.type === 'Files'
       ? firestore()
         .collection('Universities')
-        .doc('JNTUH')
-        .collection('BTECH')
+        .doc('OU')
+        .collection('BE')
         .doc(sep[0])
         .collection(sep[1])
         .doc(sep[3])

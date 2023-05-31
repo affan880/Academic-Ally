@@ -1,0 +1,211 @@
+export const data = [
+    {
+        "fullPath": "IT/8",
+        "parentname": "IT",
+        "name": 8,
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1PPUuN_f98kD-LCtZs5sFBFDKJPe9PwPS",
+        "lastUpdated": "2023-05-31T03:19:25.898Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1PPUuN_f98kD-LCtZs5sFBFDKJPe9PwPS"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering",
+        "parentname": "IT/8",
+        "name": "Road Safety Engineering",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1X_-btmonzEW5R4u30nJxPs5YcXoR6qs8",
+        "lastUpdated": "2023-01-03T14:25:12.570Z",
+        "size": 0,
+        "ownerEmail": "academicly.app.it@gmail.com",
+        "id": "1X_-btmonzEW5R4u30nJxPs5YcXoR6qs8"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "Notes",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1B7lpmwdiW2JsaGJAUh0AN2zX3ww-wyug",
+        "lastUpdated": "2023-01-08T17:21:36.332Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1B7lpmwdiW2JsaGJAUh0AN2zX3ww-wyug"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes/ALL 5 units Notes.pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "ALL 5 units Notes.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1mRSy-CiC-vfurW5lodw8qdUtVNdtdF8z/view?usp=drivesdk",
+        "lastUpdated": "2023-05-31T02:58:37.000Z",
+        "size": 25393.2021484375,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1mRSy-CiC-vfurW5lodw8qdUtVNdtdF8z"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes/RSE UNIT5(3).pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "RSE UNIT5(3).pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1FLljwE_LrUB_2kOFaO8q8xYe1V6KWZGJ/view?usp=drivesdk",
+        "lastUpdated": "2023-05-31T02:57:21.000Z",
+        "size": 12740.166015625,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1FLljwE_LrUB_2kOFaO8q8xYe1V6KWZGJ"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes/Road Safety.pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "Road Safety.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/17oUQnHFjr5sW3GwB7RVjh_TcJqq_8KuU/view?usp=drivesdk",
+        "lastUpdated": "2023-05-31T02:56:04.000Z",
+        "size": 2348.8203125,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "17oUQnHFjr5sW3GwB7RVjh_TcJqq_8KuU"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes/RSE UNIT 3.pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "RSE UNIT 3.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/18HOzwE7XpFp1SgDwzk0j-sjMA3suXy-0/view?usp=drivesdk",
+        "lastUpdated": "2023-05-31T02:56:04.000Z",
+        "size": 7222.5244140625,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "18HOzwE7XpFp1SgDwzk0j-sjMA3suXy-0"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes/RSE UNIT5(2).pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "RSE UNIT5(2).pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1Pjz_x5qzxEVCkAyvzwYslnMlLW8btC9N/view?usp=drivesdk",
+        "lastUpdated": "2023-05-31T02:56:04.000Z",
+        "size": 3181.224609375,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1Pjz_x5qzxEVCkAyvzwYslnMlLW8btC9N"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes/RSE UNIT 1.pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "RSE UNIT 1.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1eEqsIJMfJb8KcDkSbuS_nxkfiWd3XhpQ/view?usp=drivesdk",
+        "lastUpdated": "2023-05-31T02:56:03.000Z",
+        "size": 5392.4921875,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1eEqsIJMfJb8KcDkSbuS_nxkfiWd3XhpQ"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes/RSE Unit 2.pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "RSE Unit 2.pdf",
+        "type": "Files",
+        "url": "Files",
+        "lastUpdated": "2023-05-31T02:55:59.000Z",
+        "size": 5141.994140625,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1YfD5NIE83bk4Q3ChdeoDp9WxNVnVEe8V"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes/RSE Unit 5.pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "RSE Unit 5.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1O5-bdMbWuUssLIZ4faSeg2Pm-PjUmiIw/view?usp=drivesdk",
+        "lastUpdated": "2023-05-31T02:55:58.000Z",
+        "size": 1180.806640625,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1O5-bdMbWuUssLIZ4faSeg2Pm-PjUmiIw"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes/RSE UNIT 4.pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "RSE UNIT 4.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1spbj6g06DC-eyzSDrbCwhFGpTMKBAHHe/view?usp=drivesdk",
+        "lastUpdated": "2023-05-31T02:55:58.000Z",
+        "size": 6500.525390625,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1spbj6g06DC-eyzSDrbCwhFGpTMKBAHHe"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes/RSE UNIT5(1).pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "RSE UNIT5(1).pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1kPUF5vtul79ybZgZ_80h2gV-jEGDFzAD/view?usp=drivesdk",
+        "lastUpdated": "2023-05-31T02:55:57.000Z",
+        "size": 656.927734375,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1kPUF5vtul79ybZgZ_80h2gV-jEGDFzAD"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Notes/RSE UNIT-1 18-09-2020 - G Narendra Goud (1).pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "RSE UNIT-1 18-09-2020 - G Narendra Goud (1).pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1NL2ZzNootBzU1tICdQ2WcZRrAefV-0ip/view?usp=drivesdk",
+        "lastUpdated": "2023-02-15T04:35:09.000Z",
+        "size": 2326.482421875,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1NL2ZzNootBzU1tICdQ2WcZRrAefV-0ip"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Syllabus",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "Syllabus",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1Y95bAadh2NawU8ySQp_Yw0sZ7XVQznXR",
+        "lastUpdated": "2023-01-08T17:21:36.332Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1Y95bAadh2NawU8ySQp_Yw0sZ7XVQznXR"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/Syllabus/Road-Safety(2020-2021).pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "Road-Safety(2020-2021).pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1QwS9avQSxO4Ov1Z2cybzyEQ8OtQQuaSl/view?usp=drivesdk",
+        "lastUpdated": "2023-01-08T17:29:37.000Z",
+        "size": 587.298828125,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1QwS9avQSxO4Ov1Z2cybzyEQ8OtQQuaSl"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/QuestionPapers",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "QuestionPapers",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1eM2s5vXWY7qispsa0tlRtpIr2UmvKROE",
+        "lastUpdated": "2023-01-08T17:21:36.332Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1eM2s5vXWY7qispsa0tlRtpIr2UmvKROE"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/QuestionPapers/2019.pdf",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "2019.pdf",
+        "type": "Files",
+        "url": "https://drive.google.com/file/d/1ZqNKXtzEAiMj6B-_9No_DL9TYhHunZLX/view?usp=drivesdk",
+        "lastUpdated": "2023-04-17T01:57:49.000Z",
+        "size": 2914.876953125,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1ZqNKXtzEAiMj6B-_9No_DL9TYhHunZLX"
+    },
+    {
+        "fullPath": "IT/8/Road Safety Engineering/OtherResources",
+        "parentname": "IT/8/Road Safety Engineering",
+        "name": "OtherResources",
+        "type": "Folder",
+        "url": "https://drive.google.com/drive/folders/1r4clYWinjNh1eEC7eO62sXQ9WXYwaUhy",
+        "lastUpdated": "2023-01-08T17:21:36.332Z",
+        "size": 0,
+        "ownerEmail": "academicly.app@gmail.com",
+        "id": "1r4clYWinjNh1eEC7eO62sXQ9WXYwaUhy"
+    }
+]

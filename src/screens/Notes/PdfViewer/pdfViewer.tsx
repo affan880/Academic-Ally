@@ -65,6 +65,7 @@ const PdfViewer = () => {
   const [pageNo, setPageNo] = useState(0);
   const mainUrl = useSelector((state: any) => state.bootReducer.protectedUtils?.mainUrl);
   const secondaryUrl = useSelector((state: any) => state.bootReducer.protectedUtils?.secondaryUrl);
+  const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
 
 
   function replace(str: string) {
@@ -105,6 +106,7 @@ const PdfViewer = () => {
   }
 
   const [url, setUrl] = useState(replaceLink(mainUrl || ""));
+  console.log(url);
   const source = {
     uri: url,
     cache: true,
@@ -140,7 +142,7 @@ const PdfViewer = () => {
     const link = await dynamicLinks().buildShortLink(
       {
         link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}`,
-        domainUriPrefix: 'https://academicallyapp.page.link',
+        domainUriPrefix: dynamicLink,
         android: {
           packageName: 'com.academically',
         },

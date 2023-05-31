@@ -7,6 +7,7 @@ import messaging from '@react-native-firebase/messaging';
 import { CheckIcon, Toast } from 'native-base';
 import { Alert, Share } from 'react-native';
 import { useDispatch } from 'react-redux';
+import PushNotification from 'react-native-push-notification';
 
 import { setVisitedSubjects } from '../../redux/reducers/subjectsList';
 
@@ -297,12 +298,11 @@ export async function getMailId() {
   return mail;
 }
 
-export const shareNotes = async (notesData) => {
-  console.log(notesData);
+export const shareNotes = async (notesData, dynamicLink) => {
   const link = await dynamicLinks().buildShortLink(
     {
       link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}`,
-      domainUriPrefix: 'https://academicallyapp.page.link',
+      domainUriPrefix: dynamicLink,
       android: {
         packageName: 'com.academically',
       },
@@ -359,18 +359,27 @@ async function requestPermisssion() {
 export const getFcmToken = async () => {
   let fcmToken = await AsyncStorage.getItem('fcmToken');
   if (!fcmToken) {
-    try {
-      if (fcmToken) {
-        await AsyncStorage.setItem('fcmToken', fcmToken);
-        firestore()
-          .collection('Users')
-          .doc(auth().currentUser?.uid)
-          .update({
-            fcmToken: fcmToken,
-          })
-      }
-    } catch (error) {
-      console.log(error);
+    await requestPermisssion();
+    fcmToken = await messaging().getToken();
+    if (fcmToken) {
+      await AsyncStorage.setItem('fcmToken', fcmToken);
+      await firestore()
+        .collection('Users')
+        .doc(auth().currentUser?.uid)
+        .get()
+        .then(async (userFirestoreData) => {
+          await firestore()
+            .collection('Users')
+            .doc(auth().currentUser?.uid)
+            .update({
+              fcmToken: fcmToken,
+            })
+        }
+        )
+        .catch(error => {
+          console.log("Error getting document:", error);
+        }
+        );
     }
   }
   return fcmToken;

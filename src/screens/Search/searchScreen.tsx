@@ -47,7 +47,7 @@ const Search = () => {
   const rendererItems: Array<string> = ['Search', 'Subjects'];
 
   const [searchTerm, setSearchTerm] = useState('');
-  const navigation = useNavigation<MyScreenNavigationProp>();
+  // const navigation = useNavigation<MyScreenNavigationProp>();
 
   useEffect(() => {
     setFilteredData(
@@ -68,7 +68,7 @@ const Search = () => {
     );
   }, [list, searchTerm, selectedBranch, subjectListDetail]);
 
-  const limitedData = filteredData?.slice(0, limit);
+  // const limitedData = filteredData?.slice(0, limit);
 
   const selectedSubject = async (item: any) => {
     dispatch(setResourceLoader(true));

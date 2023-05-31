@@ -7,7 +7,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import { Toast } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { Image, PermissionsAndroid, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -76,6 +77,7 @@ const HomeScreen = (props: Props) => {
   }, [colorScheme])
 
   useEffect(() => {
+
     getFcmToken();
   }, [])
 

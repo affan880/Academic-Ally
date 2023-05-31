@@ -5,7 +5,7 @@ import { Toast } from 'native-base';
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Dimensions, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { SIGNUPILLUSTRATION } from '../../../assets';
 import { CustomBtn, NavBtn } from '../../../components/CustomFormComponents/CustomBtn';
@@ -29,9 +29,16 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   const styles = useMemo(() => createStyles(), []);
   const formRef: any = useRef();
-  const [selectedYear, setSelectedYear] = useState('');
-  const [selectedSem, setSelectedSem] = useState('');
+  const [selectedYear, setSelectedYear] = useState<any>(null);
+  const [BranchData, setBranchData] = useState<any>([]);
+  const [selectedBranch, setSelectedBranch] = useState<any>(null);
+  const [selectedUniversity, setSelectedUniversity] = useState<any>(null);
+  const [SemList, setSemList] = useState<any>([]);
+  const [selectedSem, setSelectedSem] = useState<any>(null);
+  const [course, setCourse] = useState<any>(null);
   const [selectedCourse, setSelectedCourse] = useState<{ label: string; value: string; }[]>([]);
+  const UniversityData = useSelector((state: any) => state?.bootReducer?.utilis?.universities);
+  const apiResponse = useSelector((state: any) => state?.bootReducer?.utilis?.courses);
 
   const initialValues = {
     name: '',
@@ -45,31 +52,18 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
     university: '',
     college: '',
   };
-  const courses: any = {
-    OU: [
-      { label: 'B.E', value: 'BE' },
-    ],
-    JNTUH: [
-      { label: 'B.TECH', value: 'BTECH' },
-    ]
-  }
-  const CourseData: any = [
-    { label: 'B.E', value: 'BE' },
-  ];
-  const CourseData1: any = [
-    { label: 'B.TECH', value: 'BTECH' },
-  ];
 
-  const SemList: any = [
-    { label: '1', value: '1' },
-    { label: '2', value: '2' },
-    { label: '3', value: '3' },
-    { label: '4', value: '4' },
-    { label: '5', value: '5' },
-    { label: '6', value: '6' },
-    { label: '7', value: '7' },
-    { label: '8', value: '8' },
-  ];
+
+  const courses: any = {};
+
+  Object.keys(apiResponse).forEach((university: any) => {
+    const universityCourses = Object.keys(apiResponse[university]).map((course) => ({
+      label: course,
+      value: course
+    }));
+
+    courses[university] = universityCourses;
+  });
 
   const YearData: any = [
     { label: '1', value: '1' },
@@ -78,19 +72,27 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
     { label: '4', value: '4' },
   ];
 
-  const BranchData: any = [
-    { label: 'IT', value: 'IT' },
-    { label: 'CSE', value: 'CSE' },
-    { label: 'ECE', value: 'ECE' },
-    { label: 'MECH', value: 'MECH' },
-    { label: 'CIVIL', value: 'CIVIL' },
-    { label: 'EEE', value: 'EEE' },
-  ];
 
-  const UniversityData: any = [
-    { label: 'Osmania University', value: 'OU' },
-    { label: 'Jawaharlal Nehru Technological University', value: 'JNTUH' },
-  ];
+  useEffect(() => {
+    if (course && selectedUniversity) {
+      const branches = Object.keys(apiResponse[selectedUniversity][course])
+        .map((branch) => ({
+          label: branch,
+          value: branch
+        }));
+      setBranchData(branches);
+    }
+    if (course && selectedUniversity && selectedBranch) {
+      const semesters = apiResponse[selectedUniversity][course][selectedBranch]?.sem.map((value: any, index: any) => {
+        return {
+          label: (index + 1).toString(),
+          value: (index + 1).toString(),
+          status: value
+        };
+      }).filter((value: any) => value.status === true);
+      setSemList(semesters);
+    }
+  }, [selectedUniversity, course, selectedBranch]);
 
   const handleYearChange = (event: any) => {
     if (event?.value === '' || event?.value === undefined || event?.value === null) {
@@ -99,11 +101,18 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
     const yearValue = event?.value;
     setSelectedYear(yearValue);
 
-    setSelectedSem('');
+    setSelectedSem(null);
     formRef.current?.setFieldValue('sem', '');
   };
 
   const handleSemChange = (event: any) => {
+    if (formRef.current?.values?.course === '' && formRef.current?.values?.university === '') {
+      Toast.show({
+        title: 'Please Select a branch first',
+        duration: 4000,
+        backgroundColor: '#FF0101',
+      })
+    }
     if (event?.value === '' || event?.value === undefined || event?.value === null) {
       return;
     }
@@ -154,14 +163,6 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
         Alert.alert(error.message);
       });
   };
-
-  useEffect(() => {
-    firestore()
-      .collection('utils').doc('meta-data').get().then((doc) => {
-        console.log(doc.data());
-      }
-      )
-  }, []);
 
   return (
     <SafeAreaView style={[styles.container, { flex: 1 }]}>
@@ -222,6 +223,15 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
                 width={screenWidth - 50}
                 handleOptions={(item: any) => {
                   if (item?.value) {
+                    formRef.current?.setFieldValue('course', '');
+                    formRef.current?.setFieldValue('branch', '');
+                    formRef.current?.setFieldValue('year', '');
+                    formRef.current?.setFieldValue('sem', '');
+                    setCourse(null);
+                    setSelectedBranch(null);
+                    setSelectedYear(null);
+                    setSelectedSem(null);
+                    setSelectedUniversity(item?.value)
                     setSelectedCourse(courses[item?.value])
                   }
                 }}
@@ -239,7 +249,13 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
                   placeholder={'Course'}
                   leftIcon="Safety"
                   width={screenWidth / 2.5}
-                  handleOptions={() => {
+                  handleOptions={(item: any) => {
+                    if (item?.value) {
+                      setCourse(item.value)
+                      formRef.current?.setFieldValue('branch', '');
+                      formRef.current?.setFieldValue('year', '');
+                      formRef.current?.setFieldValue('sem', '');
+                    }
                     if (formRef.current?.values?.course === '' && formRef.current?.values?.university === '') {
                       Toast.show({
                         title: 'Please Select a university first',
@@ -255,7 +271,21 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
                   placeholder={'Branch'}
                   leftIcon="bars"
                   width={screenWidth / 2.5}
-                  handleOptions={() => { }}
+                  handleOptions={(item: any) => {
+                    if (item?.value) {
+                      setSelectedBranch(item?.value)
+                      setSemList([])
+                      formRef.current?.setFieldValue('year', '');
+                      formRef.current?.setFieldValue('sem', '');
+                    }
+                    if (formRef.current?.values?.course === '' && formRef.current?.values?.university === '') {
+                      Toast.show({
+                        title: 'Please Select a course first',
+                        duration: 4000,
+                        backgroundColor: '#FF0101',
+                      })
+                    }
+                  }}
                 />
               </View>
               <View

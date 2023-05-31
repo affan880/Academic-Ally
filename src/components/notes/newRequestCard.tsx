@@ -9,6 +9,7 @@ import SwipeableRating from 'react-native-swipeable-rating';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
+import { LinkPreview } from '@flyerhq/react-native-link-preview'
 
 import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
 import UserRequestsActions from '../../screens/UserRequests/UserRequestsActions';
@@ -79,12 +80,12 @@ function remove(filename: string) {
     }
 }
 
-const NewRequestCard = ({ item, selected, subject }: Props) => {
+const NewRequestCard = ({ item, index, selected, subject }: any) => {
     const { isOpen, onOpen, onClose } = useDisclose();
     const theme = useSelector((state: any) => state.theme);
     const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
     const navigation = useNavigation<pdfViewer>();
-    const dispatch = useDispatch();
+    const dispatch: any = useDispatch();
     const [modalVisible, setModalVisible] = React.useState(false);
     const [ratingCount, setRatingCount] = useState(0);
     const [checked1, setChecked1] = useState(false);
@@ -114,11 +115,9 @@ const NewRequestCard = ({ item, selected, subject }: Props) => {
                 <TouchableOpacity
                     style={styles.subjectContainer}
                     onPress={() => {
-                        // NavigationService.navigate('UserRequestsPdfViewer', {
-                        //     item: downloadUrl,
-                        // });
-                        dispatch(UserRequestsActions.uploadPdfToDrive(downloadUrl, 'test.pdf', '1qu5Ocwbki7ZJRQUoOs08KafMQAQ2AUyf'));
-                        console.log(downloadUrl);
+                        NavigationService.navigate('UserRequestsPdfViewer', {
+                            item: downloadUrl,
+                        });
                     }}>
                     <View style={styles.containerBox}>
                         <View style={styles.containerText}>
@@ -265,7 +264,10 @@ const NewRequestCard = ({ item, selected, subject }: Props) => {
                 }]} >
                     <Text style={styles.cardOptionText}>Approve</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.cardOptionContainer, {
+                <TouchableOpacity onPress={() => {
+                    console.log("Reject");
+                    dispatch(UserRequestsActions.rejectRequest(index));
+                }} style={[styles.cardOptionContainer, {
                     backgroundColor: theme.colors.redError,
                     padding: 8,
                     borderRadius: 5,

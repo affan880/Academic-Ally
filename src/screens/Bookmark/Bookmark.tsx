@@ -49,6 +49,7 @@ type pdfViewer = StackNavigationProp<MyStackParamList, 'PdfViewer'>;
 
 const Bookmark = () => {
   const theme = useSelector((state: any) => state.theme);
+  const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [listData, setListData] = useState([]);
   const [sortedList, setSortedList] = useState([]);
@@ -179,7 +180,7 @@ const Bookmark = () => {
               </Box>
             </VStack>
             <TouchableOpacity onPress={() => {
-              shareNotes(item)
+              shareNotes(item, dynamicLink)
             }} style={{
               justifyContent: 'center',
             }}  >

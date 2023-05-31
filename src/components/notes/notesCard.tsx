@@ -106,6 +106,8 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
   const userFirestoreData = useSelector((state: any) => state.usersData);
   const [ratedList, setRatedList] = useState<any>([]);
   const [submitted, setSubmitted] = useState(false);
+  const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
+
   const ReportsList = [];
   const userBookmarks = useSelector(
     (state: any) => state.userBookmarkManagement,
@@ -350,7 +352,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
           shareNotes({
             ...item,
             subject: subject,
-          })
+          }, dynamicLink)
         }} >
           <Text style={styles.cardOptionText}>Share</Text>
           <ShareIcon />

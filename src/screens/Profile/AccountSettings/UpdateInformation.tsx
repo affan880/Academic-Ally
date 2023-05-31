@@ -3,7 +3,7 @@ import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Actionsheet, Avatar, Stack, Text, Toast, useDisclose } from 'native-base';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -29,13 +29,13 @@ type MyStackParamList = {
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
 
-  type MyScreenNavigationProp = StackNavigationProp<
-    MyStackParamList,
-    'BottomTabBar'
-  >;
+type MyScreenNavigationProp = StackNavigationProp<
+  MyStackParamList,
+  'BottomTabBar'
+>;
 
 const UpdateInformation = () => {
-    const {
+  const {
     isOpen,
     onOpen,
     onClose
@@ -47,13 +47,13 @@ const UpdateInformation = () => {
   const userFirestoreData = useSelector((state: any) => {
     return state.usersData;
   });
-    const userImage = useSelector((state: any) => {
+  const userImage = useSelector((state: any) => {
     return state.usersData.userProfile;
   });
   const user = auth().currentUser;
   const theme = useSelector((state: any) => state.theme);
   const styles = createStyles(theme.colors, theme.sizes);
-  const initialValues :any = {
+  const initialValues: any = {
     name: userFirestoreData.usersData.name,
     course: userFirestoreData.usersData.course,
     sem: userFirestoreData.usersData.sem,
@@ -61,9 +61,18 @@ const UpdateInformation = () => {
     Year: userFirestoreData.usersData.Year,
     college: userFirestoreData.usersData.college,
   };
-const [selectedAvatar, setSelectedAvatar] = React.useState<any>(auth().currentUser?.photoURL);
-  const [selectedYear, setSelectedYear] = useState('');
-  const [selectedSem, setSelectedSem] = useState('');
+  const [selectedAvatar, setSelectedAvatar] = React.useState<any>(auth().currentUser?.photoURL);
+  const [selectedYear, setSelectedYear] = useState<any>(null);
+  const [BranchData, setBranchData] = useState<any>([]);
+  const [selectedBranch, setSelectedBranch] = useState<any>(userFirestoreData.usersData.branch);
+  const [selectedUniversity, setSelectedUniversity] = useState<any>(null);
+  const [SemList, setSemList] = useState<any>([]);
+  const [selectedSem, setSelectedSem] = useState<any>(null);
+  const [course, setCourse] = useState<any>(userFirestoreData.usersData.course);
+  const [selectedCourse, setSelectedCourse] = useState<{ label: string; value: string; }[]>([]);
+  const UniversityData = useSelector((state: any) => state?.bootReducer?.utilis?.universities);
+  const apiResponse = useSelector((state: any) => state?.bootReducer?.utilis?.courses);
+
   const avatarsList = [
     {
       id: 1,
@@ -99,48 +108,70 @@ const [selectedAvatar, setSelectedAvatar] = React.useState<any>(auth().currentUs
     },
   ];
 
-  const CourseData: any = [
-    {label: 'B.E', value: 'BE'},
-  ];
-  const CourseData1: any = [
-   {label: 'B.TECH', value: 'BTECH'},
-  ];
-  
+  useEffect(() => {
+    setSelectedUniversity(userFirestoreData.usersData.university);
 
-  const SemList: any = [
-    {label: '1', value: '1'},
-    {label: '2', value: '2'},
-    {label: '3', value: '3'},
-    {label: '4', value: '4'},
-    {label: '5', value: '5'},
-    {label: '6', value: '6'},
-    {label: '7', value: '7'},
-    {label: '8', value: '8'},
-  ];
+    if (selectedUniversity) {
+      const universityCourses = Object.keys(apiResponse[userFirestoreData?.usersData?.university]).map((course) => ({
+        label: course,
+        value: course
+      }));
+      setSelectedCourse(universityCourses)
+    }
+
+    if ((selectedUniversity && course) || (userFirestoreData.usersData.course && userFirestoreData.usersData.university)) {
+      if (selectedUniversity && course) {
+        const branches = Object.keys(apiResponse[selectedUniversity][course])
+          .map((branch) => ({
+            label: branch,
+            value: branch
+          }));
+        setBranchData(branches);
+      }
+      else {
+        const branches = Object.keys(apiResponse[userFirestoreData.usersData.university][userFirestoreData.usersData.course])
+          .map((branch) => ({
+            label: branch,
+            value: branch
+          }));
+        setBranchData(branches);
+      }
+    }
+    if ((course && selectedUniversity && selectedBranch) || (userFirestoreData.usersData.course && userFirestoreData.usersData.university && userFirestoreData.usersData.branch)) {
+      if (course && selectedUniversity && selectedBranch) {
+        const semesters = apiResponse[selectedUniversity][course][selectedBranch]?.sem.map((value: any, index: any) => {
+          return {
+            label: (index + 1).toString(),
+            value: (index + 1).toString(),
+            status: value
+          };
+        }).filter((value: any) => value.status === true);
+        setSemList(semesters);
+      }
+      else {
+        const semesters = apiResponse[userFirestoreData.usersData.university][userFirestoreData.usersData.course][userFirestoreData.usersData.branch]?.sem.map((value: any, index: any) => {
+          return {
+            label: (index + 1).toString(),
+            value: (index + 1).toString(),
+            status: value
+          };
+        }).filter((value: any) => value.status === true);
+        setSemList(semesters);;
+      }
+    }
+  }, [selectedUniversity, course, selectedBranch]);
 
   const YearData: any = [
-    {label: '1', value: '1'},
-    {label: '2', value: '2'},
-    {label: '3', value: '3'},
-    {label: '4', value: '4'},
+    { label: '1', value: '1' },
+    { label: '2', value: '2' },
+    { label: '3', value: '3' },
+    { label: '4', value: '4' },
   ];
 
-  const BranchData: any = [
-    {label: 'IT', value: 'IT'},
-    {label: 'CSE', value: 'CSE'},
-    {label: 'ECE', value: 'ECE'},
-    {label: 'MECH', value: 'MECH'},
-    {label: 'CIVIL', value: 'CIVIL'},
-    {label: 'EEE', value: 'EEE'},
-  ];
-
-  const UniversityData: any = [{label: 'Osmania University', value: 'OU'}];
-  
-
-    const handleYearChange = (event: any) => {
-      if(event?.value === '' || event?.value === undefined || event?.value === null){
-        return;
-      }
+  const handleYearChange = (event: any) => {
+    if (event?.value === '' || event?.value === undefined || event?.value === null) {
+      return;
+    }
     const yearValue = event?.value;
     setSelectedYear(yearValue);
 
@@ -148,13 +179,13 @@ const [selectedAvatar, setSelectedAvatar] = React.useState<any>(auth().currentUs
     formRef.current?.setFieldValue('sem', '');
   };
 
-  const handleSemChange = (event :any) => {
-     if(event?.value === '' || event?.value === undefined || event?.value === null){
-        return;
-      }
+  const handleSemChange = (event: any) => {
+    if (event?.value === '' || event?.value === undefined || event?.value === null) {
+      return;
+    }
     const semValue = event?.value;
     setSelectedSem(semValue);
-     if (!selectedYear) {
+    if (!selectedYear) {
       if (semValue <= 2) {
         setSelectedYear('1');
       } else if (semValue <= 4) {
@@ -167,26 +198,20 @@ const [selectedAvatar, setSelectedAvatar] = React.useState<any>(auth().currentUs
     }
   };
 
-  const filteredSemList = SemList.filter((sem: any) => {
-  if (selectedYear === '1') {
-    return sem.value === '1' || sem.value === '2';
-  } else if (selectedYear === '2') {
-    return sem.value === '3' || sem.value === '4';
-  } else if (selectedYear === '3') {
-    return sem.value === '5' || sem.value === '6';
-  } else if (selectedYear === '4') {
-    return sem.value === '7' || sem.value === '8';
-  } else {
-    return true;
-  }
-});
+  const filteredSemList = SemList?.filter((sem: any) => {
+    if (selectedYear === '1') {
+      return sem.value === '1' || sem.value === '2';
+    } else if (selectedYear === '2') {
+      return sem.value === '3' || sem.value === '4';
+    } else if (selectedYear === '3') {
+      return sem.value === '5' || sem.value === '6';
+    } else if (selectedYear === '4') {
+      return sem.value === '7' || sem.value === '8';
+    } else {
+      return true;
+    }
+  });
 
-  // const updateReduxData = (data: any) => {
-  //   dispatch(setUsersData(data));
-  //   navigation.navigate('BottomTabBar', {
-  //       screen: 'Home',
-  //       });
-  // };
 
   const updateData = async (values: any) => {
     const data = {
@@ -202,30 +227,30 @@ const [selectedAvatar, setSelectedAvatar] = React.useState<any>(auth().currentUs
     };
     updateFirestoreData(uid, data, dispatch);
     NavigationService.navigate(NavigationService.screens.BottomTabNavigator, {
-        screen: NavigationService.screens.Home,
-        });
+      screen: NavigationService.screens.Home,
+    });
     AsyncStorage.setItem('reccommendSubjects', JSON.stringify([]));
   };
 
-function getOrdinalSuffix(text :string) {
-  const number = parseInt(text, 10);
-  const suffixes = ['th', 'st', 'nd', 'rd'];
-  const lastDigit = number % 10;
-  const suffix = suffixes[(lastDigit === 1 && number !== 11) ? 1
-     : (lastDigit === 2 && number !== 12) ? 2
-     : (lastDigit === 3 && number !== 13) ? 3
-     : 0];
+  function getOrdinalSuffix(text: string) {
+    const number = parseInt(text, 10);
+    const suffixes = ['th', 'st', 'nd', 'rd'];
+    const lastDigit = number % 10;
+    const suffix = suffixes[(lastDigit === 1 && number !== 11) ? 1
+      : (lastDigit === 2 && number !== 12) ? 2
+        : (lastDigit === 3 && number !== 13) ? 3
+          : 0];
 
-  return `${number}${suffix}`;
+    return `${number}${suffix}`;
   }
 
-    const updateUserImage = (img:string) => {
+  const updateUserImage = (img: string) => {
     auth()
       .currentUser?.updateProfile({
         photoURL: img,
       })
       .then(() => {
-        dispatch(setUserProfile(img));  
+        dispatch(setUserProfile(img));
         Toast.show({
           title: 'Avatar updated successfully',
           duration: 3000,
@@ -236,7 +261,7 @@ function getOrdinalSuffix(text :string) {
 
 
   return (
-    <NavigationLayout rightIconFalse={true} title="Update Profile" handleScroll={()=>{}} >
+    <NavigationLayout rightIconFalse={true} title="Update Profile" handleScroll={() => { }} >
       <View
         style={{
           flex: 1,
@@ -246,27 +271,27 @@ function getOrdinalSuffix(text :string) {
           marginBottom: theme.sizes.height * 0.03,
         }}>
         <Avatar source={{
-              uri: userImage||user?.photoURL
-            }}size={'2xl'} alignSelf={'center'} style={{
-              borderWidth: 2,
-              borderColor: '#6360FF',
-            }} />
-            <Feather
-              name="edit-3"
-              size={13}
-              color={'#FFFFFF'}
-              onPress={onOpen}
-              style={{
-                position: 'relative',
-                bottom: 32,
-                left: 45,
-                zIndex: 999,
-                padding: 5,
-                backgroundColor: '#6360FF',
-                borderRadius: 50,
-              }}
-            />
-        
+          uri: userImage || user?.photoURL
+        }} size={'2xl'} alignSelf={'center'} style={{
+          borderWidth: 2,
+          borderColor: '#6360FF',
+        }} />
+        <Feather
+          name="edit-3"
+          size={13}
+          color={'#FFFFFF'}
+          onPress={onOpen}
+          style={{
+            position: 'relative',
+            bottom: 32,
+            left: 45,
+            zIndex: 999,
+            padding: 5,
+            backgroundColor: '#6360FF',
+            borderRadius: 50,
+          }}
+        />
+
         <Form
           validationSchema={updatevalidationSchema}
           innerRef={formRef}
@@ -280,17 +305,24 @@ function getOrdinalSuffix(text :string) {
           <View
             style={{
               flexDirection: 'row',
-              width: screenWidth -50,
+              width: screenWidth - 50,
               flex: 1,
               justifyContent: 'space-between',
             }}>
             <DropdownComponent
               name="course"
-              data={userFirestoreData.usersData.university === 'OU' ? CourseData : CourseData1 }
+              data={selectedCourse}
               placeholder={userFirestoreData.usersData.course}
               leftIcon="bars"
               width={screenWidth / 2.5}
-              handleOptions={()=>{}}
+              handleOptions={(item: any) => {
+                if (item?.value) {
+                  setCourse(item.value)
+                  formRef.current?.setFieldValue('branch', '');
+                  formRef.current?.setFieldValue('year', '');
+                  formRef.current?.setFieldValue('sem', '');
+                }
+              }}
             />
             <DropdownComponent
               name="branch"
@@ -298,7 +330,15 @@ function getOrdinalSuffix(text :string) {
               placeholder={userFirestoreData.usersData.branch}
               leftIcon="ellipsis1"
               width={screenWidth / 2.5}
-              handleOptions={()=>{}}
+              handleOptions={(item: any) => {
+                if (item?.value) {
+                  setSelectedBranch(item?.value)
+                  setSemList([])
+                  course ? null : setCourse(userFirestoreData.usersData.course)
+                  formRef.current?.setFieldValue('year', '');
+                  formRef.current?.setFieldValue('sem', '');
+                }
+              }}
             />
           </View>
           <View
@@ -328,67 +368,67 @@ function getOrdinalSuffix(text :string) {
           {
             userFirestoreData.usersData?.college !== '' ? (
               <View style={styles.disabledIp} >
-                <FontAwesome5 name = "university" size = {theme.sizes.iconSmall} color = "#91919F" />
-                <Text style = {{fontSize: theme.sizes.subtitle, color: '#91919F', marginLeft: 10}} >{userFirestoreData.usersData.college}</Text>
+                <FontAwesome5 name="university" size={theme.sizes.iconSmall} color="#91919F" />
+                <Text style={{ fontSize: theme.sizes.subtitle, color: '#91919F', marginLeft: 10 }} >{userFirestoreData.usersData.college}</Text>
               </View>
             ) :
-            (
-              <CustomTextInput
-                leftIcon="college"
-                placeholder="college"
-                name="college"
-              />
-            )
+              (
+                <CustomTextInput
+                  leftIcon="college"
+                  placeholder="college"
+                  name="college"
+                />
+              )
           }
           <View style={styles.disabledIp} >
-                <Feather name = "mail" size = {theme.sizes.iconSmall} color = "#91919F" />
-                <Text style = {{fontSize: theme.sizes.subtitle, color: '#91919F', marginLeft: 10}} >{userFirestoreData.usersData.email}</Text>
-              </View>
-              <View style={styles.SignupButton}>
+            <Feather name="mail" size={theme.sizes.iconSmall} color="#91919F" />
+            <Text style={{ fontSize: theme.sizes.subtitle, color: '#91919F', marginLeft: 10 }} >{userFirestoreData.usersData.email}</Text>
+          </View>
+          <View style={styles.SignupButton}>
             <CustomBtn title="Update" color="#6360FF" />
           </View>
         </Form>
       </View>
-      <Actionsheet isOpen={isOpen} onClose={onClose} borderRadius={0}  > 
+      <Actionsheet isOpen={isOpen} onClose={onClose} borderRadius={0}  >
         <Actionsheet.Content height={screenHeight * 0.65}>
-          <Avatar source ={{
-              uri: selectedAvatar
-            }}size={screenHeight * 0.14} alignSelf={'center'} marginTop={screenHeight * 0.01} />
-            <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: screenHeight * 0.05}}>
-              <Text style={{fontSize: theme.sizes.subtitle, color: '#000', fontWeight: 'bold', textAlign:"center" }}>select from a variety of avatars to represent yourself</Text>
-            </View>
-            <Stack style={styles.gridContainer} >
-                   {
-                      avatarsList.map((item) => {
-                        return (
-                          <TouchableOpacity  key={item.id} onPress={() => {
-                            setSelectedAvatar(item.image)
-                          }}>
-                           <Avatar source={
-                              {
-                                uri: item.image
-                              }
-                           } size={screenHeight * 0.07} style={[styles.gridItem, {
-                            borderWidth: selectedAvatar === item.image ? 2 : 0,
-                            borderColor: '#6360FF'
-                           }]} alignSelf={'center'} />
-                          </TouchableOpacity>
-                        )
-                      })
-                   }
-              </Stack>
-              <Stack direction="row" space={2} marginY={screenHeight * 0.05} paddingX={screenWidth * 0.02} alignItems="center" justifyContent="space-evenly" width={"100%"} >
-             <TouchableOpacity onPress={onClose} >
+          <Avatar source={{
+            uri: selectedAvatar
+          }} size={screenHeight * 0.14} alignSelf={'center'} marginTop={screenHeight * 0.01} />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: screenHeight * 0.05 }}>
+            <Text style={{ fontSize: theme.sizes.subtitle, color: '#000', fontWeight: 'bold', textAlign: "center" }}>select from a variety of avatars to represent yourself</Text>
+          </View>
+          <Stack style={styles.gridContainer} >
+            {
+              avatarsList.map((item) => {
+                return (
+                  <TouchableOpacity key={item.id} onPress={() => {
+                    setSelectedAvatar(item.image)
+                  }}>
+                    <Avatar source={
+                      {
+                        uri: item.image
+                      }
+                    } size={screenHeight * 0.07} style={[styles.gridItem, {
+                      borderWidth: selectedAvatar === item.image ? 2 : 0,
+                      borderColor: '#6360FF'
+                    }]} alignSelf={'center'} />
+                  </TouchableOpacity>
+                )
+              })
+            }
+          </Stack>
+          <Stack direction="row" space={2} marginY={screenHeight * 0.05} paddingX={screenWidth * 0.02} alignItems="center" justifyContent="space-evenly" width={"100%"} >
+            <TouchableOpacity onPress={onClose} >
               <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={"#91919F"} >
                 Cancel
               </Text>
             </TouchableOpacity>
-             <TouchableOpacity style={{
+            <TouchableOpacity style={{
               backgroundColor: '#6360FF',
               borderRadius: 10,
               paddingHorizontal: screenWidth * 0.1,
               paddingVertical: screenHeight * 0.012,
-             }} onPress={()=>{
+            }} onPress={() => {
               updateUserImage(selectedAvatar)
               onClose()
             }}>
@@ -396,7 +436,7 @@ function getOrdinalSuffix(text :string) {
                 Confirm
               </Text>
             </TouchableOpacity>
-          </Stack>  
+          </Stack>
         </Actionsheet.Content>
       </Actionsheet>
     </NavigationLayout>

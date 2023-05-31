@@ -151,6 +151,7 @@ const UserRequestsPdfViewer = () => {
                                 );
                             }}
                             onError={error => {
+                                console.log(error);
                             }}
                             // onPressLink={(uri) => {
                             //   console.log(`Link pressed: ${uri}`);

@@ -38,7 +38,9 @@ class UserRequestsActions {
             const doc = await firestoreDB()
                 .collection('Universities')
                 .doc('OU').collection('BE').doc('uploadList')
-                .get()
+                .get().then((doc) => {
+                    console.log(doc.data());
+                })
             doc.data()?.paths.map((path) => {
                 if (path.charAt(0) === '/') {
                     path = path.substring(1);
@@ -54,6 +56,26 @@ class UserRequestsActions {
                     })
                 }
             })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    static rejectRequest = (index) => async (dispatch) => {
+        try {
+            const doc = await firestoreDB()
+                .collection('UsersUploads')
+                .doc('OU').collection('BE').doc('uploadList')
+                .get().then((doc) => {
+                    console.log(doc.data().paths[index]);
+                    // firestoreDB().collection('UsersUploads').doc('OU').collection('BE').doc('uploadList').update({
+                    //     paths: firestoreDB.FieldValue.arrayRemove(doc.data()?.paths[index])
+                    // })
+                })
+
+
+            console.log(doc.data());
+
         } catch (error) {
             console.log(error);
         }
