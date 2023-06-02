@@ -24,6 +24,7 @@ class NavigationService {
         PrivacyPolicy: 'PrivacyPolicy',
         TermsAndConditions: 'TermsAndConditions',
         UserRequestsPdfViewer: 'UserRequestsPdfViewer',
+        Download: 'Download',
     };
 
     static navigate(name, params) {
@@ -55,7 +56,7 @@ class NavigationService {
     }
 
     static replace(name, params) {
-        if (this.navigationRef.isReady() && this.navigationRef.getCurrentRoute().name !== name) {
+        if (this.navigationRef.isReady()) {
             this.navigationRef.dispatch(StackActions.replace(name, params));
         }
     }

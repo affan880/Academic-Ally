@@ -157,5 +157,39 @@ class UtilityService {
         return `${hours}:${minutes}:${seconds}`;
     }
 
+    static removeString(str) {
+        if (str?.includes('(oufastupdates.com)') || str?.includes('.pdf')) {
+            const text = str.replace(/\(oufastupdates.com\)|\.pdf/g, '');
+            return text.slice(0, 35) + '...';
+        }
+        if (str?.length > 15) {
+            return str.slice(0, 5) + '...';
+        }
+        return str;
+    }
+
+    static replaceString(str, placeholdersValues) {
+        const placeholders = ['${university}', '${course}', '${branch}', '${sem}', '${category}', '${name}', '${subject}', '${did}', '${uid}', '${uid2}', '${uid3}'];
+
+        let replacedStr = str;
+
+        for (const placeholder of placeholders) {
+            if (str !== null && str.includes(placeholder)) {
+                const index = placeholders.indexOf(placeholder);
+                replacedStr = replacedStr.replace(placeholder, placeholdersValues[index]);
+            }
+        }
+        return replacedStr;
+    }
+
+    static replaceUnusualCharacters(str, character) {
+        if (str?.includes(character)) {
+            const text = str?.replace(character, '_');
+            return text;
+        }
+        return str;
+    }
+
+
 }
 export default UtilityService;

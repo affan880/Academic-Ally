@@ -18,6 +18,7 @@ import LoginScreen from '../AuthenticationScreens/Login/LoginScreen';
 import SignUpScreen from '../AuthenticationScreens/SignUp/SignUpScreen';
 import VerificationScreen from '../AuthenticationScreens/Verification/verification';
 import Bookmark from '../Bookmark/Bookmark';
+import DownloadScreen from '../Downloads/DownloadScreen';
 import HomeScreen from '../Home/homeScreen';
 import NotesList from '../Notes/NotesList';
 import PdfViewer from '../Notes/PdfViewer/pdfViewer';
@@ -192,6 +193,7 @@ const AppStack = () => {
             <Stack.Screen name={NavigationService.screens.TermsAndConditions} component={TermsAndConditions} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.AboutUs} component={AboutUs} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.UserRequestsPdfViewer} component={UserRequestsPdfViewer} options={{ headerShown: false }} />
+            <Stack.Screen name={NavigationService.screens.Download} component={DownloadScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 };

@@ -45,16 +45,6 @@ type MyStackParamList = {
 
 type pdfViewer = StackNavigationProp<MyStackParamList, 'PdfViewer'>;
 
-function remove(str: string) {
-  if (str.includes('(oufastupdates.com)') || str.includes('.pdf')) {
-    let text = str.replace(/\(oufastupdates.com\)|\.pdf/g, '');
-    if (text.length > 15) {
-      return text.substring(0, 15) + '...';
-    }
-    return str;
-  }
-}
-
 const NotesList = (props: Props) => {
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);

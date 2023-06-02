@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import BootSlice from '../screens/Boot/BootSlice';
+import pdfViewerSlice from '../screens/Notes/PdfViewer/pdfViewerSlice';
 import UserRequests from '../screens/UserRequests/UserRequestsSlice';
 import SubjectsList from './reducers/subjectsList';
 import theme from './reducers/theme';
@@ -18,6 +19,7 @@ const appReducer = combineReducers({
   userState: userState,
   theme: theme,
   UserRequestsReducer: UserRequests,
+  pdfViewerReducer: pdfViewerSlice,
 });
 
 const rootReducer = (state, action) => {
@@ -34,15 +36,3 @@ export default configureStore({
       serializableCheck: false,
     }),
 });
-
-
-// export default configureStore({
-//   reducer: {
-//     usersData: usersDataReducer,
-//     userBookmarkManagement: userBookmarkManagementReducer,
-//     userRecentPdfs: userRecentViewsManagementReducer,
-//     subjectsList: SubjectsList,
-//     userState: userState,
-//     theme: theme,
-//   },
-// });

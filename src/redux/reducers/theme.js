@@ -2,6 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSlice } from '@reduxjs/toolkit';
 import { Dimensions } from 'react-native';
 
+import { ShareIcon, ShareIconImg } from '../../assets/images/icons';
+import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
+
 const { width, height } = Dimensions.get('window');
 
 export const createThemeSlice = createSlice({
@@ -26,6 +29,9 @@ export const createThemeSlice = createSlice({
             categoryBtn: '#FCFCFF',
             disabledCategoryBtn: '#D3D3D3',
             mainTheme: '#6360FF',
+            popOver: '#FCFCFF',
+            shareIcon: ShareIconImg,
+            reportIcon: ReportIconBlack,
             logo: '../../../assets/images/logo_black.png',
         },
         dark: {
@@ -47,6 +53,9 @@ export const createThemeSlice = createSlice({
             categoryBtn: '#6360FF',
             disabledCategoryBtn: '#D3D3D3',
             mainTheme: '#6360FF',
+            popOver: '#292B2D',
+            shareIcon: ShareIcon,
+            reportIcon: ReportIconWhite,
             logo: '../../../assets/images/white-logo.png',
         },
         colors: {
@@ -68,6 +77,9 @@ export const createThemeSlice = createSlice({
             categoryBtn: '#FCFCFF',
             disabledCategoryBtn: '#D3D3D3',
             mainTheme: '#6360FF',
+            popOver: '#FCFCFF',
+            shareIcon: ShareIcon,
+            reportIcon: ReportIconBlack,
             logo: '../../../assets/images/white-logo.png',
         },
         sizes: {
@@ -75,6 +87,7 @@ export const createThemeSlice = createSlice({
             subtitle: height * 0.018,
             text: height * 0.02,
             textSmall: height * 0.015,
+            textMidTiny: height * 0.013,
             textTiny: height * 0.01,
             button: height * 0.05,
             buttonSmall: height * 0.03,

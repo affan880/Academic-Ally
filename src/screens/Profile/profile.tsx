@@ -86,6 +86,18 @@ const Profile = () => {
                 <TouchableOpacity
                   style={styles.settingsContainer}
                   onPress={() => {
+                    NavigationService.navigate(NavigationService.screens.Download);
+                  }}>
+                  <Text style={styles.settingsText}>Downloads</Text>
+                  <Ionicons
+                    name="chevron-forward-outline"
+                    size={20}
+                    color="#91919F"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.settingsContainer}
+                  onPress={() => {
                     setLogOutAlert(!logOutAlert);
                   }}>
                   <Text style={styles.settingsText}>Log Out</Text>

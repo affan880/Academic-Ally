@@ -108,7 +108,6 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
   const [submitted, setSubmitted] = useState(false);
   const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
 
-  const ReportsList = [];
   const userBookmarks = useSelector(
     (state: any) => state.userBookmarkManagement,
   ).userBookMarks;
@@ -189,7 +188,6 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
               selected: selected,
               subject: subject,
             });
-            dispatch(userAddToRecentsStart({ ...item, "viewedTime": `${new Date()}`, "category": selected }));
           }}>
           <View style={styles.containerBox}>
             <View style={styles.containerText}>
