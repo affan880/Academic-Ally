@@ -1,18 +1,14 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import { Toast } from 'native-base';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Dimensions, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
-import ScreenLayout from '../../interfaces/screenLayout';
 import { setResourceLoader } from '../../redux/reducers/userState';
 import { userFirestoreData } from '../../services/fetch';
 import NavigationService from '../../services/NavigationService';

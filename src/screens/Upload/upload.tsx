@@ -1,27 +1,22 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
-import { Actionsheet, Avatar, Box, Modal, Stack, Text, Toast, useDisclose } from 'native-base';
+import { Box, Modal, Stack, Text, Toast, useDisclose } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Dimensions, Image, PermissionsAndroid, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Dimensions, PermissionsAndroid, ScrollView, TouchableOpacity, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CustomBtn, NavBtn } from '../../components/CustomFormComponents/CustomBtn';
+import { CustomBtn } from '../../components/CustomFormComponents/CustomBtn';
 import { CustomTextInput } from '../../components/CustomFormComponents/CustomTextInput';
 import DropdownComponent from '../../components/CustomFormComponents/Dropdown';
 import Form from '../../components/Forms/form';
-import NavigationLayout from '../../interfaces/navigationLayout';
-import { AddtoUserUploads, getFirestoreData, logOut, updateFirestoreData } from '../../Modules/auth/firebase/firebase';
-import { setUserProfile, setUsersData } from '../../redux/reducers/usersData';
+import { AddtoUserUploads } from '../../Modules/auth/firebase/firebase';
 import { UploadvalidationSchema } from '../../utilis/validation';
 import createStyles from './styles';
 

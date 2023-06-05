@@ -1,20 +1,14 @@
-import dynamicLinks from '@react-native-firebase/dynamic-links';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import LottieView from 'lottie-react-native';
-import { Actionsheet, Box, Button, Center, Fab, HStack, Icon, Popover, Text, Toast, useDisclose, VStack } from 'native-base';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, Linking, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Text } from 'native-base';
+import React, { useMemo, useRef, useState } from 'react';
+import { ActivityIndicator, Dimensions, StyleSheet, View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Pdf from 'react-native-pdf';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import NavigationService from '../../services/NavigationService';
 import createStyles from './styles';
 
 const { width, height } = Dimensions.get('window');

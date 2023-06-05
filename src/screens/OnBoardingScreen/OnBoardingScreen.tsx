@@ -12,7 +12,7 @@ const Full_Screen_Width = Dimensions.get('screen').width;
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
-const OnBoardingScreen: FC<IProps> = ({navigation}) => {
+const OnBoardingScreen: FC<IProps> = ({ navigation }) => {
   return (
     <View style={[styles.statusBar, styles.container]}>
       <StatusBar

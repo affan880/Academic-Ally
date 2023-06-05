@@ -1,13 +1,12 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
-import { Actionsheet, Box, Button, Center, Fab, HStack, Icon, Modal, Popover, Stack, Text, Toast, useDisclose, VStack } from 'native-base';
+import { Actionsheet, Box, Button, Fab, HStack, Icon, Modal, Popover, Stack, Text, Toast, useDisclose, VStack } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Animated, Dimensions, Linking, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
-import RNFS, { DocumentDirectoryPath, downloadFile } from 'react-native-fs';
+import { ActivityIndicator, Dimensions, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import RNFS from 'react-native-fs';
 import { TextInput } from 'react-native-gesture-handler';
 import Pdf from 'react-native-pdf';
-import { set } from 'react-native-reanimated';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -22,7 +21,7 @@ import { userClearRecents, userRemoveFromRecents } from '../../../redux/reducers
 import NavigationService from '../../../services/NavigationService';
 import UtilityService from '../../../services/UtilityService';
 import PdfViewerAction from './pdfViewerAction';
-import { setDownloadProgress, setIsDownloading } from './pdfViewerSlice';
+import { setIsDownloading } from './pdfViewerSlice';
 import createStyles from './styles';
 
 const { width, height } = Dimensions.get('window');

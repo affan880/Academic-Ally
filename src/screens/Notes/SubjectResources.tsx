@@ -1,13 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NavigationProp, ParamListBase, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Notes, OtherRes, Qp, Syllabus } from '../../assets/images/icons';
-import { NavBtn } from '../../components/CustomFormComponents/CustomBtn';
 import NavigationLayout from '../../interfaces/navigationLayout';
 import { userAddToRecents } from '../../redux/reducers/usersRecentPdfsManager';
 import { setResourceLoader } from '../../redux/reducers/userState';

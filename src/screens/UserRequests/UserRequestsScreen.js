@@ -1,16 +1,12 @@
-import storage from '@react-native-firebase/storage';
-import { FlatList, VStack } from 'native-base';
-import React, { useEffect, useMemo } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { FlatList } from 'native-base';
+import React, { useEffect, useMemo } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
 
 import NewRequestCard from '../../components/notes/newRequestCard';
 import createStyles from './styles';
-import UserRequestsActions from './UserRequestsActions'
+import UserRequestsActions from './UserRequestsActions';
 
 const UserRequestsScreen = () => {
     const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 

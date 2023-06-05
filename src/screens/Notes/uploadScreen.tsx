@@ -3,7 +3,7 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
-import { Box, Button, Center, FormControl, HStack, Icon, Input, Modal, Spinner, Stack, Text, Toast, VStack } from 'native-base';
+import { Box, Modal, Stack, Text, Toast } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, Image, PermissionsAndroid, TouchableOpacity, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';

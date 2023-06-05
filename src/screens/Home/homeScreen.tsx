@@ -1,24 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import auth, { firebase } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import LottieView from 'lottie-react-native';
 import { Toast } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, PermissionsAndroid, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { Image, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { name as app_name, version as app_version } from '../../../package.json';
 import QuickAccess from '../../components/CustomFormComponents/QuickAccess/QuickAccess';
 import Recommendation from '../../components/CustomFormComponents/Recommendation/Recommendation';
 import ResourceLoader from '../../components/loaders/ResourceLoader';
 import ScreenLayout from '../../interfaces/screenLayout';
-import { setListLoaded, setSubjectsList, setVersion } from '../../redux/reducers/subjectsList';
+import { setListLoaded, setSubjectsList } from '../../redux/reducers/subjectsList';
 import { setDarkTheme, setLightTheme } from '../../redux/reducers/theme';
 import { setBookmarks } from '../../redux/reducers/userBookmarkManagement';
 import { setUsersData, setUsersDataLoaded } from '../../redux/reducers/usersData';

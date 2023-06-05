@@ -3,7 +3,7 @@ import firestore from '@react-native-firebase/firestore';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import { Toast } from 'native-base';
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Dimensions, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Alert, Dimensions, Image, SafeAreaView, ScrollView, StatusBar, Text, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
 

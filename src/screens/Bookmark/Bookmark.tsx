@@ -1,21 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import { Box, Divider, FlatList, HStack, Icon, Pressable, Text, VStack } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Dimensions, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { Dimensions, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ShareIcon, ShareIconImg } from '../../assets/images/icons';
-import ScreenLayout from '../../interfaces/screenLayout';
-import { getCurrentUser, removeBookmark } from '../../Modules/auth/firebase/firebase';
+import { removeBookmark } from '../../Modules/auth/firebase/firebase';
 import { setBookmarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
 import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
 import { fetchBookmarksList, shareNotes } from '../../services/fetch';

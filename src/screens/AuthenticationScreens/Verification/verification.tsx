@@ -1,7 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React,{FC, useEffect, useState} from 'react'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
-import { CustomBtn, NavBtn } from '../../../components/CustomFormComponents/CustomBtn'
+import React, { FC } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+
+import { NavBtn } from '../../../components/CustomFormComponents/CustomBtn'
+
 type Props = {}
 interface IProps {
     navigation: NavigationProp<ParamListBase>

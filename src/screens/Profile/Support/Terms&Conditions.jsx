@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Linking, StyleSheet, Text, View } from 'react-native'
+import { Linking, Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import NavigationLayout from '../../../interfaces/navigationLayout';

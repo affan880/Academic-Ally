@@ -1,5 +1,5 @@
-import React, { useMemo, useRef } from 'react';
-import { Dimensions, Image, Linking, StyleSheet, Text, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import NavigationLayout from '../../../interfaces/navigationLayout';

@@ -19,10 +19,9 @@ class PdfViewerAction {
     };
 
     static getfileMetaData = async (notesDataArray) => {
-        const metadataArray = []; // Create an empty array to store the metadata
+        const metadataArray = [];
 
         for (const notesData of notesDataArray) {
-            // const pdfFileName = `${notesData?.name}_${notesData?.branch}_${notesData?.sem}.pdf`;
             const setPdfDataPath = `${RNFS.DocumentDirectoryPath}/Resources/${notesData}`;
 
             const metadataFilePath = `${setPdfDataPath}`;
@@ -31,13 +30,13 @@ class PdfViewerAction {
                 const metadataJSON = await RNFS.readFile(metadataFilePath, 'utf8');
                 const metadata = JSON.parse(metadataJSON);
 
-                metadataArray.push(metadata); // Store the metadata in the array
+                metadataArray.push(metadata);
             } catch (error) {
                 console.log('Error reading metadata file:', error);
             }
         }
 
-        return metadataArray; // Return the array containing the metadata
+        return metadataArray;
     };
 
 
@@ -65,11 +64,9 @@ class PdfViewerAction {
                 progressDivider: 1,
                 progress: (data) => {
                     const progress = data.bytesWritten / data.contentLength;
-                    // console.log('Download progress:', progress);
                     dispatch(updateDownloadProgress(progress));
                 },
                 complete: () => {
-                    // dispatch(setDownloadProgress());
                     console.log('Download is complete');
                 },
                 error: (error) => {
@@ -116,8 +113,6 @@ class PdfViewerAction {
                 });
             }
         } catch (error) {
-            // console.log('PDF download failed');
-            // console.error(error);
             dispatch(setDownloadProgress());
             dispatch(setIsDownloading(false));
             if (error.message.includes('Network')) {
@@ -183,17 +178,6 @@ class PdfViewerAction {
     //         return { success: false, message: 'Error stopping download: ' + error.message };
     //     }
     // };
-
-    // const deleteFile = async (filePath: any) => {
-    //   console.log('Deleting file...');
-    //   try {
-    //     await RNFetchBlob.fs.unlink(filePath);
-    //     console.log('File deleted successfully');
-    //   } catch (error) {
-    //     console.log('Error deleting file:', error);
-    //   }
-    // };
-    // deleteFile(url);
 
     static deleteFile = async (notesData) => {
         const pdfFileName = `${notesData?.name}_${notesData?.branch}_${notesData?.sem}.pdf`

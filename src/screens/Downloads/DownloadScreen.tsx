@@ -1,17 +1,14 @@
-import { Actionsheet, Box, Card, Center, Checkbox, Divider, Icon, IconButton, Popover, Stack, Text, Toast, useDisclose, View, VStack } from 'native-base'
+import { Box, Card, Divider, Icon, IconButton, Popover, Text, Toast, useDisclose, View } from 'native-base'
 import React, { useEffect, useState } from 'react'
-import { Linking, Share, TouchableOpacity } from 'react-native'
+import { Share, TouchableOpacity } from 'react-native'
 import RNFS from 'react-native-fs'
 import Pdf from 'react-native-pdf'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { useDispatch, useSelector } from 'react-redux'
 
 import NavigationLayout from '../../interfaces/navigationLayout'
 import ReportActionSheet from '../../sections/NotesCard/Report/ReportActionSheet'
-import { userFirestoreData } from '../../services/fetch'
 import NavigationService from '../../services/NavigationService'
 import PdfViewerAction from '../Notes/PdfViewer/pdfViewerAction'
 
@@ -29,7 +26,7 @@ const DownloadScreen = () => {
   const getDownloadedList = async () => {
     await PdfViewerAction.listDownloadedFiles().then((res: any) => {
       setData(res);
-      const filterFiles = res.filter((item: any) => item.endsWith('.text'))
+      const filterFiles = res?.filter((item: any) => item?.endsWith('.text'))
       setFiles(filterFiles)
     })
   }
@@ -39,7 +36,7 @@ const DownloadScreen = () => {
   }, [])
 
   useEffect(() => {
-    if (data.length > 0 && files.length > 0) {
+    if (data?.length > 0 && files?.length > 0) {
       PdfViewerAction.getfileMetaData(files).then((res: any) => {
         setPdfs(res)
       })
@@ -103,7 +100,7 @@ const DownloadScreen = () => {
             </Box>
           </TouchableOpacity>
 
-          <Box width={'100%'} height={'30%'} justifyContent={'flex-start'} borderTopRadius={20} flexDirection={'row'} p={4} >
+          <Box width={'100%'} height={'30%'} justifyContent={'flex-start'} borderTopRadius={20.0} flexDirection={'row'} p={4} >
             <Box width={'90%'} height={'100%'} flexDirection={'column'} >
               <Box width={'100%'} flexDirection={'row'} pb={1}>
                 <Text width={'50%'} color={colors.white} fontSize={size.textMidTiny} fontWeight={'bold'} >{(notesData?.subject)?.slice(0, 20)}</Text>
@@ -120,9 +117,9 @@ const DownloadScreen = () => {
                 <Popover initialFocusRef={initialFocusRef}
                   placement={'left'} trigger={triggerProps => {
                     return <IconButton
-                      rounded={true}
+                      borderRadius={'full'}
                       _hover={{
-                        bg: 'rgba(0, 0, 0, 0.1)'
+                        bg: 'gray'
                       }}
                       ref={initialFocusRef}
                       variant="ghost"
@@ -233,6 +230,7 @@ const DownloadScreen = () => {
       <Box justifyContent={'center'} alignItems={'center'} >
         {
           pdfs.length > 0 && pdfs.map((item, index) => {
+            console.log(item)
             return <PdfPreviewComponent notesData={item} key={index} />
           })
         }

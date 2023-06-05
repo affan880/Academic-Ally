@@ -2,14 +2,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { AlertDialog, Avatar, Box, Button, Modal, Stack, Toast, VStack } from 'native-base';
+import { AlertDialog, Avatar, Button, Toast, VStack } from 'native-base';
 import React, { useMemo, useState } from 'react';
-import { Dimensions, Linking, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setUserProfile } from '../../redux/reducers/usersData';
 import NavigationService from '../../services/NavigationService';
 import createStyles from './styles';
 

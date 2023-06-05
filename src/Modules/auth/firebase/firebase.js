@@ -314,7 +314,7 @@ export function listBase(notes) {
             units: "",
             uploaderId: "8056itcLayZY8yDbNdi7KbqXnsw2",
             uploaderName: "Affan",
-            views: 29
+            views: 0
           }
         )
       : null;

@@ -12,7 +12,7 @@ const PdfData = createSlice({
         updateDownloadProgress: (state, action) => {
             state.downloadProgress = action.payload;
         },
-        setDownloadProgress: () => {
+        setDownloadProgress: (state) => {
             state.downloadProgress = 0;
         },
         setDownloads: (state, action) => {
