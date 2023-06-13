@@ -1,21 +1,22 @@
-import {StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
+import { useFormikContext } from 'formik';
 import React from 'react';
-
-import {useFormikContext} from 'formik';
+import { Dimensions, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type Props = {
   title: string;
   onPress?: () => any;
   color?: string;
+  width?: any;
 };
 
-const {width, height} = Dimensions.get('window');
+const screenWidth = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 
-export const CustomBtn = ({title, onPress, color}: Props) => {
-  const {handleSubmit} = useFormikContext();
+export const CustomBtn = ({ title, onPress, color, width }: Props) => {
+  const { handleSubmit } = useFormikContext();
   return (
     <TouchableOpacity
-      style={[styles.button, {backgroundColor: color}]}
+      style={[styles.button, { backgroundColor: color }, width && { width: width }]}
       onPress={handleSubmit}
       onMagicTap={onPress}>
       <Text style={styles.buttonText}>{title}</Text>
@@ -23,10 +24,10 @@ export const CustomBtn = ({title, onPress, color}: Props) => {
   );
 };
 
-export const NavBtn = ({title, onPress, color}: Props) => {
+export const NavBtn = ({ title, onPress, color }: Props) => {
   return (
     <TouchableOpacity
-      style={[styles.button, {backgroundColor: color}]}
+      style={[styles.button, { backgroundColor: color }]}
       onPress={onPress}
       onMagicTap={onPress}>
       <Text style={styles.buttonText}>{title}</Text>
@@ -36,7 +37,7 @@ export const NavBtn = ({title, onPress, color}: Props) => {
 
 const styles = StyleSheet.create({
   button: {
-    width: width - 50,
+    width: screenWidth - 50,
     height: height * 0.07,
     borderRadius: 10,
     elevation: 8,

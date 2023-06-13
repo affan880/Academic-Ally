@@ -1,5 +1,4 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import { Actionsheet, Box, Button, Fab, HStack, Icon, Modal, Popover, Stack, Text, Toast, useDisclose, VStack } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -38,35 +37,18 @@ type RootStackParamList = {
   };
 };
 
-type MyStackParamList = {
-  PdfViewer: {
-    userData: {
-      course: string;
-      branch: string;
-      sem: string;
-    };
-    notesData: any;
-    selected: string;
-    subjectName: string;
-  };
-};
-
-type MyScreenNavigationProp = StackNavigationProp<
-  MyStackParamList,
-  'PdfViewer'
->;
-
 const PdfViewer = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const [totalPages, setTotalPages] = useState(0);
   const [expiration, setExpiration] = useState(60 * 60 * 6);
   const [currentPage, setCurrentPage]: any = useState(0);
   const [saved, setSaved] = useState(false);
+  const [taskId, setTaskId] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclose();
   const { userData } = route.params;
   const { notesData } = route.params;
-  const { subjectName } = route.params;
-  const { selected } = route.params;
+  const selected: any = notesData?.category;
+
   const [pageNo, setPageNo] = useState(0);
   const university = notesData?.university || "";
   const course = notesData?.course || "";
@@ -74,7 +56,7 @@ const PdfViewer = () => {
   const sem = notesData?.sem || "";
   const category = (notesData?.category)?.charAt(0)?.toUpperCase() + (notesData?.category)?.slice(1) || selected?.charAt(0)?.toUpperCase() + selected?.slice(1);
   const name = UtilityService.replaceUnusualCharacters(notesData?.name, '&');
-  const subject = UtilityService.replaceUnusualCharacters(notesData?.subject || subjectName, '&');
+  const subject = UtilityService.replaceUnusualCharacters(notesData?.subject, '&');
   const did = notesData?.did || "";
   const uid = notesData?.uid || "";
   const uid2 = notesData?.uid2 || "";
@@ -93,19 +75,23 @@ const PdfViewer = () => {
   const userBookmarks = useSelector((state: any) => state.userBookmarkManagement).userBookMarks;
   const recentsList = useSelector((state: any) => state.userRecentPdfs.RecentViews);
   const [url, setUrl] = useState<any>(null);
+
   const isDownloading = useSelector((state: any) => state.pdfViewerReducer).isDownloading;
   const downloadProgress = useSelector((state: any) => state.pdfViewerReducer).downloadProgress;
 
   useEffect(() => {
-    PdfViewerAction.checkIfFileExists(notesData).then((res: any) => {
-      if (res) {
-        setUrl(res)
-      }
-      else {
-        setUrl(UtilityService.replaceString(mainUrl, placeholdersValues))
-      }
-    });
-  }, [isDownloading]);
+    if (url === null || url === undefined || url === "") {
+      PdfViewerAction.checkIfFileExists(notesData).then((res: any) => {
+        if (res) {
+          setUrl(res)
+          console.log('file exists', res);
+        }
+        else {
+          setUrl(UtilityService.replaceString(mainUrl, placeholdersValues))
+        }
+      });
+    }
+  }, [isDownloading, mainUrl, placeholdersValues, secondaryUrl, url]);
 
   const source: object = {
     uri: url,
@@ -113,7 +99,35 @@ const PdfViewer = () => {
     expiration: expiration,
   };
 
-  const SharePdf = async () => {
+  async function onDownload() {
+    if (url?.includes(`${RNFS.DocumentDirectoryPath}`)) {
+      Toast.show({
+        title: 'Already Downloaded',
+        placement: 'bottom',
+        duration: 3000,
+      })
+    }
+    else {
+      const directoryPath = `${RNFS.DocumentDirectoryPath}/Resources`;
+      await RNFS.exists(directoryPath).then(res => {
+        if (res) {
+          dispatch(PdfViewerAction.downloadFile(notesData, url, setTaskId));
+        } else {
+          RNFS.mkdir(directoryPath);
+          dispatch(PdfViewerAction.downloadFile(notesData, url, setTaskId));
+        }
+      });
+    }
+  }
+
+  function cancelDownload() {
+    if (taskId) {
+      RNFS.stopDownload(taskId)
+      dispatch(setIsDownloading(false));
+    }
+  }
+
+  const handleSharePdf = async () => {
     try {
       await PdfViewerAction.sharePdf(notesData, dynamicLink).then((link: any) => {
         Share.share({
@@ -201,7 +215,8 @@ const PdfViewer = () => {
                   );
                 }}
                 onError={error => {
-                  if (error.toString().toLowerCase().includes('no pdf source')) {
+                  if (error?.toString()?.toLowerCase()?.includes('no pdf  source')) {
+                    console.log('no pdf source');
                     setUrl(UtilityService.replaceString(secondaryUrl, placeholdersValues))
                   }
 
@@ -278,27 +293,13 @@ const PdfViewer = () => {
                 />
               </Button>
               <Button
-                onPress={() => {
-                  SharePdf();
-                  // PdfViewerAction.stopDownload()
-                }}
+                onPress={handleSharePdf}
                 colorScheme="blue"
                 variant="outline">
                 <Entypo name="share" size={25} color={'#6360FF'} />
               </Button>
               <Button
-                onPress={() => {
-                  if (url?.includes(`${RNFS.DocumentDirectoryPath}`)) {
-                    Toast.show({
-                      title: 'Already Downloaded',
-                      placement: 'bottom',
-                      duration: 3000,
-                    })
-                  }
-                  else {
-                    dispatch(PdfViewerAction.download(notesData, url))
-                  }
-                }}
+                onPress={onDownload}
                 colorScheme="green"
                 backgroundColor={
                   url?.includes(`${RNFS.DocumentDirectoryPath}`) ? theme.colors.greenSuccess : null
@@ -388,14 +389,14 @@ const PdfViewer = () => {
                 flexDirection: 'column',
                 padding: 10,
               }}>
-              <Text fontSize={height * 0.0235} fontWeight={'700'} color={theme.colors.primaryText} lineHeight={height * 0.052} >
+              <Text fontSize={height * 0.0235} fontWeight={'700'} color={theme.colors.black} lineHeight={height * 0.052} >
                 Downloading
               </Text>
 
-              <Text fontSize={height * 0.02} fontWeight={'700'} color={theme.colors.primaryText} lineHeight={height * 0.05}>
+              <Text fontSize={height * 0.02} fontWeight={'700'} color={theme.colors.black} lineHeight={height * 0.05}>
                 {notesData?.name}
               </Text>
-              <Text fontSize={height * 0.015} fontWeight={'300'} color={theme.colors.primaryText} lineHeight={height * 0.05}>
+              <Text fontSize={height * 0.015} fontWeight={'300'} color={theme.colors.black} lineHeight={height * 0.05}>
                 {(downloadProgress * 100).toFixed(1)}% of 100%
               </Text>
             </Stack>
@@ -420,10 +421,9 @@ const PdfViewer = () => {
                 alignItems: 'center',
                 flexDirection: 'column',
                 padding: 10,
+                zIndex: 100
               }}>
-              <TouchableOpacity onPress={() => {
-                isDownloading && PdfViewerAction.stopDownload();
-              }}>
+              <TouchableOpacity onPress={cancelDownload}>
                 <Text fontWeight={700} fontSize={theme.sizes.title} color={theme.colors.primary}>
                   Cancel{' '}
                 </Text>

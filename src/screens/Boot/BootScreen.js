@@ -30,7 +30,7 @@ import AboutUs from '../Profile/Support/AboutUs';
 import PrivacyPolicy from '../Profile/Support/PrivacyPolicy';
 import TermsAndConditions from '../Profile/Support/Terms&Conditions';
 import Search from '../Search/searchScreen';
-import Upload from '../Upload/upload';
+import Upload from '../Upload/uploadScreen';
 import UserRequestsScreen from '../UserRequests/UserRequestsScreen';
 import BootActions from './BootAction';
 

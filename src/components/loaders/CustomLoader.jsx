@@ -1,7 +1,8 @@
 import { Button, Text } from 'native-base';
 import React, { useState } from 'react';
-import { View, StyleSheet, ActivityIndicator, Modal, Dimensions, StatusBar } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { ActivityIndicator, Dimensions, Modal, StatusBar, StyleSheet, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { setCustomLoader } from '../../redux/reducers/userState';
 
 const { width, height } = Dimensions.get('window');

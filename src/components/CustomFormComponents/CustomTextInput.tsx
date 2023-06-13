@@ -12,6 +12,7 @@ type Props = {
   securuty?: boolean;
   errors?: any;
   other?: any;
+  width?: any;
 };
 
 const Width = Dimensions.get('screen').width;
@@ -22,6 +23,7 @@ export const CustomTextInput = ({
   placeholder,
   handlePasswordVisibility,
   name,
+  width,
   other
 }: Props) => {
   const [passwordVisibility, setPasswordVisibility] = useState(true);
@@ -32,6 +34,9 @@ export const CustomTextInput = ({
       <View
         style={[
           styles.input,
+          width ? {
+            width: width,
+          } : null,
           touched[name] && errors[name]
             ? {
               borderColor: '#FF2E00',

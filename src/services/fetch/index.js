@@ -9,6 +9,7 @@ import { Alert, Share } from 'react-native';
 import { useDispatch } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
 
+import CrashlyticsService from '../../services/CrashlyticsService';
 import { setVisitedSubjects } from '../../redux/reducers/subjectsList';
 
 export const userFirestoreData = async (userData, type, item, dispatch) => {
@@ -102,31 +103,25 @@ export const fetchSubjectList = async (setList, dispatch, setReccommendSubjects,
 }
 
 export const fetchBookmarksList = async (dispatch, setBookmarks, setListData) => {
-  await firestore()
-    .collection('Users')
-    .doc(auth().currentUser?.uid)
-    .get()
-    .then(async (userFirestoreData) => {
-      let updatedList = [];
-      await firestore()
-        .collection('Users')
-        .doc(auth().currentUser?.uid)
-        .collection('NotesBookmarked')
-        .get().then(async (item) => {
-          for (const items of item.docs) {
-            updatedList.push(items.data())
-          };
-          dispatch(setBookmarks(updatedList));
-          setListData(updatedList);
-        })
-    }).catch((error) => {
-      console.log("Error getting document:", error);
-    }
-    );
-}
+  try {
+    const item = await firestore()
+      .collection('Users')
+      .doc(auth().currentUser?.uid)
+      .collection('NotesBookmarked')
+      .get();
+
+    const updatedList = item.docs.map((doc) => doc.data());
+
+    dispatch(setBookmarks(updatedList));
+    setListData(updatedList);
+  } catch (error) {
+    console.log("Error getting document:", error);
+    CrashlyticsService.recordError(error);
+  }
+};
+
 
 export const fetchNotesList = async (dispatch, setSubjectsList, setListLoaded, data, val) => {
-  // console.log("updatedVersion", updatedVersion, "ver", version);
   try {
     const list = await AsyncStorage.getItem('subjectsList');
     if (list?.length !== 0 && list !== null && val === true) {

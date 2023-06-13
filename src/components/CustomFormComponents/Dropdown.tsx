@@ -63,7 +63,7 @@ export const CustomDropdown = ({
           iconStyle={styles.iconStyle}
           data={data}
           search={
-            name === 'branch' || name === 'Year' || name === 'year' || name === 'sem' || name === 'Syllabus' || name === 'course' || name === 'university' ? false : true
+            name === 'branch' || name === 'Year' || name === 'year' || name === 'sem' || name === 'Syllabus' || name === 'course' || name === 'university' || name === 'category' ? false : true
           }
           maxHeight={300}
           labelField="label"

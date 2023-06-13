@@ -1,6 +1,6 @@
 import { Box, Card, Divider, Icon, IconButton, Popover, Text, Toast, useDisclose, View } from 'native-base'
 import React, { useEffect, useState } from 'react'
-import { Share, TouchableOpacity } from 'react-native'
+import { Dimensions, Share, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import RNFS from 'react-native-fs'
 import Pdf from 'react-native-pdf'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -12,12 +12,26 @@ import ReportActionSheet from '../../sections/NotesCard/Report/ReportActionSheet
 import NavigationService from '../../services/NavigationService'
 import PdfViewerAction from '../Notes/PdfViewer/pdfViewerAction'
 
+const { width, height } = Dimensions.get('screen');
+
 const DownloadScreen = () => {
   const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
   const dispatch = useDispatch()
   const [pdfs, setPdfs] = useState([])
   const [files, setFiles] = useState([])
   const [data, setData] = useState([])
+  const [searchTerm, setSearchTerm] = useState('');
+  console.log('pdfs', pdfs)
+  useEffect(() => {
+    if (searchTerm === '') {
+      setPdfs(data)
+    } else {
+      const filteredData = data?.filter((item: any) => {
+        return item?.subject?.toLowerCase().includes(searchTerm?.toLowerCase()) || item?.name?.toLowerCase().includes(searchTerm?.toLowerCase()) || item?.branch?.toLowerCase().includes(searchTerm?.toLowerCase()) || item?.sem?.toLowerCase().includes(searchTerm?.toLowerCase()) || item?.category?.toLowerCase().includes(searchTerm?.toLowerCase())
+      })
+      setPdfs(filteredData)
+    }
+  }, [searchTerm])
 
   const theme = useSelector((state: any) => state.theme);
   const size = theme?.sizes;
@@ -38,7 +52,8 @@ const DownloadScreen = () => {
   useEffect(() => {
     if (data?.length > 0 && files?.length > 0) {
       PdfViewerAction.getfileMetaData(files).then((res: any) => {
-        setPdfs(res)
+        setPdfs(res);
+        setData(res);
       })
     }
   }, [files])
@@ -228,9 +243,25 @@ const DownloadScreen = () => {
   return (
     <NavigationLayout rightIconFalse={true} title={'Downloads'} handleScroll={() => { }} >
       <Box justifyContent={'center'} alignItems={'center'} >
+        <View style={[styles.searchContainer, {
+          backgroundColor: theme.colors.quaternary,
+        }]}>
+          <TextInput
+            value={searchTerm}
+            onChangeText={(text: any) => setSearchTerm(text)}
+            placeholder="Search"
+            placeholderTextColor={theme.colors.primaryText}
+            style={[styles.searchInput, { color: theme.colors.primaryText }]}
+          />
+          <Feather
+            name="search"
+            size={theme.sizes.iconSmall}
+            color={theme.colors.primaryText}
+            style={styles.searchIcon}
+          />
+        </View>
         {
           pdfs.length > 0 && pdfs.map((item, index) => {
-            console.log(item)
             return <PdfPreviewComponent notesData={item} key={index} />
           })
         }
@@ -240,3 +271,32 @@ const DownloadScreen = () => {
 }
 
 export default DownloadScreen
+
+const styles = StyleSheet.create({
+  searchContainer: {
+    width: width * 0.85,
+    height: height * 0.06,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: width * 0.03,
+    alignSelf: 'center',
+    marginVertical: height * 0.02,
+  },
+  searchInput: {
+    width: width * 0.7,
+    height: height * 0.1,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: width * 0.03,
+    marginVertical: height * 0.01,
+    alignSelf: 'center',
+  },
+  searchIcon: {
+    width: width * 0.05,
+    height: width * 0.05,
+  }
+})

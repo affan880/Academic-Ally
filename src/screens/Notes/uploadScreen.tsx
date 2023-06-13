@@ -1,10 +1,9 @@
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import { Box, Modal, Stack, Text, Toast } from 'native-base';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Dimensions, Image, PermissionsAndroid, TouchableOpacity, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -12,7 +11,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useSelector } from 'react-redux';
 
 import NavigationLayout from '../../interfaces/navigationLayout';
-import { AddtoUserUploads } from '../../Modules/auth/firebase/firebase';
+import UploadAction from '../Upload/uploadAction';
 
 const { width, height } = Dimensions.get('window');
 
@@ -38,130 +37,47 @@ type RootStackParamList = {
 const UploadPDF = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'UploadScreen'>>();
   const [pdf, setPdf] = useState<Result | undefined>(undefined);
-  const [permissionGranted, setPermissionGranted] = useState(false);
   const selected = route.params.selected;
   const subject = route.params.subject;
   const { userData } = route.params;
-  const { notesData }: any = route.params;
-  const randomNum: any = Math.floor(Math.random() * 9133297438)
-  const path = `${userData.university}/${userData?.course}/${userData?.branch}/${userData?.sem}/${subject}/${selected}/${auth().currentUser?.uid}/${randomNum}`;
+  const storageId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  const path = `Universities/${userData.university}/${userData?.course}/${userData?.branch}/${storageId}`;
   const storageRef = storage().ref(path);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [uploadingResult, setUploadingResult] = React.useState(null);
-  const navigation = useNavigation();
   const [choosenPdf, setChoosenPdf] = useState<any>(0);
   const [uploadTask, setUploadTask] = useState<any>(null);
   const [completed, setCompleted] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const userImage = useSelector((state: any) => { return state.usersData.userProfile });
   const theme = useSelector((state: any) => { return state.theme });
-  useEffect(() => {
-    try {
-      if (uploadingResult !== null) {
-        const updateData = {
-          resources: firestore.FieldValue.arrayUnion({
-            name: pdf?.name,
-            uploaderName: auth().currentUser?.displayName,
-            uploaderEmail: auth().currentUser?.email,
-            uploaderUid: auth().currentUser?.uid,
-            subject: subject,
-            selected: selected,
-            path: path,
-            pfp: userImage,
-            date: new Date(),
-          }),
-        };
-        firestore()
-          .collection('UsersUploads')
-          .doc(userData.university)
-          .collection(userData.course)
-          .doc(userData.branch)
-          .collection(userData.sem)
-          .doc(subject)
-          .collection(selected)
-          .doc('list')
-          .get()
-          .then(docSnapshot => {
-            if (docSnapshot?.exists) {
-              // Update the existing array
-              firestore()
-                .collection('UsersUploads')
-                .doc(userData.university)
-                .collection(userData.course)
-                .doc(userData.branch)
-                .collection(userData.sem)
-                .doc(subject)
-                .collection(selected)
-                .doc('list')
-                .update(updateData);
+  const user: any = auth().currentUser;
 
-              firestore()
-                .collection('UsersUploads')
-                .doc(userData.university)
-                .collection(userData.course)
-                .doc('uploadList')
-                .update({
-                  paths: firestore.FieldValue.arrayUnion(`/UsersUploads/${userData.university}/${userData?.course}/${userData?.branch}/${userData?.sem}/${subject}/${selected}/list`),
-                })
-            } else {
-              firestore()
-                .collection('UsersUploads')
-                .doc(userData.university)
-                .collection(userData.course)
-                .doc(userData.branch)
-                .collection(userData.sem)
-                .doc(subject)
-                .collection(selected)
-                .doc('list')
-                .set({
-                  resources: [
-                    {
-                      name: pdf?.name,
-                      uploaderName: auth().currentUser?.displayName,
-                      uploaderEmail: auth().currentUser?.email,
-                      uploaderUid: auth().currentUser?.uid,
-                      subject: subject,
-                      selected: selected,
-                      path: path,
-                      pfp: userImage,
-                      date: new Date(),
-                    },
-                  ],
-                });
+  const capitalize = (s: any) => {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
+  }
 
-              firestore()
-                .collection('UsersUploads')
-                .doc(userData.university)
-                .collection(userData.course)
-                .doc('uploadList')
-                .update({
-                  paths: firestore.FieldValue.arrayUnion(`/UsersUploads/${userData.university}/${userData?.course}/${userData?.branch}/${userData?.sem}/${subject}/${selected}/list`),
-                })
-            }
-            AddtoUserUploads({
-              name: pdf?.name,
-              uploaderName: auth().currentUser?.displayName,
-              uploaderEmail: auth().currentUser?.email,
-              uploaderUid: auth().currentUser?.uid,
-              subject: subject,
-              selected: selected,
-              path: path,
-              verified: false,
-              pfp: userImage,
-              date: new Date(),
-            })
-          });
+  const uploadToFirestore = async (name: any) => {
+    UploadAction.uploadPDFToFirestore(
+      {
+        ...userData,
+        uploaderEmail: user.email,
+        uploaderName: user.displayName,
+        uploaderId: user.uid,
       }
-    } catch (err) {
-      Toast.show({
-        title: 'Error',
-        description: 'Something went wrong. Please try again.',
-        placement: 'bottom',
-        duration: 2000,
-      });
-    }
-  }, [uploadingResult]);
-
+      , {
+        university: userData.university,
+        course: userData.course,
+        branch: userData.branch,
+        sem: userData.sem,
+        subject: subject,
+        category: capitalize(selected),
+        name: name,
+        path: path,
+        units: "",
+        storageId
+      })
+  };
 
   const uploadPDF = async (pdf: any) => {
     setModalVisible(true);
@@ -185,13 +101,13 @@ const UploadPDF = () => {
       },
       () => {
         const totalMBs = task.snapshot.totalBytes / (1024 * 1024);
-        //  setUploadProgress(totalMBs);
       }
     );
     try {
       await task;
       task.then((snapshot: any) => {
         setUploadingResult(snapshot);
+        console.log(snapshot);
         setUploadProgress(0);
         setCompleted(true);
       })
@@ -200,6 +116,7 @@ const UploadPDF = () => {
       setUploadProgress(0);
     } finally {
       setUploadProgress(0);
+      uploadToFirestore(pdf?.name);
     }
   };
 
@@ -209,8 +126,8 @@ const UploadPDF = () => {
     setCompleted(false);
     setUploadTask(null);
     if (uploadTask) {
-      uploadTask.cancel(); // Call the cancel() method on the upload task reference
-      setUploadTask(null); // Reset the state variable
+      uploadTask.cancel();
+      setUploadTask(null);
       setCompleted(false);
     }
   };
@@ -248,7 +165,6 @@ const UploadPDF = () => {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        setPermissionGranted(true);
         pickPDF();
       }
     } catch (err) {
@@ -260,16 +176,8 @@ const UploadPDF = () => {
   const handleUpload = async () => {
     try {
       await requestPermission();
-      // await pickPDF();
     }
     catch (err) {
-
-      // Toast.show({
-      //   title: 'Error',
-      //   description: 'Something went wrong. Please try again.',
-      //   placement: 'bottom',
-      //   duration: 2000,
-      // });
     }
   };
   function bytesToMB(bits: any) {
@@ -356,14 +264,14 @@ const UploadPDF = () => {
                     padding: 10,
                     paddingBottom: 0,
                   }}>
-                  <Text fontSize={height * 0.0235} fontWeight={'700'} color={theme.colors.primaryText} lineHeight={height * 0.052} >
+                  <Text fontSize={height * 0.0235} fontWeight={'700'} color={theme.colors.black} lineHeight={height * 0.052} >
                     Uploading
                   </Text>
 
-                  <Text fontSize={height * 0.0235} fontWeight={'700'} color={theme.colors.primaryText} lineHeight={height * 0.05}>
+                  <Text fontSize={height * 0.0235} fontWeight={'700'} color={theme.colors.black} lineHeight={height * 0.05}>
                     {choosenPdf?.name}
                   </Text>
-                  <Text fontSize={height * 0.015} fontWeight={'300'} color={theme.colors.primaryText} lineHeight={height * 0.05}>
+                  <Text fontSize={height * 0.015} fontWeight={'300'} color={theme.colors.black} lineHeight={height * 0.05}>
                     {(uploadProgress).toFixed(1)}% of 100%
                   </Text>
                 </Stack>
@@ -391,7 +299,7 @@ const UploadPDF = () => {
                     paddingTop: 0,
                   }}>
                   <TouchableOpacity onPress={cancelUpload}>
-                    <Text fontWeight={700} fontSize={theme.sizes.title} color={theme.colors.primary}>
+                    <Text fontWeight={700} fontSize={theme.sizes.title} color={theme.colors.black}>
                       Cancel{' '}
                     </Text>
                   </TouchableOpacity>
@@ -409,10 +317,10 @@ const UploadPDF = () => {
                   }}>
                   <Box w="100%" h={theme.sizes.height * 0.2} px={2} my={4} justifyContent="center" alignItems={"center"} >
                     <AntDesign name="checkcircle" size={50} color={theme.colors.primary} />
-                    <Text fontSize={theme.sizes.title} color={theme.colors.primaryText} fontWeight={700} marginTop={4} >
+                    <Text fontSize={theme.sizes.title} color={theme.colors.black} fontWeight={700} marginTop={4} >
                       Uploaded Successful
                     </Text>
-                    <Text fontSize={theme.sizes.textSmall} padding={theme.sizes.height * 0.01} paddingTop={theme.sizes.height * 0.01} color={theme.colors.textSecondary} textAlign={"center"} fontWeight={700} >
+                    <Text fontSize={theme.sizes.textSmall} padding={theme.sizes.height * 0.01} paddingTop={theme.sizes.height * 0.01} color={theme.colors.black} textAlign={"center"} fontWeight={700} >
                       Thank you! The file has been uploaded successfully. It will be available for others to download once we finish verifying the contents of the file
                     </Text>
                   </Box>
@@ -429,7 +337,7 @@ const UploadPDF = () => {
                     setModalVisible(false);
                     setCompleted(false);
                   }}>
-                    <Text fontWeight={700} fontSize={theme.sizes.title} color={theme.colors.primary}>
+                    <Text fontWeight={700} fontSize={theme.sizes.title} color={theme.colors.black}>
                       Cancel{' '}
                     </Text>
                   </TouchableOpacity>

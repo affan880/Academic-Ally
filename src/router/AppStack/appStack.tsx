@@ -23,7 +23,7 @@ import AboutUs from '../../screens/Profile/Support/AboutUs'
 import PrivacyPolicy from '../../screens/Profile/Support/PrivacyPolicy'
 import TermsAndConditions from '../../screens/Profile/Support/Terms&Conditions'
 import Search from '../../screens/Search/searchScreen'
-import Upload from '../../screens/Upload/upload'
+import Upload from '../../screens/Upload/uploadScreen'
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;

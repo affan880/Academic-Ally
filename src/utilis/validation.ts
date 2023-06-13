@@ -39,7 +39,7 @@ export const UploadvalidationSchema = yup.object().shape({
   branch: yup.string().required(),
   Year: yup.string().required(),
   sem: yup.string().required(),
-  type: yup.string().required(),
+  category: yup.string().required(),
   subject: yup.string().required(),
   units: yup.string(),
 });
@@ -62,4 +62,15 @@ export const updatevalidationSchema = yup.object().shape({
   branch: yup.string(),
   Year: yup.string().required(),
   college: yup.string(),
+});
+
+export const EditUploadvalidationSchema = yup.object().shape({
+  name: yup.string(),
+  category: yup.string(),
+  units: yup.string(),
+});
+
+export const searchFilterValidationSchema = yup.object().shape({
+  sem: yup.string(),
+  branch: yup.string(),
 });

@@ -5,8 +5,8 @@ import RNFS from 'react-native-fs';
 import { setDownloadProgress, setIsDownloading, updateDownloadProgress } from './pdfViewerSlice';
 
 class PdfViewerAction {
+
     static downloadTask;
-    static taskId;
 
     static listDownloadedFiles = async () => {
         try {
@@ -51,90 +51,70 @@ class PdfViewerAction {
         return false;
     };
 
-    static downloadFile = (notesData, url) => async (dispatch) => {
-        dispatch(setIsDownloading(true));
-        try {
-            const pdfFileName = `${notesData?.name}_${notesData?.branch}_${notesData?.sem}.pdf`;
-            const downloadDest = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}`;
-            const setPdfDataPath = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}.text`;
-            const options = {
-                fromUrl: url,
-                toFile: downloadDest,
-                background: true,
-                progressDivider: 1,
-                progress: (data) => {
-                    const progress = data.bytesWritten / data.contentLength;
-                    dispatch(updateDownloadProgress(progress));
-                },
-                complete: () => {
-                    console.log('Download is complete');
-                },
-                error: (error) => {
-                    dispatch(setDownloadProgress());
-                    dispatch(setIsDownloading(false));
-                    if (error.description === 'Canceled') {
-                        Toast.show({
-                            title: 'Download Cancelled',
-                            type: 'danger',
-                            duration: 3000,
-                        });
-                    } else {
-                        Toast.show({
-                            title: 'Download Failed',
-                            type: 'danger',
-                            backgroundColor: '#d9534f',
-                            duration: 3000,
-                        });
-                    }
-                },
-            };
-
-            this.downloadTask = RNFS.downloadFile(options);
-            this.taskId = this.downloadTask.jobId;
-            const result = await this.downloadTask.promise;
-            const metaData = notesData;
-            await RNFS.writeFile(setPdfDataPath, JSON.stringify(metaData), 'utf8');
-            if (result.statusCode === 200) {
-                dispatch(setIsDownloading(false));
-                dispatch(setDownloadProgress());
-                Toast.show({
-                    title: 'File Downloaded',
-                    type: 'success',
-                    backgroundColor: '#5cb85c',
-                    duration: 3000,
-                });
-            } else {
-                dispatch(setIsDownloading(false));
-                Toast.show({
-                    title: 'File Download Failed',
-                    type: 'danger',
-                    backgroundColor: '#d9534f',
-                    duration: 3000,
-                });
-            }
-        } catch (error) {
-            dispatch(setDownloadProgress());
+    static createMetaData = (result, notesData, setPdfDataPath) => async (dispatch) => {
+        const metaData = notesData;
+        await RNFS.writeFile(setPdfDataPath, JSON.stringify(metaData), 'utf8');
+        if (result.statusCode === 200) {
             dispatch(setIsDownloading(false));
-            if (error.message.includes('Network')) {
-                Toast.show({
-                    title: 'Network Error',
-                    type: 'danger',
-                    backgroundColor: '#d9534f',
-                    duration: 3000,
-                });
-            }
+            dispatch(setDownloadProgress());
+            Toast.show({
+                title: 'File Downloaded',
+                type: 'success',
+                backgroundColor: '#5cb85c',
+                duration: 3000,
+            });
+        } else {
+            dispatch(setIsDownloading(false));
+            Toast.show({
+                title: 'File Download Failed',
+                type: 'danger',
+                backgroundColor: '#d9534f',
+                duration: 3000,
+            });
         }
+    }
+
+    static downloadFile = (notesData, url, setTaskId) => (dispatch) => {
+        // dispatch(setIsDownloading(true));
+        const pdfFileName = `${notesData?.name}_${notesData?.branch}_${notesData?.sem}.pdf`;
+        const downloadDest = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}`;
+        const setPdfDataPath = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}.text`;
+        const options = {
+            fromUrl: url,
+            toFile: downloadDest,
+            background: true,
+            cache: true,
+            progressDivider: 10,
+            progress: (data) => {
+                const progress = data.bytesWritten / data.contentLength;
+                dispatch(updateDownloadProgress(progress));
+                console.log('Download progress: ', progress);
+            },
+            begin: (res) => {
+                setTaskId(res.jobId);
+                console.log('jobId:', res.jobId);
+            }
+        };
+
+        downloadTask = RNFS.downloadFile(options).promise
+            .then((res) => {
+                dispatch(this.createMetaData(res, notesData, setPdfDataPath));
+            }).catch((e) => {
+                console.log(e)
+            })
     };
 
-    static download = (notesData, url) => async (dispatch) => {
+    static download = (notesData, url, setTaskId) => (dispatch) => {
         const directoryPath = `${RNFS.DocumentDirectoryPath}/Resources`;
-        const directoryExists = await RNFS.exists(directoryPath);
-        if (directoryExists) {
-            dispatch(this.downloadFile(notesData, url));
-        } else {
-            await RNFS.mkdir(directoryPath);
-            dispatch(this.downloadFile(notesData, url));
-        }
+        RNFS.exists(directoryPath).then((directoryExists) => {
+            if (directoryExists) {
+                console.log('Directory exists', directoryExists);
+                dispatch(this.downloadFile(notesData, url, setTaskId));
+            } else {
+                RNFS.mkdir(directoryPath);
+                dispatch(this.downloadFile(notesData, url, setTaskId));
+            }
+        })
     };
 
     static sharePdf = async (notesData, dynamicLink) => {
@@ -156,37 +136,23 @@ class PdfViewerAction {
         return link;
     };
 
-    static stopDownload = () => {
-        return new Promise((resolve, reject) => {
-            try {
-                dispatch(setIsDownloading(false));
-                dispatch(setDownloadProgress());
-                RNFS.stopDownload(this.taskId);
-                resolve();
-            } catch (error) {
-                reject(error);
-            }
-        });
-    };
-    // static stopDownload = async () => {
-    //     try {
-    //         RNFS.stopDownload(this.taskId);
-    //         dispatch(setIsDownloading(false));
-    //         dispatch(setDownloadProgress());
-    //         return { success: true, message: 'Download stopped successfully' };
-    //     } catch (error) {
-    //         return { success: false, message: 'Error stopping download: ' + error.message };
-    //     }
-    // };
+    static stopDownload = (taskId) => {
+        RNFS.stopDownload(taskId);
+    }
 
     static deleteFile = async (notesData) => {
-        const pdfFileName = `${notesData?.name}_${notesData?.branch}_${notesData?.sem}.pdf`
-        const setPdfDataPath = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}.text`;
-        const filePath = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}`;
-        const fileExists = await RNFS.exists(filePath);
-        if (fileExists) {
-            await RNFS.unlink(filePath);
-            await RNFS.unlink(setPdfDataPath);
+        try {
+            const pdfFileName = `${notesData?.name}_${notesData?.branch}_${notesData?.sem}.pdf`
+            const setPdfDataPath = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}.text`;
+            const filePath = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}`;
+            const fileExists = await RNFS.exists(filePath);
+            if (fileExists) {
+                await RNFS.unlink(filePath);
+                await RNFS.unlink(setPdfDataPath);
+            }
+        }
+        catch (error) {
+            console.log('Error deleting file:', error);
         }
     };
 }

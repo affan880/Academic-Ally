@@ -5,7 +5,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { Actionsheet, Avatar, Stack, Text, Toast, useDisclose } from 'native-base';
 import React, { useRef, useState, useEffect } from 'react';
 import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,8 +14,8 @@ import { CustomTextInput } from '../../../components/CustomFormComponents/Custom
 import DropdownComponent from '../../../components/CustomFormComponents/Dropdown';
 import Form from '../../../components/Forms/form';
 import NavigationLayout from '../../../interfaces/navigationLayout';
-import { getFirestoreData, logOut, updateFirestoreData } from '../../../Modules/auth/firebase/firebase';
-import { setUserProfile, setUsersData } from '../../../redux/reducers/usersData';
+import { updateFirestoreData } from '../../../Modules/auth/firebase/firebase';
+import { setUserProfile } from '../../../redux/reducers/usersData';
 import NavigationService from '../../../services/NavigationService';
 import { updatevalidationSchema } from '../../../utilis/validation';
 import createStyles from './styles';
@@ -40,7 +39,6 @@ const UpdateInformation = () => {
     onOpen,
     onClose
   } = useDisclose();
-  const navigation = useNavigation<MyScreenNavigationProp>();
   const dispatch = useDispatch();
   const formRef: any = useRef();
   const uid = auth().currentUser?.uid;
@@ -70,7 +68,6 @@ const UpdateInformation = () => {
   const [selectedSem, setSelectedSem] = useState<any>(null);
   const [course, setCourse] = useState<any>(userFirestoreData.usersData.course);
   const [selectedCourse, setSelectedCourse] = useState<{ label: string; value: string; }[]>([]);
-  const UniversityData = useSelector((state: any) => state?.bootReducer?.utilis?.universities);
   const apiResponse = useSelector((state: any) => state?.bootReducer?.utilis?.courses);
 
   const avatarsList = [

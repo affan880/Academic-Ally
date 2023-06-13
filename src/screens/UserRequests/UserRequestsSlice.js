@@ -4,6 +4,7 @@ const UserRequests = createSlice({
     name: 'UserRequests',
     initialState: {
         NewRequests: [],
+        loadingRequests: false,
     },
     reducers: {
         setNewRequests: (state, action) => {
@@ -16,9 +17,12 @@ const UserRequests = createSlice({
         },
         setRequestNull: (state) => {
             state.NewRequests = [];
-        }
+        },
+        setLoading: (state, action) => {
+            state.loadingRequests = action.payload;
+        },
     },
 });
-export const { setNewRequests, setRequestNull } = UserRequests.actions;
+export const { setNewRequests, setRequestNull, setLoading } = UserRequests.actions;
 
 export default UserRequests.reducer;

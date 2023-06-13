@@ -191,6 +191,16 @@ const createStyles = (theme, sizes) =>
       fontSize: sizes.subtitle,
       fontWeight: '600',
       paddingRight: 5,
+    },
+    loader: {
+      width: width / 1.1,
+      height: height * 0.23,
+      position: 'absolute',
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      zIndex: 100,
+      borderRadius: 10,
+      justifyContent: 'space-around',
+      alignItems: 'center',
     }
 
   });

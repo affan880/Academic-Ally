@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
-const createStyles = (theme:any, sizes:any) =>
+const createStyles = (theme: any, sizes: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -61,7 +61,7 @@ const createStyles = (theme:any, sizes:any) =>
       alignItems: 'flex-start',
       paddingHorizontal: width * 0.05,
       marginVertical: height * 0.02,
-      width: width ,
+      width: width,
     },
     categoryTitle: {
       fontSize: sizes.title,
@@ -168,13 +168,35 @@ const createStyles = (theme:any, sizes:any) =>
     headerText: {
       fontSize: sizes.title,
       fontWeight: 'bold',
-      color: "#FCFCFF",
+      color: '#FCFCFF',
       textAlign: 'center',
       paddingLeft: 5,
     },
     header: {
       flexDirection: 'row',
       alignItems: 'center',
+    },
+    dropdownContainer: {
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginHorizontal: width * 0.05,
+      flexDirection: 'row',
+    },
+    subjectsContainer: {
+      paddingBottom: height * 0.08,
+      marginTop: height * 0.02,
+    },
+    subjectItemDetails: {
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      width: '100%',
+      alignItems: 'center',
+    },
+    emptyListContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: sizes.lottieIconHeight,
     },
   });
 

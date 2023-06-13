@@ -18,17 +18,13 @@ type MyStackParamList = {
   'TermsAndConditions': undefined;
   'AboutUs': undefined;
 };
-const height = Dimensions.get('screen').height;
-const width = Dimensions.get('screen').width;
 
 const Profile = () => {
   const theme = useSelector((state: any) => { return state.theme });
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const user = auth().currentUser;
   const [isOpen, setIsOpen] = React.useState(false);
-  const [password, setPassword] = useState<string>('');
   const [logOutAlert, setLogOutAlert] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const userImage = useSelector((state: any) => {
     return state.usersData.userProfile;
   });
@@ -40,7 +36,6 @@ const Profile = () => {
     'UpdateInformation'
   >;
   const dispatch = useDispatch();
-  const navigation = useNavigation<MyScreenNavigationProp>();
   const userFirestoreData = useSelector((state: any) => {
     return state.usersData;
   });
@@ -239,6 +234,7 @@ const Profile = () => {
                       ?.currentUser?.delete()
                       .then(() => {
                         AsyncStorage.clear();
+                        dispatch({ type: 'RESET_APP' });
                         Toast.show({
                           title: 'Account Deleted',
                           backgroundColor: '#F44336',
@@ -273,23 +269,6 @@ const Profile = () => {
               <Text style={{ color: '#91919F', fontSize: 16 }} >
                 Are you sure you want to log out?
               </Text>
-              {/* <TextInput
-              onChangeText={text => {
-                setPassword(text);
-              }}
-              placeholder="Enter your password to confirm"
-              style={{
-                borderWidth: 1,
-                borderRadius: 10,
-                padding: 10,
-                borderBottomColor: '#91919F',
-                marginTop: 10,
-                marginBottom: 10,
-                alignSelf: 'center',
-                color: '#91919F',
-                width: width * 0.6,
-              }}
-            /> */}
             </AlertDialog.Body>
             <AlertDialog.Footer>
               <Button.Group space={2}>
@@ -305,6 +284,7 @@ const Profile = () => {
                   onPress={() => {
                     auth().signOut();
                     AsyncStorage.clear();
+                    dispatch({ type: 'RESET_APP' });
                   }}>
                   Log Out
                 </Button>

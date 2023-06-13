@@ -1,7 +1,7 @@
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import { Toast } from 'native-base';
 import React, { useMemo, useRef } from 'react';
-import { Alert, Image, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import LinearGradient from 'react-native-linear-gradient';
 import { useDispatch } from 'react-redux';
@@ -11,11 +11,10 @@ import { CustomBtn, NavBtn } from '../../../components/CustomFormComponents/Cust
 import { CustomTextInput } from '../../../components/CustomFormComponents/CustomTextInput';
 import Form from '../../../components/Forms/form';
 import CustomLoader from '../../../components/loaders/CustomLoader';
-import { forgotPassword, getCurrentUser, logIn, ResendVerification } from '../../../Modules/auth/firebase/firebase';
-import { setCustomLoader } from '../../../redux/reducers/userState';
 import NavigationService from '../../../services/NavigationService';
 import { LoginvalidationSchema } from '../../../utilis/validation';
 import createStyles from './styles';
+import AuthAction from '../authActions';
 
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
@@ -25,30 +24,7 @@ const LoginScreen: React.FC<IProps> = ({ navigation }) => {
   const formRef: any = useRef();
   const styles = useMemo(() => createStyles(), []);
   const initialValues = { email: '', password: '' };
-  const dispatch = useDispatch();
-
-  const userLogin = (email: string, password: string): void => {
-    logIn(email, password);
-    const currentUser: any = getCurrentUser();
-    if (currentUser?.emailVerified === false) {
-      Alert.alert('Error', 'Please Verify Your Email, Before Login', [
-        {
-          text: 'Ok',
-          onPress: () => { },
-        },
-        {
-          text: 'Resend Verification Email',
-          onPress: () => {
-            ResendVerification(
-              formRef.current.values.email,
-              formRef.current.values.password,
-            );
-          },
-          style: 'cancel',
-        },
-      ]);
-    }
-  };
+  const dispatch: any = useDispatch();
 
   const forgotPasswordHandler = (): void => {
     if (formRef.current && formRef.current.errors?.email) {
@@ -58,13 +34,7 @@ const LoginScreen: React.FC<IProps> = ({ navigation }) => {
         backgroundColor: '#FF0101',
       });
     } else {
-      forgotPassword(formRef.current.values.email);
-      Toast.show({
-        title: 'Password Reset Email Sent',
-        description: 'Please Check Your Email',
-        duration: 4000,
-        backgroundColor: '#6360ff',
-      });
+      dispatch(AuthAction.forgotPassword(formRef.current.values.email));
     }
   };
 
@@ -92,8 +62,7 @@ const LoginScreen: React.FC<IProps> = ({ navigation }) => {
                 innerRef={formRef}
                 validationSchema={LoginvalidationSchema}
                 onSubmit={values => {
-                  dispatch(setCustomLoader(true));
-                  logIn(values.email, values.password, dispatch)
+                  dispatch(AuthAction.signIn(values.email, values.password))
                 }}>
                 <CustomTextInput
                   leftIcon="user"

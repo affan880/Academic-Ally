@@ -31,7 +31,7 @@ class BootActions {
 
     static loadProtectedUtils = (user, currentUser) => async (dispatch) => {
         try {
-            const doc = await firestoreDB()
+            await firestoreDB()
                 .collection('UtilsProtected')
                 .doc('meta-data')
                 .get().then((doc) => {
@@ -40,17 +40,16 @@ class BootActions {
                     dispatch(setProtectedUtils(protectedUtils));
                 }).catch((error) => {
                     console.log(error);
-                    CrashlyticsService.recordError(error);
                 });
         } catch (error) {
             console.log(error);
-
+            CrashlyticsService.recordError(error);
         }
     }
 
     static loadUtils = () => async (dispatch) => {
         try {
-            const doc = await firestoreDB()
+            await firestoreDB()
                 .collection('utils')
                 .doc('meta-data')
                 .get().then((doc) => {
@@ -60,9 +59,9 @@ class BootActions {
                     dispatch(setRequiredVersion(data?.credentials?.requiredVersion));
                 }).catch((error) => {
                     console.log(error);
-                    CrashlyticsService.recordError(error);
                 });
         } catch (error) {
+            CrashlyticsService.recordError(error);
             console.log(error);
         }
     }

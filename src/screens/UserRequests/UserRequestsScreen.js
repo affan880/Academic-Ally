@@ -1,6 +1,6 @@
-import { FlatList } from 'native-base';
-import React, { useEffect, useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import LottieView from 'lottie-react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -10,52 +10,84 @@ import UserRequestsActions from './UserRequestsActions';
 
 const UserRequestsScreen = () => {
     const dispatch = useDispatch();
-    const UserRequests = useSelector(state => state.UserRequestsReducer);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const UserRequests = useSelector((state) => state.UserRequestsReducer);
+    const loadingRequests = useSelector((state) => state.UserRequestsReducer).loadingRequests;
     const theme = useSelector((state) => state.theme);
     const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
+    const customClaims = useSelector((state) => state.bootReducer.customClaims);
+    const managerUniversity = customClaims?.branchManagerDetails?.university;
+    const managerCourse = customClaims?.branchManagerDetails?.course;
+    const managerBranch = customClaims?.branchManagerDetails?.branches;
+
+    const handleRefresh = () => {
+        setIsRefreshing(true);
+        dispatch(UserRequestsActions.loadNewUploads(managerUniversity, managerCourse, managerBranch)).then(() => setIsRefreshing(false));
+    };
+
     useEffect(() => {
-        dispatch(UserRequestsActions.loadNewUploads());
-    }, [])
-    function remove(filename) {
-        if (filename.endsWith(".pdf")) {
-            filename = filename.slice(0, -4);
-            if (filename.length > 15) {
-                return filename.substring(0, 20);
-            }
-            return filename;
+        handleRefresh();
+    }, [loadingRequests]);
+
+    useEffect(() => {
+        if (UserRequests.loading === false) {
+            setIsRefreshing(false);
         }
-    }
+    }, [UserRequests.loading]);
+
+    const renderItem = ({ item, index }) => (
+        <NewRequestCard item={item} index={index} />
+    );
+
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
                 <View style={styles.header}>
-                    <MaterialCommunityIcons name={"clipboard-edit-outline"} size={theme.sizes.iconMedium} color="#FFFFFF" />
+                    <MaterialCommunityIcons
+                        name="clipboard-edit-outline"
+                        size={theme.sizes.iconMedium}
+                        color="#FFFFFF"
+                    />
                     <Text style={styles.headerText}>Requests</Text>
                 </View>
             </View>
             <View style={styles.body}>
-                <View style={styles.bodyContent}>
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        data={UserRequests?.NewRequests}
-                        renderItem={({ item, index }) => {
-                            const path = item?.path.split('/');
-                            return (
-                                <NewRequestCard
-                                    item={item}
-                                    index={index}
-                                    selected={item?.selected}
-                                    subject={item?.subject}
-                                />
-                            )
-                        }}
-                    />
-                </View>
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    data={UserRequests?.NewRequests}
+                    renderItem={renderItem}
+                    refreshControl={
+                        <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+                    }
+
+                    ListEmptyComponent={() => (
+                        <View style={{
+                            width: theme.sizes.width,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginTop: theme.sizes.height * 0.15,
+
+                        }}>
+                            <LottieView
+                                style={{
+                                    height: theme.sizes.lottieIconHeight,
+                                    alignSelf: 'center',
+                                }}
+                                source={require('../../assets/lottie/NoBookMarks.json')}
+                                autoPlay
+                                loop
+                            />
+                            <Text style={{
+                                fontSize: theme.sizes.title,
+                                color: theme.colors.primaryText,
+                                fontWeight: 'bold',
+                            }}>No Requests</Text>
+                        </View>
+                    )}
+                />
             </View>
         </View>
-    )
-}
+    );
+};
 
-export default UserRequestsScreen
-
-const styles = StyleSheet.create({})
+export default UserRequestsScreen;

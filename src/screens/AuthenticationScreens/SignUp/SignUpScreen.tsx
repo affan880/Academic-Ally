@@ -3,7 +3,7 @@ import firestore from '@react-native-firebase/firestore';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import { Toast } from 'native-base';
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Dimensions, Image, SafeAreaView, ScrollView, StatusBar, Text, View } from 'react-native';
+import { Dimensions, Image, SafeAreaView, ScrollView, StatusBar, Text, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -13,12 +13,11 @@ import { CustomTextInput } from '../../../components/CustomFormComponents/Custom
 import DropdownComponent from '../../../components/CustomFormComponents/Dropdown';
 import Form from '../../../components/Forms/form';
 import CustomLoader from '../../../components/loaders/CustomLoader';
-import { createUser } from '../../../Modules/auth/firebase/firebase';
-import { setUsersData } from '../../../redux/reducers/usersData';
 import { setCustomLoader } from '../../../redux/reducers/userState';
 import NavigationService from '../../../services/NavigationService';
 import { validationSchema } from '../../../utilis/validation';
 import createStyles from './styles';
+import AuthAction from '../authActions';
 
 const screenWidth = Dimensions.get('screen').width;
 
@@ -26,7 +25,7 @@ interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
 const SignUpScreen: FC<IProps> = ({ navigation }) => {
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
   const styles = useMemo(() => createStyles(), []);
   const formRef: any = useRef();
   const [selectedYear, setSelectedYear] = useState<any>(null);
@@ -146,22 +145,7 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
   });
 
   const onSubmit = (email: string, password: string, initialValues: any) => {
-    createUser(email, password, initialValues, dispatch)
-      .then(() => {
-        firestore()
-          .collection('Users')
-          .doc(auth().currentUser?.uid)
-          .get()
-          .then(doc => {
-            if (doc.exists) {
-              dispatch(setUsersData(doc.data()));
-            }
-          });
-      })
-      .catch(error => {
-        dispatch(setCustomLoader(false));
-        Alert.alert(error.message);
-      });
+    dispatch(AuthAction.signUp(email, password, initialValues));
   };
 
   return (

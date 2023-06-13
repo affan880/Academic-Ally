@@ -1,4 +1,10 @@
 class UtilityService {
+    static getTaskStatus(current) {
+        throw new Error('Method not implemented.');
+    }
+    static downloadFile(pdfUrl, downloadDir) {
+        throw new Error('Method not implemented.');
+    }
 
     static checkEmpty(obj) {
         if (obj === undefined || obj === null || obj === {} || obj === []) {
@@ -159,11 +165,11 @@ class UtilityService {
 
     static removeString(str) {
         if (str?.includes('(oufastupdates.com)') || str?.includes('.pdf')) {
-            const text = str.replace(/\(oufastupdates.com\)|\.pdf/g, '');
-            return text.slice(0, 35) + '...';
+            const text = str?.replace(/\(oufastupdates.com\)|\.pdf/g, '');
+            return text?.slice(0, 35) + '...';
         }
         if (str?.length > 15) {
-            return str.slice(0, 5) + '...';
+            return str?.slice(0, 5) + '...';
         }
         return str;
     }
@@ -174,9 +180,9 @@ class UtilityService {
         let replacedStr = str;
 
         for (const placeholder of placeholders) {
-            if (str !== null && str.includes(placeholder)) {
-                const index = placeholders.indexOf(placeholder);
-                replacedStr = replacedStr.replace(placeholder, placeholdersValues[index]);
+            if (str?.includes(placeholder)) {
+                const index = placeholders?.indexOf(placeholder);
+                replacedStr = replacedStr?.replace(placeholder, placeholdersValues[index]);
             }
         }
         return replacedStr;
@@ -190,6 +196,26 @@ class UtilityService {
         return str;
     }
 
+    static getDynamicLink(link) {
+        const parts = link?.url.split('/');
+        const userData = {
+            Course: parts[5],
+            branch: parts[6],
+            sem: parts[7],
+        };
+        const notesData = {
+            course: parts[5],
+            branch: parts[6],
+            sem: parts[7],
+            subject: parts[8],
+            category: parts[3],
+            did: parts[9],
+            name: parts[11],
+            units: parts[10],
+            university: parts[4],
+        };
+        return { userData, notesData };
+    }
 
 }
 export default UtilityService;

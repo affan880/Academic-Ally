@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -48,26 +48,35 @@ type pdfViewer = StackNavigationProp<MyStackParamList, 'PdfViewer'>;
 const NotesList = (props: Props) => {
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
-  const navigation = useNavigation<pdfViewer>();
   const dispatch = useDispatch();
+  const [uploadButtonVisible, setUploadButtonVisible] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const handleScroll = (event: any) => {
     const offsetY = event.nativeEvent.contentOffset.y;
+    const contentHeight = event.nativeEvent.contentSize.height;
+    const windowHeight = event.nativeEvent.layoutMeasurement.height;
+
     if (offsetY > 0) {
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 500,
         useNativeDriver: true,
       }).start();
-    } else {
+      setUploadButtonVisible(false);
+    } else if (offsetY + windowHeight < contentHeight) {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 500,
         useNativeDriver: true,
       }).start();
+      setUploadButtonVisible(true);
+    } else {
+      // User is at the end of the list
+      setUploadButtonVisible(false);
     }
-  }
+  };
+
 
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const { userData } = route.params;
@@ -110,23 +119,25 @@ const NotesList = (props: Props) => {
           );
         })}
       </NavigationLayout>
-      <Animated.View style={{ opacity: fadeAnim }}>
-        <TouchableOpacity
-          onPress={() => {
-            NavigationService.navigate(NavigationService.screens.Upload, {
-              userData: userData,
-              notesData: notesData,
-              selected: selected,
-              subject: subject,
-            });
-          }}
-          style={styles.btn}>
-          <Text
-            style={styles.uploadBtnText}>
-            Upload
-          </Text>
-        </TouchableOpacity>
-      </Animated.View>
+      {
+        uploadButtonVisible && <Animated.View style={{ opacity: fadeAnim }}>
+          <TouchableOpacity
+            onPress={() => {
+              NavigationService.navigate(NavigationService.screens.Upload, {
+                userData: userData,
+                notesData: notesData,
+                selected: selected,
+                subject: subject,
+              });
+            }}
+            style={styles.btn}>
+            <Text
+              style={styles.uploadBtnText}>
+              Upload
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
+      }
     </>
   );
 };
