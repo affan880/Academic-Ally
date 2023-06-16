@@ -1,10 +1,20 @@
 class UtilityService {
-    static getTaskStatus(current) {
-        throw new Error('Method not implemented.');
-    }
-    static downloadFile(pdfUrl, downloadDir) {
-        throw new Error('Method not implemented.');
-    }
+
+    static months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "June",
+        "July",
+        "Aug",
+        "Sept",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
+    static days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
     static checkEmpty(obj) {
         if (obj === undefined || obj === null || obj === {} || obj === []) {
@@ -42,6 +52,44 @@ class UtilityService {
         return UtilityService.months[index];
     }
 
+    static formatDateFromTimestamp(timestamp, format) {
+        if (timestamp == null) {
+            return '';
+        }
+        const time = new Date(timestamp * 1000);
+        const yyyy = time.getFullYear();
+        const yy = (yyyy + "").substring(2);
+        const MM = time.getMonth() + 1;
+        const dd = time.getDate();
+        const hh = time.getHours();
+        const mm = time.getMinutes();
+        const ss = time.getSeconds();
+        const DD = time.getDay();
+        const A = hh < 12 ? "AM" : "PM";
+
+        if (format.indexOf("A") > -1) {
+            hh = hh > 12 ? hh - 12 : hh;
+        }
+
+        MM = MM < 10 ? "0" + MM : MM;
+        dd = dd < 10 ? "0" + dd : dd;
+        hh = hh < 10 ? "0" + hh : hh;
+        mm = mm < 10 ? "0" + mm : mm;
+
+        format = format.replace("A", A);
+        format = format.replace("yyyy", yyyy);
+        format = format.replace("yy", yy);
+        format = format.replace("MMM", UtilityService.months[MM - 1]);
+        format = format.replace("MM", MM);
+        format = format.replace("dd", dd);
+        format = format.replace("hh", hh);
+        format = format.replace("mm", mm);
+        format = format.replace("ss", ss);
+        format = format.replace("DDD", UtilityService.days[DD].substring(0, 3));
+        format = format.replace("DD", UtilityService.days[DD]);
+
+        return format;
+    }
 
     static formatDate(date, format) {
         if (date == null) {
@@ -49,7 +97,7 @@ class UtilityService {
         }
         let time = new Date(date);
         let yyyy = time.getFullYear();
-        let yy = (yyyy + "").substring(2);
+        let yy = yyyy % 100;
         let MM = time.getMonth() + 1;
         let dd = time.getDate();
         let hh = time.getHours();
@@ -67,7 +115,8 @@ class UtilityService {
         format = format.replace("A", A);
         format = format.replace("yyyy", yyyy);
         format = format.replace("yy", yy);
-        format = format.replace("MMM", UtilityService.months[MM - 1]);
+        format = format.replace("MMMM", UtilityService.months[MM - 1]);
+        format = format.replace("MMM", UtilityService.months[MM - 1].substring(0, 3));
         format = format.replace("MM", MM);
         format = format.replace("dd", dd);
         format = format.replace("hh", hh);

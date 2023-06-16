@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { ShareIcon } from '../../assets/images/icons';
 import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
-import NavigationLayout from '../../interfaces/navigationLayout';
 import { manageBookmarks } from '../../Modules/auth/firebase/firebase';
 import { userAddBookMarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
 import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
@@ -237,7 +236,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   justifyContent: 'center',
                   marginRight: theme.sizes.width * 0.02,
                 }}>
-                <Ionicons name="md-eye-outline" size={theme.sizes.height * 0.018} color={theme.colors.primaryText} style={{
+                <Ionicons name="md-eye-outline" size={theme.sizes.iconMini} color={theme.colors.primaryText} style={{
                   paddingTop: theme.sizes.height * 0.002,
                 }} />
                 <Text
@@ -245,7 +244,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                     fontSize: theme.sizes.subtitle,
                     color: theme.colors.primaryText,
                     fontWeight: '600',
-                    paddingLeft: theme.sizes.width * 0.01,
+                    paddingLeft: theme.sizes.width * 0.005,
                   }}>{
                     item?.views ? formatViewCount(item.views) : 0
                   }
@@ -256,9 +255,9 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  paddingHorizontal: theme.sizes.width * 0.02,
+                  paddingHorizontal: theme.sizes.width * 0.001,
                 }}>
-                <AntDesign name="star" size={theme.sizes.height * 0.018} color={theme.colors.yellowWarning} />
+                <AntDesign name="star" size={theme.sizes.iconMini} color={theme.colors.yellowWarning} />
                 <Text
                   style={{
                     fontSize: 14,
@@ -274,6 +273,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
+                  paddingHorizontal: theme.sizes.width * 0.01,
                 }}>
                 <Entypo name="dot-single" size={20} color="#91919F" style={{
                   paddingTop: 2,
@@ -356,7 +356,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
           <ShareIcon />
         </TouchableOpacity>
       </View>
-      <Modal isOpen={modalVisible} onClose={setModalVisible} size={'xl'}>
+      <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)} size={'xl'}>
         <Modal.Content >
           <Box margin={2} >
             <Text fontSize={'14px'} fontWeight={'700'} marginTop={3} textAlign="center" >

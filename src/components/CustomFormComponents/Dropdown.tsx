@@ -5,6 +5,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useSelector } from 'react-redux';
 
 type Props = {
   leftIcon: any;
@@ -28,6 +29,8 @@ export const CustomDropdown = ({
   handleOptions,
   ...other
 }: Props) => {
+
+  const theme = useSelector((state: any) => { return state.theme });
   const { values, errors, touched, setFieldValue, setFieldTouched } =
     useFormikContext<any>();
   const [value, setValue] = useState(null);
@@ -49,7 +52,7 @@ export const CustomDropdown = ({
         <Dropdown
           style={[
             styles.input,
-            { width: width },
+            { width: width, backgroundColor: theme.colors.quaternary },
             touched[name] && errors[name]
               ? {
                 borderColor: '#FF2E00',
@@ -57,8 +60,10 @@ export const CustomDropdown = ({
               }
               : null,
           ]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
+          placeholderStyle={[styles.placeholderStyle, { color: theme.colors.primaryText }]}
+          selectedTextStyle={[styles.selectedTextStyle, {
+            color: theme.colors.primaryText,
+          }]}
           inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
           data={data}
@@ -92,12 +97,14 @@ export const CustomDropdown = ({
           itemContainerStyle={{
             // height: 50,
             // justifyContent: 'center',
+            backgroundColor: theme.colors.quaternary,
             borderBottomWidth: 1,
             borderBottomColor: '#e5e5e5',
+            borderRadius: 10
           }}
           itemTextStyle={{
             fontSize: height * 0.0205,
-            color: '#000000',
+            color: theme.colors.terinaryText,
           }}
           onChange={item => {
             setValue(item.value);
@@ -116,14 +123,14 @@ export const CustomDropdown = ({
             name === 'university' ? (
               <FontAwesome
                 style={styles.icon}
-                color={isFocus ? '#6360FF' : 'black'}
+                color={isFocus ? '#6360FF' : theme.colors.primaryText}
                 name={'university'}
                 size={height * 0.025}
               />
             ) : (
               <AntDesign
                 style={styles.icon}
-                color={isFocus ? 'blue' : 'black'}
+                color={isFocus ? '#6360FF' : theme.colors.primaryText}
                 name={leftIcon}
                 size={height * 0.025}
               />
@@ -152,7 +159,7 @@ export default CustomDropdown;
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
     height: height * 0.07,
     borderRadius: 10,
     elevation: 3,
@@ -196,11 +203,9 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: width * 0.035,
-    color: '#808080',
   },
   selectedTextStyle: {
     fontSize: height * 0.018,
-    color: '#000000',
     flexWrap: 'nowrap',
   },
   iconStyle: {

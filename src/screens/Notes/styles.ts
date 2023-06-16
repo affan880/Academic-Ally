@@ -1,13 +1,13 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
-const createStyles = (theme:any, sizes:any) =>
+const createStyles = (theme: any, sizes: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: theme.primary,
     },
-     headerContainer: {
+    headerContainer: {
       height: height * 0.14,
       width: width,
       justifyContent: 'space-between',
@@ -28,7 +28,7 @@ const createStyles = (theme:any, sizes:any) =>
       flex: 1,
       paddingTop: height * 0.02,
     },
-    
+
     categoryBtns: {
       width: width * 0.4,
       height: height * 0.25,
@@ -64,7 +64,7 @@ const createStyles = (theme:any, sizes:any) =>
     btnText: {
       fontSize: sizes.text,
       fontWeight: '600',
-      color: theme.primaryText,
+      color: theme.black,
       textAlign: 'center',
       lineHeight: 20,
       marginTop: 10,
@@ -72,7 +72,7 @@ const createStyles = (theme:any, sizes:any) =>
     disabledBtn: {
       width: width * 0.4,
       height: height * 0.25,
-      backgroundColor:  theme.disabledCategoryBtn,
+      backgroundColor: theme.disabledCategoryBtn,
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
@@ -144,7 +144,7 @@ const createStyles = (theme:any, sizes:any) =>
     },
     notesListHeaderContainer: {
       width: width,
-      height: height * 0.08,
+      height: height * 0.055,
       justifyContent: 'space-evenly',
       alignItems: 'center',
       flexDirection: 'row',
@@ -153,7 +153,7 @@ const createStyles = (theme:any, sizes:any) =>
     notesListHeaderText: {
       fontSize: sizes.text,
       fontWeight: '500',
-      color: '#161719',
+      color: theme.primaryText,
     },
     notesListValueText: {
       fontSize: sizes.text,
@@ -169,29 +169,29 @@ const createStyles = (theme:any, sizes:any) =>
     },
     headerText: {
       fontSize: sizes.title,
-      fontWeight: 'bold', 
+      fontWeight: 'bold',
       color: theme.primaryText,
     },
-    btn:{
-        position: 'absolute',
-        bottom: 10,
-        alignSelf: 'center',
-        backgroundColor: theme.tertiary,
-        width: '90%',
-        height: height * 0.07,
-        borderRadius: height * 0.015,
-        justifyContent: 'center',
-        alignItems: 'center',
-        elevation: 0,
-        shadowOpacity: 0.5,
-        },
-        uploadBtnText:{
-          color: '#fff',
-          fontSize: sizes.text,
-          fontWeight: 'bold',
-          textAlign: 'center',
-          paddingVertical: 10,
-        }
-  })
+    btn: {
+      position: 'absolute',
+      bottom: 10,
+      alignSelf: 'center',
+      backgroundColor: theme.tertiary,
+      width: '90%',
+      height: height * 0.07,
+      borderRadius: height * 0.015,
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 0,
+      shadowOpacity: 0.5,
+    },
+    uploadBtnText: {
+      color: '#fff',
+      fontSize: sizes.text,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      paddingVertical: 10,
+    },
+  });
 
 export default createStyles;

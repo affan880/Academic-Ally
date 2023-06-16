@@ -3,6 +3,7 @@ import { NativeBaseProvider } from 'native-base';
 import React from 'react';
 import { StatusBar } from 'react-native';
 import RNBootSplash from 'react-native-bootsplash';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 
 import store from './src/redux/store';
@@ -18,6 +19,7 @@ const App = () => {
     }, 500);
   });
   return (
+    <SafeAreaView style={{ flex: 1 }}>
     <NativeBaseProvider>
       <Provider store={store}>
         <NavigationContainer ref={NavigationService.navigationRef} >
@@ -26,6 +28,7 @@ const App = () => {
         </NavigationContainer>
       </Provider>
     </NativeBaseProvider>
+    </SafeAreaView>
   );
 };
 

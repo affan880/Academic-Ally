@@ -2,11 +2,9 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 import { Toast } from 'native-base';
 import RNFS from 'react-native-fs';
 
-import { setDownloadProgress, setIsDownloading, updateDownloadProgress } from './pdfViewerSlice';
+import { addItemToDownloadingList, removeItemFromDownloadingList, setDownloadProgress, setIsDownloading, updateDownloadProgress } from './pdfViewerSlice';
 
 class PdfViewerAction {
-
-    static downloadTask;
 
     static listDownloadedFiles = async () => {
         try {
@@ -41,7 +39,6 @@ class PdfViewerAction {
 
 
     static checkIfFileExists = async (notesData) => {
-        const directoryPath = `${RNFS.DocumentDirectoryPath}/Resources`;
         const pdfFileName = `${notesData?.name}_${notesData?.branch}_${notesData?.sem}.pdf`
         const filePath = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}`;
         const fileExists = await RNFS.exists(filePath);
@@ -52,13 +49,17 @@ class PdfViewerAction {
     };
 
     static createMetaData = (result, notesData, setPdfDataPath) => async (dispatch) => {
-        const metaData = notesData;
+        const metaData = {
+            ...notesData,
+            status: 'Downloaded',
+            downloadedDate: new Date(),
+        };
         await RNFS.writeFile(setPdfDataPath, JSON.stringify(metaData), 'utf8');
         if (result.statusCode === 200) {
             dispatch(setIsDownloading(false));
             dispatch(setDownloadProgress());
             Toast.show({
-                title: 'File Downloaded',
+                title: 'File Downloaded Successfully',
                 type: 'success',
                 backgroundColor: '#5cb85c',
                 duration: 3000,
@@ -66,7 +67,7 @@ class PdfViewerAction {
         } else {
             dispatch(setIsDownloading(false));
             Toast.show({
-                title: 'File Download Failed',
+                title: 'Error Downloading File',
                 type: 'danger',
                 backgroundColor: '#d9534f',
                 duration: 3000,
@@ -74,8 +75,9 @@ class PdfViewerAction {
         }
     }
 
-    static downloadFile = (notesData, url, setTaskId) => (dispatch) => {
-        // dispatch(setIsDownloading(true));
+    static downloadFile = (notesData, url, setTaskId, setProgress) => (dispatch) => {
+        setProgress(0)
+        const fileSize = notesData?.size / 1024;
         const pdfFileName = `${notesData?.name}_${notesData?.branch}_${notesData?.sem}.pdf`;
         const downloadDest = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}`;
         const setPdfDataPath = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}.text`;
@@ -84,23 +86,48 @@ class PdfViewerAction {
             toFile: downloadDest,
             background: true,
             cache: true,
-            progressDivider: 10,
+            progressDivider: fileSize < 10 ? 50 : 13,
             progress: (data) => {
                 const progress = data.bytesWritten / data.contentLength;
-                dispatch(updateDownloadProgress(progress));
-                console.log('Download progress: ', progress);
+                setProgress(progress)
             },
             begin: (res) => {
                 setTaskId(res.jobId);
-                console.log('jobId:', res.jobId);
+                dispatch(setIsDownloading(true));
+                dispatch(addItemToDownloadingList({
+                    ...notesData,
+                    url: url,
+                    jobId: res.jobId,
+                    downloadedDate: new Date(),
+                    progress: 0,
+                    status: 'Downloading',
+                }))
             }
         };
 
-        downloadTask = RNFS.downloadFile(options).promise
+        RNFS.downloadFile(options).promise
             .then((res) => {
+                dispatch(removeItemFromDownloadingList(url))
                 dispatch(this.createMetaData(res, notesData, setPdfDataPath));
             }).catch((e) => {
-                console.log(e)
+                dispatch(removeItemFromDownloadingList(url))
+                if (e.toString().includes('Download has been aborted')) {
+                    Toast.show({
+                        title: 'Download has been aborted',
+                        backgroundColor: '#d9534f',
+                        duration: 3000,
+                    });
+                }
+                else {
+                    Toast.show({
+                        title: 'File Download Failed',
+                        type: 'danger',
+                        backgroundColor: '#d9534f',
+                        duration: 3000,
+                    });
+                }
+                dispatch(setIsDownloading(false))
+                dispatch(setDownloadProgress());
             })
     };
 
@@ -108,7 +135,6 @@ class PdfViewerAction {
         const directoryPath = `${RNFS.DocumentDirectoryPath}/Resources`;
         RNFS.exists(directoryPath).then((directoryExists) => {
             if (directoryExists) {
-                console.log('Directory exists', directoryExists);
                 dispatch(this.downloadFile(notesData, url, setTaskId));
             } else {
                 RNFS.mkdir(directoryPath);

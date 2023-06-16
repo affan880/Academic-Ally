@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
-const createStyles = (theme:any, sizes:any) =>
+const createStyles = (theme: any, sizes: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -9,7 +9,7 @@ const createStyles = (theme:any, sizes:any) =>
       marginBottom: 0,
     },
     headerContainer: {
-      height: height * 0.14,
+      height: height * 0.08,
       width: width,
       justifyContent: 'space-between',
       alignItems: 'flex-end',
@@ -65,7 +65,7 @@ const createStyles = (theme:any, sizes:any) =>
       alignItems: 'flex-start',
       paddingHorizontal: width * 0.05,
       marginVertical: height * 0.02,
-      width: width ,
+      width: width,
     },
     categoryTitle: {
       fontSize: sizes.title,
@@ -180,26 +180,26 @@ const createStyles = (theme:any, sizes:any) =>
       flexDirection: 'row',
       alignItems: 'center',
     },
-            SignupButton: {
-            marginTop: 20,
-        },
+    SignupButton: {
+      marginTop: 20,
+    },
 
-        disabledIp: {
-             width: width - 50,
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            marginTop: height * 0.02,
-            height: height * 0.07,
-            backgroundColor: '#FFF',
-            borderRadius: 10,
-            elevation: 3,
-            shadowColor: '#000',
-            shadowOffset: {width: 0, height: 2},
-            shadowOpacity: 0.8,
-            shadowRadius: 2,
-            flexDirection: 'row',
-            paddingLeft: 20,
-        },
+    disabledIp: {
+      width: width - 50,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      marginTop: height * 0.02,
+      height: height * 0.07,
+      backgroundColor: theme.quaternary,
+      borderRadius: 10,
+      elevation: 3,
+      shadowColor: '#000',
+      shadowOffset: {width: 0, height: 2},
+      shadowOpacity: 0.8,
+      shadowRadius: 2,
+      flexDirection: 'row',
+      paddingLeft: 20,
+    },
   });
 
 export default createStyles;

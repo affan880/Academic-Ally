@@ -8,7 +8,7 @@ const createStyles = (theme: any, sizes: any) =>
             backgroundColor: theme.primary,
         },
         headerContainer: {
-            height: height * 0.14,
+            height: height * 0.08,
             width: width,
             justifyContent: 'space-between',
             alignItems: 'flex-end',

@@ -21,13 +21,13 @@ const { width, height } = Dimensions.get('screen');
 
 const Search = () => {
 
-  const apiResponse = useSelector((state: any) => state?.bootReducer?.utilis?.courses);
+  const apiResponse = useSelector((state: any) => state?.bootReducer?.utilis?.courses) || [];
   const userData = useSelector((state: any) => { return state.usersData });
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [selectedSem, setSelectedSem] = useState("");
-  const list = useSelector((state: any) => state.subjectsList.list);
+  const list = useSelector((state: any) => state.subjectsList.list) || [];
   const [subjectListDetail, setSubjectListDetail] = useState(list);
   const [branchData, setBranchesData] = useState([])
   const [semData, setSemData] = useState([]);
@@ -210,7 +210,6 @@ const Search = () => {
                             handleOptions={(item: any) => {
                               if (item?.value) {
                                 setSelectedSem(item?.value);
-                                console.log("item", item)
                               }
                             }}
                           />

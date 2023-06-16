@@ -1,4 +1,3 @@
-import { LinkPreview } from '@flyerhq/react-native-link-preview'
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import { Actionsheet, Box, Card, Center, Checkbox, Icon, IconButton, Modal, Stack, Text, Toast, useDisclose } from 'native-base';

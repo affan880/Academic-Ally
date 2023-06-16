@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useSelector } from 'react-redux';
 
 type Props = {
   leftIcon: any;
@@ -10,7 +11,7 @@ type Props = {
   handlePasswordVisibility?: any;
   name: any;
   securuty?: boolean;
-  errors?: any;
+  // errors?: any;
   other?: any;
   width?: any;
 };
@@ -26,6 +27,7 @@ export const CustomTextInput = ({
   width,
   other
 }: Props) => {
+  const theme = useSelector((state: any) => { return state.theme });
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const { values, errors, touched, setFieldValue, setFieldTouched } =
     useFormikContext<any>();
@@ -34,6 +36,10 @@ export const CustomTextInput = ({
       <View
         style={[
           styles.input,
+          {
+            backgroundColor: theme.colors.quaternary,
+            elevation: 3
+          },
           width ? {
             width: width,
           } : null,
@@ -47,7 +53,7 @@ export const CustomTextInput = ({
         {name === 'college' ? (
           <FontAwesome
             size={Height * 0.025}
-            color={touched[name] && errors[name] ? '#FF2E00' : '#000000'}
+            color={touched[name] && errors[name] ? '#FF2E00' : theme.colors.primaryText}
             style={{ paddingRight: 15, alignSelf: 'center' }}
             name={'university'}
           />
@@ -55,7 +61,7 @@ export const CustomTextInput = ({
           <Feather
             name={leftIcon}
             size={18}
-            color={touched[name] && errors[name] ? '#FF2E00' : '#000000'}
+            color={touched[name] && errors[name] ? '#FF2E00' : theme.colors.primaryText}
             style={{ paddingRight: 15, alignSelf: 'center' }}
           />
         )}
@@ -70,7 +76,7 @@ export const CustomTextInput = ({
           placeholderTextColor={
             touched[name] && errors[name] ? '#FF2E00' : '#808080'
           }
-          style={styles.textInput}
+          style={[styles.textInput, { color: theme.colors.primaryText }]}
           maxLength={50}
           secureTextEntry={
             name === 'password' || name === 'confirmPassword'
@@ -99,13 +105,13 @@ export const CustomTextInput = ({
       {touched[name] && errors[name] ? (
         <Text
           style={{
-            color: '#000000',
+            color: theme.colors.primaryText,
             fontSize: Height * 0.015,
             fontFamily: 'Poppins-Regular',
             paddingLeft: 20,
             fontWeight: 'bold',
           }}>
-          *{errors[name]}
+          *{errors[name] + ''}
         </Text>
       ) : null}
     </View>
@@ -116,11 +122,9 @@ export default CustomTextInput;
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#fff',
     width: Width - 50,
     height: Height * 0.07,
     borderRadius: 10,
-    elevation: 3,
     paddingLeft: 20,
     marginTop: 10,
     alignItems: 'center',
@@ -133,7 +137,6 @@ const styles = StyleSheet.create({
     height: Height * 0.07,
     width: '78%',
     fontSize: Height * 0.018,
-    color: '#000000',
     fontFamily: 'Poppins-Regular',
     alignItems: 'center',
   },

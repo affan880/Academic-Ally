@@ -31,9 +31,12 @@ class NavigationService {
         this.navigationRef.navigate(name, params);
     }
 
-    static goBack() {
+    static goBack(onNavigateBack) {
         if (this.navigationRef.isReady() && this.navigationRef.canGoBack()) {
             this.navigationRef.goBack();
+            if (typeof onNavigateBack === 'function') {
+                onNavigateBack(); // Execute the callback function when navigating back
+            }
         }
     }
 

@@ -107,7 +107,6 @@ const UploadPDF = () => {
       await task;
       task.then((snapshot: any) => {
         setUploadingResult(snapshot);
-        console.log(snapshot);
         setUploadProgress(0);
         setCompleted(true);
       })

@@ -62,7 +62,6 @@ export const createUserDataSlice = createSlice({
     },
     setVersion: (state, action) => {
       state.version = action.payload;
-      console.log('setVersion', state.version);
       AsyncStorage.setItem('version', JSON.stringify(action.payload));
     },
   },

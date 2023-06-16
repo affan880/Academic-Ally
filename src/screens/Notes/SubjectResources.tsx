@@ -7,8 +7,10 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Notes, OtherRes, Qp, Syllabus } from '../../assets/images/icons';
+import CustomLoader from '../../components/loaders/CustomLoader';
 import NavigationLayout from '../../interfaces/navigationLayout';
 import { userAddToRecents } from '../../redux/reducers/usersRecentPdfsManager';
+import { setCustomLoader } from "../../redux/reducers/userState";
 import { setResourceLoader } from '../../redux/reducers/userState';
 import NavigationService from '../../services/NavigationService';
 import createStyles from './styles';
@@ -48,11 +50,6 @@ type MyStackParamList = {
 type MyScreenNavigationProp = StackNavigationProp<
   MyStackParamList,
   'NotesList'
->;
-
-type uploadScreenNavigationProp = StackNavigationProp<
-  MyStackParamList,
-  'UploadScreen'
 >;
 
 type notesTypes = {
@@ -109,10 +106,12 @@ const NotesScreen = () => {
         subject: subject,
       }),
         setLoading(false));
+    dispatch(setCustomLoader(false))
   }
 
   return !loading ? (
     <NavigationLayout rightIconFalse={true} title={subjectTitle} handleScroll={() => { }} >
+      <CustomLoader />
       <View style={styles.header}>
         <Text style={styles.headerText}>Resources</Text>
       </View>
@@ -125,6 +124,7 @@ const NotesScreen = () => {
                 syllabusbtnStyle ? styles.categoryBtnClicked : null,
               ]}
               onPress={() => {
+                dispatch(setCustomLoader(true))
                 setNotesStyle(false);
                 setSyllabusStyle(true);
                 setQpStyle(false);
@@ -143,6 +143,7 @@ const NotesScreen = () => {
                 syllabusbtnStyle ? styles.disabledBtnClicked : null,
               ]}
               onPress={() => {
+                dispatch(setCustomLoader(true))
                 setNotesStyle(false);
                 setSyllabusStyle(true);
                 setQpStyle(false);
@@ -164,6 +165,7 @@ const NotesScreen = () => {
                 notesbtnStyle ? styles.categoryBtnClicked : null,
               ]}
               onPress={() => {
+                dispatch(setCustomLoader(true))
                 setNotesStyle(true);
                 setSyllabusStyle(false);
                 setQpStyle(false);
@@ -182,6 +184,7 @@ const NotesScreen = () => {
                 notesbtnStyle ? styles.disabledBtnClicked : null,
               ]}
               onPress={() => {
+                dispatch(setCustomLoader(true))
                 setNotesStyle(true);
                 setSyllabusStyle(false);
                 setQpStyle(false);
@@ -203,6 +206,7 @@ const NotesScreen = () => {
                 qpbtnStyle ? styles.categoryBtnClicked : null,
               ]}
               onPress={() => {
+                dispatch(setCustomLoader(true))
                 setNotesStyle(false);
                 setSyllabusStyle(false);
                 setQpStyle(true);
@@ -221,6 +225,7 @@ const NotesScreen = () => {
                 qpbtnStyle ? styles.disabledBtnClicked : null,
               ]}
               onPress={() => {
+                dispatch(setCustomLoader(true))
                 setNotesStyle(false);
                 setSyllabusStyle(false);
                 setQpStyle(true);
@@ -242,6 +247,7 @@ const NotesScreen = () => {
                 otherResbtnStyle ? styles.categoryBtnClicked : null,
               ]}
               onPress={() => {
+                dispatch(setCustomLoader(true))
                 setNotesStyle(false);
                 setSyllabusStyle(false);
                 setQpStyle(false);
@@ -260,6 +266,7 @@ const NotesScreen = () => {
                 otherResbtnStyle ? styles.disabledBtnClicked : null,
               ]}
               onPress={() => {
+                dispatch(setCustomLoader(true))
                 setNotesStyle(false);
                 setSyllabusStyle(false);
                 setQpStyle(false);

@@ -33,6 +33,7 @@ export const createThemeSlice = createSlice({
             shareIcon: ShareIconImg,
             reportIcon: ReportIconBlack,
             logo: '../../../assets/images/logo_black.png',
+            actionSheet: '#FCFCFF'
         },
         dark: {
             primary: "#292B2D",
@@ -57,6 +58,7 @@ export const createThemeSlice = createSlice({
             shareIcon: ShareIcon,
             reportIcon: ReportIconWhite,
             logo: '../../../assets/images/white-logo.png',
+            actionSheet: '#292B2D'
         },
         colors: {
             primary: "#6360FF",
@@ -81,6 +83,7 @@ export const createThemeSlice = createSlice({
             shareIcon: ShareIcon,
             reportIcon: ReportIconBlack,
             logo: '../../../assets/images/white-logo.png',
+            actionSheet: '#FCFCFF'
         },
         sizes: {
             title: height * 0.020,
@@ -98,11 +101,13 @@ export const createThemeSlice = createSlice({
             icon: height * 0.05,
             iconMedium: height * 0.035,
             iconSmall: height * 0.025,
+            iconMini: height * 0.020,
             label: height * 0.03,
             lottieIconHeight: height * 0.4,
             height,
             width,
-        }
+        },
+        isPotrait: true,
     },
     reducers: {
         setTheme: (state, action) => {
@@ -138,7 +143,17 @@ export const createThemeSlice = createSlice({
                 }
                 );
         },
-
+        setIsPotrait: (state, action) => {
+            state.isPotrait = action.payload;
+            if (action.payload === false) {
+                state.sizes.height = width;
+                state.sizes.width = height;
+            }
+            else {
+                state.sizes.height = height;
+                state.sizes.width = width;
+            }
+        },
     }
 });
 
@@ -146,7 +161,8 @@ export const {
     setTheme,
     setLightTheme,
     setDarkTheme,
-    getCurrentTheme
+    getCurrentTheme,
+    setIsPotrait,
 } = createThemeSlice.actions;
 
 export default createThemeSlice.reducer;

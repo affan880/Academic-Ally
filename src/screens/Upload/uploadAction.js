@@ -39,8 +39,6 @@ class UploadAction {
             sem,
         };
 
-        console.log("check", data);
-
         const path = `NewUploads/${university}/${course}/${branch}/uploads`;
         const path2 = `NewUploads/${university}/${course}/${branch}`;
 

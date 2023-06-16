@@ -2,11 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import firestore from '@react-native-firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { Toast } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { Dimensions, Image, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,7 +13,7 @@ import QuickAccess from '../../components/CustomFormComponents/QuickAccess/Quick
 import Recommendation from '../../components/CustomFormComponents/Recommendation/Recommendation';
 import ResourceLoader from '../../components/loaders/ResourceLoader';
 import ScreenLayout from '../../interfaces/screenLayout';
-import { setDarkTheme, setLightTheme } from '../../redux/reducers/theme';
+import { setDarkTheme, setIsPotrait, setLightTheme } from '../../redux/reducers/theme';
 import { setBookmarks } from '../../redux/reducers/userBookmarkManagement';
 import { setUsersData, setUsersDataLoaded } from '../../redux/reducers/usersData';
 import { setResourceLoader } from '../../redux/reducers/userState';
@@ -27,10 +25,7 @@ import createStyles from './styles';
 
 const HomeScreen = () => {
   const colorScheme = useColorScheme();
-  const theme = useSelector((state: any) => {
-    return state.theme;
-  });
-
+  const theme = useSelector((state: any) => { return state.theme });
   const dispatch: any = useDispatch();
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -39,6 +34,23 @@ const HomeScreen = () => {
   const bookmarkList = useSelector(
     (state: any) => state.userBookmarkManagement,
   ).userBookMarks;
+
+
+  useEffect(() => {
+    const updateOrientation = () => {
+      const { width, height } = Dimensions.get('window');
+      const orientation = width > height ? false : true;
+      dispatch(setIsPotrait(orientation));
+    };
+
+    updateOrientation();
+
+    const subscription = Dimensions.addEventListener('change', updateOrientation);
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     colorScheme === 'dark' ? dispatch(setDarkTheme()) : dispatch(setLightTheme());
@@ -112,7 +124,7 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <ScreenLayout>
+    <ScreenLayout name="Home">
       <ResourceLoader />
       <ScrollView
         showsVerticalScrollIndicator={false}

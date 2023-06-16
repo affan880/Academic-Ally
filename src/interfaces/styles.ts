@@ -1,32 +1,32 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
-const createStyles = (theme:any, sizes:any) =>
+const createStyles = (theme: any, sizes: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: theme.primary,
     },
     headerContainer: {
-      height: height * 0.15,
+      height: height * 0.08,
       width: width,
       justifyContent: 'space-between',
       alignItems: 'flex-end',
       flexDirection: 'row',
       paddingHorizontal: height * 0.02,
       position: 'relative',
-      paddingBottom: height * 0.025,
+      paddingBottom: height * 0.01,
     },
     body: {
       flex: 1,
       backgroundColor: theme.secondary,
-      borderTopLeftRadius: 40,
-      borderTopRightRadius: 40,
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
       width: width,
     },
     bodyContent: {
       flex: 1,
-      paddingTop: 10,
+      paddingTop: 3,
     },
     header: {
       width: '80%',

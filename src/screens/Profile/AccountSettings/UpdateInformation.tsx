@@ -3,7 +3,7 @@ import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Actionsheet, Avatar, Stack, Text, Toast, useDisclose } from 'native-base';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -387,12 +387,12 @@ const UpdateInformation = () => {
         </Form>
       </View>
       <Actionsheet isOpen={isOpen} onClose={onClose} borderRadius={0}  >
-        <Actionsheet.Content height={screenHeight * 0.65}>
+        <Actionsheet.Content height={screenHeight * 0.65} backgroundColor={theme.colors.actionSheet} >
           <Avatar source={{
             uri: selectedAvatar
           }} size={screenHeight * 0.14} alignSelf={'center'} marginTop={screenHeight * 0.01} />
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: screenHeight * 0.05 }}>
-            <Text style={{ fontSize: theme.sizes.subtitle, color: '#000', fontWeight: 'bold', textAlign: "center" }}>select from a variety of avatars to represent yourself</Text>
+            <Text style={{ fontSize: theme.sizes.subtitle, color: theme.colors.primaryText, fontWeight: 'bold', textAlign: "center" }}>select from a variety of avatars to represent yourself</Text>
           </View>
           <Stack style={styles.gridContainer} >
             {
@@ -407,7 +407,7 @@ const UpdateInformation = () => {
                       }
                     } size={screenHeight * 0.07} style={[styles.gridItem, {
                       borderWidth: selectedAvatar === item.image ? 2 : 0,
-                      borderColor: '#6360FF'
+                      borderColor: theme.colors.mainTheme
                     }]} alignSelf={'center'} />
                   </TouchableOpacity>
                 )
@@ -416,7 +416,7 @@ const UpdateInformation = () => {
           </Stack>
           <Stack direction="row" space={2} marginY={screenHeight * 0.05} paddingX={screenWidth * 0.02} alignItems="center" justifyContent="space-evenly" width={"100%"} >
             <TouchableOpacity onPress={onClose} >
-              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={"#91919F"} >
+              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={theme.colors.terinaryText} >
                 Cancel
               </Text>
             </TouchableOpacity>
