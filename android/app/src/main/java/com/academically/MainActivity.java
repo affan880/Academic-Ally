@@ -1,6 +1,7 @@
 package com.academically;
 
 import android.os.Bundle;
+import android.os.Build;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
@@ -24,21 +25,59 @@ public class MainActivity extends ReactActivity {
     return "Academically";
   }
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    RNBootSplash.init(this);
-    super.onCreate(savedInstanceState);
-  }
+  private void checkAndRequestPermissions() {
+    // List of permissions to be requested
+    String[] permissions = {
+        Manifest.permission.ACCESS_NOTIFICATION_POLICY,
+        Manifest.permission.WAKE_LOCK,
+        // Add more permissions here as needed
+    };
+
+    // Check if the permissions are granted
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        boolean allPermissionsGranted = true;
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                allPermissionsGranted = false;
+                break;
+            }
+        }
+
+        // Request permissions if not granted
+        if (!allPermissionsGranted) {
+            ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE);
+        }
+    }
+}
+
+// Override onRequestPermissionsResult to handle the permission request response
+@Override
+public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    if (requestCode == PERMISSION_REQUEST_CODE) {
+        // Check if all permissions are granted
+        boolean allPermissionsGranted = true;
+        for (int grantResult : grantResults) {
+            if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                allPermissionsGranted = false;
+                break;
+            }
+        }
+
+        // Handle permission grant or denial here
+        if (allPermissionsGranted) {
+            // Permissions granted
+        } else {
+            // Permissions denied
+        }
+    }
+}
 
   @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    if (requestCode == PERMISSION_REQUEST_CODE) {
-      if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-        // Permission has been granted.
-      } else {
-        // Permission has been denied.
-      }
-    }
+  protected void onCreate(Bundle savedInstanceState) {
+    checkAndRequestPermissions();
+    RNBootSplash.init(this);
+    super.onCreate(savedInstanceState);
   }
 
   /**
