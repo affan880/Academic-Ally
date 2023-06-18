@@ -1,10 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import analytics from '@react-native-firebase/analytics';
 import auth from '@react-native-firebase/auth';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import firestore from '@react-native-firebase/firestore';
+import inAppMessaging from "@react-native-firebase/in-app-messaging";
+import messaging from '@react-native-firebase/messaging';
 import { Toast } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Dimensions, Image, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { Dimensions, Image, Modal, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,12 +34,23 @@ const HomeScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const userFirestoreData = useSelector((state: any) => state.usersData);
   const [listData, setListData] = useState([]);
+  const [message, setMessage] = React.useState<any>(null);
   const bookmarkList = useSelector(
     (state: any) => state.userBookmarkManagement,
   ).userBookMarks;
 
+  async function bootstrap() {
+    await inAppMessaging().setMessagesDisplaySuppressed(true);
+  }
+
+
+  const allowToReceiveMessage = async (isAllowed: any) => {
+    // console.log(inAppMessaging().isMessagesDisplaySuppressed)
+    await inAppMessaging().setMessagesDisplaySuppressed(isAllowed)
+  };
 
   useEffect(() => {
+    inAppMessaging().setMessagesDisplaySuppressed(true);
     const updateOrientation = () => {
       const { width, height } = Dimensions.get('window');
       const orientation = width > height ? false : true;
@@ -51,6 +65,20 @@ const HomeScreen = () => {
       subscription.remove();
     };
   }, []);
+  useEffect(() => {
+    inAppMessaging().setMessagesDisplaySuppressed(false);
+  }, [])
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      const { data }: any = remoteMessage;
+      setMessage(data);
+      console.log(data)
+      await analytics().logEvent('notification_received', data);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
 
   useEffect(() => {
     colorScheme === 'dark' ? dispatch(setDarkTheme()) : dispatch(setLightTheme());
@@ -124,7 +152,7 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <ScreenLayout name="Home">
+    <ScreenLayout name="Home" children={undefined}>
       <ResourceLoader />
       <ScrollView
         showsVerticalScrollIndicator={false}

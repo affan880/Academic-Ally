@@ -20,14 +20,14 @@ const App = () => {
   });
   return (
     <SafeAreaView style={{ flex: 1 }}>
-    <NativeBaseProvider>
-      <Provider store={store}>
-        <NavigationContainer ref={NavigationService.navigationRef} >
-          <StatusBar barStyle="light-content" backgroundColor={'#6360FF'} />
-          <BootScreen />
-        </NavigationContainer>
-      </Provider>
-    </NativeBaseProvider>
+      <NativeBaseProvider>
+        <Provider store={store}>
+          <NavigationContainer ref={NavigationService.navigationRef} >
+            <StatusBar barStyle="light-content" backgroundColor={'#6360FF'} />
+            <BootScreen />
+          </NavigationContainer>
+        </Provider>
+      </NativeBaseProvider>
     </SafeAreaView>
   );
 };

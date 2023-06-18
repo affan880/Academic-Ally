@@ -6,11 +6,11 @@ import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 import { CheckIcon, Toast } from 'native-base';
 import { Alert, Share } from 'react-native';
+import { PERMISSIONS, request, requestNotifications } from 'react-native-permissions';
 import { useDispatch } from 'react-redux';
-import PushNotification from 'react-native-push-notification';
 
-import CrashlyticsService from '../../services/CrashlyticsService';
 import { setVisitedSubjects } from '../../redux/reducers/subjectsList';
+import CrashlyticsService from '../../services/CrashlyticsService';
 
 export const userFirestoreData = async (userData, type, item, dispatch) => {
   let list = [];
@@ -353,6 +353,14 @@ async function requestPermisssion() {
 
 export const getFcmToken = async () => {
   let fcmToken = await AsyncStorage.getItem('fcmToken');
+  requestNotifications(['alert', 'sound']).then(({ status, settings }) => {
+    console.log("req", status)
+  });
+
+  request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then((result) => {
+    console.log("ask", result)
+  });
+  await requestPermisssion();
   if (!fcmToken) {
     await requestPermisssion();
     fcmToken = await messaging().getToken();

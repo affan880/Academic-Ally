@@ -61,7 +61,7 @@ const DownloadScreen = () => {
   }
 
   useEffect(() => {
-    onSearch()
+    data?.length > 0 ? onSearch() : null
   }, [searchTerm, data]);
 
 
@@ -360,7 +360,7 @@ const DownloadScreen = () => {
   ));
 
   return (
-    <MainScreenLayout rightIconFalse={true} title={'Downloads'} handleScroll={() => { }}>
+    <MainScreenLayout rightIconFalse={true} title={'Downloads'} handleScroll={() => { }} name="DownloadScreen" >
       <Box justifyContent={'center'} alignItems={'center'}>
         <View
           style={[

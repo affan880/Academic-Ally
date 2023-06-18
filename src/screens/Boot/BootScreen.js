@@ -1,8 +1,10 @@
+import messaging from '@react-native-firebase/messaging';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 import { Alert, Dimensions, Linking, Pressable, StatusBar, Text, View } from 'react-native';
+import { checkNotifications, requestNotifications } from 'react-native-permissions';
 import Feather from "react-native-vector-icons/Feather";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -213,7 +215,43 @@ const BootScreen = () => {
     const currentUser = getCurrentUser();
     const dispatch = useDispatch();
     const [compatible, setCompatible] = useState(true);
+    const [initializing, setInitializing] = useState(true)
     const currentVersion = app_version;
+
+    const requestNotificationPermission = async () => {
+        const permissionStatus = await checkNotifications();
+        console.log(permissionStatus.status)
+        // if (permissionStatus.status === 'blocked' || permissionStatus.status === 'denied') {
+        //     Alert.alert(
+        //         'Notification Permission Required',
+        //         'Please enable notifications to receive important updates.',
+        //         [
+        //             {
+        //                 text: 'Open Settings',
+        //                 onPress: () => {
+        //                     requestNotifications(['alert', 'sound']).then(({ status }) => {
+        //                         if (status === 'granted') {
+        //                             console.log('Notification permission granted.');
+        //                         }
+        //                     });
+        //                 },
+        //             },
+        //             {
+        //                 text: 'Cancel',
+        //                 onPress: () => console.log('Cancel Pressed'),
+        //                 style: 'cancel',
+        //             },
+        //         ],
+        //         {
+        //             cancelable: false,
+        //             onDismiss: () => {
+        //                 console.log(permissionStatus.status)
+        //             }
+        //         }
+        //     );
+        // }
+    };
+
 
     const convertToNumber = (version) => {
         const versionParts = version.split(".");
@@ -228,9 +266,18 @@ const BootScreen = () => {
     };
 
     useEffect(() => {
-        dispatch(BootActions.loadUtils());
-        dispatch(BootActions.loadUserCustomClaims(user, currentUser));
-        dispatch(BootActions.loadProtectedUtils(user, currentUser));
+        try {
+            requestNotificationPermission()
+            dispatch(BootActions.loadUtils());
+            dispatch(BootActions.loadUserCustomClaims(user, currentUser));
+            dispatch(BootActions.loadProtectedUtils(user, currentUser))
+        }
+        catch (e) {
+            console.log('Initialization error', e)
+        }
+        finally {
+            setInitializing(false)
+        }
     }, [user, currentUser]);
 
     useEffect(() => {
@@ -260,7 +307,26 @@ const BootScreen = () => {
         }
     }, [compatible]);
 
-    return (user || currentUser !== null) ? <AppStack /> : <AuthStack />;
+    useEffect(() => {
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            Alert.alert(`A new FCM message arrived!, ${user}`, JSON.stringify(remoteMessage));
+        });
+
+        return unsubscribe;
+    }, []);
+
+    if (initializing) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
+
+    else {
+        return (user || currentUser !== null) ? <AppStack /> : <AuthStack />;
+    }
+
 };
 
 export default BootScreen;

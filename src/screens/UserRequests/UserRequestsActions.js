@@ -86,31 +86,46 @@ class UserRequestsActions {
     }
 
     static uploadFile = async (item, url, credentials, handleRefresh) => {
+        console.log(url)
         try {
-            const response = await axios.get(url, { responseType: 'arraybuffer' });
+            const response = await axios.get(url, {
+                responseType: 'arraybuffer',
+                onUploadProgress: (progressEvent) => {
+                    const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                    console.log('Upload Progress:', progress, '%');
+                }
+            });
+
+            console.log(response);
             const fileContent = response.data;
             const fileSize = fileContent.byteLength;
             const data = {
                 ...item,
                 size: fileSize / 1000
-            }
+            };
 
             const uploadParams = {
                 Bucket: credentials?.bucketName,
                 Key: `Universities/${item?.university}/${item?.course}/${item?.branch}/${item?.sem}/${item?.subject}/${item?.category}/${item?.name}`,
                 Body: fileContent,
             };
+            console.log(uploadParams);
+            console.log('size', fileSize / 1000);
 
-            await this.s3.upload(uploadParams).promise().then((res) => {
-                this.createResource(data).then(() => {
-                    this.deleteResource(item, handleRefresh);
-                    this.deleteFilefromFBStorage(item?.path);
-                })
-            })
+            await new Promise((resolve) => {
+                this.s3.upload(uploadParams).promise().then((res) => {
+                    this.createResource(data).then(() => {
+                        this.deleteResource(item, handleRefresh);
+                        this.deleteFilefromFBStorage(item?.path);
+                        resolve(); // Resolve the promise to continue further
+                    });
+                });
+            });
         } catch (error) {
             console.log('Error:', error);
         }
     }
+
 
     static createResource = async (data) => {
         try {
@@ -179,6 +194,7 @@ class UserRequestsActions {
     }
 
     static acceptRequest = (item, url, credentials, handleRefresh) => async (dispatch) => {
+        console.log('uploading')
         try {
             this.uploadFile(item, url, credentials, handleRefresh).then(() => {
                 this.updateUserRequests(item, { aproval: "approved" });

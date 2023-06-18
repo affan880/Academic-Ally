@@ -103,7 +103,7 @@ const Search = () => {
 
   const generateAbbreviation = (subject: string) => {
     const words = subject.split(' ');
-    const excludedTerms = ['of', 'for', 'and'];
+    const excludedTerms: any = ['of', 'for', 'and'];
     const abbreviation = words
       .filter((word) => !excludedTerms.includes(word.toLowerCase()))
       .map((word) => word.charAt(0))
@@ -182,7 +182,7 @@ const Search = () => {
                           style={styles.searchIcon}
                         />
                       </View>
-                      <Form initialValues={{ branch: '', sem: '' }} onSubmit={(values) => { console.log("tfuy", values) }} validationSchema={searchFilterValidationSchema} >
+                      <Form initialValues={{ branch: '', sem: '' }} onSubmit={(values) => { console.log("tfuy", values); }} validationSchema={searchFilterValidationSchema} children={undefined} >
                         <View style={{
                           justifyContent: 'space-between',
                           alignItems: 'center',
