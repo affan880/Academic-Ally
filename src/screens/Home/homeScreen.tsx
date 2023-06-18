@@ -25,6 +25,7 @@ import NavigationService from '../../services/NavigationService';
 import UtilityService from '../../services/UtilityService';
 import HomeAction from './homeAction';
 import createStyles from './styles';
+import FirebaseService from '../../services/FirebaseService';
 
 const HomeScreen = () => {
   const colorScheme = useColorScheme();
@@ -50,7 +51,7 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    inAppMessaging().setMessagesDisplaySuppressed(true);
+    inAppMessaging().setMessagesDisplaySuppressed(false);
     const updateOrientation = () => {
       const { width, height } = Dimensions.get('window');
       const orientation = width > height ? false : true;
@@ -71,8 +72,8 @@ const HomeScreen = () => {
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       const { data }: any = remoteMessage;
+      FirebaseService.requestUserPermission()
       setMessage(data);
-      console.log(data)
       await analytics().logEvent('notification_received', data);
     });
 

@@ -3,13 +3,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { Alert, Dimensions, Linking, Pressable, StatusBar, Text, View } from 'react-native';
-import { checkNotifications, requestNotifications } from 'react-native-permissions';
+import { Alert, Dimensions, Linking, Pressable, StatusBar, Text, View, PermissionsAndroid } from 'react-native';
 import Feather from "react-native-vector-icons/Feather";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from 'react-redux';
+import inAppMessaging from "@react-native-firebase/in-app-messaging";
 
 import { version as app_version } from '../../../package.json';
 import { getCurrentUser } from '../../Modules/auth/firebase/firebase';
@@ -35,6 +35,7 @@ import Search from '../Search/searchScreen';
 import Upload from '../Upload/uploadScreen';
 import UserRequestsScreen from '../UserRequests/UserRequestsScreen';
 import BootActions from './BootAction';
+import FirebaseService from '../../services/FirebaseService';
 
 const { height, width } = Dimensions.get("screen");
 const Drawer = createDrawerNavigator();
@@ -219,8 +220,10 @@ const BootScreen = () => {
     const currentVersion = app_version;
 
     const requestNotificationPermission = async () => {
-        const permissionStatus = await checkNotifications();
-        console.log(permissionStatus.status)
+        // const permissionStatus = await checkNotifications();
+        // await inAppMessaging().setMessagesDisplaySuppressed(true);
+        PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION)
+        FirebaseService.requestUserPermission()
         // if (permissionStatus.status === 'blocked' || permissionStatus.status === 'denied') {
         //     Alert.alert(
         //         'Notification Permission Required',

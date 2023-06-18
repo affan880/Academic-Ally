@@ -86,17 +86,15 @@ class UserRequestsActions {
     }
 
     static uploadFile = async (item, url, credentials, handleRefresh) => {
-        console.log(url)
         try {
             const response = await axios.get(url, {
                 responseType: 'arraybuffer',
-                onUploadProgress: (progressEvent) => {
-                    const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                    console.log('Upload Progress:', progress, '%');
-                }
+                // onUploadProgress: (progressEvent) => {
+                //     const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                //     console.log('Upload Progress:', progress, '%');
+                // }
             });
 
-            console.log(response);
             const fileContent = response.data;
             const fileSize = fileContent.byteLength;
             const data = {
@@ -110,7 +108,6 @@ class UserRequestsActions {
                 Body: fileContent,
             };
             console.log(uploadParams);
-            console.log('size', fileSize / 1000);
 
             await new Promise((resolve) => {
                 this.s3.upload(uploadParams).promise().then((res) => {
