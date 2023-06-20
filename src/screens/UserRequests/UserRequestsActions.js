@@ -89,10 +89,6 @@ class UserRequestsActions {
         try {
             const response = await axios.get(url, {
                 responseType: 'arraybuffer',
-                // onUploadProgress: (progressEvent) => {
-                //     const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                //     console.log('Upload Progress:', progress, '%');
-                // }
             });
 
             const fileContent = response.data;
@@ -107,7 +103,6 @@ class UserRequestsActions {
                 Key: `Universities/${item?.university}/${item?.course}/${item?.branch}/${item?.sem}/${item?.subject}/${item?.category}/${item?.name}`,
                 Body: fileContent,
             };
-            console.log(uploadParams);
 
             await new Promise((resolve) => {
                 this.s3.upload(uploadParams).promise().then((res) => {
@@ -191,7 +186,6 @@ class UserRequestsActions {
     }
 
     static acceptRequest = (item, url, credentials, handleRefresh) => async (dispatch) => {
-        console.log('uploading')
         try {
             this.uploadFile(item, url, credentials, handleRefresh).then(() => {
                 this.updateUserRequests(item, { aproval: "approved" });

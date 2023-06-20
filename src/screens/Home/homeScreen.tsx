@@ -14,18 +14,20 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import QuickAccess from '../../components/CustomFormComponents/QuickAccess/QuickAccess';
 import Recommendation from '../../components/CustomFormComponents/Recommendation/Recommendation';
+import CustomLoader from '../../components/loaders/CustomLoader';
 import ResourceLoader from '../../components/loaders/ResourceLoader';
-import ScreenLayout from '../../interfaces/screenLayout';
+import ScreenLayout from '../../layouts/screenLayout';
 import { setDarkTheme, setIsPotrait, setLightTheme } from '../../redux/reducers/theme';
 import { setBookmarks } from '../../redux/reducers/userBookmarkManagement';
 import { setUsersData, setUsersDataLoaded } from '../../redux/reducers/usersData';
-import { setResourceLoader } from '../../redux/reducers/userState';
+import { setCustomLoader, setResourceLoader } from '../../redux/reducers/userState';
 import { fetchBookmarksList, getFcmToken } from '../../services/fetch';
+import { userFirestoreData } from '../../services/fetch';
+import FirebaseService from '../../services/FirebaseService';
 import NavigationService from '../../services/NavigationService';
 import UtilityService from '../../services/UtilityService';
 import HomeAction from './homeAction';
 import createStyles from './styles';
-import FirebaseService from '../../services/FirebaseService';
 
 const HomeScreen = () => {
   const colorScheme = useColorScheme();
@@ -33,52 +35,17 @@ const HomeScreen = () => {
   const dispatch: any = useDispatch();
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const userFirestoreData = useSelector((state: any) => state.usersData);
+  const usersProfileData = useSelector((state: any) => state.usersData);
   const [listData, setListData] = useState([]);
   const [message, setMessage] = React.useState<any>(null);
   const bookmarkList = useSelector(
     (state: any) => state.userBookmarkManagement,
   ).userBookMarks;
 
-  async function bootstrap() {
-    await inAppMessaging().setMessagesDisplaySuppressed(true);
-  }
 
-
-  const allowToReceiveMessage = async (isAllowed: any) => {
-    // console.log(inAppMessaging().isMessagesDisplaySuppressed)
-    await inAppMessaging().setMessagesDisplaySuppressed(isAllowed)
-  };
-
-  useEffect(() => {
-    inAppMessaging().setMessagesDisplaySuppressed(false);
-    const updateOrientation = () => {
-      const { width, height } = Dimensions.get('window');
-      const orientation = width > height ? false : true;
-      dispatch(setIsPotrait(orientation));
-    };
-
-    updateOrientation();
-
-    const subscription = Dimensions.addEventListener('change', updateOrientation);
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
   useEffect(() => {
     inAppMessaging().setMessagesDisplaySuppressed(false);
   }, [])
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      const { data }: any = remoteMessage;
-      FirebaseService.requestUserPermission()
-      setMessage(data);
-      await analytics().logEvent('notification_received', data);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
 
   useEffect(() => {
@@ -89,14 +56,39 @@ const HomeScreen = () => {
     getFcmToken();
   }, [])
 
+  async function handleNavigationToRes(data: any, subjectData: any) {
+    dispatch(setCustomLoader(true));
+    NavigationService.navigate(NavigationService.screens.SubjectResourcesScreen, {
+      userData: data,
+      notesData: {
+        notes: await userFirestoreData(data, 'Notes', subjectData, dispatch),
+        syllabus: await userFirestoreData(data, 'Syllabus', subjectData, dispatch),
+        questionPapers: await userFirestoreData(data, 'QuestionPapers', subjectData, dispatch),
+        otherResources: await userFirestoreData(data, 'OtherResources', subjectData, dispatch),
+      },
+      subject: subjectData.subject,
+    })
+    // setResourcesLoaded(false);
+  }
+
   const handleDynamicLink = (link: any) => {
     if (link && link.url) {
-      const { userData, notesData } = UtilityService.getDynamicLink(link)
+      const { userData, notesData, screen } = UtilityService.getDynamicLinkData(link);
       if (userData && notesData) {
-        NavigationService.navigate(NavigationService.screens.PdfViewer, {
-          userData,
-          notesData,
-        });
+        if (screen === 'SubjectResourcesScreen') {
+          dispatch(setCustomLoader(true));
+          handleNavigationToRes(userData, {
+            subject: notesData.subject,
+            subjectName: notesData.subject,
+          })
+        }
+        else {
+          dispatch(setCustomLoader(true));
+          NavigationService.navigate(NavigationService.screens.PdfViewer, {
+            userData,
+            notesData,
+          });
+        }
       }
     }
   };
@@ -107,6 +99,7 @@ const HomeScreen = () => {
       .then((link: any) => {
         handleDynamicLink(link)
       }).catch((error: any) => {
+        dispatch(setCustomLoader(false));
         if (error?.code === 'dynamicLinks/initial-link-error') {
           return;
         }
@@ -119,21 +112,33 @@ const HomeScreen = () => {
       .collection('Users')
       .doc(auth()?.currentUser?.uid)
       .get()
-      .then((data: any) => {
+      .then((data) => {
         dispatch(setUsersData(data?.data()));
         dispatch(setUsersDataLoaded(true));
         dispatch(HomeAction.fetchNotesList(data?.data()));
-      })
-      .catch(error => {
-        dispatch(setUsersDataLoaded(false));
-        Toast.show({
-          title: 'Check your internet connection and try again later',
-          duration: 3000,
-        });
+
+        const subscribeArray = data?.data()?.subscribeArray;
+        const topics = `${data?.data()?.university}_${data?.data()?.course}_${data?.data()?.branch}_${data?.data()?.sem}`;
+
+        if (subscribeArray.includes(topics)) {
+          return;
+        }
+        else {
+          firestore()
+            .collection('Users')
+            .doc(auth()?.currentUser?.uid)
+            .update({
+              'subscribeArray': [topics]
+            })
+        }
       });
+  }, []);
+
+
+  useEffect(() => {
     const unsubscribe = dynamicLinks().onLink(handleDynamicLink);
     return () => unsubscribe();
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (bookmarkList.length === 0) {
@@ -153,8 +158,9 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <ScreenLayout name="Home" children={undefined}>
+    <ScreenLayout name="Home" >
       <ResourceLoader />
+      <CustomLoader />
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{
@@ -173,7 +179,7 @@ const HomeScreen = () => {
                   NavigationService.navigate(NavigationService.screens.Profile)
                 }} >
                   <Image source={{
-                    uri: userFirestoreData.userProfile || auth().currentUser?.photoURL,
+                    uri: usersProfileData.userProfile || auth().currentUser?.photoURL,
                   }} style={styles.userImg} />
                 </TouchableOpacity>
                 <View
@@ -182,7 +188,7 @@ const HomeScreen = () => {
                   }}>
                   <Text style={styles.salutation}>Welcome back</Text>
                   <Text style={styles.userName}>
-                    {userFirestoreData.usersData?.name}
+                    {usersProfileData.usersData?.name}
                   </Text>
                 </View>
               </View>

@@ -13,8 +13,8 @@ import Form from '../../../components/Forms/form';
 import CustomLoader from '../../../components/loaders/CustomLoader';
 import NavigationService from '../../../services/NavigationService';
 import { LoginvalidationSchema } from '../../../utilis/validation';
-import createStyles from './styles';
 import AuthAction from '../authActions';
+import createStyles from './styles';
 
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
@@ -45,7 +45,7 @@ const LoginScreen: React.FC<IProps> = ({ navigation }) => {
         <StatusBar
           animated={true}
           translucent={true}
-          backgroundColor={'transparent'}
+          backgroundColor={'#6360FF'}
         />
         <LinearGradient
           colors={['#6360ff', '#FF8181']}

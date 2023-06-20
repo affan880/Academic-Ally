@@ -18,7 +18,7 @@ const OnBoardingScreen: FC<IProps> = ({ navigation }) => {
       <StatusBar
         animated={true}
         translucent={true}
-        backgroundColor={'transparent'}
+        backgroundColor={'#6360FF'}
       />
       <Onboarding
         onSkip={() => NavigationService.navigate(NavigationService.screens.Login)}

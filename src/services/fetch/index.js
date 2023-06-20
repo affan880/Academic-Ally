@@ -296,7 +296,7 @@ export async function getMailId() {
 export const shareNotes = async (notesData, dynamicLink) => {
   const link = await dynamicLinks().buildShortLink(
     {
-      link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}`,
+      link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/ViewNotes`,
       domainUriPrefix: dynamicLink,
       android: {
         packageName: 'com.academically',
@@ -345,21 +345,12 @@ async function requestPermisssion() {
   const enabled =
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-  if (enabled) {
-    console.log('Authorization status:', authStatus);
-  }
 }
 
 export const getFcmToken = async () => {
   let fcmToken = await AsyncStorage.getItem('fcmToken');
-  requestNotifications(['alert', 'sound']).then(({ status, settings }) => {
-    console.log("req", status)
-  });
 
-  request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then((result) => {
-    console.log("ask", result)
-  });
+  request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
   await requestPermisssion();
   if (!fcmToken) {
     await requestPermisssion();
@@ -369,16 +360,9 @@ export const getFcmToken = async () => {
       await firestore()
         .collection('Users')
         .doc(auth().currentUser?.uid)
-        .get()
-        .then(async (userFirestoreData) => {
-          await firestore()
-            .collection('Users')
-            .doc(auth().currentUser?.uid)
-            .update({
-              fcmToken: fcmToken,
-            })
-        }
-        )
+        .update({
+          fcmToken: fcmToken,
+        })
         .catch(error => {
           console.log("Error getting document:", error);
         }

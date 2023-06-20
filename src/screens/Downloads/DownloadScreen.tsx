@@ -8,12 +8,12 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
 import { useDispatch, useSelector } from 'react-redux'
 
-import MainScreenLayout from '../../interfaces/mainScreenLayout'
+import MainScreenLayout from '../../layouts/mainScreenLayout'
 import DownloadingList from '../../sections/Downloads/DownloadingList';
 import ReportActionSheet from '../../sections/NotesCard/Report/ReportActionSheet'
 import NavigationService from '../../services/NavigationService'
 import UtilityService from '../../services/UtilityService'
-import PdfViewerAction from '../Notes/PdfViewer/pdfViewerAction'
+import PdfViewerAction from '../PdfViewer/pdfViewerAction'
 
 const { width, height } = Dimensions.get('screen');
 

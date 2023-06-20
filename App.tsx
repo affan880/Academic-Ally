@@ -1,8 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { NativeBaseProvider } from 'native-base';
 import React from 'react';
-import { StatusBar } from 'react-native';
 import RNBootSplash from 'react-native-bootsplash';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { NotifierWrapper } from 'react-native-notifier';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 
@@ -19,16 +20,20 @@ const App = () => {
     }, 500);
   });
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <NativeBaseProvider>
-        <Provider store={store}>
-          <NavigationContainer ref={NavigationService.navigationRef} >
-            <StatusBar barStyle="light-content" backgroundColor={'#6360FF'} />
-            <BootScreen />
-          </NavigationContainer>
-        </Provider>
-      </NativeBaseProvider>
-    </SafeAreaView>
+    <GestureHandlerRootView style={{ flex: 1 }} >
+      <SafeAreaView style={{ flex: 1 }}>
+        <NativeBaseProvider>
+          <Provider store={store}>
+            <NavigationContainer ref={NavigationService.navigationRef} >
+              <NotifierWrapper>
+                <BootScreen />
+              </NotifierWrapper>
+            </NavigationContainer>
+          </Provider>
+        </NativeBaseProvider>
+      </SafeAreaView>
+    </GestureHandlerRootView>
+
   );
 };
 

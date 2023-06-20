@@ -216,9 +216,6 @@ const Bookmark = () => {
         }}>
         <VStack alignItems="center" space={2}>
           <Icon as={<MaterialIcons name="delete" />} color="white" size="2xl" />
-          {/* <Text color="white" fontSize="xs" fontWeight="medium">
-            Delete
-          </Text> */}
         </VStack>
       </Pressable>
     </HStack>

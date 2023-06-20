@@ -30,6 +30,24 @@ export const CustomDropdown = ({
   ...other
 }: Props) => {
 
+  const dropdownHeight = (length: number) => {
+    switch (length) {
+      case 1:
+        return height * 0.073 * 1;
+      case 2:
+        return height * 0.075 * 2;
+      case 3:
+        return height * 0.073 * 3;
+      case 4:
+        return height * 0.073 * 4;
+      case 5:
+        return height * 0.073 * 5;
+
+      default:
+        return height * 0.073 * 6;
+    };
+  }
+
   const theme = useSelector((state: any) => { return state.theme });
   const { values, errors, touched, setFieldValue, setFieldTouched } =
     useFormikContext<any>();
@@ -59,6 +77,9 @@ export const CustomDropdown = ({
                 borderWidth: 2,
               }
               : null,
+            {
+              borderRadius: 10,
+            }
           ]}
           placeholderStyle={[styles.placeholderStyle, { color: theme.colors.primaryText }]}
           selectedTextStyle={[styles.selectedTextStyle, {
@@ -71,6 +92,7 @@ export const CustomDropdown = ({
             name === 'branch' || name === 'Year' || name === 'year' || name === 'sem' || name === 'Syllabus' || name === 'course' || name === 'university' || name === 'category' ? false : true
           }
           maxHeight={300}
+          mode={data.length > 4 ? 'modal' : 'default'}
           labelField="label"
           valueField="value"
           placeholder={!isFocus ? placeholder : ''}
@@ -89,10 +111,11 @@ export const CustomDropdown = ({
           dropdownPosition="auto"
           {...other}
           containerStyle={{
-            width: width,
+            // width: width,
             borderRadius: 10,
             elevation: 3,
-            marginTop: -35,
+            // marginTop: -35,
+            height: dropdownHeight(data.length),
           }}
           itemContainerStyle={{
             // height: 50,
@@ -106,7 +129,7 @@ export const CustomDropdown = ({
             fontSize: height * 0.0205,
             color: theme.colors.terinaryText,
           }}
-          onChange={item => {
+          onChange={(item: any) => {
             setValue(item.value);
             setIsFocus(false);
             setFieldValue(name, item.value);
@@ -179,10 +202,10 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   dropdown: {
-    width: 300,
+    // width: 300,
     borderColor: 'gray',
     borderWidth: 0.5,
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 0,
     fontSize: height * 0.0135,
     color: '#000000',
@@ -214,9 +237,10 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   inputSearchStyle: {
-    height: 40,
-    fontSize: height * 0.0235,
+    height: 50,
+    fontSize: height * 0.0205,
     color: '#000000',
     fontFamily: 'Poppins-Regular',
+    borderRadius: 10,
   },
 });

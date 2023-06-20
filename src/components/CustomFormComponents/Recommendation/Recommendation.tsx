@@ -131,7 +131,7 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
   }
 
   async function handleNavigationToRes(item: any) {
-    NavigationService.navigate(NavigationService.screens.ResourcesCategories, {
+    NavigationService.navigate(NavigationService.screens.SubjectResourcesScreen, {
       userData: userData.usersData,
       notesData: {
         notes: await userFirestoreData(userData.usersData, 'Notes', item, dispatch),
@@ -218,9 +218,7 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
                     </View>
                   </View>
                   <View style={styles.container}>
-                    <Text style={styles.containerText}>
-                      {item?.subjectName.slice(0, 1)}
-                    </Text>
+                    <Text style={styles.containerText} />
                   </View>
                 </TouchableOpacity>
               </View>

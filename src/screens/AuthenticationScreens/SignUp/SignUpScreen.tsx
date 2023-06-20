@@ -16,8 +16,8 @@ import CustomLoader from '../../../components/loaders/CustomLoader';
 import { setCustomLoader } from '../../../redux/reducers/userState';
 import NavigationService from '../../../services/NavigationService';
 import { validationSchema } from '../../../utilis/validation';
-import createStyles from './styles';
 import AuthAction from '../authActions';
+import createStyles from './styles';
 
 const screenWidth = Dimensions.get('screen').width;
 
@@ -154,7 +154,7 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
       <StatusBar
         animated={true}
         translucent={true}
-        backgroundColor={'transparent'}
+        backgroundColor={'#FF8181'}
       />
 
       <LinearGradient

@@ -5,9 +5,9 @@ import { Animated, StyleSheet, Text, TouchableOpacity, View, VirtualizedList } f
 import { useDispatch, useSelector } from 'react-redux';
 
 import NotesCard from '../../components/notes/notesCard';
-import MainScreenLayout from '../../interfaces/mainScreenLayout';
-import NavigationLayout from '../../interfaces/navigationLayout';
+import MainScreenLayout from '../../layouts/mainScreenLayout';
 import NavigationService from '../../services/NavigationService';
+import UtilityService from '../../services/UtilityService';
 import createStyles from './styles';
 
 type Props = {};
@@ -43,8 +43,6 @@ type MyStackParamList = {
     subject: string;
   };
 };
-
-type pdfViewer = StackNavigationProp<MyStackParamList, 'PdfViewer'>;
 
 const NotesList = (props: Props) => {
   const theme = useSelector((state: any) => state.theme);
@@ -88,9 +86,11 @@ const NotesList = (props: Props) => {
   const { selected } = route.params;
   const { subject } = route.params;
 
+  const subjectName: string = subject.length > 20 ? (UtilityService.generateAbbreviation(subject)).toUpperCase() : subject;
+
   return (
     <>
-      <MainScreenLayout rightIconFalse={true} title={subject} handleScroll={handleScroll} name="SubjectList" >
+      <MainScreenLayout rightIconFalse={true} title={subjectName} handleScroll={handleScroll} name="SubjectList" >
         <VirtualizedList
           data={components}
           renderItem={({ item, index }: any) => {
@@ -100,7 +100,7 @@ const NotesList = (props: Props) => {
                   <View style={styles.notesListHeaderContainer} key={index + Math.random()}>
                     <View
                       style={{
-                        width: '75%',
+                        width: '80%',
                         height: '100%',
                         justifyContent: 'center',
                         alignItems: 'flex-start',
@@ -111,7 +111,7 @@ const NotesList = (props: Props) => {
                     </View>
                     <View
                       style={{
-                        width: '25%',
+                        width: '20%',
                         height: '100%',
                         justifyContent: 'center',
                         alignItems: 'flex-end',
@@ -134,7 +134,7 @@ const NotesList = (props: Props) => {
                           </View>
                         );
                       }}
-                      keyExtractor={(item: any) => item.id}
+                      keyExtractor={(item: any) => item.name}
                       getItemCount={(data) => data.length}
                       getItem={(data, index) => data[index]}
                       initialNumToRender={6}
@@ -148,7 +148,7 @@ const NotesList = (props: Props) => {
                 return null;
             }
           }}
-          keyExtractor={(item: any) => item.id}
+          keyExtractor={(item: any) => item}
           getItemCount={(data) => data.length}
           getItem={(data, index) => data[index]}
           initialNumToRender={10}

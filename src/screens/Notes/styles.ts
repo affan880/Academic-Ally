@@ -31,7 +31,7 @@ const createStyles = (theme: any, sizes: any) =>
 
     categoryBtns: {
       width: width * 0.4,
-      height: height * 0.25,
+      height: height * 0.1,
       backgroundColor: theme.categoryBtn,
       borderRadius: 20,
       justifyContent: 'center',
@@ -67,11 +67,10 @@ const createStyles = (theme: any, sizes: any) =>
       color: theme.black,
       textAlign: 'center',
       lineHeight: 20,
-      marginTop: 10,
     },
     disabledBtn: {
       width: width * 0.4,
-      height: height * 0.25,
+      height: height * 0.1,
       backgroundColor: theme.disabledCategoryBtn,
       borderRadius: 20,
       justifyContent: 'center',
@@ -130,17 +129,16 @@ const createStyles = (theme: any, sizes: any) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      position: 'relative',
       shadowColor: '#000',
       borderRadius: 10,
       paddingHorizontal: 15,
     },
     categoryBtnsContainer: {
-      flex: 1,
       justifyContent: 'space-around',
       flexDirection: 'row',
       flexWrap: 'wrap',
       alignSelf: 'center',
+      marginBottom: 15,
     },
     notesListHeaderContainer: {
       width: width,
@@ -162,10 +160,11 @@ const createStyles = (theme: any, sizes: any) =>
     },
     header: {
       width: width,
-      height: height * 0.08,
-      justifyContent: 'center',
-      alignItems: 'center',
+      height: height * 0.03,
+      // justifyContent: 'center',
+      // alignItems: 'center',
       marginVertical: height * 0.02,
+      marginLeft: height * 0.03,
     },
     headerText: {
       fontSize: sizes.title,

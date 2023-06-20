@@ -13,7 +13,7 @@ import { CustomBtn, NavBtn } from '../../../components/CustomFormComponents/Cust
 import { CustomTextInput } from '../../../components/CustomFormComponents/CustomTextInput';
 import DropdownComponent from '../../../components/CustomFormComponents/Dropdown';
 import Form from '../../../components/Forms/form';
-import NavigationLayout from '../../../interfaces/navigationLayout';
+import NavigationLayout from '../../../layouts/navigationLayout';
 import { updateFirestoreData } from '../../../Modules/auth/firebase/firebase';
 import { setUserProfile } from '../../../redux/reducers/usersData';
 import NavigationService from '../../../services/NavigationService';
@@ -27,11 +27,6 @@ type MyStackParamList = {
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
-
-type MyScreenNavigationProp = StackNavigationProp<
-  MyStackParamList,
-  'BottomTabBar'
->;
 
 const UpdateInformation = () => {
   const {

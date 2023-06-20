@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import BootSlice from '../screens/Boot/BootSlice';
-import pdfViewerSlice from '../screens/Notes/PdfViewer/pdfViewerSlice';
+import pdfViewerSlice from '../screens/PdfViewer/pdfViewerSlice';
 import UserRequests from '../screens/UserRequests/UserRequestsSlice';
 import SubjectsList from './reducers/subjectsList';
 import theme from './reducers/theme';

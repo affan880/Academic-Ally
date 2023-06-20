@@ -3,17 +3,18 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { Alert, Dimensions, Linking, Pressable, StatusBar, Text, View, PermissionsAndroid } from 'react-native';
+import { Alert, Dimensions, Linking, PermissionsAndroid, Pressable, StatusBar, Text, View } from 'react-native';
+import { Easing, Notifier } from 'react-native-notifier';
 import Feather from "react-native-vector-icons/Feather";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from 'react-redux';
-import inAppMessaging from "@react-native-firebase/in-app-messaging";
 
 import { version as app_version } from '../../../package.json';
 import { getCurrentUser } from '../../Modules/auth/firebase/firebase';
 import UserRequestsPdfViewer from '../../sections/UserRequests/UserRequestsPdfViewer';
+import FirebaseService from '../../services/FirebaseService';
 import NavigationService from '../../services/NavigationService';
 import { useAuthentication } from '../../utilis/hooks/useAuthentication';
 import LoginScreen from '../AuthenticationScreens/Login/LoginScreen';
@@ -22,20 +23,19 @@ import Bookmark from '../Bookmark/Bookmark';
 import DownloadScreen from '../Downloads/DownloadScreen';
 import HomeScreen from '../Home/homeScreen';
 import NotesList from '../Notes/NotesList';
-import PdfViewer from '../Notes/PdfViewer/pdfViewer';
-import SubjectResources from '../Notes/SubjectResources';
 import UploadScreen from '../Notes/uploadScreen';
 import OnBoardingScreen from '../OnBoardingScreen/OnBoardingScreen';
+import PdfViewer from '../PdfViewer/pdfViewerScreen';
 import UpdateInformation from '../Profile/AccountSettings/UpdateInformation';
 import Profile from '../Profile/profile';
 import AboutUs from '../Profile/Support/AboutUs';
 import PrivacyPolicy from '../Profile/Support/PrivacyPolicy';
 import TermsAndConditions from '../Profile/Support/Terms&Conditions';
 import Search from '../Search/searchScreen';
+import SubjectResources from '../SubjectResources/SubjectResourcesScreen';
 import Upload from '../Upload/uploadScreen';
 import UserRequestsScreen from '../UserRequests/UserRequestsScreen';
 import BootActions from './BootAction';
-import FirebaseService from '../../services/FirebaseService';
 
 const { height, width } = Dimensions.get("screen");
 const Drawer = createDrawerNavigator();
@@ -186,7 +186,7 @@ const AppStack = () => {
     return (
         <Stack.Navigator initialRouteName={NavigationService.screens.BottomTabNavigator} screenOptions={{ headerShown: false, animationEnabled: false }}>
             <Stack.Screen name={NavigationService.screens.BottomTabNavigator} component={BottomTabBar} />
-            <Stack.Screen name={NavigationService.screens.ResourcesCategories} component={SubjectResources} options={{ headerShown: false }} />
+            <Stack.Screen name={NavigationService.screens.SubjectResourcesScreen} component={SubjectResources} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.Resources} component={NotesList} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.Upload} component={UploadScreen} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.PdfViewer} component={PdfViewer} options={{ headerShown: false }} />
@@ -220,39 +220,8 @@ const BootScreen = () => {
     const currentVersion = app_version;
 
     const requestNotificationPermission = async () => {
-        // const permissionStatus = await checkNotifications();
-        // await inAppMessaging().setMessagesDisplaySuppressed(true);
         PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION)
         FirebaseService.requestUserPermission()
-        // if (permissionStatus.status === 'blocked' || permissionStatus.status === 'denied') {
-        //     Alert.alert(
-        //         'Notification Permission Required',
-        //         'Please enable notifications to receive important updates.',
-        //         [
-        //             {
-        //                 text: 'Open Settings',
-        //                 onPress: () => {
-        //                     requestNotifications(['alert', 'sound']).then(({ status }) => {
-        //                         if (status === 'granted') {
-        //                             console.log('Notification permission granted.');
-        //                         }
-        //                     });
-        //                 },
-        //             },
-        //             {
-        //                 text: 'Cancel',
-        //                 onPress: () => console.log('Cancel Pressed'),
-        //                 style: 'cancel',
-        //             },
-        //         ],
-        //         {
-        //             cancelable: false,
-        //             onDismiss: () => {
-        //                 console.log(permissionStatus.status)
-        //             }
-        //         }
-        //     );
-        // }
     };
 
 
@@ -312,7 +281,34 @@ const BootScreen = () => {
 
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {
-            Alert.alert(`A new FCM message arrived!, ${user}`, JSON.stringify(remoteMessage));
+            Notifier.showNotification({
+                title: remoteMessage?.notification?.title,
+                description: remoteMessage?.notification?.body,
+                swipeEnabled: true,
+                duration: 10000,
+                showAnimationDuration: 800,
+                showEasing: Easing.linear,
+                onHidden: () => { },
+                onPress: () => { },
+                hideOnPress: false,
+            });
+        });
+
+        return unsubscribe;
+    }, []);
+    useEffect(() => {
+        const unsubscribe = messaging().setBackgroundMessageHandler(async remoteMessage => {
+            Notifier.showNotification({
+                title: remoteMessage?.notification?.title,
+                description: remoteMessage?.notification?.body,
+                swipeEnabled: true,
+                duration: 10000,
+                showAnimationDuration: 800,
+                showEasing: Easing.linear,
+                onHidden: () => { },
+                onPress: () => { },
+                hideOnPress: false,
+            });
         });
 
         return unsubscribe;

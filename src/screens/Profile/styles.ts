@@ -1,4 +1,4 @@
-import {Dimensions, StatusBar, StyleSheet} from 'react-native';
+import { Dimensions, StatusBar, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 const statusBarHeight: any = StatusBar.currentHeight;
@@ -13,7 +13,7 @@ const createStyles = (theme: any, sizes: any) =>
       alignItems: 'center',
     },
     headerContainer: {
-      height: height * 0.4,
+      height: height * 0.36,
       width: width,
       alignItems: 'flex-start',
       flexDirection: 'column',

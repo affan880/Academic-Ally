@@ -1,3 +1,5 @@
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+
 class UtilityService {
 
     static months = [
@@ -245,10 +247,12 @@ class UtilityService {
         return str;
     }
 
-    static getDynamicLink(link) {
+    static getDynamicLinkData(link) {
         const parts = link?.url.split('/');
         const userData = {
+            university: parts[4],
             Course: parts[5],
+            course: parts[5],
             branch: parts[6],
             sem: parts[7],
         };
@@ -263,8 +267,51 @@ class UtilityService {
             units: parts[10],
             university: parts[4],
         };
-        return { userData, notesData };
+        const screen = parts[parts.length - 1];
+
+        return { userData, notesData, screen };
     }
 
+    static generateAbbreviation(subject) {
+        const words = subject.split(' ');
+        const excludedTerms = ['of', 'for', 'and'];
+        const abbreviation = words
+            .filter((word) => !excludedTerms.includes(word.toLowerCase()))
+            .map((word) => word.charAt(0))
+            .join('');
+        return abbreviation.toLowerCase();
+    };
+
+    static async generateLink(notesData, screen) {
+        switch (screen) {
+            case 'PdfViewer':
+                return `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/PdfViewer`;
+            case 'SubjectResourcesScreen':
+                return `https://getacademically.co/Resources/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/SubjectResourcesScreen`;
+            case 'Resources':
+                return `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/Resources`;
+            default:
+                return null;
+        }
+    }
+
+
+    static async generateDynamicLink(url, notesData, screen) {
+        return link = await dynamicLinks().buildShortLink(
+            {
+                link: await this.generateLink(notesData, screen),
+                domainUriPrefix: url,
+                android: {
+                    packageName: 'com.academically',
+                },
+            },
+            dynamicLinks.ShortLinkType.SHORT,
+        ).catch((error) => {
+            Toast.show({
+                title: 'Something went wrong, Please try again later',
+                duration: 3000,
+            })
+        });
+    }
 }
 export default UtilityService;

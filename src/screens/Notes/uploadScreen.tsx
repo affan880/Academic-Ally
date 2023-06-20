@@ -10,7 +10,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useSelector } from 'react-redux';
 
-import NavigationLayout from '../../interfaces/navigationLayout';
+import NavigationLayout from '../../layouts/navigationLayout';
 import UploadAction from '../Upload/uploadAction';
 
 const { width, height } = Dimensions.get('window');

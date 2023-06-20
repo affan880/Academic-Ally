@@ -19,6 +19,12 @@ import createStyles from './styles';
 
 const { width, height } = Dimensions.get('screen');
 
+interface item {
+  sem: string,
+  branch: string,
+  subject: string,
+}
+
 const Search = () => {
 
   const apiResponse = useSelector((state: any) => state?.bootReducer?.utilis?.courses) || [];
@@ -27,78 +33,106 @@ const Search = () => {
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [selectedSem, setSelectedSem] = useState("");
-  const list = useSelector((state: any) => state.subjectsList.list) || [];
-  const [subjectListDetail, setSubjectListDetail] = useState(list);
+  const list = useSelector((state: any) => state.subjectsList.list);
   const [branchData, setBranchesData] = useState([])
   const [semData, setSemData] = useState([]);
   const [limit, setLimit] = useState(10);
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData, setFilteredData] = useState(list);
   const dispatch = useDispatch();
 
   const rendererItems: Array<string> = ['Search', 'Subjects'];
   const [searchTerm, setSearchTerm] = useState('');
 
+
+
   useEffect(() => {
-    if ((userData?.usersData?.course !== undefined || userData?.usersData?.course !== null) && (userData?.usersData?.university !== undefined || userData?.usersData?.university !== null)) {
-      const branch: any = Object?.keys(apiResponse[userData?.usersData?.university][userData?.usersData?.course])
-        .map((branch) => ({
-          label: branch,
-          value: branch
-        }))
+    const branch: any = Object.keys(apiResponse[userData?.usersData?.university][userData?.usersData?.course]).map((branch) => ({
+      label: branch,
+      value: branch,
+    }));
+    if (branch.length > 0) {
       setBranchesData(branch);
     }
-    if ((userData?.usersData?.course !== undefined || userData?.usersData?.course !== null) && (userData?.usersData?.university !== undefined || userData?.usersData?.university !== null) && (selectedBranch !== undefined || selectedBranch !== null)) {
-      const semesters = apiResponse[userData?.usersData?.university][userData?.usersData?.course][selectedBranch]?.sem.map((value: any, index: any) => {
-        return {
-          label: (index + 1).toString(),
-          value: (index + 1).toString(),
-          status: value
-        };
-      }).filter((value: any) => value.status === true);
+    else {
+      setBranchesData([])
+    }
+  }, []);
 
+  useEffect(() => {
+    const semesters = apiResponse[userData?.usersData?.university][userData?.usersData?.course][selectedBranch]?.sem.map((value: any, index: any) => {
+      return {
+        label: (index + 1).toString(),
+        value: (index + 1).toString(),
+        status: value
+      };
+    }).filter((value: any) => value.status === true);
+    if (semesters?.length > 0) {
       setSemData(semesters);
+    }
+    else {
+      setSemData([])
     }
   }, [selectedBranch]);
 
+  const filterData = () => {
+    let filteredList = list;
+
+    if (selectedBranch !== '') {
+      const similarBranchItems = filteredList.filter(
+        (item: item) => item.branch === selectedBranch
+      );
+
+      if (similarBranchItems.length > 0) {
+        filteredList = similarBranchItems;
+      }
+    }
+
+    if (selectedSem !== '') {
+      filteredList = filteredList.filter((item: item) => item.sem === selectedSem);
+    }
+
+    if (searchTerm !== '') {
+      const lowercaseSearchTerm = searchTerm.toLowerCase();
+      filteredList = filteredList.filter(
+        (item: item) =>
+          item.subject.toLowerCase().includes(lowercaseSearchTerm) ||
+          generateAbbreviation(item.subject).includes(lowercaseSearchTerm)
+      );
+    }
+
+    setFilteredData(filteredList);
+
+    if (filteredList.length === 0 || filteredList.length !== 0) {
+      const similarItems = list.filter(
+        (item: item) =>
+          item.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          generateAbbreviation(item.subject).includes(searchTerm.toLowerCase())
+      );
+      if (selectedBranch !== '') {
+        const similarBranchItems = similarItems.filter(
+          (item: item) => item.branch === selectedBranch
+        );
+
+        if (similarBranchItems.length > 0) {
+          const otherItems = similarItems.filter(
+            (item: item) => item.branch !== selectedBranch
+          );
+          const orderedItems = similarBranchItems.concat(otherItems);
+          setFilteredData(orderedItems);
+          return;
+        }
+      }
+
+      setFilteredData(similarItems);
+    }
+  };
+
+
+
+
   useEffect(() => {
-    const filteredSubjects = list?.filter((item: any) => {
-      const lowerCaseTerm = searchTerm.toLowerCase();
-      const lowerCaseBranch = selectedBranch.toLowerCase();
-      const lowerCaseSem = selectedSem.toLowerCase();
-      const lowerCaseSubject = item.subject.toLowerCase();
-
-      const matchesSearchTerm =
-        searchTerm !== ''
-          ? lowerCaseSubject.includes(lowerCaseTerm) ||
-          generateAbbreviation(lowerCaseSubject).includes(lowerCaseTerm)
-          : true;
-      const matchesBranch = selectedBranch !== '' ? item.branch.toLowerCase().includes(lowerCaseBranch) : true;
-      const matchesSem = selectedSem !== '' ? item.sem.toLowerCase().includes(lowerCaseSem) : true;
-
-      return matchesSearchTerm && matchesBranch && matchesSem;
-    });
-
-    const unfilteredSubjects = list?.filter((item: any) => {
-      const lowerCaseTerm = searchTerm.toLowerCase();
-      const lowerCaseBranch = selectedBranch.toLowerCase();
-      const lowerCaseSem = selectedSem.toLowerCase();
-      const lowerCaseSubject = item.subject.toLowerCase();
-
-      const matchesSearchTerm =
-        searchTerm !== ''
-          ? lowerCaseSubject.includes(lowerCaseTerm) ||
-          generateAbbreviation(lowerCaseSubject).includes(lowerCaseTerm)
-          : true;
-      const matchesBranch = selectedBranch !== '' ? item.branch.toLowerCase().includes(lowerCaseBranch) : true;
-      const matchesSem = selectedSem !== '' ? item.sem.toLowerCase().includes(lowerCaseSem) : true;
-
-      return !matchesSearchTerm || !matchesBranch || !matchesSem;
-    });
-
-    const sortedSubjects: any = [...filteredSubjects, ...unfilteredSubjects];
-
-    setFilteredData(sortedSubjects);
-  }, [list, searchTerm, selectedBranch, selectedSem, subjectListDetail]);
+    filterData();
+  }, [selectedBranch, selectedSem, searchTerm]);
 
 
   const generateAbbreviation = (subject: string) => {
@@ -130,7 +164,7 @@ const Search = () => {
       };
 
       dispatch(setResourceLoader(false));
-      NavigationService.navigate(NavigationService.screens.ResourcesCategories, {
+      NavigationService.navigate(NavigationService.screens.SubjectResourcesScreen, {
         userData: {
           course: userData.data().course,
           branch: item.branch,
@@ -182,7 +216,7 @@ const Search = () => {
                           style={styles.searchIcon}
                         />
                       </View>
-                      <Form initialValues={{ branch: '', sem: '' }} onSubmit={(values) => { console.log("tfuy", values); }} validationSchema={searchFilterValidationSchema} children={undefined} >
+                      <Form initialValues={{ branch: '', sem: '' }} onSubmit={(values) => { }} validationSchema={searchFilterValidationSchema}>
                         <View style={{
                           justifyContent: 'space-between',
                           alignItems: 'center',

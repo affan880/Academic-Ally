@@ -8,8 +8,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
 import { useDispatch, useSelector } from 'react-redux'
 
-import MainScreenLayout from '../../interfaces/mainScreenLayout'
-import PdfViewerAction from '../../screens/Notes/PdfViewer/pdfViewerAction'
+import MainScreenLayout from '../../layouts/mainScreenLayout'
+import PdfViewerAction from '../../screens/PdfViewer/pdfViewerAction'
 import ReportActionSheet from '../../sections/NotesCard/Report/ReportActionSheet'
 import NavigationService from '../../services/NavigationService'
 import UtilityService from '../../services/UtilityService'
@@ -121,6 +121,9 @@ const DownloadingList = () => {
                                                 borderRadius={'full'}
                                                 _hover={{
                                                     bg: 'gray',
+                                                }}
+                                                _pressed={{
+                                                    bg: '#D3D3D3',
                                                 }}
                                                 ref={initialFocusRef}
                                                 variant="ghost"

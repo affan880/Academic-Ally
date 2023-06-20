@@ -16,7 +16,7 @@ class NavigationService {
         UploadScreen: 'UploadScreen',
         Bookmark: 'Bookmark',
         Profile: 'Profile',
-        ResourcesCategories: 'ResourcesCategories',
+        SubjectResourcesScreen: 'SubjectResourcesScreen',
         Resources: 'Resources',
         PdfViewer: 'PdfViewer',
         UpdateProfile: 'UpdateProfile',

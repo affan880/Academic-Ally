@@ -303,8 +303,7 @@ dependencies {
     }
     implementation 'com.google.firebase:firebase-auth'
     implementation platform('com.google.firebase:firebase-bom:31.2.3')
-    api project(":@react-native-firebase_inAppMessaging")
-    api project(':react-native-firebase_in-app-messaging')
+    implementation project(":@react-native-firebase_inAppMessaging")
     implementation 'com.google.firebase:firebase-analytics'
     // implementation project(':react-native-push-notification')
 
