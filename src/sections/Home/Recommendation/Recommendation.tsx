@@ -1,6 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import { HStack, Skeleton, VStack } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -8,42 +6,13 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setReccommendSubjects, setReccommendSubjectsLoaded, setVisitedSubjects } from '../../../redux/reducers/subjectsList';
-import { setDarkTheme, setLightTheme } from '../../../redux/reducers/theme';
+import { setReccommendSubjects, setReccommendSubjectsLoaded } from '../../../redux/reducers/subjectsList';
 import { userAddToRecents } from '../../../redux/reducers/usersRecentPdfsManager';
+import HomeAction from '../../../screens/Home/homeAction';
 import { fetchSubjectList, userFirestoreData } from '../../../services/fetch'
 import NavigationService from '../../../services/NavigationService';
-import { sizes } from '../../../utilis/colors';
 import createStyles from './styles';
 
-type MyStackParamList = {
-  SubjectResources: { userData: object; notesData: any; subject: string };
-  NotesList: {
-    userData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
-    };
-    notesData: any;
-    selected: string;
-    subject: string;
-  };
-  UploadScreen: {
-    userData: {
-      Course: string;
-      Branch: string;
-      Sem: string;
-    };
-    notesData: any;
-    selected: string;
-    subject: string;
-  };
-};
-
-type MyScreenNavigationProp = StackNavigationProp<
-  MyStackParamList,
-  'SubjectResources'
->;
 type Props = {
   selected: string,
   setResourcesLoaded: any,
@@ -53,19 +22,14 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
   const userData = useSelector((state: any) => {
     return state.usersData;
   });
-  const visitedList = useSelector((state: any) => {
-    return state.subjectsList.visitedSubjects.Syllabus;
-  });
   const theme = useSelector((state: any) => {
     return state.theme;
   });
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
-  const navigation = useNavigation<MyScreenNavigationProp>();
   const [list, setList] = useState<any[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [filteresList, setFilteresList] = useState<any[]>(list);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
 
   useEffect(() => {
     const a = list.filter(obj => obj[selected] === true);
@@ -106,8 +70,8 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
   async function handleNavigation(item: any, category: string) {
     item[category] ? (
       NavigationService.navigate(NavigationService.screens.Resources, {
-        userData: userData.usersData,
-        notesData: await userFirestoreData(userData.usersData, category, item, dispatch).then(res => {
+        userData: userData?.usersData,
+        notesData: await userFirestoreData(userData?.usersData, category, item, dispatch).then(res => {
           setResourcesLoaded(false);
           return res
         }),
@@ -115,15 +79,15 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
         subject: item.subjectName,
       })
     ) : (NavigationService.navigate(NavigationService.screens.Upload, {
-      userData: userData.usersData,
+      userData: userData?.usersData,
       notesData: {
-        subject: item.subjectName,
-        course: userData.usersData.Course,
-        branch: userData.usersData.Branch,
-        sem: userData.usersData.Sem,
+        subject: item?.subjectName,
+        course: userData?.usersData?.Course,
+        branch: userData?.usersData?.Branch,
+        sem: userData?.usersData?.Sem,
       },
       selected: category,
-      subject: item.subjectName,
+      subject: item?.subjectName,
     }),
       setResourcesLoaded(false)
     )
@@ -131,18 +95,10 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
   }
 
   async function handleNavigationToRes(item: any) {
-    NavigationService.navigate(NavigationService.screens.SubjectResourcesScreen, {
-      userData: userData.usersData,
-      notesData: {
-        notes: await userFirestoreData(userData.usersData, 'Notes', item, dispatch),
-        syllabus: await userFirestoreData(userData.usersData, 'Syllabus', item, dispatch),
-        questionPapers: await userFirestoreData(userData.usersData, 'QuestionPapers', item, dispatch),
-        otherResources: await userFirestoreData(userData.usersData, 'OtherResources', item, dispatch),
-      },
-      subject: item.subjectName,
-    })
-    // setResourcesLoaded(false);
+    const dispatchFunction = HomeAction.getSubjectResources(userData?.usersData, item);
+    dispatch(dispatchFunction);
   }
+
   return (
     <View style={styles.body}>
       {loaded ? (

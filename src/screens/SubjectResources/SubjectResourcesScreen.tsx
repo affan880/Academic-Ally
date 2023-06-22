@@ -53,7 +53,7 @@ const NotesScreen = React.memo(() => {
   const searchScreenStyles = useMemo(() => createStylesSearch(theme.colors, theme.sizes), [theme]);
   const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
 
-  const subjectTitle: string = subject.length > 20 ? (UtilityService.generateAbbreviation(subject)).toUpperCase() : subject;
+  const subjectTitle: string = subject?.length > 20 ? (UtilityService.generateAbbreviation(subject)).toUpperCase() : subject;
 
   const selectedSubject = async (item: any) => {
     FlatListRef.current.scrollToOffset({ offset: 0, animated: true })
@@ -106,13 +106,18 @@ const NotesScreen = React.memo(() => {
 
 
   useEffect(() => {
-    const similarItems = list.filter(
-      (item: any) => (
-        item.subject.toLowerCase().includes(subject.toLowerCase()) ||
-        generateAbbreviation(item.subject).includes(subject.toLowerCase()))).filter((item: any) => item.branch !== userData.branch);
+    if (subject) {
+      const similarItems = list.filter(
+        (item: any) => (
+          item.subject.toLowerCase().includes(subject.toLowerCase()) ||
+          generateAbbreviation(item.subject).includes(subject.toLowerCase())
+        )
+      ).filter((item: any) => item.branch !== userData.branch);
 
-    setFilteredList(similarItems);
-  }, [])
+      setFilteredList(similarItems);
+    }
+  }, [subject]);
+
 
   const generateShareLink = () => {
     UtilityService.generateDynamicLink(dynamicLink, {

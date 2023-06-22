@@ -4,7 +4,6 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 import { Alert, Dimensions, Linking, PermissionsAndroid, Pressable, StatusBar, Text, View } from 'react-native';
-import { Easing, Notifier } from 'react-native-notifier';
 import Feather from "react-native-vector-icons/Feather";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -22,7 +21,7 @@ import SignUpScreen from '../AuthenticationScreens/SignUp/SignUpScreen';
 import Bookmark from '../Bookmark/Bookmark';
 import DownloadScreen from '../Downloads/DownloadScreen';
 import HomeScreen from '../Home/homeScreen';
-import NotesList from '../Notes/NotesList';
+import NotesList from '../Notes/NotesListScreen';
 import UploadScreen from '../Notes/uploadScreen';
 import OnBoardingScreen from '../OnBoardingScreen/OnBoardingScreen';
 import PdfViewer from '../PdfViewer/pdfViewerScreen';
@@ -280,35 +279,15 @@ const BootScreen = () => {
     }, [compatible]);
 
     useEffect(() => {
-        const unsubscribe = messaging().onMessage(async remoteMessage => {
-            Notifier.showNotification({
-                title: remoteMessage?.notification?.title,
-                description: remoteMessage?.notification?.body,
-                swipeEnabled: true,
-                duration: 10000,
-                showAnimationDuration: 800,
-                showEasing: Easing.linear,
-                onHidden: () => { },
-                onPress: () => { },
-                hideOnPress: false,
-            });
+        const unsubscribe = messaging().onMessage(async messageObj => {
+            BootActions.handleNotification(messageObj);
         });
 
         return unsubscribe;
     }, []);
     useEffect(() => {
-        const unsubscribe = messaging().setBackgroundMessageHandler(async remoteMessage => {
-            Notifier.showNotification({
-                title: remoteMessage?.notification?.title,
-                description: remoteMessage?.notification?.body,
-                swipeEnabled: true,
-                duration: 10000,
-                showAnimationDuration: 800,
-                showEasing: Easing.linear,
-                onHidden: () => { },
-                onPress: () => { },
-                hideOnPress: false,
-            });
+        const unsubscribe = messaging().setBackgroundMessageHandler(async messageObj => {
+            BootActions.handleNotification(messageObj);
         });
 
         return unsubscribe;

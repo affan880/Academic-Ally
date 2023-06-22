@@ -19,30 +19,6 @@ type RootStackParamList = {
     subject: string;
   };
 };
-type MyStackParamList = {
-  NotesList: {
-    userData: any;
-    notesData: string;
-    selected: string;
-    subject: string;
-  };
-  PdfViewer: {
-    userData: {
-      course: string;
-      branch: string;
-      sem: string;
-    };
-    notesData: string;
-    selected: string;
-    subject: string;
-  };
-  UploadScreen: {
-    userData: any;
-    notesData: string;
-    selected: string;
-    subject: string;
-  };
-};
 
 const NotesList = (props: Props) => {
   const theme = useSelector((state: any) => state.theme);

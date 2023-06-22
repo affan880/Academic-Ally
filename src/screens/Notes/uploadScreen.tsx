@@ -4,8 +4,9 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import { Box, Modal, Stack, Text, Toast } from 'native-base';
 import React, { useState } from 'react';
-import { Dimensions, Image, PermissionsAndroid, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, TouchableOpacity, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
+import { PERMISSIONS, request } from 'react-native-permissions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useSelector } from 'react-redux';
@@ -153,17 +154,8 @@ const UploadPDF = () => {
 
   const requestPermission = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        {
-          title: 'Storage Permission',
-          message: 'This app needs access to your storage to upload files.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      const granted = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+      if (granted) {
         pickPDF();
       }
     } catch (err) {
@@ -183,8 +175,6 @@ const UploadPDF = () => {
     const megabytes = bits / 1000000;
     return megabytes.toFixed(2) + " MB";
   }
-
-
 
   return (
     <NavigationLayout rightIconFalse={true} title="" handleScroll={() => { }}>

@@ -4,10 +4,9 @@ import { firebase } from '@react-native-firebase/auth';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
-import { CheckIcon, Toast } from 'native-base';
+import { Toast } from 'native-base';
 import { Alert, Share } from 'react-native';
-import { PERMISSIONS, request, requestNotifications } from 'react-native-permissions';
-import { useDispatch } from 'react-redux';
+import { PERMISSIONS, request } from 'react-native-permissions';
 
 import { setVisitedSubjects } from '../../redux/reducers/subjectsList';
 import CrashlyticsService from '../../services/CrashlyticsService';

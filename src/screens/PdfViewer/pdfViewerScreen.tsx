@@ -289,7 +289,6 @@ const PdfViewer = () => {
             style={{
               backgroundColor: '#ffffff',
             }}>
-            <Popover.Arrow />
             <Popover.Body>
               <VStack space={2}>
                 <Button
@@ -324,6 +323,9 @@ const PdfViewer = () => {
                         ? 'bookmark-alt'
                         : 'bookmark'
                     }
+                    style={{
+                      flex: 100
+                    }}
                     size={25}
                     color={'#6360FF'}
                   />

@@ -9,15 +9,15 @@ import { setLoading, setNewRequests, setRequestNull } from "./UserRequestsSlice"
 
 class UserRequestsActions {
 
-    static s3 = new S3({
-        accessKeyId: "jw3kscoq6bbnq6cmvoojjpivjv7q",
-        secretAccessKey: "jy3acenhwqj4owoa6533wkfbearkg656dwjoo3dudal7zwcyugrsg",
-        endpoint: "https://gateway.storjshare.io",
-        credentials: {
-            accessKeyId: "jw3kscoq6bbnq6cmvoojjpivjv7q",
-            secretAccessKey: "jy3acenhwqj4owoa6533wkfbearkg656dwjoo3dudal7zwcyugrsg",
-        },
-    });
+    // static s3 = new S3({
+    //     accessKeyId: "jw3kscoq6bbnq6cmvoojjpivjv7q",
+    //     secretAccessKey: "jy3acenhwqj4owoa6533wkfbearkg656dwjoo3dudal7zwcyugrsg",
+    //     endpoint: "https://gateway.storjshare.io",
+    //     credentials: {
+    //         accessKeyId: "jw3kscoq6bbnq6cmvoojjpivjv7q",
+    //         secretAccessKey: "jy3acenhwqj4owoa6533wkfbearkg656dwjoo3dudal7zwcyugrsg",
+    //     },
+    // });
 
     static loadNewUploads = (managerUniversity, managerCourse, managerBranch) => async (dispatch) => {
         dispatch(setRequestNull());

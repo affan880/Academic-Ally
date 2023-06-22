@@ -8,7 +8,7 @@ const RestrictedScreen = ({ children, name }) => {
 
     useEffect(() => {
         if (name === "PdfViewer") {
-            Orientation.unlockAllOrientations()
+            Orientation.lockToPortrait()
         }
         else {
             Orientation.lockToPortrait()
@@ -18,7 +18,7 @@ const RestrictedScreen = ({ children, name }) => {
     useEffect(() => {
         // if (!potrait) {
         const backAction = () => {
-            if (potrait) {
+            if (!potrait) {
                 return true;
             }
             return false;
