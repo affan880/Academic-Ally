@@ -1,9 +1,10 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerActions } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { Alert, Dimensions, Linking, PermissionsAndroid, Pressable, StatusBar, Text, View } from 'react-native';
+import { Alert, Dimensions, Linking, Pressable, StatusBar, Text, View } from 'react-native';
 import Feather from "react-native-vector-icons/Feather";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -13,7 +14,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { version as app_version } from '../../../package.json';
 import { getCurrentUser } from '../../Modules/auth/firebase/firebase';
 import UserRequestsPdfViewer from '../../sections/UserRequests/UserRequestsPdfViewer';
-import FirebaseService from '../../services/FirebaseService';
 import NavigationService from '../../services/NavigationService';
 import { useAuthentication } from '../../utilis/hooks/useAuthentication';
 import LoginScreen from '../AuthenticationScreens/Login/LoginScreen';
@@ -75,8 +75,6 @@ const DrawerScreen = ({ navigation }) => {
 
 const BottomTabBar = () => {
     const theme = useSelector((state) => state.theme);
-    const { user } = useAuthentication();
-
     const customClaims = useSelector((state) => state.bootReducer.customClaims);
 
     const TabIcon = ({ focused, iconName, labelText }) => (
@@ -200,11 +198,31 @@ const AppStack = () => {
 };
 
 const AuthStack = () => {
+    const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
+
+    useEffect(() => {
+        checkOnboardingStatus();
+    }, []);
+
+    const checkOnboardingStatus = async () => {
+        const completed = await AsyncStorage.getItem('hasCompletedOnboarding');
+        if (completed === 'true') {
+            setHasCompletedOnboarding(true);
+        }
+    };
+
+    const screenOptions = {
+        headerShown: false,
+        animationEnabled: false,
+    };
+
     return (
-        <Stack.Navigator initialRouteName={NavigationService.screens.Intro} screenOptions={{ headerShown: false, animationEnabled: false }}>
-            <Stack.Screen name={NavigationService.screens.Intro} component={OnBoardingScreen} options={{ headerShown: false }} />
-            <Stack.Screen name={NavigationService.screens.Login} component={LoginScreen} options={{ headerShown: false }} />
-            <Stack.Screen name={NavigationService.screens.SignUp} component={SignUpScreen} options={{ headerShown: false }} />
+        <Stack.Navigator initialRouteName={!hasCompletedOnboarding ? NavigationService.screens.Intro : NavigationService.screens.Login} screenOptions={screenOptions}>
+            {!hasCompletedOnboarding ? (
+                <Stack.Screen name={NavigationService.screens.Intro} component={OnBoardingScreen} options={screenOptions} />
+            ) : null}
+            <Stack.Screen name={NavigationService.screens.Login} component={LoginScreen} options={screenOptions} />
+            <Stack.Screen name={NavigationService.screens.SignUp} component={SignUpScreen} options={screenOptions} />
         </Stack.Navigator>
     );
 };
@@ -217,12 +235,6 @@ const BootScreen = () => {
     const [compatible, setCompatible] = useState(true);
     const [initializing, setInitializing] = useState(true)
     const currentVersion = app_version;
-
-    const requestNotificationPermission = async () => {
-        PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION)
-        FirebaseService.requestUserPermission()
-    };
-
 
     const convertToNumber = (version) => {
         const versionParts = version.split(".");
@@ -238,7 +250,6 @@ const BootScreen = () => {
 
     useEffect(() => {
         try {
-            requestNotificationPermission()
             dispatch(BootActions.loadUtils());
             dispatch(BootActions.loadUserCustomClaims(user, currentUser));
             dispatch(BootActions.loadProtectedUtils(user, currentUser))
@@ -285,6 +296,7 @@ const BootScreen = () => {
 
         return unsubscribe;
     }, []);
+
     useEffect(() => {
         const unsubscribe = messaging().setBackgroundMessageHandler(async messageObj => {
             BootActions.handleNotification(messageObj);

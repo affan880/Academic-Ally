@@ -293,6 +293,7 @@ export async function getMailId() {
 }
 
 export const shareNotes = async (notesData, dynamicLink) => {
+  console.log(dynamicLink)
   const link = await dynamicLinks().buildShortLink(
     {
       link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/ViewNotes`,
@@ -302,16 +303,18 @@ export const shareNotes = async (notesData, dynamicLink) => {
       },
     },
     dynamicLinks.ShortLinkType.SHORT,
-  ).catch((error) => {
+  ).then((res) => {
+    Share.share({
+      title: notesData.subject,
+      message: `If you're studying ${notesData.subject}, you might find these ${notesData.category} on Academic Ally helpfull. I did! Check them out:
+      ${res}`,
+    });
+  }).catch((error) => {
+    console.log(error)
     Toast.show({
       title: 'Something went wrong, Please try again later',
       duration: 3000,
     })
-  });
-  Share.share({
-    title: notesData.subject,
-    message: `If you're studying ${notesData.subject}, you might find these ${notesData.category} on Academic Ally helpfull. I did! Check them out:
-      ${link}`,
   });
 }
 

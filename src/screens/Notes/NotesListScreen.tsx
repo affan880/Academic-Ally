@@ -23,11 +23,8 @@ type RootStackParamList = {
 const NotesList = (props: Props) => {
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
-  const dispatch = useDispatch();
   const [uploadButtonVisible, setUploadButtonVisible] = useState(true);
   const components = ['subjectDetails', 'notesList']
-  const navigation = useNavigation();
-
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const handleScroll = (event: any) => {
@@ -127,11 +124,16 @@ const NotesList = (props: Props) => {
           keyExtractor={(item: any) => item}
           getItemCount={(data) => data.length}
           getItem={(data, index) => data[index]}
-          initialNumToRender={10}
+          initialNumToRender={2}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
           onScroll={handleScroll}
+          ListFooterComponent={() => {
+            return (
+              <View style={{ height: 50 }} />
+            )
+          }}
         />
       </MainScreenLayout>
       {

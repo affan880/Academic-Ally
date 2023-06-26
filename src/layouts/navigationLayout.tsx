@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { Icon, IconButton } from 'native-base'
 import React, { useMemo } from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { useSelector } from 'react-redux';
@@ -30,6 +30,11 @@ const navigationLayout = ({ children, rightIconFalse, title, handleScroll, handl
           width: '100%',
           paddingHorizontal: 20,
         }} >
+          <StatusBar
+            translucent={true}
+            backgroundColor={theme.colors.primary}
+            barStyle={'light-content'}
+          />
           <IconButton
             borderRadius={'full'}
             _hover={{

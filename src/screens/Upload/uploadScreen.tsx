@@ -349,7 +349,8 @@ const UploadScreen = () => {
                   placeholder={'Subject'}
                   leftIcon="Safety"
                   width={screenWidth - 50}
-                  handleOptions={handleYearChange}
+                  handleOptions={() => { }}
+                  searchbar
                 />
                 <DropdownComponent
                   name="category"
@@ -357,7 +358,7 @@ const UploadScreen = () => {
                   placeholder={'Select Type of resource'}
                   leftIcon="Safety"
                   width={screenWidth - 50}
-                  handleOptions={handleYearChange}
+                  handleOptions={() => { }}
                 />
                 <CustomTextInput
                   leftIcon="user"

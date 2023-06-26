@@ -50,11 +50,13 @@ class HomeAction {
                     dispatch(setUsersData(data?.data()));
                     dispatch(setUsersDataLoaded(true));
                     dispatch(this.fetchNotesList(data?.data()));
-
+                    // useAuth().currentUser.getIdTokenResult().then((res) => {
+                    //     console.log(res)
+                    // })
                     const subscribeArray = data?.data()?.subscribeArray;
                     const topics = `${data?.data()?.university}_${data?.data()?.course}_${data?.data()?.branch}_${data?.data()?.sem}`;
 
-                    if (subscribeArray.includes(topics)) {
+                    if (subscribeArray?.includes(topics)) {
                         return;
                     }
                     else {
@@ -63,7 +65,7 @@ class HomeAction {
                             .doc(useAuth()?.currentUser?.uid)
                             .update({
                                 'subscribeArray': [topics]
-                            })
+                            }).catch(error => console.log(error))
                     }
                 });
         }
@@ -107,7 +109,6 @@ class HomeAction {
 
     static getSubjectResources = (data, subjectData) => async (dispatch) => {
         try {
-            dispatch(setCustomLoader(true));
             const notes = await dispatch(this.getResources(data, 'Notes', subjectData));
             const syllabus = await dispatch(this.getResources(data, 'Syllabus', subjectData));
             const questionPapers = await dispatch(this.getResources(data, 'QuestionPapers', subjectData));

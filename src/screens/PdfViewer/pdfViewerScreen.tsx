@@ -41,7 +41,7 @@ type RootStackParamList = {
 const PdfViewer = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const [totalPages, setTotalPages] = useState(0);
-  const [expiration, setExpiration] = useState(60 * 60 * 6);
+  const [expiration, setExpiration] = useState(60 * 60 * 24 * 7);
   const [currentPage, setCurrentPage]: any = useState(0);
   const [landscape, setLandscape] = useState(false);
   const [scale, setScale] = useState(1);

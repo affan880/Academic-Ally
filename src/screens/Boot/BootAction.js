@@ -81,5 +81,29 @@ class BootActions {
             CrashlyticsService.recordError(error);
         }
     }
+    static handleCustomNotification = (messageObj, customNotification, onPress, onSkip, ...other) => {
+        try {
+            Notifier.showNotification({
+                title: messageObj?.notification?.title,
+                description: messageObj?.notification?.body,
+                swipeEnabled: true,
+                duration: 10000,
+                Component: () => {
+                    return (
+                        { customNotification }
+                    )
+                },
+                showAnimationDuration: 800,
+                showEasing: Easing.linear,
+                onHidden: () => { },
+                onPress: () => { },
+                hideOnPress: false,
+                ...other
+            });
+        }
+        catch (error) {
+            CrashlyticsService.recordError(error);
+        }
+    }
 }
 export default BootActions;

@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
-import {Dimensions, StatusBar, StyleSheet, Text, View} from 'react-native';
+import React, { useEffect } from 'react';
+import { Dimensions, StatusBar, StyleSheet, Text, View } from 'react-native';
 import Orientation from 'react-native-orientation-locker';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const ScreenLayout = ({name, children}) => {
   const height = Dimensions.get('screen').height;

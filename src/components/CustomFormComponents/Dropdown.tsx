@@ -12,11 +12,12 @@ type Props = {
   placeholder: string;
   handlePasswordVisibility?: any;
   name: string;
-  securuty?: boolean;
+  security?: boolean;
   data?: any;
   width?: any;
   other?: any;
   handleOptions?: any;
+  searchbar?: boolean;
 };
 
 const { width, height } = Dimensions.get('window');
@@ -27,42 +28,51 @@ export const CustomDropdown = ({
   data,
   width,
   handleOptions,
+  searchbar,
   ...other
 }: Props) => {
-
   const dropdownHeight = (length: number) => {
     switch (length) {
       case 1:
-        return height * 0.073 * 1;
+        return height * 0.073 * (length + 1);
       case 2:
-        return height * 0.075 * 2;
+        return height * 0.073 * (length + 1);
       case 3:
-        return height * 0.073 * 3;
+        return height * 0.073 * (length + 1);
       case 4:
-        return height * 0.073 * 4;
+        return height * 0.073 * (length + 1);
       case 5:
-        return height * 0.073 * 5;
-
+        return height * 0.073 * (length + 1);
       default:
         return height * 0.073 * 6;
-    };
-  }
+    }
+  };
 
-  const theme = useSelector((state: any) => { return state.theme });
+  const theme = useSelector((state: any) => {
+    return state.theme;
+  });
   const { values, errors, touched, setFieldValue, setFieldTouched } =
     useFormikContext<any>();
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [showInput, setShowInput] = useState(false);
+
   const renderLabel = () => {
     if (values[name] || isFocus) {
       return (
-        <Text style={[styles.label, isFocus && { color: '#FFFFFF' }]}>
+        <Text
+          style={[
+            styles.label,
+            isFocus && { color: '#FFFFFF' },
+          ]}>
           {name.charAt(0).toUpperCase() + name.slice(1)}
         </Text>
       );
     }
     return null;
   };
+
   return (
     <View style={styles.container}>
       <View>
@@ -79,18 +89,28 @@ export const CustomDropdown = ({
               : null,
             {
               borderRadius: 10,
-            }
+            },
           ]}
-          placeholderStyle={[styles.placeholderStyle, { color: theme.colors.primaryText }]}
-          selectedTextStyle={[styles.selectedTextStyle, {
-            color: theme.colors.primaryText,
-          }]}
+          placeholderStyle={[
+            styles.placeholderStyle,
+            { color: theme.colors.primaryText },
+          ]}
+          selectedTextStyle={[
+            styles.selectedTextStyle,
+            {
+              color: theme.colors.primaryText,
+            },
+          ]}
           inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
           data={data}
-          search={
-            name === 'branch' || name === 'Year' || name === 'year' || name === 'sem' || name === 'Syllabus' || name === 'course' || name === 'university' || name === 'category' ? false : true
-          }
+          search={searchbar ? true : false}
+          searchQuery={(res, res2) => {
+            return (
+              res.toLowerCase().includes(res2.toLowerCase()) ||
+              res2.toLowerCase().includes(res.toLowerCase())
+            );
+          }}
           maxHeight={300}
           mode={data.length > 4 ? 'modal' : 'default'}
           labelField="label"
@@ -103,27 +123,27 @@ export const CustomDropdown = ({
           onBlur={() => {
             setIsFocus(false);
             setFieldTouched(name);
-            value !== null || value !== '' || value !== undefined ? handleOptions(value) : null;
+            value !== null || value !== '' || value !== undefined
+              ? handleOptions(value)
+              : null;
           }}
           onConfirmSelectItem={item => {
-            value !== null || value !== '' || value !== undefined ? handleOptions(value) : null;
+            value !== null || value !== '' || value !== undefined
+              ? handleOptions(value)
+              : null;
           }}
           dropdownPosition="auto"
           {...other}
           containerStyle={{
-            // width: width,
             borderRadius: 10,
             elevation: 3,
-            // marginTop: -35,
             height: dropdownHeight(data.length),
           }}
           itemContainerStyle={{
-            // height: 50,
-            // justifyContent: 'center',
-            backgroundColor: theme.colors.quaternary,
+            // backgroundColor: theme.colors.quaternary,
             borderBottomWidth: 1,
             borderBottomColor: '#e5e5e5',
-            borderRadius: 10
+            borderRadius: 10,
           }}
           itemTextStyle={{
             fontSize: height * 0.0205,
@@ -134,7 +154,8 @@ export const CustomDropdown = ({
             setIsFocus(false);
             setFieldValue(name, item.value);
             handleOptions(item);
-          }} renderRightIcon={() => (
+          }}
+          renderRightIcon={() => (
             <Feather
               style={styles.icon}
               color={isFocus ? '#6360FF' : '#706f6f'}
@@ -161,10 +182,10 @@ export const CustomDropdown = ({
           }
         />
       </View>
-      {touched[name] && errors[name] && values[name] === "" ? (
+      {touched[name] && errors[name] && values[name] === '' ? (
         <Text
           style={{
-            color: '#000000',
+            color: theme.colors.primaryText,
             fontSize: height * 0.015,
             fontFamily: 'Poppins-Regular',
             alignSelf: 'flex-start',
@@ -202,7 +223,6 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   dropdown: {
-    // width: 300,
     borderColor: 'gray',
     borderWidth: 0.5,
     borderRadius: 10,

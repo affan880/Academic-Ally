@@ -1,5 +1,3 @@
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import { Toast } from 'native-base';
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
@@ -24,7 +22,8 @@ const screenWidth = Dimensions.get('screen').width;
 interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
-const SignUpScreen: FC<IProps> = ({ navigation }) => {
+
+const SignUpScreen: FC<IProps> = () => {
   const dispatch: any = useDispatch();
   const styles = useMemo(() => createStyles(), []);
   const formRef: any = useRef();
@@ -52,7 +51,6 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
     college: '',
   };
 
-
   const courses: any = {};
 
   Object.keys(apiResponse).forEach((university: any) => {
@@ -70,7 +68,6 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
     { label: '3', value: '3' },
     { label: '4', value: '4' },
   ];
-
 
   useEffect(() => {
     if (course && selectedUniversity) {
@@ -156,7 +153,6 @@ const SignUpScreen: FC<IProps> = ({ navigation }) => {
         translucent={true}
         backgroundColor={'#FF8181'}
       />
-
       <LinearGradient
         colors={['#FF8181', '#6360ff']}
         start={{ x: 0.5, y: 0.5 }}

@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Actionsheet, Box, Card, Center, Checkbox, Icon, Modal, Stack, Text, Toast, useDisclose } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Animated, Linking, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import SwipeableRating from 'react-native-swipeable-rating';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -15,6 +15,7 @@ import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
 import { manageBookmarks } from '../../Modules/auth/firebase/firebase';
 import { userAddBookMarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
 import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
+import PdfViewerAction from '../../screens/PdfViewer/pdfViewerAction';
 import { getMailId, ratedResourcesList, shareNotes, submitRating, submitReport, ViewCount } from '../../services/fetch';
 import NavigationService from '../../services/NavigationService';
 import { NavBtn } from '../CustomFormComponents/CustomBtn';
@@ -161,6 +162,31 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
   async function mail() {
     Linking.openURL(`mailto:support@getacademically.co?body=Report for notes Id : ${item.id}, ${userData.Course} ${userData.Branch}, Semester ${item.sem} ${selected.charAt(0).toUpperCase() + selected.slice(1)} of ${subject}  `)
   }
+
+  const handleSharePdf = async () => {
+    try {
+      await PdfViewerAction.sharePdf({ ...item, subject: subject }, dynamicLink).then((link: any) => {
+        Share.share({
+          title: `${subject}`,
+          message: `If you're studying ${subject}, you might find these ${notesData.category} on Academic Ally helpfull. I did! Check them out:${link}`
+        });
+      }).catch((error: any) => {
+        console.log(error);
+        Toast.show({
+          title: 'Something went wrong',
+          placement: 'bottom',
+          duration: 3000,
+        })
+      })
+    } catch (error) {
+      console.log(error);
+      Toast.show({
+        title: 'Something went wrong',
+        placement: 'bottom',
+        duration: 3000,
+      })
+    }
+  };
 
   return (
     <View style={styles.notesContainer}>
@@ -346,12 +372,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
           <Text style={styles.cardOptionText}>Report</Text>
           <ReportIconWhite />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.cardOptionContainer} onPress={() => {
-          shareNotes({
-            ...item,
-            subject: subject,
-          }, dynamicLink)
-        }} >
+        <TouchableOpacity style={styles.cardOptionContainer} onPress={handleSharePdf} >
           <Text style={styles.cardOptionText}>Share</Text>
           <ShareIcon />
         </TouchableOpacity>

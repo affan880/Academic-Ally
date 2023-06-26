@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { Icon, IconButton } from 'native-base';
 import React, { useEffect, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StatusBar, Text, View } from 'react-native';
 import Orientation from 'react-native-orientation-locker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -40,7 +40,12 @@ const MainScreenLayout = ({ children, rightIconFalse, title, handleScroll, name,
                     width: '100%',
                     paddingHorizontal: 20,
                 }} >
-                    <IconButton
+                    <StatusBar
+                        translucent={true}
+                        backgroundColor={theme.colors.primary}
+                        barStyle={'light-content'}
+                    />
+                        <IconButton
                         borderRadius={'full'}
                         _hover={{
                             bg: '#D3D3D3',

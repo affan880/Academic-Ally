@@ -361,7 +361,7 @@ const DownloadScreen = () => {
 
   return (
     <MainScreenLayout rightIconFalse={true} title={'Downloads'} handleScroll={() => { }} name="DownloadScreen" >
-      <Box justifyContent={'center'} alignItems={'center'}>
+      <Box justifyContent={'center'} alignItems={'center'} flex={1} >
         <View
           style={[
             styles.searchContainer,

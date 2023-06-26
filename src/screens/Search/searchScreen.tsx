@@ -1,12 +1,12 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
 import { Toast } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Dimensions, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import CustomDropdown from '../../components/CustomFormComponents/Dropdown';
@@ -36,12 +36,12 @@ const Search = () => {
   const list = useSelector((state: any) => state.subjectsList.list);
   const [branchData, setBranchesData] = useState([])
   const [semData, setSemData] = useState([]);
-  const [limit, setLimit] = useState(10);
   const [filteredData, setFilteredData] = useState(list);
   const dispatch = useDispatch();
 
   const rendererItems: Array<string> = ['Search', 'Subjects'];
   const [searchTerm, setSearchTerm] = useState('');
+  const [reload, setReload] = useState(false);
 
 
 
@@ -56,10 +56,10 @@ const Search = () => {
     else {
       setBranchesData([])
     }
-  }, []);
+  }, [reload]);
 
   useEffect(() => {
-    const semesters = apiResponse[userData?.usersData?.university][userData?.usersData?.course][selectedBranch]?.sem.map((value: any, index: any) => {
+    const semesters = apiResponse[userData?.usersData?.university][userData?.usersData?.course][selectedBranch || userData?.usersData?.branch]?.sem.map((value: any, index: any) => {
       return {
         label: (index + 1).toString(),
         value: (index + 1).toString(),
@@ -72,24 +72,10 @@ const Search = () => {
     else {
       setSemData([])
     }
-  }, [selectedBranch]);
+  }, [selectedBranch, reload]);
 
   const filterData = () => {
     let filteredList = list;
-
-    if (selectedBranch !== '') {
-      const similarBranchItems = filteredList.filter(
-        (item: item) => item.branch === selectedBranch
-      );
-
-      if (similarBranchItems.length > 0) {
-        filteredList = similarBranchItems;
-      }
-    }
-
-    if (selectedSem !== '') {
-      filteredList = filteredList.filter((item: item) => item.sem === selectedSem);
-    }
 
     if (searchTerm !== '') {
       const lowercaseSearchTerm = searchTerm.toLowerCase();
@@ -100,35 +86,48 @@ const Search = () => {
       );
     }
 
-    setFilteredData(filteredList);
-
-    if (filteredList.length === 0 || filteredList.length !== 0) {
-      const similarItems = list.filter(
-        (item: item) =>
-          item.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          generateAbbreviation(item.subject).includes(searchTerm.toLowerCase())
+    if (selectedBranch !== '') {
+      filteredList = filteredList.filter(
+        (item: item) => item.branch === selectedBranch
       );
-      if (selectedBranch !== '') {
-        const similarBranchItems = similarItems.filter(
-          (item: item) => item.branch === selectedBranch
-        );
-
-        if (similarBranchItems.length > 0) {
-          const otherItems = similarItems.filter(
-            (item: item) => item.branch !== selectedBranch
-          );
-          const orderedItems = similarBranchItems.concat(otherItems);
-          setFilteredData(orderedItems);
-          return;
-        }
-      }
-
-      setFilteredData(similarItems);
     }
+
+    if (selectedSem !== '') {
+      filteredList = filteredList.filter((item: item) => item.sem === selectedSem);
+    }
+
+    const similarItems = list.filter(
+      (item: item) =>
+        item.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        generateAbbreviation(item.subject).includes(searchTerm.toLowerCase())
+    );
+
+    if (selectedBranch !== '') {
+      const similarBranchItems = similarItems.filter(
+        (item: item) => item.branch === selectedBranch
+      );
+
+      if (similarBranchItems.length > 0) {
+        const otherItems = similarItems.filter(
+          (item: item) => item.branch !== selectedBranch
+        );
+        const orderedItems = similarBranchItems.concat(otherItems);
+        setFilteredData(orderedItems);
+        return;
+      }
+    }
+
+    setFilteredData(similarItems);
+
+    if (selectedSem !== '' && selectedBranch === '') {
+      filteredList = list.filter((item: item) => item.sem === selectedSem);
+    }
+    if (selectedSem !== '' && selectedBranch !== '') {
+      filteredList = filteredData.filter((item: item) => item.sem === selectedSem);
+    }
+
+    setFilteredData(filteredList);
   };
-
-
-
 
   useEffect(() => {
     filterData();
@@ -209,12 +208,31 @@ const Search = () => {
                           placeholderTextColor={theme.colors.primaryText}
                           style={styles.searchInput}
                         />
-                        <Feather
-                          name="search"
-                          size={theme.sizes.iconSmall}
-                          color={theme.colors.primaryText}
-                          style={styles.searchIcon}
-                        />
+                        {
+                          (searchTerm === '' && selectedBranch === '' && selectedSem === '') &&
+                          <Feather
+                            name="search"
+                            size={theme.sizes.iconSmall}
+                            color={theme.colors.primaryText}
+                            style={styles.searchIcon}
+                          />
+                        }
+                        {
+                          (searchTerm !== '' || selectedBranch !== '' || selectedSem !== '') &&
+                          <MaterialIcons
+                            onPress={() => {
+                              setSearchTerm('');
+                              setSelectedBranch('');
+                              setSelectedSem('');
+                              setFilteredData(list);
+                              setReload(!reload)
+                            }}
+                            name="clear"
+                            size={theme.sizes.iconSmall}
+                            color={theme.colors.primaryText}
+                            style={styles.searchIcon}
+                          />
+                        }
                       </View>
                       <Form initialValues={{ branch: '', sem: '' }} onSubmit={(values) => { }} validationSchema={searchFilterValidationSchema}>
                         <View style={{

@@ -240,7 +240,7 @@ const Bookmark = () => {
                   fontWeight: 'bold',
                   color: theme.colors.primaryText,
                   marginLeft: 10,
-                  marginTop: 20,
+                  marginTop: index === 0 ? 10 : 20,
                   marginBottom: 10,
                   width: '95%',
                 }}>{item[0]?.subject}</Text>
@@ -267,6 +267,7 @@ const Bookmark = () => {
               </View>
             }
             keyExtractor={(item, index) => index.toString()}
+            initialNumToRender={10}
           />
 
         </View>

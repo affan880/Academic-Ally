@@ -284,6 +284,7 @@ const Profile = () => {
                   onPress={() => {
                     auth().signOut();
                     AsyncStorage.clear();
+                    AsyncStorage.setItem('hasCompletedOnboarding', 'true')
                     dispatch({ type: 'RESET_APP' });
                   }}>
                   Log Out

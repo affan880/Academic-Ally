@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -20,7 +19,7 @@ import UtilityService from '../../services/UtilityService';
 import HomeAction from './homeAction';
 import createStyles from './styles';
 
-const HomeScreen: React.FC = () => {
+const HomeScreen = () => {
   const colorScheme = useColorScheme();
   const theme = useSelector((state: any) => state.theme);
   const dispatch: any = useDispatch();
@@ -41,11 +40,13 @@ const HomeScreen: React.FC = () => {
   }, []);
 
   const handleDynamicLink = (link: string) => {
-    if (link) {
+    console.log(link)
+    if (link && link !== null && link !== undefined) {
       const { userData, notesData, screen } = UtilityService.getDynamicLinkData(link);
       if (userData && notesData) {
         if (screen === 'SubjectResourcesScreen') {
           dispatch(setCustomLoader(true));
+
           dispatch(HomeAction.getSubjectResources(userData, { subject: notesData.subject, subjectName: notesData.subject }));
         } else {
           dispatch(setCustomLoader(true));

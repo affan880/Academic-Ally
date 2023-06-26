@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 const createStyles = (theme: any, sizes: any) =>
@@ -26,7 +26,7 @@ const createStyles = (theme: any, sizes: any) =>
     },
     bodyContent: {
       flex: 1,
-      paddingTop: height * 0.02,
+      paddingTop: height * 0.01,
     },
     searchContainer: {
       width: width * 0.9,

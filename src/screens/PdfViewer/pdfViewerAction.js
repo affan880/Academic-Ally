@@ -2,6 +2,7 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 import { Toast } from 'native-base';
 import RNFS from 'react-native-fs';
 
+import CrashlyticsService from '../../services/CrashlyticsService';
 import { addItemToDownloadingList, removeItemFromDownloadingList, setDownloadProgress, setIsDownloading, updateDownloadProgress } from './pdfViewerSlice';
 
 class PdfViewerAction {
@@ -153,7 +154,8 @@ class PdfViewerAction {
                 },
             },
             dynamicLinks.ShortLinkType.SHORT,
-        ).catch(() => {
+        ).catch((e) => {
+            CrashlyticsService.recordError(e);
             Toast.show({
                 title: 'Something went wrong, Please try again later',
                 duration: 3000,
