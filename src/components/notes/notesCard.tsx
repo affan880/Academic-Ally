@@ -1,4 +1,4 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Actionsheet, Box, Card, Center, Checkbox, Icon, Modal, Stack, Text, Toast, useDisclose } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -12,13 +12,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { ShareIcon } from '../../assets/images/icons';
 import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
-import { manageBookmarks } from '../../Modules/auth/firebase/firebase';
 import { userAddBookMarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
-import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
 import PdfViewerAction from '../../screens/PdfViewer/pdfViewerAction';
-import { getMailId, ratedResourcesList, shareNotes, submitRating, submitReport, ViewCount } from '../../services/fetch';
+import { ratedResourcesList, submitRating, submitReport, ViewCount } from '../../services/fetch';
 import NavigationService from '../../services/NavigationService';
-import { NavBtn } from '../CustomFormComponents/CustomBtn';
 import createStyles from './styles';
 
 type Props = {
@@ -321,25 +318,15 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
             onPress={() => {
               setSaved(!saved);
               const status = BookmarkStatus(item.did);
-              manageBookmarks(item, status);
+              PdfViewerAction.manageBookmarks(item, status);
               !status
                 ? dispatch(
                   userAddBookMarks({
-                    ...item,
-                    name: item.name,
-                    subject: subject,
-                    did: item.did,
-                    category: selected,
+                    ...item
                   }),
                 )
                 : dispatch(
-                  userRemoveBookMarks({
-                    name: item.name,
-                    subject: subject,
-                    did: item.did,
-                    category: selected,
-                    ...item,
-                  }),
+                  userRemoveBookMarks({ ...item }),
                 );
             }}>
             <FontAwesome

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import { Divider, Toast } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -185,7 +185,7 @@ const NotesScreen = React.memo(() => {
           handleNavigation(category);
         }}
       >
-        <Text style={styles.btnText}>{label}</Text>
+        <Text style={[styles.btnText, { color: theme.colors.black }]}>{label}</Text>
         <Octicons name="arrow-right" style={{
           position: 'absolute',
           right: 15,

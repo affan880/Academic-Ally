@@ -1,4 +1,3 @@
-import auth from '@react-native-firebase/auth';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
@@ -10,6 +9,7 @@ import QuickAccess from '../../components/CustomFormComponents/QuickAccess/Quick
 import CustomLoader from '../../components/loaders/CustomLoader';
 import ResourceLoader from '../../components/loaders/ResourceLoader';
 import ScreenLayout from '../../layouts/screenLayout';
+import { useAuth } from '../../Modules/auth/firebase/firebase';
 import { setDarkTheme, setLightTheme } from '../../redux/reducers/theme';
 import { setCustomLoader, setResourceLoader } from '../../redux/reducers/userState';
 import Recommendation from '../../sections/Home/Recommendation/Recommendation';
@@ -40,7 +40,6 @@ const HomeScreen = () => {
   }, []);
 
   const handleDynamicLink = (link: string) => {
-    console.log(link)
     if (link && link !== null && link !== undefined) {
       const { userData, notesData, screen } = UtilityService.getDynamicLinkData(link);
       if (userData && notesData) {
@@ -103,7 +102,7 @@ const HomeScreen = () => {
                   }}>
                   <Image
                     source={{
-                      uri: usersProfileData.userProfile || auth().currentUser?.photoURL,
+                      uri: usersProfileData.userProfile || useAuth().currentUser?.photoURL,
                     }}
                     style={styles.userImg}
                   />

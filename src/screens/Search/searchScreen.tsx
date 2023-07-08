@@ -46,20 +46,22 @@ const Search = () => {
 
 
   useEffect(() => {
-    const branch: any = Object.keys(apiResponse[userData?.usersData?.university][userData?.usersData?.course]).map((branch) => ({
-      label: branch,
-      value: branch,
-    }));
-    if (branch.length > 0) {
-      setBranchesData(branch);
-    }
-    else {
-      setBranchesData([])
+    if (userData?.usersData && apiResponse[userData?.usersData?.university][userData?.usersData?.course]?.sem?.length !== 0) {
+      const branch: any = Object.keys(apiResponse[userData?.usersData?.university][userData?.usersData?.course])?.map((branch) => ({
+        label: branch,
+        value: branch,
+      }));
+      if (branch.length > 0) {
+        setBranchesData(branch);
+      }
+      else {
+        setBranchesData([])
+      }
     }
   }, [reload]);
 
   useEffect(() => {
-    const semesters = apiResponse[userData?.usersData?.university][userData?.usersData?.course][selectedBranch || userData?.usersData?.branch]?.sem.map((value: any, index: any) => {
+    const semesters = apiResponse[userData?.usersData?.university][userData?.usersData?.course][selectedBranch || userData?.usersData?.branch]?.sem?.map((value: any, index: any) => {
       return {
         label: (index + 1).toString(),
         value: (index + 1).toString(),
@@ -78,38 +80,38 @@ const Search = () => {
     let filteredList = list;
 
     if (searchTerm !== '') {
-      const lowercaseSearchTerm = searchTerm.toLowerCase();
+      const lowercaseSearchTerm = searchTerm?.toLowerCase();
       filteredList = filteredList.filter(
         (item: item) =>
-          item.subject.toLowerCase().includes(lowercaseSearchTerm) ||
-          generateAbbreviation(item.subject).includes(lowercaseSearchTerm)
+          item?.subject?.toLowerCase()?.includes(lowercaseSearchTerm) ||
+          generateAbbreviation(item?.subject)?.includes(lowercaseSearchTerm)
       );
     }
 
     if (selectedBranch !== '') {
       filteredList = filteredList.filter(
-        (item: item) => item.branch === selectedBranch
+        (item: item) => item?.branch === selectedBranch
       );
     }
 
     if (selectedSem !== '') {
-      filteredList = filteredList.filter((item: item) => item.sem === selectedSem);
+      filteredList = filteredList?.filter((item: item) => item?.sem === selectedSem);
     }
 
     const similarItems = list.filter(
       (item: item) =>
-        item.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        generateAbbreviation(item.subject).includes(searchTerm.toLowerCase())
+        item?.subject?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+        generateAbbreviation(item?.subject)?.includes(searchTerm?.toLowerCase())
     );
 
     if (selectedBranch !== '') {
       const similarBranchItems = similarItems.filter(
-        (item: item) => item.branch === selectedBranch
+        (item: item) => item?.branch === selectedBranch
       );
 
       if (similarBranchItems.length > 0) {
         const otherItems = similarItems.filter(
-          (item: item) => item.branch !== selectedBranch
+          (item: item) => item?.branch !== selectedBranch
         );
         const orderedItems = similarBranchItems.concat(otherItems);
         setFilteredData(orderedItems);
@@ -120,10 +122,10 @@ const Search = () => {
     setFilteredData(similarItems);
 
     if (selectedSem !== '' && selectedBranch === '') {
-      filteredList = list.filter((item: item) => item.sem === selectedSem);
+      filteredList = list.filter((item: item) => item?.sem === selectedSem);
     }
     if (selectedSem !== '' && selectedBranch !== '') {
-      filteredList = filteredData.filter((item: item) => item.sem === selectedSem);
+      filteredList = filteredData.filter((item: item) => item?.sem === selectedSem);
     }
 
     setFilteredData(filteredList);

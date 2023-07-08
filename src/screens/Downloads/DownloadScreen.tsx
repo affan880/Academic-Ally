@@ -105,6 +105,8 @@ const DownloadScreen = () => {
       expiration: 60 * 60 * 24 * 1000,
     };
 
+    console.log(filePath)
+
     return (
       <>
         <Card width={size.width * 0.85} height={size.height * 0.25} bgColor={colors.primary} borderRadius={20} marginY={3} p={0} display={visible ? 'flex' : 'none'}>

@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Dimensions } from "react-native"
-import Svg, { G, Path, Ellipse, Defs, LinearGradient, Stop, Circle, Pattern, Use, Image } from "react-native-svg"
+import Svg, { Circle, Defs, Ellipse, G, Image, LinearGradient, Path, Pattern, Stop, Use } from "react-native-svg"
 
 const { width, height } = Dimensions.get("window")
 
@@ -293,3 +293,40 @@ export function ShareIconImg (){
     </Svg>
   )
 }
+
+export function AppLogo (){
+      return (
+        <Svg
+          width="171.68617mm"
+          height="158.64034mm"
+          viewBox="0 0 171.68617 158.64034"
+          xmlSpace="preserve"
+          xmlns="http://www.w3.org/2000/svg"
+          >
+          <Path
+            d="M19.458 56.685l1.112 115.779c22.028 1.188 31.834 5.475 50.919 13.902l-5.562-21.424c-8.75-4.05-18.103-5.775-27.56-7.749l-.618-97.66c-5.944-1.844-12.103-2.244-18.291-2.848z"
+            transform="translate(-19.458 -56.685)"
+            fill="#1a1a1a"
+            strokeWidth={0.83599}
+          />
+          <Path
+            d="M31.129 57.92c71.412 16.927 104.286 36.115 103.03 99.579-.973 27.274-9.69 39.345-28.909 57.826C73.613 175.653 69 148.557 87.936 107.842l11.141 11.684c-11.23 28.973-5.64 43.342 7.842 69.304 22.623-37.468 12.878-81.452-38.145-103.513-10.12-4.21-20.102-7.89-31.04-9.258z"
+            transform="translate(-19.458 -56.685)"
+            fill="#1a1a1a"
+            strokeWidth={0.836798}
+          />
+          <Path
+            d="M110.972 83.456l12.403 11.65c20.775-12.733 44.23-17.922 67.35-25.331v-13.04c-33.068 3.595-52.805 12.858-79.753 26.72z"
+            transform="translate(-19.458 -56.685)"
+            fill="#1a1a1a"
+            strokeWidth={0.83599}
+          />
+          <Path
+            d="M190.725 69.614l.42 101.22c-20.676 2.097-34.865 8-53.44 15.742l5.223-21.002c9.163-4.08 19.795-6.178 29.647-8.135l-.338-82.634z"
+            transform="translate(-19.458 -56.685)"
+            fill="#1a1a1a"
+            strokeWidth={0.83599}
+          />
+        </Svg>
+      );
+} 

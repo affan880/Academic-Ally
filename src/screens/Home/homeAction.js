@@ -138,8 +138,12 @@ class HomeAction {
                 .collection('NotesBookmarked')
                 .get();
 
-            const updatedList = item.docs.map((doc) => doc.data());
-
+            const updatedList = item.docs.map((doc) => (
+                {
+                    ...doc?.data(),
+                    id: doc?.id
+                }
+            ));
             dispatch(setBookmarks(updatedList));
             setListData(updatedList);
         } catch (error) {

@@ -109,7 +109,12 @@ export const fetchBookmarksList = async (dispatch, setBookmarks, setListData) =>
       .collection('NotesBookmarked')
       .get();
 
-    const updatedList = item.docs.map((doc) => doc.data());
+    const updatedList = item.docs.map((doc) => (
+      {
+        ...doc.data(),
+        'docId': doc?.id
+      }
+    ));
 
     dispatch(setBookmarks(updatedList));
     setListData(updatedList);

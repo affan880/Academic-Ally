@@ -8,7 +8,8 @@ const PdfData = createSlice({
         downloads: [],
         isDownloading: false,
         downloadingList: [],
-        updateState: false
+        updateState: false,
+        pdfChatLog: []
     },
     reducers: {
         updateDownloadProgress: (state, action) => {
@@ -39,6 +40,9 @@ const PdfData = createSlice({
             if (itemIndex !== -1) {
                 state.downloadingList.splice(itemIndex, 1);
             }
+        },
+        addToChatLog: (state, action) => {
+
         }
     }
 })

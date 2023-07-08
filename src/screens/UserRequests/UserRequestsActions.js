@@ -9,15 +9,15 @@ import { setLoading, setNewRequests, setRequestNull } from "./UserRequestsSlice"
 
 class UserRequestsActions {
 
-    // static s3 = new S3({
-    //     accessKeyId: "jw3kscoq6bbnq6cmvoojjpivjv7q",
-    //     secretAccessKey: "jy3acenhwqj4owoa6533wkfbearkg656dwjoo3dudal7zwcyugrsg",
-    //     endpoint: "https://gateway.storjshare.io",
-    //     credentials: {
-    //         accessKeyId: "jw3kscoq6bbnq6cmvoojjpivjv7q",
-    //         secretAccessKey: "jy3acenhwqj4owoa6533wkfbearkg656dwjoo3dudal7zwcyugrsg",
-    //     },
-    // });
+    static s3 = new S3({
+        accessKeyId: "jw3kscoq6bbnq6cmvoojjpivjv7q",
+        secretAccessKey: "jy3acenhwqj4owoa6533wkfbearkg656dwjoo3dudal7zwcyugrsg",
+        endpoint: "https://gateway.storjshare.io",
+        credentials: {
+            accessKeyId: "jw3kscoq6bbnq6cmvoojjpivjv7q",
+            secretAccessKey: "jy3acenhwqj4owoa6533wkfbearkg656dwjoo3dudal7zwcyugrsg",
+        },
+    });
 
     static loadNewUploads = (managerUniversity, managerCourse, managerBranch) => async (dispatch) => {
         dispatch(setRequestNull());
@@ -133,15 +133,15 @@ class UserRequestsActions {
                     dlink: '',
                     name: data?.name,
                     rating: 0,
-                    sem: data?.name,
+                    sem: data?.sem,
                     size: data?.size,
                     status: "unverified",
                     subject: data?.subject,
                     time: new Date().getTime(),
                     units: data?.units,
-                    uploaderId: data?.uploaderName,
+                    uploaderId: data?.uploaderId,
                     author: data?.author || data?.uploaderName,
-                    uploaderName: data?.uploaderId,
+                    uploaderName: data?.uploaderName,
                     uploaderEmail: data?.uploaderEmail,
                     verifiedBy: data?.verifiedBy,
                     verifiedByUid: data?.verifiedByUid,

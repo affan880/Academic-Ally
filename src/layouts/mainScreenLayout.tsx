@@ -45,7 +45,7 @@ const MainScreenLayout = ({ children, rightIconFalse, title, handleScroll, name,
                         backgroundColor={theme.colors.primary}
                         barStyle={'light-content'}
                     />
-                        <IconButton
+                    <IconButton
                         borderRadius={'full'}
                         _hover={{
                             bg: '#D3D3D3',

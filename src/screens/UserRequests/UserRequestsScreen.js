@@ -55,12 +55,6 @@ const UserRequestsScreen = () => {
                 </View>
             </View>
             <View style={styles.body}>
-                <TouchableOpacity
-                    style={styles.addButton}
-                    onPress={() => { }}
-                >
-                    <Text>Listttt</Text>
-                </TouchableOpacity>
                 <FlatList
                     showsVerticalScrollIndicator={false}
                     data={UserRequests?.NewRequests}

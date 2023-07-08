@@ -38,27 +38,6 @@ export const updateFirestoreData = async (uid, data, dispatch) => {
     });
 };
 
-export const manageBookmarks = async (notesData, status) => {
-  !status ? await firestore()
-    .collection('Users')
-    .doc(`${getCurrentUser().uid}`)
-    .collection('NotesBookmarked')
-    .doc(`${notesData.did}`)
-    .set({
-      ...notesData
-    })
-    :
-    removeBookmark(notesData);
-};
-export const removeBookmark = async item => {
-  firestore()
-    .collection('Users')
-    .doc(`${getCurrentUser().uid}`)
-    .collection('NotesBookmarked')
-    .doc(`${item.did}`)
-    .delete();
-};
-
 export const createList = (item) => {
   const sep = item.fullPath.split('/');
   sep.length === 3 && item.type === 'Folder'

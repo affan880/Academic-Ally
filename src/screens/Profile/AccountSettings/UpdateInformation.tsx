@@ -1,29 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import auth from '@react-native-firebase/auth';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { Actionsheet, Avatar, Stack, Text, Toast, useDisclose } from 'native-base';
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CustomBtn, NavBtn } from '../../../components/CustomFormComponents/CustomBtn';
+import { CustomBtn } from '../../../components/CustomFormComponents/CustomBtn';
 import { CustomTextInput } from '../../../components/CustomFormComponents/CustomTextInput';
 import DropdownComponent from '../../../components/CustomFormComponents/Dropdown';
 import Form from '../../../components/Forms/form';
 import NavigationLayout from '../../../layouts/navigationLayout';
-import { updateFirestoreData } from '../../../Modules/auth/firebase/firebase';
+import { updateFirestoreData, useAuth } from '../../../Modules/auth/firebase/firebase';
 import { setUserProfile } from '../../../redux/reducers/usersData';
 import NavigationService from '../../../services/NavigationService';
 import { updatevalidationSchema } from '../../../utilis/validation';
 import createStyles from './styles';
-
-type MyStackParamList = {
-  'BottomTabBar': any;
-  'Home': undefined;
-};
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
@@ -36,14 +28,15 @@ const UpdateInformation = () => {
   } = useDisclose();
   const dispatch = useDispatch();
   const formRef: any = useRef();
-  const uid = auth().currentUser?.uid;
+  const getUserAuthData: any = useAuth()
+  const uid = getUserAuthData.currentUser?.uid;
   const userFirestoreData = useSelector((state: any) => {
     return state.usersData;
   });
   const userImage = useSelector((state: any) => {
     return state.usersData.userProfile;
   });
-  const user = auth().currentUser;
+  const user = getUserAuthData.currentUser;
   const theme = useSelector((state: any) => state.theme);
   const styles = createStyles(theme.colors, theme.sizes);
   const initialValues: any = {
@@ -54,7 +47,7 @@ const UpdateInformation = () => {
     Year: userFirestoreData.usersData.Year,
     college: userFirestoreData.usersData.college,
   };
-  const [selectedAvatar, setSelectedAvatar] = React.useState<any>(auth().currentUser?.photoURL);
+  const [selectedAvatar, setSelectedAvatar] = React.useState<any>(getUserAuthData.currentUser?.photoURL);
   const [selectedYear, setSelectedYear] = useState<any>(null);
   const [BranchData, setBranchData] = useState<any>([]);
   const [selectedBranch, setSelectedBranch] = useState<any>(userFirestoreData.usersData.branch);
@@ -237,7 +230,7 @@ const UpdateInformation = () => {
   }
 
   const updateUserImage = (img: string) => {
-    auth()
+    getUserAuthData
       .currentUser?.updateProfile({
         photoURL: img,
       })

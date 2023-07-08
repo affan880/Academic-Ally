@@ -8,14 +8,14 @@ const createStyles = (theme: any, sizes: any, isPotrait: any) =>
       backgroundColor: theme.primary,
     },
     headerContainer: {
-      height: height * 0.08,
+      height: height * 0.07,
       width: width,
       justifyContent: 'space-between',
       alignItems: 'flex-end',
       flexDirection: 'row',
       paddingHorizontal: 20,
       position: 'relative',
-      paddingBottom: 20,
+      paddingBottom: 15,
     },
     body: {
       flex: 1,

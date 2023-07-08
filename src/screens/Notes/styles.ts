@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 const createStyles = (theme: any, sizes: any) =>
@@ -64,7 +64,7 @@ const createStyles = (theme: any, sizes: any) =>
     btnText: {
       fontSize: sizes.text,
       fontWeight: '600',
-      color: theme.black,
+      color: theme.primaryText,
       textAlign: 'center',
       lineHeight: 20,
     },

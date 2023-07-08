@@ -1,4 +1,3 @@
-import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
@@ -12,6 +11,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useSelector } from 'react-redux';
 
 import NavigationLayout from '../../layouts/navigationLayout';
+import { useAuth } from '../../Modules/auth/firebase/firebase';
 import UploadAction from '../Upload/uploadAction';
 
 const { width, height } = Dimensions.get('window');
@@ -51,7 +51,7 @@ const UploadPDF = () => {
   const [completed, setCompleted] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const theme = useSelector((state: any) => { return state.theme });
-  const user: any = auth().currentUser;
+  const user: any = useAuth().currentUser;
 
   const capitalize = (s: any) => {
     if (typeof s !== 'string') return ''

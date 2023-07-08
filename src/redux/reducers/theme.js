@@ -32,7 +32,6 @@ export const createThemeSlice = createSlice({
             popOver: '#FCFCFF',
             shareIcon: ShareIconImg,
             reportIcon: ReportIconBlack,
-            logo: '../../../assets/images/logo_black.png',
             actionSheet: '#FCFCFF'
         },
         dark: {
@@ -57,7 +56,6 @@ export const createThemeSlice = createSlice({
             popOver: '#292B2D',
             shareIcon: ShareIcon,
             reportIcon: ReportIconWhite,
-            logo: '../../../assets/images/white-logo.png',
             actionSheet: '#292B2D'
         },
         colors: {

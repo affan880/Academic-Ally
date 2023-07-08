@@ -1,14 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import auth from '@react-native-firebase/auth';
-import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AlertDialog, Avatar, Button, Toast, VStack } from 'native-base';
 import React, { useMemo, useState } from 'react';
-import { Dimensions, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useAuth } from '../../Modules/auth/firebase/firebase';
 import NavigationService from '../../services/NavigationService';
 import createStyles from './styles';
 
@@ -22,7 +21,7 @@ type MyStackParamList = {
 const Profile = () => {
   const theme = useSelector((state: any) => { return state.theme });
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
-  const user = auth().currentUser;
+  const user = useAuth().currentUser;
   const [isOpen, setIsOpen] = React.useState(false);
   const [logOutAlert, setLogOutAlert] = useState(false);
   const userImage = useSelector((state: any) => {
@@ -31,10 +30,6 @@ const Profile = () => {
   const onClose = () => setIsOpen(false);
   const onCloseLogout = () => setLogOutAlert(false);
   const cancelRef = React.useRef(null);
-  type MyScreenNavigationProp = StackNavigationProp<
-    MyStackParamList,
-    'UpdateInformation'
-  >;
   const dispatch = useDispatch();
   const userFirestoreData = useSelector((state: any) => {
     return state.usersData;
@@ -230,7 +225,7 @@ const Profile = () => {
                 <Button
                   colorScheme="danger"
                   onPress={() => {
-                    auth()
+                    useAuth()
                       ?.currentUser?.delete()
                       .then(() => {
                         AsyncStorage.clear();
@@ -242,7 +237,7 @@ const Profile = () => {
                         });
                       })
                       .catch(error => {
-                        auth().signOut();
+                        useAuth().signOut();
                         AsyncStorage.clear();
                         Toast.show({
                           title: 'Error',
@@ -282,7 +277,7 @@ const Profile = () => {
                 <Button
                   colorScheme="danger"
                   onPress={() => {
-                    auth().signOut();
+                    useAuth().signOut();
                     AsyncStorage.clear();
                     AsyncStorage.setItem('hasCompletedOnboarding', 'true')
                     dispatch({ type: 'RESET_APP' });

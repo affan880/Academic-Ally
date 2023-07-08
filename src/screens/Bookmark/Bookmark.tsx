@@ -11,10 +11,10 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ShareIcon, ShareIconImg } from '../../assets/images/icons';
-import { removeBookmark } from '../../Modules/auth/firebase/firebase';
 import { setBookmarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
 import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
 import { fetchBookmarksList, shareNotes } from '../../services/fetch';
+import PdfViewerAction from '../PdfViewer/pdfViewerAction';
 import createStyles from './styles';
 
 const { width, height } = Dimensions.get('window');
@@ -95,16 +95,14 @@ const Bookmark = () => {
     closeRow(rowMap, rowKey);
     const newData = [...listData];
     const prevIndex = listData.findIndex(
-      (item: any) => item.did === rowKey,
+      (item: any) => item.id === rowKey,
     );
     newData.splice(prevIndex, 1);
     setListData(newData);
     dispatch(
-      userRemoveBookMarks({
-        did: item.item.did,
-      }),
+      userRemoveBookMarks({ id: item.item.id }),
     );
-    removeBookmark(item.item);
+    PdfViewerAction.removeBookmark(item.item);
   };
 
   function groupBySubject(array: any) {

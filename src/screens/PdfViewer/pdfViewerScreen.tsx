@@ -1,30 +1,22 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import LottieView from 'lottie-react-native';
-import { Actionsheet, Box, Button, Fab, HStack, Icon, Modal, Popover, Stack, Text, Toast, useDisclose, VStack } from 'native-base';
+import { Icon, IconButton, Text } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
-import RNFS from 'react-native-fs';
-import { TextInput } from 'react-native-gesture-handler';
+import { ActivityIndicator, Dimensions, View } from 'react-native';
 import Pdf from 'react-native-pdf';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import RestrictedScreen from '../../layouts/restrictedScreen';
-import { manageBookmarks } from '../../Modules/auth/firebase/firebase';
-import { userAddBookMarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
 import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
-import { userClearRecents, userRemoveFromRecents } from '../../redux/reducers/usersRecentPdfsManager';
+import AllyChatBot from '../../sections/PdfViewer/AllyChatBot/AllyChatBot';
+import PopOver from '../../sections/PdfViewer/PopOver';
+import RecentlyVisited from '../../sections/PdfViewer/RecentlyVisited';
 import NavigationService from '../../services/NavigationService';
 import UtilityService from '../../services/UtilityService';
 import PdfViewerAction from './pdfViewerAction';
-import { setIsDownloading } from './pdfViewerSlice';
 import createStyles from './styles';
 
-const { width, height } = Dimensions.get('window');
 type RootStackParamList = {
   NotesList: {
     userData: {
@@ -33,7 +25,7 @@ type RootStackParamList = {
       sem: string;
     };
     notesData: any;
-    selected: string;
+    category: string;
     subjectName: string;
   };
 };
@@ -41,33 +33,27 @@ type RootStackParamList = {
 const PdfViewer = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const [totalPages, setTotalPages] = useState(0);
-  const [expiration, setExpiration] = useState(60 * 60 * 24 * 7);
   const [currentPage, setCurrentPage]: any = useState(0);
   const [landscape, setLandscape] = useState(false);
   const [scale, setScale] = useState(1);
-  const [saved, setSaved] = useState(false);
-  const [taskId, setTaskId] = useState(null);
-  const { isOpen, onOpen, onClose } = useDisclose();
-  const { userData } = route.params;
-  const { notesData } = route.params;
-  const selected: any = notesData?.category;
-
   const [pageNo, setPageNo] = useState(0);
-  const university = notesData?.university || "";
-  const course = notesData?.course || "";
-  const branch = notesData?.branch || "";
-  const sem = notesData?.sem || "";
-  const category = (notesData?.category)?.charAt(0)?.toUpperCase() + (notesData?.category)?.slice(1) || selected?.charAt(0)?.toUpperCase() + selected?.slice(1);
+  const [Display, setDisplay] = useState<any>(true);
+  const [viewRecentSheet, setViewRecentSheet] = useState<any>(false);
+
+  const { userData, notesData } = route.params;
+  const { university, course, branch, sem, did, uid, uid2, uid3, category } = notesData;
   const name = UtilityService.replaceUnusualCharacters(notesData?.name, '&');
   const subject = UtilityService.replaceUnusualCharacters(notesData?.subject, '&');
-  const did = notesData?.did || "";
-  const uid = notesData?.uid || "";
-  const uid2 = notesData?.uid2 || "";
-  const uid3 = notesData?.uid3 || "";
   const pdfRef = useRef(null);
   const dispatch: any = useDispatch();
-  const [userRecents, setUserRecents] = useState<any>([]);
-  const [Display, setDisplay] = useState<any>(true);
+
+  const placeholdersValues = [university, course, branch, sem, category, name, subject, did, uid, uid2, uid3];
+  const mainUrl = useSelector((state: any) => state.bootReducer.protectedUtils?.mainUrl);
+  const secondaryUrl = useSelector((state: any) => state.bootReducer.protectedUtils?.secondaryUrl);
+  const theme = useSelector((state: any) => { return state.theme; });
+  const potrait = useSelector((state: any) => state.theme).isPotrait;
+  const styles = useMemo(() => createStyles(theme.colors, theme.sizes, landscape), [theme, potrait]);
+  const [url, setUrl] = useState<any>(null);
 
   useEffect(() => {
     const updateOrientation = () => {
@@ -87,20 +73,6 @@ const PdfViewer = () => {
     updateOrientation();
   }, []);
 
-  const placeholdersValues = [university, course, branch, sem, category, name, subject, did, uid, uid2, uid3];
-  const mainUrl = useSelector((state: any) => state.bootReducer.protectedUtils?.mainUrl);
-  const secondaryUrl = useSelector((state: any) => state.bootReducer.protectedUtils?.secondaryUrl);
-  const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
-  const theme = useSelector((state: any) => { return state.theme; });
-  const potrait = useSelector((state: any) => state.theme).isPotrait;
-  const styles = useMemo(() => createStyles(theme.colors, theme.sizes, landscape), [theme, potrait]);
-  const userBookmarks = useSelector((state: any) => state.userBookmarkManagement).userBookMarks;
-  const recentsList = useSelector((state: any) => state.userRecentPdfs.RecentViews);
-  const [url, setUrl] = useState<any>(null);
-  const [progress, setProgress] = useState(0);
-
-  const isDownloading = useSelector((state: any) => state.pdfViewerReducer).isDownloading;
-
   useEffect(() => {
     if (potrait) {
       setDisplay(true);
@@ -111,6 +83,7 @@ const PdfViewer = () => {
       setScale(3)
     }
   }, [potrait])
+  
 
 
   useEffect(() => {
@@ -124,93 +97,29 @@ const PdfViewer = () => {
         }
       });
     }
-  }, [isDownloading, mainUrl, placeholdersValues, secondaryUrl, url]);
+  }, [mainUrl, placeholdersValues, secondaryUrl, url]);
 
   const source: object = {
     uri: url,
     cache: true,
-    expiration: expiration,
+    expiration: 60 * 60 * 24 * 7,
   };
-  async function onDownload() {
-    if (url?.includes(`${RNFS.DocumentDirectoryPath}`)) {
-      Toast.show({
-        title: 'Already Downloaded',
-        placement: 'bottom',
-        duration: 3000,
-      })
-    }
-    else {
-      const directoryPath = `${RNFS.DocumentDirectoryPath}/Resources`;
-      await RNFS.exists(directoryPath).then(res => {
-        if (res) {
-          dispatch(PdfViewerAction.downloadFile(notesData, url, setTaskId, setProgress));
-        } else {
-          RNFS.mkdir(directoryPath);
-          dispatch(PdfViewerAction.downloadFile(notesData, url, setTaskId, setProgress));
-        }
-      });
-    }
-  }
-
-  function cancelDownload() {
-    dispatch(setIsDownloading(false));
-    if (taskId) {
-      RNFS.stopDownload(taskId)
-    }
-  }
-
-  const handleSharePdf = async () => {
-    try {
-      await PdfViewerAction.sharePdf(notesData, dynamicLink).then((link: any) => {
-        Share.share({
-          title: `${subject}`,
-          message: `If you're studying ${subject}, you might find these ${notesData.category} on Academic Ally helpfull. I did! Check them out:${link}`
-        });
-      }).catch((error: any) => {
-        Toast.show({
-          title: 'Something went wrong',
-          placement: 'bottom',
-          duration: 3000,
-        })
-      })
-    } catch (error) {
-      Toast.show({
-        title: 'Something went wrong',
-        placement: 'bottom',
-        duration: 3000,
-      })
-    }
-  };
-
-
-  const BookmarkStatus = (item: any): boolean => { return userBookmarks?.some((bookmark: any) => bookmark.did === item) ?? false };
-
-  useEffect(() => {
-    setUserRecents(recentsList);
-  }, [recentsList]);
 
   return (
     <RestrictedScreen name={'PdfViewer'} >
+      <AllyChatBot />
       <View style={styles.container}>
         <View style={Display ? styles.headerContainer : { display: 'none' }} >
-          <Ionicons name="chevron-back-outline" size={25} color="#ffffff" onPress={() => { NavigationService.goBack() }} />
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '30%', paddingRight: 35 }}>
-            <TextInput style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff', width: '50%', paddingVertical: -2, textAlign: 'right', left: 2, top: -1 }}
-              value={`${currentPage}`}
-              onChangeText={(text: any) => setCurrentPage(text)}
-              keyboardType="number-pad"
-              maxLength={3}
-              onSubmitEditing={() => {
-                if (currentPage !== "" && currentPage !== 0) {
-                  setPageNo(parseInt(currentPage));
-                }
-              }}
-            />
-            <Text style={{ fontSize: 18, color: '#ffffff', fontWeight: 'bold' }}>
-              /{totalPages}
+          <IconButton borderRadius={'full'} _hover={{ bg: '#D3D3D3', }} _pressed={{ bg: '#D3D3D3', }} onPress={() => { NavigationService.goBack() }} variant="ghost" icon={<Icon as={Ionicons} name="chevron-back-outline" size={'lg'} color={theme.colors.white} />} p={0} />
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '60%' }}>
+            <Text style={{ fontSize: 18, color: '#ffffff', fontWeight: '600', width: '100%', textAlign: 'center' }}>
+              Page {currentPage} of {totalPages}
             </Text>
           </View>
-          <Fontisto name="history" size={20} color="#ffffff" onPress={onOpen} />
+          <IconButton borderRadius={'xl'} _hover={{ bg: '#D3D3D3', }} onPress={() => setViewRecentSheet(true)} variant="ghost" icon={<Icon as={Fontisto} name="history" size={'md'} color={theme.colors.white} />} p={0} />
+          <IconButton borderRadius={'xl'} _hover={{ bg: '#D3D3D3', }} onPress={() => { 
+            PdfViewerAction.handleCreateFile(notesData, url, [], false)
+           }} variant="ghost" icon={<Icon as={Ionicons} name="md-chatbubble-ellipses-outline" size={'lg'} color={theme.colors.white} />} p={0} />
         </View>
         <View style={styles.body}>
           <View>
@@ -255,225 +164,21 @@ const PdfViewer = () => {
                     if (error?.toString()?.toLowerCase()?.includes('no pdf  source')) {
                       setUrl(UtilityService.replaceString(secondaryUrl, placeholdersValues))
                     }
-
                   }}
                   onLoadComplete={(numberOfPages, filePath) => {
-                    dispatch(userAddToRecentsStart({ ...notesData, "viewedTime": `${new Date()}`, "category": notesData?.category }));
+                    dispatch(userAddToRecentsStart({ ...notesData, "viewedTime": `${new Date()}`, "category": category }));
                   }}
                   style={{
                     width: '100%',
                     height: '100%',
-                    // borderRadius: Display ? 30 : 0,
                   }}
                 />
               }
             </View>
           </View>
         </View>
-        <Popover
-          trigger={triggerProps => {
-            return (
-              <Fab
-                renderInPortal={false}
-                backgroundColor={'#FF8181'}
-                {...triggerProps}
-                shadow={2}
-                size="lg"
-                icon={<Icon color="white" as={AntDesign} name="plus" size="lg" />}
-              />
-            );
-          }}>
-          <Popover.Content
-            accessibilityLabel="Delete Customerd"
-            w="20"
-            style={{
-              backgroundColor: '#ffffff',
-            }}>
-            <Popover.Body>
-              <VStack space={2}>
-                <Button
-                  onPress={() => {
-                    setSaved(!saved);
-                    const status = BookmarkStatus(notesData.did);
-                    manageBookmarks(notesData, status);
-                    !status
-                      ? dispatch(
-                        userAddBookMarks({
-                          name: notesData.name,
-                          subject: notesData.subject,
-                          did: notesData.did,
-                          ...notesData,
-                        }),
-                      )
-                      : dispatch(
-                        userRemoveBookMarks({
-                          name: notesData.name,
-                          subject: notesData.subject,
-                          notesId: notesData.did,
-                          category: selected,
-                          ...notesData,
-                        }),
-                      );
-                  }}
-                  colorScheme="red"
-                  variant="outline">
-                  <Fontisto
-                    name={
-                      BookmarkStatus(notesData.did)
-                        ? 'bookmark-alt'
-                        : 'bookmark'
-                    }
-                    style={{
-                      flex: 100
-                    }}
-                    size={25}
-                    color={'#6360FF'}
-                  />
-                </Button>
-                <Button
-                  onPress={handleSharePdf}
-                  colorScheme="blue"
-                  variant="outline">
-                  <Entypo name="share" size={25} color={'#6360FF'} />
-                </Button>
-                <Button
-                  onPress={onDownload}
-                  colorScheme="green"
-                  backgroundColor={
-                    url?.includes(`${RNFS.DocumentDirectoryPath}`) ? theme.colors.greenSuccess : null
-                  }
-                  variant="outline">
-                  <MaterialIcons
-                    name="file-download"
-                    size={25}
-                    color={'#6360FF'}
-                  />
-                </Button>
-              </VStack>
-            </Popover.Body>
-          </Popover.Content>
-        </Popover>
-
-        <Actionsheet isOpen={isOpen} onClose={onClose}>
-          <Actionsheet.Content>
-            <HStack w="100%" h={60} px={4} justifyContent="space-between">
-              <Text fontSize="16" color="gray.500">
-                Recents
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  dispatch(userClearRecents(notesData));
-                  onClose();
-                }}>
-                <Text fontSize="12" color="#000000">
-                  Clear
-                </Text>
-              </TouchableOpacity>
-            </HStack>
-            {userRecents?.length > 0 ? (
-              userRecents.map((item: any, index: any) => {
-                return (
-                  <Actionsheet.Item
-                    key={index}
-                    width={'100%'}
-                    paddingTop={5}
-                    onPress={() => {
-                      NavigationService.replace(NavigationService.screens.PdfViewer, {
-                        userData: userData,
-                        notesData: item,
-                        selected: notesData.category,
-                        subject: notesData.subject,
-                      });
-                      onClose();
-                    }}>
-                    <Box
-                      flexDirection={'row'}
-                      width={'100%'}
-                      justifyContent={'space-between'}>
-                      <Text textAlign={'left'} width={'90%'}>
-                        {UtilityService.removeString(item.name)}
-                      </Text>
-                      <TouchableOpacity
-                        onPress={() => {
-                          dispatch(userRemoveFromRecents(item));
-                        }}>
-                        <Icon
-                          as={Entypo}
-                          name="cross"
-                          size="md"
-                          color="gray.400"
-                        />
-                      </TouchableOpacity>
-                    </Box>
-                  </Actionsheet.Item>
-                );
-              })
-            ) : (
-              <Text>No Recents</Text>
-            )}
-          </Actionsheet.Content>
-        </Actionsheet>
-        <Modal isOpen={isDownloading} onClose={() => {
-          dispatch(setIsDownloading(false));
-        }}
-          width={width}
-        >
-          <Modal.Content width={width * 0.9} >
-            <>
-              <Stack
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                  paddingVertical: 10,
-                  paddingTop: 10
-                }}>
-                <Text fontSize={height * 0.0235} fontWeight={'700'} color={theme.colors.black} lineHeight={height * 0.052} >
-                  Downloading
-                </Text>
-
-                <Text fontSize={height * 0.02} fontWeight={'700'} color={theme.colors.black} lineHeight={height * 0.05}>
-                  {notesData?.name}
-                </Text>
-                <Text fontSize={height * 0.015} fontWeight={'300'} color={theme.colors.black} lineHeight={height * 0.05}>
-                  {(progress * 100).toFixed(1)}% of 100%
-                </Text>
-              </Stack>
-              <Modal.Body
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <LottieView
-                  source={require('../../assets/lottie/upload.json')}
-                  style={{
-                    width: width,
-                    height: height / 3,
-                  }}
-                  autoPlay
-                  loop
-                />
-              </Modal.Body>
-              <Box
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                  padding: 10,
-                  position: 'absolute',
-                  zIndex: 100,
-                  bottom: 10,
-                  alignSelf: 'center',
-                }}>
-                <TouchableOpacity onPress={cancelDownload}>
-                  <Text fontWeight={700} fontSize={theme.sizes.title} color={theme.colors.primary}>
-                    Cancel{' '}
-                  </Text>
-                </TouchableOpacity>
-              </Box>
-            </>
-          </Modal.Content>
-        </Modal>
+        <PopOver url={url} notesData={notesData} />
+        <RecentlyVisited toggleOpen={viewRecentSheet} toggleClose={() => setViewRecentSheet(false)} userData={userData} notesData={notesData} />
       </View>
     </RestrictedScreen>
   );
