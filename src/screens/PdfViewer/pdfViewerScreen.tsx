@@ -1,5 +1,5 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { Icon, IconButton, Text } from 'native-base';
+import { Alert, Box, Center, CloseIcon, HStack, Icon, IconButton, Modal, Text, VStack } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, View } from 'react-native';
 import Pdf from 'react-native-pdf';
@@ -8,8 +8,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import RestrictedScreen from '../../layouts/restrictedScreen';
+import { firestoreDB } from '../../Modules/auth/firebase/firebase';
 import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
 import AllyChatBot from '../../sections/PdfViewer/AllyChatBot/AllyChatBot';
+import ExistingChatList from '../../sections/PdfViewer/ExistingChatListModal';
+import PdfPageSplitter from '../../sections/PdfViewer/PdfPageSplitter';
 import PopOver from '../../sections/PdfViewer/PopOver';
 import RecentlyVisited from '../../sections/PdfViewer/RecentlyVisited';
 import NavigationService from '../../services/NavigationService';
@@ -39,6 +42,14 @@ const PdfViewer = () => {
   const [pageNo, setPageNo] = useState(0);
   const [Display, setDisplay] = useState<any>(true);
   const [viewRecentSheet, setViewRecentSheet] = useState<any>(false);
+  const [splitPages, setSplitPages] = useState<any>([]);
+  const [visibleSpliterModal, setVisibleSpliterModal] = useState<any>(false)
+  const [filePath, setFilePath]= useState<any>(null);
+  const [viewPdfChatModal, setViewPdfChatModal] = useState<boolean>(false)
+  const [existingChatList, setExistingChatList] = useState<any>([])
+  const [existingChatListModal, setExistingChatListModal] = useState<any>(false)
+  const [currentProgress, setCurrentProgress] = useState<any>('started...')
+  const [startedProcessing, setStartedProcessing] = useState<any>(false)
 
   const { userData, notesData } = route.params;
   const { university, course, branch, sem, did, uid, uid2, uid3, category } = notesData;
@@ -83,8 +94,6 @@ const PdfViewer = () => {
       setScale(3)
     }
   }, [potrait])
-  
-
 
   useEffect(() => {
     if (url === null || url === undefined || url === "") {
@@ -105,9 +114,64 @@ const PdfViewer = () => {
     expiration: 60 * 60 * 24 * 7,
   };
 
+  const handleChat = () => {
+    if(existingChatList?.length > 0){
+      setExistingChatListModal(true)
+    }
+    else if (totalPages > 30 && existingChatList.length === 0){
+      setVisibleSpliterModal(true);
+    }
+    else {
+      setViewPdfChatModal(true);
+    }
+  }
+
+  const createChat = (pages: any) => {
+      const res = dispatch(PdfViewerAction.handleCreateFile(notesData, url, pages, false, setCurrentProgress, setStartedProcessing)).then((res: any)=>{
+        console.log("hehe",res)
+      })
+  }
+
+  const handleAddNewChat = () =>{
+    console.log('gghj')
+    if (totalPages > 30 ){
+      setVisibleSpliterModal(true);
+    }
+    else {
+      const newRange = Array.from({ length: totalPages - 1 + 1 }, (_, index) => 1 + index);
+      console.log(newRange)
+    }
+  }
+  
+  useEffect(()=>{
+    firestoreDB().collection('Users').doc('HES4HzSncnfg0s2F5jvV7Nxrqba2').collection('InitializedPdf')
+    .where('docId', '>=', notesData.id)
+    .where('docId', '<=', `${notesData.id}\uf8ff`)
+    .get()
+    .then((querySnapshot) => {
+      const documents = querySnapshot.docs
+        .map((doc) => {
+          const data = doc.data();
+          const date = data.date.toDate();
+          return { ...data, date };
+        })
+        .sort((a, b) => b.date - a.date);
+        console.log(documents)
+        setExistingChatList(documents)
+    })
+    .catch((error) => {
+      console.error('Error getting documents:', error);
+    });
+  },[])
+
   return (
     <RestrictedScreen name={'PdfViewer'} >
-      <AllyChatBot />
+      {
+        viewPdfChatModal &&
+        <AllyChatBot open={viewPdfChatModal} close={()=> setViewPdfChatModal(false)}  />
+      }
+      <ExistingChatList existingChatList={existingChatList} open={existingChatListModal} close={()=>{ setExistingChatListModal(false) }} handleAddNewChat={handleAddNewChat} />
+      <PdfPageSplitter setSplitPages={setSplitPages} splitPages={splitPages} setVisibleSpliterModal={setVisibleSpliterModal} createChat={createChat} visibleSpliterModal={visibleSpliterModal} filePath={filePath} currentProgress={currentProgress} startedProcessing={startedProcessing} />
       <View style={styles.container}>
         <View style={Display ? styles.headerContainer : { display: 'none' }} >
           <IconButton borderRadius={'full'} _hover={{ bg: '#D3D3D3', }} _pressed={{ bg: '#D3D3D3', }} onPress={() => { NavigationService.goBack() }} variant="ghost" icon={<Icon as={Ionicons} name="chevron-back-outline" size={'lg'} color={theme.colors.white} />} p={0} />
@@ -118,10 +182,42 @@ const PdfViewer = () => {
           </View>
           <IconButton borderRadius={'xl'} _hover={{ bg: '#D3D3D3', }} onPress={() => setViewRecentSheet(true)} variant="ghost" icon={<Icon as={Fontisto} name="history" size={'md'} color={theme.colors.white} />} p={0} />
           <IconButton borderRadius={'xl'} _hover={{ bg: '#D3D3D3', }} onPress={() => { 
-            PdfViewerAction.handleCreateFile(notesData, url, [], false)
+            handleChat()
            }} variant="ghost" icon={<Icon as={Ionicons} name="md-chatbubble-ellipses-outline" size={'lg'} color={theme.colors.white} />} p={0} />
         </View>
         <View style={styles.body}>
+        <Alert
+            maxW="400"
+            status="info"
+            colorScheme="info"
+            alignItems="flex-start" // Align the content to the top
+          >
+            <VStack space={2} flexShrink={1} w="100%">
+              <HStack flexShrink={1} space={2} alignItems="center" justifyContent="space-between">
+                <HStack flexShrink={1} space={2} alignItems="center">
+                  <Alert.Icon />
+                  <Text fontSize="md" fontWeight="medium" color="coolGray.800">
+                  The PDF contains more than 50 pages.
+                  </Text>
+                </HStack>
+                <IconButton
+                  variant="unstyled"
+                  _focus={{
+                    borderWidth: 0
+                  }}
+                  icon={<CloseIcon size="3" />}
+                  _icon={{
+                    color: "coolGray.600"
+                  }}
+                />
+              </HStack>
+              <Box pl="6" _text={{
+                color: "coolGray.600"
+              }}>
+                Please select a range of pages (maximum 50 pages) you want to chat with.
+              </Box>
+            </VStack>
+          </Alert>
           <View>
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
               {
@@ -167,6 +263,7 @@ const PdfViewer = () => {
                   }}
                   onLoadComplete={(numberOfPages, filePath) => {
                     dispatch(userAddToRecentsStart({ ...notesData, "viewedTime": `${new Date()}`, "category": category }));
+                    setFilePath(filePath)
                   }}
                   style={{
                     width: '100%',

@@ -11,11 +11,13 @@ interface Message {
 }
 
 interface Props {
+    open: boolean,
+    close: any
 }
 
 const { width, height } = Dimensions.get('screen')
 
-const ChatScreen: React.FC<Props> = () => {
+const ChatScreen  = ({open, close}: Props) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [messageText, setMessageText] = useState('');
     const test = () => {
@@ -59,7 +61,7 @@ const ChatScreen: React.FC<Props> = () => {
     };
 
     return (
-        <Modal visible={false}>
+        <Modal >
             <View style={styles.header}>
                 <Avatar source={{
                     uri: "https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/logo%2FAcademicAllyLogo.png?alt=media&token=0c6b43ea-6d06-49b1-acdf-5516bed88f28"
@@ -67,7 +69,7 @@ const ChatScreen: React.FC<Props> = () => {
                 <Text style={styles.headerText} >
                     Lorem Ipsum
                 </Text>
-                <IconButton borderRadius={'xl'} _hover={{ bg: '#D3D3D3', }} onPress={() => { }} variant="ghost" icon={<Icon as={AntDesign} name="close" size={'lg'} color={'#000'} />} p={0} />
+                <IconButton borderRadius={'xl'} _hover={{ bg: '#D3D3D3', }} onPress={close} variant="ghost" icon={<Icon as={AntDesign} name="close" size={'lg'} color={'#000'} />} p={0} />
             </View>
             <View style={styles.modalContainer}>
                 <KeyboardAvoidingView style={styles.container} keyboardVerticalOffset={10}>

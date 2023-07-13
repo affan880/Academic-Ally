@@ -2,7 +2,7 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 import storage from '@react-native-firebase/storage';
 import { S3 } from 'aws-sdk';
 import { Buffer } from 'buffer';
-import { Toast } from 'native-base';
+import { resolveStackStyleInput, Toast } from 'native-base';
 import { PDFDocument, PDFPage } from 'pdf-lib';
 import { Alert } from 'react-native'
 import RNFS from 'react-native-fs';
@@ -225,17 +225,20 @@ class PdfViewerAction {
         }
     }
 
-    static handleCreateFile = async (notesData, url, splitPageNumbers, fullPdf) => {
+    static handleCreateFile = (notesData, url, splitPageNumbers, fullPdf, setCurrentProgress, setStartedProcessing, ) => async (dispatch) => {
+        setStartedProcessing(true);
         const uniqueId = uuidv4();
         const outputPath = `Processed-pdfs/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.category}/${uniqueId}/${notesData?.name}`;
         const pdfUrl = `https://link.storjshare.io/s/jvn6w5kdxgoqla5jw3umlrspv7zq/academic-ally/${outputPath}?wrap=0`;
         const pdfPath = `${RNFS.DocumentDirectoryPath}/${notesData?.id}_${notesData?.name}`;
-      
+        setCurrentProgress('Processing file...')
         try {
           if (splitPageNumbers.length === 0) {
-            // If splitPageNumbers array is empty, use the original PDF URL directly
-            await this.uploadFileAndProcessPdf(url, outputPath, pdfUrl, notesData, uniqueId);
+            setCurrentProgress('Uploading and processing file...');
+            const uploadResponse = await this.uploadFileAndProcessPdf(url, outputPath, pdfUrl, notesData, uniqueId);
+            return uploadResponse;
           } else {
+            setCurrentProgress('File processing and uploading completed successfully.');
             await RNFS.downloadFile({ fromUrl: url, toFile: pdfPath }).promise;
             const pdfData = await RNFS.readFile(pdfPath, 'base64');
             const pdfDoc = await PDFDocument.load(pdfData);
@@ -243,6 +246,7 @@ class PdfViewerAction {
       
             for (const pageNumbers of splitPageNumbers) {
               const copiedPage = await newPdfDoc.copyPages(pdfDoc, [pageNumbers - 1]);
+              console.log(pageNumbers);
               newPdfDoc.addPage(copiedPage[0]);
             }
       
@@ -253,58 +257,96 @@ class PdfViewerAction {
               Key: outputPath,
               Body: fileContent,
             };
-            await this.s3.upload(uploadParams).promise();
-            console.log('Split PDF uploaded successfully:', outputPath);
+            setCurrentProgress('Uploading and processing split files...');
+            await this.s3.upload(uploadParams).promise().catch((error) => {
+                setStartedProcessing(false);
+              return false;
+            });
+            console.log(outputPath);
       
-            await this.uploadFileAndProcessPdf(pdfUrl, outputPath, pdfUrl, notesData, uniqueId, splitPageNumbers);
+            const uploadResponse = await this.uploadFileAndProcessPdf(
+              pdfUrl,
+              outputPath,
+              pdfUrl,
+              notesData,
+              uniqueId,
+              splitPageNumbers,
+              setCurrentProgress,
+              setStartedProcessing
+            );
+            return uploadResponse;
           }
         } catch (error) {
-          console.error('Error while splitting and saving PDF:', error);
+            setCurrentProgress(false)
+            setStartedProcessing('Error while splitting and saving PDF:', error);
+          return false;
         }
       };
       
-      static uploadFileAndProcessPdf = async (fileUrl, outputPath, pdfUrl, notesData, uniqueId, splitPageNumbers) => {
-        try {
-          fetch(`https://us-central1-academic-ally-app.cloudfunctions.net/checkPDFDocumentLimit?userId=8056itcLayZY8yDbNdi7KbqXnsw2&fileUrl=${fileUrl}`)
+      
+      static uploadFileAndProcessPdf = async (fileUrl, outputPath, pdfUrl, notesData, uniqueId, splitPageNumbers, setCurrentProgress, setStartedProcessing) => {
+        const uid = useAuth().currentUser.uid;
+        setCurrentProgress('Initiating file upload and processing...');
+        return new Promise((resolve, reject) => {
+          fetch(`https://us-central1-academic-ally-app.cloudfunctions.net/initiateChat?userId=${uid}&fileUrl=${fileUrl}`)
             .then(response => {
               if (!response.ok) {
+                setStartedProcessing(false)
                 throw new Error(`HTTP error! Status: ${response.status}`);
               }
-              return response.json();
+              setCurrentProgress('Initiating file upload and processing...')
+              return {
+                ...response.json(),
+                id: `${notesData.id}_${uniqueId}`
+              };
             })
             .then(data => {
-              console.log('Response:', data);
               if (data?.sourceId) {
-                firestoreDB().collection('Users').doc(useAuth().currentUser.uid).collection('InitializedPdf').doc(`${notesData.id}_${uniqueId}`).set({
-                  Year: '',
-                  branch: notesData?.branch,
-                  sem: notesData?.sem,
-                  university: notesData?.university,
-                  course: notesData?.course,
-                  subject: notesData?.subject,
-                  sourceId: data?.sourceId,
-                  category: notesData?.category,
-                  name: notesData?.name,
-                  uniqueId,
-                  data: new Date(),
-                  pages: splitPageNumbers?.length > 0 ? splitPageNumbers : [],
-                  url: outputPath
-                })
+                firestoreDB()
+                  .collection('Users')
+                  .doc(uid)
+                  .collection('InitializedPdf')
+                  .doc(`${notesData.id}_${uniqueId}`)
+                  .set({
+                    Year: '',
+                    branch: notesData?.branch,
+                    sem: notesData?.sem,
+                    university: notesData?.university,
+                    course: notesData?.course,
+                    subject: notesData?.subject,
+                    sourceId: data?.sourceId,
+                    category: notesData?.category,
+                    name: notesData?.name,
+                    uniqueId,
+                    date: new Date(),
+                    pages: splitPageNumbers?.length > 0 ? splitPageNumbers : [],
+                    url: outputPath,
+                    conversation: [],
+                    docId: notesData.id,
+                  })
                   .then(() => {
-                    console.log('Initialized PDF document created successfully');
+                    setCurrentProgress('Done.');
+                    setStartedProcessing(false)
+                    resolve(data); // Resolve the promise with the API response data
                   })
                   .catch(error => {
                     console.error('Error creating Initialized PDF document:', error);
+                    setStartedProcessing(false)
+                    reject(error);
                   });
+              } else {
+                setStartedProcessing(false)
+                resolve(null); // Resolve with null if there is no sourceId in the API response
               }
             })
             .catch(error => {
               console.error('Error:', error);
+              setStartedProcessing(false)
+              reject(error);
             });
-        } catch (error) {
-          console.error('Error while uploading file and processing PDF:', error);
-        }
+        });
       };
+      
 }
 
 export default PdfViewerAction;
