@@ -1,10 +1,11 @@
-import {createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createSlice } from '@reduxjs/toolkit';
 
 export const createUserDataSlice = createSlice({
   name: 'RecentsManagement',
   initialState: {
     RecentViews: [],
+    RecentPdfChats: [],
   },
   reducers: {
     userAddToRecentsStart: (state, action) => {
@@ -29,7 +30,6 @@ export const createUserDataSlice = createSlice({
       state.RecentViews = action.payload;
     },
     userRemoveFromRecents: (state, action) => {
-      //renmove the bookmark from the array
       state.RecentViews = state.RecentViews.filter(
         recents => recents.did !== action.payload.did,
       );
@@ -45,6 +45,12 @@ export const createUserDataSlice = createSlice({
         JSON.stringify(state.RecentViews),
       );
     },
+
+    updateRecentChats: (state, action) => {
+      if (state.RecentPdfChats?.length > 0) {
+        state.RecentPdfChats = action.payload 
+      }
+    },
   },
 });
 
@@ -53,6 +59,7 @@ export const {
   userAddToRecents,
   userRemoveFromRecents,
   userClearRecents,
+  updateRecentChats
 } = createUserDataSlice.actions;
 
 export default createUserDataSlice.reducer;

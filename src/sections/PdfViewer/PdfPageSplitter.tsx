@@ -1,8 +1,8 @@
 import LottieView from 'lottie-react-native';
-import { Box, Center, CloseIcon, Divider, HStack, Icon, IconButton, Modal, Text, VStack, Wrap } from 'native-base'
+import { Alert, Box, Center, CloseIcon, Divider, HStack, Icon, IconButton, Modal, Text, Toast, VStack, Wrap } from 'native-base'
 import { PDFDocument } from 'pdf-lib'
 import React, { useEffect, useMemo, useState } from 'react'
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity } from 'react-native'
+import { KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity } from 'react-native'
 import RNFS from 'react-native-fs';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useSelector } from 'react-redux'
@@ -21,7 +21,6 @@ type Props = {
 }
 
 const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, visibleSpliterModal, filePath, createChat , currentProgress, startedProcessing}: Props) => {
-  console.log(filePath)
   const totalPageNumbers = 30;
   const [totalPages, setTotalPages] = useState<any>([])
   const [fromPage, setFromPage] = useState('')
@@ -31,17 +30,26 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
 
   const handleAddRange = () => {
-    const from = parseInt(fromPage);
+    const from = fromPage === '0' ? parseInt('1') : parseInt(fromPage);
     const to = parseInt(toPage);
   
     if (isNaN(from) || isNaN(to)) {
-      Alert.alert('Invalid Range', 'Please enter valid page numbers.');
-      return;
+      // Alert.alert('Invalid Range', 'Please enter valid page numbers.');
+      Toast.show({
+        title: "Invalid Range, Please enter valid page numbers.",
+        placement: 'bottom',
+        backgroundColor: '#FF0101',
+        duration: 1000,
+      })
     }
   
     if (from > to) {
-      Alert.alert('Invalid Range', 'The "from" value cannot be greater than the "to" value.');
-      return;
+      Toast.show({
+        title: "Invalid Range', The 'from' value cannot be greater than the 'to' value.",
+        placement: 'bottom',
+        backgroundColor: '#FF0101',
+        duration: 1000,
+      })
     }
   
     const newRange = Array.from({ length: to - from + 1 }, (_, index) => from + index);
@@ -52,7 +60,12 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
   
     let limitedTotalPages = combinedPages.slice(0, 30);
     if (limitedTotalPages.length < combinedPages.length) {
-      Alert.alert('Length Limit Exceeded', 'The total number of pages cannot exceed 30.');
+      Toast.show({
+        title: "Length Limit Exceeded', The total number of pages cannot exceed 30.",
+        placement: 'bottom',
+        backgroundColor: '#FF0101',
+        duration: 1000,
+      })
     }
   
     limitedTotalPages = limitedTotalPages.sort((a, b) => a - b);
@@ -71,21 +84,54 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
   
     return nextPageNumbers[nextPageNumbers.length -1];
   }
-  
 
   return (
     <Modal isOpen={visibleSpliterModal} onClose={()=>{
       setVisibleSpliterModal(false);
-    }}  size={'lg'}>
+    }}  size={'xl'}>
+        <Alert
+            maxW="400"
+            status="info"
+            colorScheme="info"
+            position='absolute'
+            top={20}
+            collapsable
+          >
+            <VStack space={2} flexShrink={1} w="100%">
+              <HStack flexShrink={1} space={2} alignItems="center" justifyContent="space-between">
+                <HStack flexShrink={1} space={2} alignItems="center">
+                  <Alert.Icon />
+                  <Text fontSize="md" fontWeight="medium" color="coolGray.800">
+                  The PDF contains more than 50 pages.
+                  </Text>
+                </HStack>
+                <IconButton
+                  variant="unstyled"
+                  _focus={{
+                    borderWidth: 0
+                  }}
+                  icon={<CloseIcon size="3"  />}
+                  _icon={{
+                    color: "coolGray.600"
+                  }}
+                />
+              </HStack>
+              <Box pl="6" _text={{
+                color: "coolGray.600"
+              }}>
+                Please select a range of pages (maximum 50 pages) you want to chat with.
+              </Box>
+            </VStack>
+          </Alert>
     <Modal.Content size={'sm'}>
       <Modal.CloseButton />
         {
-          !startedProcessing &&       <KeyboardAvoidingView
+          !startedProcessing && <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={{ flex: 1 }}
         >
           <ScrollView showsVerticalScrollIndicator={false}>
-          <Box marginTop={10} marginX={3} justifyContent="space-between"  >
+          <Box marginTop={10} marginX={3} justifyContent="space-around"  >
             <Box>
               <Text fontSize={'lg'} fontWeight={'bold'} mb={2}>
                 Choose Pages to Chat
@@ -93,9 +139,29 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
               <Text fontSize={'md'} fontWeight={'semibold'} color={theme.colors.terinaryText} my={2}>
                 Total Pages : {totalPages?.length}
               </Text>
-              <Box  justifyContent="space-between" alignItems={'center'}>
+              <Box height={100} >
                 {
-                  totalPages?.length === 0 && <Box marginTop={5} width={'100%'} flexDirection='row' alignItems={'flex-start'}>
+                  totalPages?.length === 0 && <Box marginTop={10} width={'100%'} flexDirection='row' alignItems={'flex-start'} justifyContent={'space-around'} >
+                    <TouchableOpacity
+                    onPress={()=>{
+                      const newRange = Array.from({ length: 15 - 1 + 1 }, (_, index) => 1 + index);
+                      setTotalPages(newRange)
+                      }}
+                      style={{
+                        justifyContent: 'space-evenly',
+                        alignItems: 'center',
+                        // backgroundColor: theme.colors.mainTheme,
+                        alignSelf: 'center',
+                        borderRadius: 10,
+                        flexDirection: 'row',
+                        paddingHorizontal: 5,
+                        marginBottom: 20,
+                      }}
+                    >
+                      <Text color={theme.colors.mainTheme} fontSize={'md'} fontWeight={'bold'} textDecorationLine={'underline'}>
+                        From 1 - 15
+                      </Text>
+                    </TouchableOpacity>
                     <TouchableOpacity
                     onPress={()=>{
                       const newRange = Array.from({ length: 30 - 1 + 1 }, (_, index) => 1 + index);
@@ -104,9 +170,7 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
                       style={{
                         justifyContent: 'space-evenly',
                         alignItems: 'center',
-                        width: 130,
-                        height: 50,
-                        backgroundColor: theme.colors.mainTheme,
+                        // backgroundColor: theme.colors.mainTheme,
                         alignSelf: 'center',
                         borderRadius: 10,
                         flexDirection: 'row',
@@ -114,7 +178,7 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
                         marginBottom: 20,
                       }}
                     >
-                      <Text color={theme.colors.white} fontSize={'md'} fontWeight={'bold'}>
+                      <Text color={theme.colors.mainTheme} fontSize={'md'} fontWeight={'bold'} textDecorationLine={'underline'}>
                         From 1 - 30
                       </Text>
                     </TouchableOpacity>
@@ -126,18 +190,15 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
                       style={{
                         justifyContent: 'space-evenly',
                         alignItems: 'center',
-                        width: 130,
-                        height: 50,
-                        backgroundColor: theme.colors.mainTheme,
+                        // backgroundColor: theme.colors.mainTheme,
                         alignSelf: 'center',
                         borderRadius: 10,
                         flexDirection: 'row',
                         paddingHorizontal: 5,
                         marginBottom: 20,
-                        marginLeft: 15
                       }}
                     >
-                      <Text color={theme.colors.white} fontSize={'md'} fontWeight={'bold'}>
+                      <Text color={theme.colors.mainTheme} fontSize={'md'} fontWeight={'bold'} textDecorationLine={'underline'} >
                         From 31 - {getNextPageNumbers(150, 30)}
                       </Text>
                     </TouchableOpacity>

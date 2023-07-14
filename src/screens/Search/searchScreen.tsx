@@ -1,5 +1,3 @@
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import LottieView from 'lottie-react-native';
 import { Toast } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -11,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import CustomDropdown from '../../components/CustomFormComponents/Dropdown';
 import Form from '../../components/Forms/form';
+import { firestoreDB } from '../../Modules/auth/firebase/firebase';
 import { setResourceLoader } from '../../redux/reducers/userState';
 import { userFirestoreData } from '../../services/fetch';
 import NavigationService from '../../services/NavigationService';
@@ -29,6 +28,7 @@ const Search = () => {
 
   const apiResponse = useSelector((state: any) => state?.bootReducer?.utilis?.courses) || [];
   const userData = useSelector((state: any) => { return state.usersData });
+  const {uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [selectedBranch, setSelectedBranch] = useState("");
@@ -149,7 +149,7 @@ const Search = () => {
   const selectedSubject = async (item: any) => {
     dispatch(setResourceLoader(true));
     try {
-      const userData: any = await firestore().collection('Users').doc(auth().currentUser?.uid).get();
+      const userData: any = await firestoreDB().collection('Users').doc(uid).get();
       const customizedData = {
         university: userData.data().university,
         course: userData.data().course,

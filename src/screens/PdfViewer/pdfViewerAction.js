@@ -1,14 +1,11 @@
 import dynamicLinks from '@react-native-firebase/dynamic-links';
-import storage from '@react-native-firebase/storage';
 import { S3 } from 'aws-sdk';
-import { Buffer } from 'buffer';
-import { resolveStackStyleInput, Toast } from 'native-base';
+import { Toast } from 'native-base';
 import { PDFDocument, PDFPage } from 'pdf-lib';
-import { Alert } from 'react-native'
 import RNFS from 'react-native-fs';
 import { v4 as uuidv4 } from 'uuid';
 
-import { firestoreDB, useAuth } from '../../Modules/auth/firebase/firebase';
+import { firestoreDB } from '../../Modules/auth/firebase/firebase';
 import CrashlyticsService from '../../services/CrashlyticsService';
 import { addItemToDownloadingList, removeItemFromDownloadingList, setDownloadProgress, setIsDownloading, updateDownloadProgress } from './pdfViewerSlice';
 
@@ -201,8 +198,8 @@ class PdfViewerAction {
         }
     };
 
-    static manageBookmarks = async (notesData, status) => {
-        const bookMarkedElement = firestoreDB().collection(`Users/${useAuth()?.currentUser?.uid}/NotesBookmarked`);
+    static manageBookmarks = async (notesData, status, uid) => {
+        const bookMarkedElement = firestoreDB().collection(`Users/${uid}/NotesBookmarked`);
 
         try {
             !status ? await bookMarkedElement.doc(`${notesData?.id}`).set({
@@ -216,37 +213,36 @@ class PdfViewerAction {
         }
     }
 
-    static removeBookmark = async (notesData) => {
+    static removeBookmark = async (notesData, uid) => {
         try {
-            await firestoreDB().collection(`Users/${useAuth()?.currentUser?.uid}/NotesBookmarked`).doc(`${notesData?.id}`).delete();
+            await firestoreDB().collection(`Users/${uid}/NotesBookmarked`).doc(`${notesData?.id}`).delete();
         }
         catch (err) {
             CrashlyticsService.recordError(err);
         }
     }
 
-    static handleCreateFile = (notesData, url, splitPageNumbers, fullPdf, setCurrentProgress, setStartedProcessing, ) => async (dispatch) => {
-        setStartedProcessing(true);
+    static handleCreateFile = async (notesData, url, splitPageNumbers, uid, setCurrentProgress, setStartedProcessing) => {
+        setStartedProcessing(true)
+        setCurrentProgress('Please wait, processing PDF..')
         const uniqueId = uuidv4();
         const outputPath = `Processed-pdfs/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.category}/${uniqueId}/${notesData?.name}`;
         const pdfUrl = `https://link.storjshare.io/s/jvn6w5kdxgoqla5jw3umlrspv7zq/academic-ally/${outputPath}?wrap=0`;
         const pdfPath = `${RNFS.DocumentDirectoryPath}/${notesData?.id}_${notesData?.name}`;
-        setCurrentProgress('Processing file...')
+      
         try {
           if (splitPageNumbers.length === 0) {
-            setCurrentProgress('Uploading and processing file...');
             const uploadResponse = await this.uploadFileAndProcessPdf(url, outputPath, pdfUrl, notesData, uniqueId);
             return uploadResponse;
           } else {
-            setCurrentProgress('File processing and uploading completed successfully.');
             await RNFS.downloadFile({ fromUrl: url, toFile: pdfPath }).promise;
+            setCurrentProgress("Splitting and creating new PDF...")
             const pdfData = await RNFS.readFile(pdfPath, 'base64');
             const pdfDoc = await PDFDocument.load(pdfData);
             const newPdfDoc = await PDFDocument.create();
-      
+            
             for (const pageNumbers of splitPageNumbers) {
               const copiedPage = await newPdfDoc.copyPages(pdfDoc, [pageNumbers - 1]);
-              console.log(pageNumbers);
               newPdfDoc.addPage(copiedPage[0]);
             }
       
@@ -257,17 +253,14 @@ class PdfViewerAction {
               Key: outputPath,
               Body: fileContent,
             };
-            setCurrentProgress('Uploading and processing split files...');
             await this.s3.upload(uploadParams).promise().catch((error) => {
-                setStartedProcessing(false);
+                setCurrentProgress('Cloud upload in progress...')
               return false;
             });
-            console.log(outputPath);
-      
             const uploadResponse = await this.uploadFileAndProcessPdf(
               pdfUrl,
               outputPath,
-              pdfUrl,
+              uid,
               notesData,
               uniqueId,
               splitPageNumbers,
@@ -277,32 +270,28 @@ class PdfViewerAction {
             return uploadResponse;
           }
         } catch (error) {
-            setCurrentProgress(false)
-            setStartedProcessing('Error while splitting and saving PDF:', error);
+          console.error('Error while splitting and saving PDF:', error);
+          setStartedProcessing(false)
           return false;
         }
-      };
+    };
       
-      
-      static uploadFileAndProcessPdf = async (fileUrl, outputPath, pdfUrl, notesData, uniqueId, splitPageNumbers, setCurrentProgress, setStartedProcessing) => {
-        const uid = useAuth().currentUser.uid;
-        setCurrentProgress('Initiating file upload and processing...');
-        return new Promise((resolve, reject) => {
-          fetch(`https://us-central1-academic-ally-app.cloudfunctions.net/initiateChat?userId=${uid}&fileUrl=${fileUrl}`)
-            .then(response => {
-              if (!response.ok) {
-                setStartedProcessing(false)
-                throw new Error(`HTTP error! Status: ${response.status}`);
-              }
-              setCurrentProgress('Initiating file upload and processing...')
-              return {
-                ...response.json(),
-                id: `${notesData.id}_${uniqueId}`
-              };
-            })
-            .then(data => {
-              if (data?.sourceId) {
-                firestoreDB()
+    static uploadFileAndProcessPdf = async (fileUrl, outputPath, uid, notesData, uniqueId, splitPageNumbers, setCurrentProgress, setStartedProcessing) => {
+        return new Promise(async (resolve, reject) => {
+          setCurrentProgress('Processing...')
+          try {
+            const response = await fetch(`https://us-central1-academic-ally-app.cloudfunctions.net/initiateChat?userId=${uid}&fileUrl=${fileUrl}`);
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = {
+                ...await response.json(),
+                docId: `${notesData.id}_${uniqueId}`
+            };
+            setCurrentProgress('Initiating chat...')
+            if (data?.sourceId) {
+              try {
+                await firestoreDB()
                   .collection('Users')
                   .doc(uid)
                   .collection('InitializedPdf')
@@ -323,30 +312,93 @@ class PdfViewerAction {
                     url: outputPath,
                     conversation: [],
                     docId: notesData.id,
-                  })
-                  .then(() => {
-                    setCurrentProgress('Done.');
-                    setStartedProcessing(false)
-                    resolve(data); // Resolve the promise with the API response data
-                  })
-                  .catch(error => {
-                    console.error('Error creating Initialized PDF document:', error);
-                    setStartedProcessing(false)
-                    reject(error);
                   });
-              } else {
+                resolve(data); 
+              } catch (error) {
                 setStartedProcessing(false)
-                resolve(null); // Resolve with null if there is no sourceId in the API response
+                reject({ message: `Error creating Initialized PDF document: ${error.message}` });
               }
-            })
-            .catch(error => {
-              console.error('Error:', error);
+            } else {
               setStartedProcessing(false)
-              reject(error);
-            });
+              resolve(data); 
+            }
+          } catch (error) {
+            setStartedProcessing(false)
+            reject({ message: `Error: ${error.message}` });
+          }
+        });
+    };
+
+    static chatWithPdf = async (docId, message, uid) => {
+        const body = {
+          userId: uid,
+          docId: docId,
+          date: new Date(),
+          message: message
+        };
+      
+        const config = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body)
+        };
+      
+        return new Promise(async (resolve, reject) => {
+          try {
+            const response = await fetch(
+              "https://us-central1-academic-ally-app.cloudfunctions.net/chatMessage",
+              config
+            );
+      
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+      
+            const data = await response.json();
+            resolve(data);
+          } catch (error) {
+            console.error("Error:", error);
+            reject({ message: `Error: ${error.message}` });
+          }
         });
       };
-      
+    static monitorMessageUpdates = (chatId, setMessages, uid) => {
+      const chatRef = firestoreDB().collection('Users').doc(uid).collection('InitializedPdf').doc(chatId);
+    
+      const unsubscribe = chatRef.onSnapshot((snapshot) => {
+        const chatData = snapshot.data();
+        const messages = chatData ? chatData.conversations : [];
+
+        setMessages(messages);
+      });
+    
+      // Return the unsubscribe function to stop listening
+      return unsubscribe;
+    };      
+    
+    static getChatDoc = async (uid, docId) => {
+      try {
+        const docRef = firestoreDB()
+          .collection('Users')
+          .doc(uid)
+          .collection('InitializedPdf')
+          .doc(docId);
+          
+        const docSnapshot = await docRef.get();
+    
+        if (docSnapshot.exists) {
+          const data = docSnapshot?.data();
+          return data;
+        } else {
+          return { message: 'Document not found' };
+        }
+      } catch (error) {
+        console.error(error);
+        return { message: 'Error retrieving document' };
+      }
+    };    
 }
 
 export default PdfViewerAction;

@@ -11,7 +11,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useSelector } from 'react-redux';
 
 import NavigationLayout from '../../layouts/navigationLayout';
-import { useAuth } from '../../Modules/auth/firebase/firebase';
 import UploadAction from '../Upload/uploadAction';
 
 const { width, height } = Dimensions.get('window');
@@ -51,7 +50,7 @@ const UploadPDF = () => {
   const [completed, setCompleted] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const theme = useSelector((state: any) => { return state.theme });
-  const user: any = useAuth().currentUser;
+  const {email, displayName, uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
 
   const capitalize = (s: any) => {
     if (typeof s !== 'string') return ''
@@ -62,9 +61,9 @@ const UploadPDF = () => {
     UploadAction.uploadPDFToFirestore(
       {
         ...userData,
-        uploaderEmail: user.email,
-        uploaderName: user.displayName,
-        uploaderId: user.uid,
+        uploaderEmail: email,
+        uploaderName: displayName,
+        uploaderId: uid,
       }
       , {
         university: userData.university,

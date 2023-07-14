@@ -1,170 +1,201 @@
-import { Avatar, Icon, IconButton } from 'native-base';
-import React, { useEffect, useState } from 'react';
-import { Dimensions, FlatList, KeyboardAvoidingView, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign'
+import { IVSRealTime } from 'aws-sdk';
+import LottieView from 'lottie-react-native';
+import { Avatar, Box, Icon, IconButton } from 'native-base';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Dimensions, FlatList, Image, KeyboardAvoidingView, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import PdfViewerAction from '../../../screens/PdfViewer/pdfViewerAction';
+import { ChatHeader } from './chatHeader';
+import createStyles from './styles';
 
 interface Message {
     id: number;
     text: string;
+    senderId: string;
+    sender: string;
+    image: any;
+    messageText: any
+    message: any
+    loading : boolean,
+    date: any
 }
 
 interface Props {
     open: boolean,
-    close: any
+    close: any,
+    docId: any,
+    choosenDoc: any
 }
 
 const { width, height } = Dimensions.get('screen')
 
-const ChatScreen  = ({open, close}: Props) => {
-    const [messages, setMessages] = useState<Message[]>([]);
+const ChatScreen  = ({open, close, docId, choosenDoc}: Props) => {
+    const doc = choosenDoc[0]
+    const [messages, setMessages] = useState<any>([]);
     const [messageText, setMessageText] = useState('');
-    const test = () => {
-        try {
-            const response = "Welcome! I'm here to assist you with any questions you have. Feel free to ask me anything related to compute engines, processing engines, or any other topic you need help with. Here are a few example questions you can ask:\n\n1. What factors should be considered when choosing a processing engine?\n2. What are the differences between micro-batch processing and one-at-a-time processing?\n3. How do existing practices in an enterprise influence the choice of a processing engine?\n4. Can you provide examples of general-purpose distributed processing engines?\n5. What are the advantages of using Apache Spark for distributed processing?\n6. How do programming language preferences affect the selection of a processing engine?\n7. What are the considerations for achieving low response time in processing engines?\n8. Can you explain the concept of fast data borders in storage?\n\nFeel free to ask any of these questions or any other questions you may have!";
-            const data = response;
-
-            // Extracting welcome message
-            const welcomeMsg = data.split('\n\n')[0];
-
-            // Extracting questions
-            const exampleQuestions = data.split('\n\n')[1];
-            const questionsArray = exampleQuestions.split('\n');
-            // console.log(questionsArray);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
+    const data = {
+        participantPhoto: "https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/logo%2FAlly Bot™.png?alt=media&token=d3b0a0ad-8dc7-4428-84de-4b952f0998ad"
     }
+    const {uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
+    const theme = useSelector((state: any) => { return state.theme; });
+    const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
+
+    const usersPhoto = useSelector((state: any)=> state.usersData.userProfile)
+    const flatListRef: any = useRef(null);
 
     useEffect(() => {
-        test()
+      flatListRef.current.scrollToEnd({ animated: true });
+    }, [data]);
+
+    useEffect(() => {
+        PdfViewerAction.monitorMessageUpdates(docId, setMessages, uid);
     }, [])
 
     const renderMessage = (item: Message) => {
+      const isMyMessage = item?.sender === 'AllyBot' ? false : true;
+      const loading = item?.loading ? true : false
         return (
-            <View style={styles.messageContainer}>
-                <Text style={styles.messageText}>{item.text}</Text>
-            </View>
+            <View
+            style={[
+              styles.flexRow,
+              {alignSelf: isMyMessage ? 'flex-end' : 'flex-start'},
+            ]}>
+            {!isMyMessage &&(
+              <Image source={{
+                uri: data?.participantPhoto
+              }} style={styles.avatarImg} />
+            )}
+            
+            <View style={isMyMessage ? styles.myMssgContainer : styles.mssgContainer}>
+              <View style={styles.textContainer}>
+              {
+              !loading ?
+                <Text
+                  style={[
+                    styles.mssgText,
+                    {color: theme.colors.white},
+                  ]}>
+                  {item?.message}
+                </Text>
+                :
+            <Box >
+            <LottieView
+                source={require('../../../assets/lottie/textLoading.json')}
+                autoPlay
+                loop
+                style={{
+                  width: 80,
+                }}
+              />
+            </Box>
+            }
+              </View>
+            </View> 
+            {isMyMessage && (
+              <Image source={{
+                uri: usersPhoto ? usersPhoto : 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/logo%2FAcademicAllyLogo.png?alt=media&token=0c6b43ea-6d06-49b1-acdf-5516bed88f28'
+              }} style={styles.avatarImg} />
+            )}
+          </View>
         );
     };
 
     const sendMessage = () => {
-        if (messageText.trim() !== '') {
-            const newMessage: Message = {
-                id: messages.length + 1,
-                text: messageText,
-            };
-            setMessages([...messages, newMessage]);
-            setMessageText('');
-        }
+        if (messages?.length > 0){
+          setMessages([...messages, {
+            sender: 'user',
+            message: messageText,
+            date: new Date(),
+          },{
+            sender: 'AllyBot',
+            loading: true,
+            date: new Date()
+          } 
+        ])
+      }
+      else{
+        setMessages([{
+          sender: 'user',
+          message: messageText,
+          date: new Date(),
+        },{
+          sender: 'AllyBot',
+          loading: true,
+          date: new Date()
+        } 
+      ])
+      setMessageText("")
+      }
+      setMessageText("")
+        PdfViewerAction.chatWithPdf(docId, messageText, uid).then((res)=>{
+            console.log("ress==========", res);
+        })
     };
-
     return (
         <Modal >
-            <View style={styles.header}>
-                <Avatar source={{
-                    uri: "https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/logo%2FAcademicAllyLogo.png?alt=media&token=0c6b43ea-6d06-49b1-acdf-5516bed88f28"
-                }} size={'lg'} alignSelf={'center'} />
-                <Text style={styles.headerText} >
-                    Lorem Ipsum
-                </Text>
-                <IconButton borderRadius={'xl'} _hover={{ bg: '#D3D3D3', }} onPress={close} variant="ghost" icon={<Icon as={AntDesign} name="close" size={'lg'} color={'#000'} />} p={0} />
-            </View>
-            <View style={styles.modalContainer}>
-                <KeyboardAvoidingView style={styles.container} keyboardVerticalOffset={10}>
+            <View style={styles.mainContainer}>
+            <ChatHeader name={'AllyBot'} onPress={()=>{close()}}/>
                     <FlatList
                         data={messages}
+                        showsVerticalScrollIndicator={false}
+                        ref={flatListRef}
+                        contentContainerStyle={styles.contentContainer}
                         renderItem={({ item }) => renderMessage(item)}
-                        keyExtractor={(item) => item.id.toString()}
-                        contentContainerStyle={styles.messagesContainer}
-                    // inverted
+                        onContentSizeChange={() =>
+                            flatListRef.current.scrollToEnd({ animated: true })
+                          }
                     />
-                    <View style={styles.inputContainer}>
+                    <View style={styless.inputContainer}>
                         <TextInput
-                            style={styles.input}
+                            style={styless.input}
                             value={messageText}
                             onChangeText={setMessageText}
-                            placeholder="Type your message..."
+                            placeholder="Send a message"
                             placeholderTextColor="#999"
                             multiline
                             underlineColorAndroid="transparent"
                         />
-                        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-                            <Text style={styles.sendButtonText}>Send</Text>
+                        <TouchableOpacity style={styless.sendButton} onPress={sendMessage}>
+                            <Text style={styless.sendButtonText}>Send</Text>
                         </TouchableOpacity>
                     </View>
-                </KeyboardAvoidingView>
             </View>
         </Modal>
     );
 };
 
-const styles = StyleSheet.create({
-    header: {
-        borderBottomWidth: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderTopColor: '#ccc',
-        paddingHorizontal: 8,
-        paddingVertical: 4
-    },
-    headerText: {
-        color: '#000',
-        fontSize: 16,
-        flex: 1,
-        textAlign: 'center',
-    },
-    modalContainer: {
-        flex: 1,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-    },
-    container: {
-        flex: 1,
-    },
-    messagesContainer: {
-        flexGrow: 1,
-        paddingVertical: 16,
-        paddingHorizontal: 12,
-    },
-    messageContainer: {
-        backgroundColor: '#eee',
-        borderRadius: 10,
-        padding: 8,
-        marginBottom: 8,
-    },
-    messageText: {
-        fontSize: 16,
-        color: '#333',
-    },
+const styless = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderTopWidth: 1,
         borderTopColor: '#ccc',
         paddingHorizontal: 8,
-        paddingVertical: 15
+        paddingVertical: 5
     },
     input: {
         flex: 1,
-        height: 40,
-        paddingHorizontal: 10,
+        minHeight: 40,
+        maxHeight: 200,
+        paddingHorizontal: 5,
         fontSize: 16,
         color: '#333',
         backgroundColor: '#f5f5f5',
-        borderRadius: 20,
+        borderRadius: 10,
     },
     sendButton: {
-        marginLeft: 8,
+        marginLeft: 4,
         paddingHorizontal: 16,
         paddingVertical: 8,
-        backgroundColor: '#007AFF',
-        borderRadius: 20,
+        backgroundColor: '#7DC579',
+        borderRadius: 10,
+        height: 50,
+        justifyContent:'center'
     },
     sendButtonText: {
-        fontSize: 16,
+        fontSize: 14,
         color: '#fff',
+        fontWeight: 'bold'
     },
 });
 

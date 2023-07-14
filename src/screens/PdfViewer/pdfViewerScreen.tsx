@@ -1,5 +1,5 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { Alert, Box, Center, CloseIcon, HStack, Icon, IconButton, Modal, Text, VStack } from 'native-base';
+import { Alert, Box, Center, CloseIcon, HStack, Icon, IconButton, Modal, Text, Toast, VStack } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, View } from 'react-native';
 import Pdf from 'react-native-pdf';
@@ -50,6 +50,8 @@ const PdfViewer = () => {
   const [existingChatListModal, setExistingChatListModal] = useState<any>(false)
   const [currentProgress, setCurrentProgress] = useState<any>('started...')
   const [startedProcessing, setStartedProcessing] = useState<any>(false)
+  const [sourceId, setSourceId] = useState<string>('');
+  const [choosenDoc, setchoosenDoc] = useState<any>( null )
 
   const { userData, notesData } = route.params;
   const { university, course, branch, sem, did, uid, uid2, uid3, category } = notesData;
@@ -61,6 +63,7 @@ const PdfViewer = () => {
   const placeholdersValues = [university, course, branch, sem, category, name, subject, did, uid, uid2, uid3];
   const mainUrl = useSelector((state: any) => state.bootReducer.protectedUtils?.mainUrl);
   const secondaryUrl = useSelector((state: any) => state.bootReducer.protectedUtils?.secondaryUrl);
+  const userInfo: any = useSelector((state: any) => state.bootReducer.userInfo);
   const theme = useSelector((state: any) => { return state.theme; });
   const potrait = useSelector((state: any) => state.theme).isPotrait;
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes, landscape), [theme, potrait]);
@@ -127,19 +130,41 @@ const PdfViewer = () => {
   }
 
   const createChat = (pages: any) => {
-      const res = dispatch(PdfViewerAction.handleCreateFile(notesData, url, pages, false, setCurrentProgress, setStartedProcessing)).then((res: any)=>{
-        console.log("hehe",res)
+    const uid = userInfo.uid
+      PdfViewerAction.handleCreateFile(notesData, url, pages, uid, setCurrentProgress, setStartedProcessing).then((res: any)=>{
+        if(res?.sourceId){
+          PdfViewerAction.getChatDoc(uid, res?.docId).then((data)=>{
+            setchoosenDoc([data])
+            setSourceId(res?.docId);
+            setVisibleSpliterModal(false);
+            setViewPdfChatModal(true);
+          })
+        }
+        else{
+          if(res.message){
+            Toast.show({
+              title: `${res.message}`,
+              placement: 'top-right',
+              backgroundColor: theme.colors.redError,
+            });
+          }
+          else{
+            Toast.show({
+              title: 'Error, Initiating chat',
+              placement: 'top-right',
+              backgroundColor: theme.colors.redError,
+            });
+          }
+        }
       })
   }
 
   const handleAddNewChat = () =>{
-    console.log('gghj')
     if (totalPages > 30 ){
       setVisibleSpliterModal(true);
     }
     else {
       const newRange = Array.from({ length: totalPages - 1 + 1 }, (_, index) => 1 + index);
-      console.log(newRange)
     }
   }
   
@@ -153,10 +178,9 @@ const PdfViewer = () => {
         .map((doc) => {
           const data = doc.data();
           const date = data.date.toDate();
-          return { ...data, date };
+          return { ...data, date, docId: doc.id }; 
         })
         .sort((a, b) => b.date - a.date);
-        console.log(documents)
         setExistingChatList(documents)
     })
     .catch((error) => {
@@ -168,9 +192,14 @@ const PdfViewer = () => {
     <RestrictedScreen name={'PdfViewer'} >
       {
         viewPdfChatModal &&
-        <AllyChatBot open={viewPdfChatModal} close={()=> setViewPdfChatModal(false)}  />
+        <AllyChatBot open={viewPdfChatModal} close={()=> setViewPdfChatModal(false)} docId={sourceId} choosenDoc={choosenDoc} />
       }
-      <ExistingChatList existingChatList={existingChatList} open={existingChatListModal} close={()=>{ setExistingChatListModal(false) }} handleAddNewChat={handleAddNewChat} />
+      <ExistingChatList existingChatList={existingChatList} open={existingChatListModal} close={()=>{ setExistingChatListModal(false) }} handleAddNewChat={handleAddNewChat} setDocId={(id: any)=>{
+        setVisibleSpliterModal(false);
+        setViewPdfChatModal(true);
+        setSourceId(id);
+        setchoosenDoc(existingChatList.filter((doc: any)=> doc.docId === id))
+      }} />
       <PdfPageSplitter setSplitPages={setSplitPages} splitPages={splitPages} setVisibleSpliterModal={setVisibleSpliterModal} createChat={createChat} visibleSpliterModal={visibleSpliterModal} filePath={filePath} currentProgress={currentProgress} startedProcessing={startedProcessing} />
       <View style={styles.container}>
         <View style={Display ? styles.headerContainer : { display: 'none' }} >
@@ -186,38 +215,6 @@ const PdfViewer = () => {
            }} variant="ghost" icon={<Icon as={Ionicons} name="md-chatbubble-ellipses-outline" size={'lg'} color={theme.colors.white} />} p={0} />
         </View>
         <View style={styles.body}>
-        <Alert
-            maxW="400"
-            status="info"
-            colorScheme="info"
-            alignItems="flex-start" // Align the content to the top
-          >
-            <VStack space={2} flexShrink={1} w="100%">
-              <HStack flexShrink={1} space={2} alignItems="center" justifyContent="space-between">
-                <HStack flexShrink={1} space={2} alignItems="center">
-                  <Alert.Icon />
-                  <Text fontSize="md" fontWeight="medium" color="coolGray.800">
-                  The PDF contains more than 50 pages.
-                  </Text>
-                </HStack>
-                <IconButton
-                  variant="unstyled"
-                  _focus={{
-                    borderWidth: 0
-                  }}
-                  icon={<CloseIcon size="3" />}
-                  _icon={{
-                    color: "coolGray.600"
-                  }}
-                />
-              </HStack>
-              <Box pl="6" _text={{
-                color: "coolGray.600"
-              }}>
-                Please select a range of pages (maximum 50 pages) you want to chat with.
-              </Box>
-            </VStack>
-          </Alert>
           <View>
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
               {

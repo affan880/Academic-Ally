@@ -11,6 +11,7 @@ const BootSlice = createSlice({
         utilis: null,
         currentVersion: null,
         requiredVersion: null,
+        userInfo: null
     },
     reducers: {
         setAppBooting: (state, action) => {
@@ -33,9 +34,12 @@ const BootSlice = createSlice({
         },
         setRequiredVersion: (state, action) => {
             state.requiredVersion = action.payload;
+        },
+        setUserInfo: (state, action) => {
+            state.userInfo = action.payload
         }
     },
 });
-export const { setAppBooting, setAuthToken, setShowIntro, setCustomClaims, setProtectedUtils, setUtilis, setRequiredVersion, setCurrentVersion } = BootSlice.actions;
+export const { setAppBooting, setAuthToken, setShowIntro, setCustomClaims, setProtectedUtils, setUtilis, setRequiredVersion, setCurrentVersion, setUserInfo } = BootSlice.actions;
 
 export default BootSlice.reducer;

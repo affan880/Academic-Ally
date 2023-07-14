@@ -203,8 +203,7 @@ class UserRequestsActions {
         }
     }
 
-    static rejectRequest = (item, handleRefresh) => async (dispatch) => {
-        const user = firebase.auth().currentUser;
+    static rejectRequest = (item, handleRefresh, user) => async (dispatch) => {
         try {
             this.deleteResource(item, handleRefresh);
             this.deleteFilefromFBStorage(item?.path);

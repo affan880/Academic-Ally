@@ -59,7 +59,6 @@ export const createList = (item) => {
 }
 
 export const AddtoUserUploads = async (notesData) => {
-  console.log(notesData);
   await firestore()
     .collection('Users')
     .doc(`${getCurrentUser().uid}`)

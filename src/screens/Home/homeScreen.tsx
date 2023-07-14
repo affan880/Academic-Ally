@@ -9,7 +9,6 @@ import QuickAccess from '../../components/CustomFormComponents/QuickAccess/Quick
 import CustomLoader from '../../components/loaders/CustomLoader';
 import ResourceLoader from '../../components/loaders/ResourceLoader';
 import ScreenLayout from '../../layouts/screenLayout';
-import { useAuth } from '../../Modules/auth/firebase/firebase';
 import { setDarkTheme, setLightTheme } from '../../redux/reducers/theme';
 import { setCustomLoader, setResourceLoader } from '../../redux/reducers/userState';
 import Recommendation from '../../sections/Home/Recommendation/Recommendation';
@@ -28,14 +27,15 @@ const HomeScreen = () => {
   const usersProfileData = useSelector((state: any) => state.usersData);
   const [listData, setListData] = useState([]);
   const bookmarkList = useSelector((state: any) => state.userBookmarkManagement).userBookMarks;
+  const {uid, photoURL}: any = useSelector((state: any) => state.bootReducer.userInfo);
 
   useEffect(() => {
     colorScheme === 'dark' ? dispatch(setDarkTheme()) : dispatch(setLightTheme());
   }, [colorScheme]);
 
   useEffect(() => {
-    dispatch(HomeAction.loadUserData());
-    dispatch(HomeAction.loadBoomarks(bookmarkList, setListData));
+    dispatch(HomeAction.loadUserData(uid));
+    dispatch(HomeAction.loadBoomarks(bookmarkList, setListData, uid));
     getFcmToken();
   }, []);
 
@@ -102,7 +102,7 @@ const HomeScreen = () => {
                   }}>
                   <Image
                     source={{
-                      uri: usersProfileData.userProfile || useAuth().currentUser?.photoURL,
+                      uri: usersProfileData.userProfile || photoURL,
                     }}
                     style={styles.userImg}
                   />

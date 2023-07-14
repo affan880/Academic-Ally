@@ -1,4 +1,3 @@
-import LottieView from 'lottie-react-native';
 import { Box, Card, Divider, FlatList, Icon, IconButton, Popover, Progress, Text, Toast, useDisclose, View } from 'native-base'
 import React, { useEffect, useMemo, useState } from 'react'
 import { ActivityIndicator, Dimensions, Share, StyleSheet, TextInput, TouchableOpacity, VirtualizedList } from 'react-native'

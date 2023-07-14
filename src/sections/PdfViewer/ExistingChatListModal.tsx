@@ -13,30 +13,31 @@ type Props = {
     existingChatList : any
     open: any,
     close: any,
-    handleAddNewChat: any
+    handleAddNewChat: any,
+    setDocId:any
 }
 
-const ExistingChatList = ({existingChatList, open, close, handleAddNewChat}: Props) => {
-  const [totalPages, setTotalPages] = useState<any>([])
-  const [fromPage, setFromPage] = useState('')
-  const [toPage, setToPage] = useState('')
+const ExistingChatList = ({existingChatList, open, close, handleAddNewChat, setDocId}: Props) => {
   
   const theme = useSelector((state: any) => { return state.theme; });
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   return (
       <Modal isOpen={open} onClose={close} size={'sm'}>
     <Modal.Content size={'sm'}>
-        <Icon as={Ionicons} name="close-outline" alignSelf={'flex-end'} onPress={()=>{
-            close();
-        }}  size="2xl" color={theme.colors.terinaryText} margin={1} />
         <ScrollView showsVerticalScrollIndicator={false} style={{
-            margin: 10
+            marginHorizontal: 4
         }}>
+                  <Icon as={Ionicons} name="close-outline" alignSelf={'flex-end'} onPress={()=>{
+            close();
+        }}  size="2xl" color={theme.colors.terinaryText} />
         <Box>
         {
             existingChatList.map((item : any, index: string)=>{
                 return (
                     <TouchableOpacity
+                    onPress={()=>{
+                      setDocId(item.docId)
+                    }}
                     key={index}
                       style={{
                         justifyContent: 'space-between',

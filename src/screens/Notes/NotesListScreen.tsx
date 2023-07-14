@@ -1,6 +1,5 @@
-import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { RouteProp, useRoute } from '@react-navigation/native'
+import React, { useMemo, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View, VirtualizedList } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 

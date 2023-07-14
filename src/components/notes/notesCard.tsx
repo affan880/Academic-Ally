@@ -104,6 +104,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
   const [ratedList, setRatedList] = useState<any>([]);
   const [submitted, setSubmitted] = useState(false);
   const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
+  const {uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
 
   const userBookmarks = useSelector(
     (state: any) => state.userBookmarkManagement,
@@ -318,7 +319,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
             onPress={() => {
               setSaved(!saved);
               const status = BookmarkStatus(item.did);
-              PdfViewerAction.manageBookmarks(item, status);
+              PdfViewerAction.manageBookmarks(item, status, uid);
               !status
                 ? dispatch(
                   userAddBookMarks({

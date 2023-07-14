@@ -48,6 +48,7 @@ const NotesScreen = React.memo(() => {
 
   const dispatch = useDispatch();
   const theme = useSelector((state: any) => state.theme);
+  const {uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
   const [loading, setLoading] = useState(false);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const searchScreenStyles = useMemo(() => createStylesSearch(theme.colors, theme.sizes), [theme]);
@@ -59,7 +60,7 @@ const NotesScreen = React.memo(() => {
     FlatListRef.current.scrollToOffset({ offset: 0, animated: true })
     dispatch(setResourceLoader(true));
     try {
-      const userData: any = await firestore().collection('Users').doc(auth().currentUser?.uid).get();
+      const userData: any = await firestore().collection('Users').doc(uid).get();
       const customizedData = {
         university: userData.data().university,
         course: userData.data().course,

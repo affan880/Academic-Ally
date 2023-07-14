@@ -30,6 +30,7 @@ const PopOver = ({ url, notesData }: Props) => {
     const [taskId, setTaskId] = useState(null);
     const [progress, setProgress] = useState(0);
     const [saved, setSaved] = useState(false);
+    const {uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
 
     const { subject, category } = notesData;
 
@@ -114,7 +115,7 @@ const PopOver = ({ url, notesData }: Props) => {
                                 onPress={() => {
                                     setSaved(!saved);
                                     const status = BookmarkStatus(notesData.id);
-                                    PdfViewerAction.manageBookmarks(notesData, status);
+                                    PdfViewerAction.manageBookmarks(notesData, status, uid);
                                     !status
                                         ? dispatch(
                                             userAddBookMarks({

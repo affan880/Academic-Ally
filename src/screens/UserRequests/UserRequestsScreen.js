@@ -1,13 +1,10 @@
 import LottieView from 'lottie-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, RefreshControl, Text, Touchable, View } from 'react-native';
-import { TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import NewRequestCard from '../../components/notes/newRequestCard';
-import { listBase, SubjectList } from '../../Modules/auth/firebase/firebase';
-import { data } from '../../utilis/data'
 import createStyles from './styles';
 import UserRequestsActions from './UserRequestsActions';
 

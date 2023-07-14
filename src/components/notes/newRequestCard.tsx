@@ -1,4 +1,3 @@
-import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import { Actionsheet, Box, Card, Center, Checkbox, Icon, IconButton, Modal, Stack, Text, Toast, useDisclose } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -9,8 +8,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
-import { listBase } from '../../Modules/auth/firebase/firebase';
-import { setCustomLoader } from '../../redux/reducers/userState';
 import UserRequestsActions from '../../screens/UserRequests/UserRequestsActions';
 import EditUploadsForm from '../../sections/EditUploadsForm/EditUploadsForm';
 import NavigationService from '../../services/NavigationService';
@@ -64,6 +61,7 @@ const NewRequestCard = ({ item }: any) => {
     const [checked2, setChecked2] = useState(false);
     const [checked3, setChecked3] = useState(false);
     const userFirestoreData = useSelector((state: any) => state.usersData).usersData;
+    const userInfo: any = useSelector((state: any) => state.bootReducer.userInfo);
     const [submitted, setSubmitted] = useState(false);
     const customClaims = useSelector((state: any) => state.bootReducer.customClaims);
     const managerUniversity = customClaims?.branchManagerDetails?.university;
@@ -85,7 +83,7 @@ const NewRequestCard = ({ item }: any) => {
         uploaderEmail: item?.uploaderEmail,
         status: "unverified",
         verifiedBy: userFirestoreData?.name,
-        verifiedByUid: auth().currentUser?.uid,
+        verifiedByUid: userInfo?.uid,
         verifiedByEmail: userFirestoreData?.email,
         notesId: item?.notesId,
         userPfp: item?.pfp || null,
@@ -123,7 +121,7 @@ const NewRequestCard = ({ item }: any) => {
 
     const rejected = () => {
         setLoading(true)
-        dispatch(UserRequestsActions.rejectRequest(data, handleRefresh)).then(() => {
+        dispatch(UserRequestsActions.rejectRequest(data, handleRefresh, userInfo)).then(() => {
             setRejectionModalVisible(false);
         });
     }

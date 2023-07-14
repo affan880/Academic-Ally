@@ -15,7 +15,6 @@ import { version as app_version } from '../../../package.json';
 import { getCurrentUser } from '../../Modules/auth/firebase/firebase';
 import UserRequestsPdfViewer from '../../sections/UserRequests/UserRequestsPdfViewer';
 import NavigationService from '../../services/NavigationService';
-import { useAuthentication } from '../../utilis/hooks/useAuthentication';
 import LoginScreen from '../AuthenticationScreens/Login/LoginScreen';
 import SignUpScreen from '../AuthenticationScreens/SignUp/SignUpScreen';
 import Bookmark from '../Bookmark/Bookmark';
@@ -229,7 +228,6 @@ const AuthStack = () => {
 
 const BootScreen = () => {
     const requiredVersion = useSelector((state) => state.bootReducer.requiredVersion);
-    const { user } = useAuthentication();
     const currentUser = getCurrentUser();
     const dispatch = useDispatch();
     const [compatible, setCompatible] = useState(true);
@@ -250,9 +248,9 @@ const BootScreen = () => {
 
     useEffect(() => {
         try {
-            dispatch(BootActions.loadUtils());
-            dispatch(BootActions.loadUserCustomClaims(user, currentUser));
-            dispatch(BootActions.loadProtectedUtils(user, currentUser))
+            dispatch(BootActions.loadUtils(currentUser));
+            dispatch(BootActions.loadUserCustomClaims(currentUser));
+            dispatch(BootActions.loadProtectedUtils())
         }
         catch (e) {
             console.log('Initialization error', e)
@@ -260,7 +258,7 @@ const BootScreen = () => {
         finally {
             setInitializing(false)
         }
-    }, [user, currentUser]);
+    }, [ currentUser]);
 
     useEffect(() => {
         if (requiredVersion !== null) {
@@ -268,7 +266,7 @@ const BootScreen = () => {
                 setCompatible(false);
             }
         }
-    }, [requiredVersion, currentVersion, user, currentUser]);
+    }, [requiredVersion, currentVersion, currentUser]);
 
     useEffect(() => {
         if (compatible === false) {
@@ -314,7 +312,7 @@ const BootScreen = () => {
     }
 
     else {
-        return (user || currentUser !== null) ? <AppStack /> : <AuthStack />;
+        return (currentUser !== null) ? <AppStack /> : <AuthStack />;
     }
 
 };

@@ -1,5 +1,3 @@
-import { firebase } from "@react-native-firebase/auth";
-
 import { firestoreDB, getCurrentUser } from "../../Modules/auth/firebase/firebase";
 
 class UploadAction {

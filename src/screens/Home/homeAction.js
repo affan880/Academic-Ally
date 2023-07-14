@@ -40,19 +40,16 @@ class HomeAction {
         }
     }
 
-    static loadUserData = () => (dispatch) => {
+    static loadUserData = (uid) => (dispatch) => {
         try {
             firestoreDB()
                 .collection('Users')
-                .doc(useAuth()?.currentUser?.uid)
+                .doc(uid)
                 .get()
                 .then((data) => {
                     dispatch(setUsersData(data?.data()));
                     dispatch(setUsersDataLoaded(true));
                     dispatch(this.fetchNotesList(data?.data()));
-                    // useAuth().currentUser.getIdTokenResult().then((res) => {
-                    //     console.log(res)
-                    // })
                     const subscribeArray = data?.data()?.subscribeArray;
                     const topics = `${data?.data()?.university}_${data?.data()?.course}_${data?.data()?.branch}_${data?.data()?.sem}`;
 
@@ -62,7 +59,7 @@ class HomeAction {
                     else {
                         firestoreDB()
                             .collection('Users')
-                            .doc(useAuth()?.currentUser?.uid)
+                            .doc(uid)
                             .update({
                                 'subscribeArray': [topics]
                             }).catch(error => console.log(error))
@@ -130,11 +127,11 @@ class HomeAction {
         }
     }
 
-    static getBookmarksList = (setListData) => async (dispatch) => {
+    static getBookmarksList = (setListData, uid) => async (dispatch) => {
         try {
             const item = await firestoreDB()
                 .collection('Users')
-                .doc(useAuth().currentUser?.uid)
+                .doc(uid)
                 .collection('NotesBookmarked')
                 .get();
 
@@ -151,7 +148,7 @@ class HomeAction {
         }
     }
 
-    static loadBoomarks = (bookmarkList, setListData) => (dispatch) => {
+    static loadBoomarks = (bookmarkList, setListData, uid) => (dispatch) => {
         try {
             if (bookmarkList?.length === 0) {
                 AsyncStorage.getItem('userBookMarks').then(data => {
@@ -160,7 +157,7 @@ class HomeAction {
                         dispatch(setBookmarks(list));
                     }
                     else {
-                        dispatch(this.getBookmarksList(setListData));
+                        dispatch(this.getBookmarksList(setListData, uid));
                     }
                 });
             }
