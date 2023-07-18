@@ -47,7 +47,12 @@ const createStyles = (theme:any, sizes:any) =>
             minHeight: height * 0.8,
             paddingBottom: height * 0.08,
           },
-          recommendedText: {
+        subContainer:{
+            flexDirection:'row',
+            alignItems:'center',
+            marginBottom:5
+        },
+        recommendedText: {
               color: theme.primaryText,
               lineHeight: height * 0.04,
               fontSize: sizes.title,
@@ -55,6 +60,7 @@ const createStyles = (theme:any, sizes:any) =>
               fontFamily: 'DM Sans',
               paddingLeft: 20,
               fontStyle: 'normal',
+              marginRight:15
             }
     })
 

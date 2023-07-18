@@ -1,12 +1,15 @@
+import { Icon } from 'native-base';
 import React, { useMemo } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+// import {listBase, list, QueryList, SubjectList} from '../../../Modules/auth/firebase/firebase';
+// import { FontAwesome5 } from '../../../history';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useSelector } from 'react-redux';
 
 import { Notes, OtherRes, Qp, Syllabus } from '../../../assets/images/icons';
+import NavigationService from '../../../services/NavigationService';
 import createStyles from './styles';
-
-// import {listBase, list, QueryList, SubjectList} from '../../../Modules/auth/firebase/firebase';
-// import { notes } from '../../../utilis/data';
 
 type Props = {
   selected: string;
@@ -22,47 +25,38 @@ const QuickAccess = ({ selected, setSelectedCategory }: Props) => {
   return (
     <View style={styles.categories}>
       <TouchableOpacity style={styles.itemContainer} onPress={() => {
-        // QueryList(notes);
-        // listBase( notes )
-        // SubjectList(notes);
-        setSelectedCategory('Syllabus');
+        NavigationService.navigate(NavigationService.screens.AllyBot);
       }}>
-        <View style={
-          selected === 'Syllabus' ? [styles.syllabusIconContainer, styles.selectedIconContainer] : styles.syllabusIconContainer
-        }>
-          <Syllabus />
+        <View style={styles.syllabusIconContainer}>
+          <Icon as={Ionicons} name="chatbubble-sharp" size="lg" color={theme.colors.white} />
         </View>
-        <Text style={styles.iconLabel}>Syllabus</Text>
+        <Text style={styles.iconLabel}>AllyBot</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.itemContainer} onPress={() => {
-        setSelectedCategory('Notes');
+         NavigationService.navigate(NavigationService.screens.SeekHub)
       }} >
-        <View style={
-          selected === 'Notes' ? [styles.notesIconContainer, styles.selectedIconContainer] : styles.notesIconContainer
-        }>
-          <Notes />
+        <View style={styles.notesIconContainer}>
+      <Icon as={FontAwesome5} name="hands-helping" size="lg" color={theme.colors.white} />
         </View>
-        <Text style={styles.iconLabel}>Notes</Text>
+        <Text style={styles.iconLabel}>SeekHub</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.itemContainer} onPress={() => {
         setSelectedCategory('QuestionPapers');
       }} >
-        <View style={
-          selected === 'QuestionPapers' ? [styles.questionsIconContainer, styles.selectedIconContainer] : styles.questionsIconContainer
-        }>
-          <Qp />
+        <View style={styles.questionsIconContainer}>
+          {/* <Qp /> */}
+        <Icon as={FontAwesome5} name="history" size="lg" color={theme.colors.white} />
         </View>
-        <Text style={styles.iconLabel}>QP's</Text>
+        <Text style={styles.iconLabel}>Recents</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.itemContainer} onPress={() => {
         setSelectedCategory('OtherResources');
       }}>
-        <View style={
-          selected === 'OtherResources' ? [styles.otherResourcesIconContainer, styles.selectedIconContainer] : styles.otherResourcesIconContainer
-        }>
-          <OtherRes />
+        <View style={styles.otherResourcesIconContainer}>
+          {/* <OtherRes /> */}
+        <Icon as={Ionicons} name="ios-paper-plane" size="lg" color={theme.colors.white} />
         </View>
-        <Text style={styles.iconLabel}>Others</Text>
+        <Text style={styles.iconLabel}>Downloads</Text>
       </TouchableOpacity>
     </View>
   );

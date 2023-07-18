@@ -232,7 +232,16 @@ class PdfViewerAction {
       
         try {
           if (splitPageNumbers.length === 0) {
-            const uploadResponse = await this.uploadFileAndProcessPdf(url, outputPath, pdfUrl, notesData, uniqueId);
+            const uploadResponse = await this.uploadFileAndProcessPdf(
+              pdfUrl,
+              outputPath,
+              uid,
+              notesData,
+              uniqueId,
+              splitPageNumbers,
+              setCurrentProgress,
+              setStartedProcessing
+            );;
             return uploadResponse;
           } else {
             await RNFS.downloadFile({ fromUrl: url, toFile: pdfPath }).promise;

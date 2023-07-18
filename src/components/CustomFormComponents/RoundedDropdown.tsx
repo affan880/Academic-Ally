@@ -8,99 +8,71 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useSelector } from 'react-redux';
 
 type Props = {
-  leftIcon: any;
   placeholder: string;
-  handlePasswordVisibility?: any;
   name: string;
-  security?: boolean;
   data?: any;
   width?: any;
-  other?: any;
   handleOptions?: any;
   searchbar?: boolean;
-  mode?: string
+  color: string
 };
 
 const { width, height } = Dimensions.get('window');
-export const CustomDropdown = ({
-  leftIcon,
+export const RoundedDropdown = ({
   placeholder,
   name,
   data,
   width,
   handleOptions,
   searchbar,
-  mode,
-  ...other
+  color
 }: Props) => {
   const dropdownHeight = (length: number) => {
+    const h = height * 0.053
     switch (length) {
       case 1:
-        return height * 0.073 * (length + 1);
+        return h * (length + 1);
       case 2:
-        return height * 0.073 * (length + 1);
+        return h * (length + 1);
       case 3:
-        return height * 0.073 * (length + 1);
+        return h * (length + 1);
       case 4:
-        return height * 0.073 * (length + 1);
+        return h * (length + 1);
       case 5:
-        return height * 0.073 * (length + 1);
+        return h * (length + 1);
       default:
-        return height * 0.073 * 6;
+        return h * 6;
     }
   };
 
   const theme = useSelector((state: any) => {
     return state.theme;
   });
-  const { values, errors, touched, setFieldValue, setFieldTouched } =
-    useFormikContext<any>();
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [showInput, setShowInput] = useState(false);
-
-  const renderLabel = () => {
-    if (values[name] || isFocus) {
-      return (
-        <Text
-          style={[
-            styles.label,
-            isFocus && { color: '#FFFFFF' },
-          ]}>
-          {name.charAt(0).toUpperCase() + name.slice(1)}
-        </Text>
-      );
-    }
-    return null;
-  };
 
   return (
     <View style={styles.container}>
       <View>
-        {renderLabel()}
         <Dropdown
           style={[
             styles.input,
-            { width: width, backgroundColor: theme.colors.quaternary },
-            touched[name] && errors[name]
-              ? {
-                borderColor: '#FF2E00',
-                borderWidth: 2,
-              }
-              : null,
+            { width: width, backgroundColor: theme.colors.quaternary, borderColor: color },
             {
-              borderRadius: 10,
+              borderRadius: 15,
             },
           ]}
           placeholderStyle={[
             styles.placeholderStyle,
-            { color: theme.colors.primaryText },
+            { color: color },
           ]}
           selectedTextStyle={[
             styles.selectedTextStyle,
             {
-              color: theme.colors.primaryText,
+              width: 120,
+              color: color,
+              fontWeight:'600',
+              flexWrap: 'nowrap'
             },
           ]}
           inputSearchStyle={styles.inputSearchStyle}
@@ -114,97 +86,65 @@ export const CustomDropdown = ({
             );
           }}
           maxHeight={300}
-          mode={(data?.length > 4 || mode ) ? 'modal' : 'default'}
+          mode={'default'}
           labelField="label"
           valueField="value"
-          placeholder={value ? value: placeholder}
+          placeholder={value ? value : placeholder}
           searchPlaceholder="Search..."
           value={value}
           showsVerticalScrollIndicator={false}
           onFocus={() => setIsFocus(true)}
           onBlur={() => {
-            setIsFocus(false);
-            setFieldTouched(name);
+            setIsFocus(false)
+          }}
+          onConfirmSelectItem={item => {
+            console.log('it',item)
+            handleOptions(item)
           }}
           dropdownPosition="auto"
-          {...other}
           containerStyle={{
             borderRadius: 10,
             elevation: 3,
             height: dropdownHeight(data.length),
           }}
           itemContainerStyle={{
-            // backgroundColor: theme.colors.quaternary,
             borderBottomWidth: 1,
             borderBottomColor: '#e5e5e5',
             borderRadius: 10,
           }}
           itemTextStyle={{
-            fontSize: height * 0.0205,
+            fontSize: height * 0.0155,
             color: theme.colors.terinaryText,
+            fontWeight: '600'
           }}
           onChange={(item: any) => {
-            setValue(item.value);
-            setIsFocus(false);
-            setFieldValue(name, item.value);
-            handleOptions(item)
+            handleOptions(item?.value);
+            setValue(item?.value);
           }}
           renderRightIcon={() => (
             <Feather
               style={styles.icon}
-              color={isFocus ? '#6360FF' : '#706f6f'}
+              color={color}
               name={isFocus ? 'chevron-up' : 'chevron-down'}
               size={height * 0.028}
             />
           )}
-          renderLeftIcon={() =>
-            name === 'university' ? (
-              <FontAwesome
-                style={styles.icon}
-                color={isFocus ? '#6360FF' : theme.colors.primaryText}
-                name={'university'}
-                size={height * 0.025}
-              />
-            ) : (
-              <AntDesign
-                style={styles.icon}
-                color={isFocus ? '#6360FF' : theme.colors.primaryText}
-                name={leftIcon}
-                size={height * 0.025}
-              />
-            )
-          }
         />
       </View>
-      {touched[name] && errors[name] && values[name] === '' ? (
-        <Text
-          style={{
-            color: theme.colors.primaryText,
-            fontSize: height * 0.015,
-            fontFamily: 'Poppins-Regular',
-            alignSelf: 'flex-start',
-            marginLeft: 0,
-            fontWeight: 'bold',
-          }}>
-          *{errors[name] + ' '}
-        </Text>
-      ) : null}
     </View>
   );
 };
 
-export default CustomDropdown;
+export default RoundedDropdown;
 
 const styles = StyleSheet.create({
   input: {
     backgroundColor: '#000',
-    height: height * 0.07,
-    borderRadius: 10,
-    elevation: 3,
+    height: height * 0.05,
+    borderRadius: 15,
     paddingLeft: 20,
-    marginTop: 10,
     alignItems: 'center',
-    color: '#000000',
+    borderWidth:1,
   },
   textInput: {
     width: 250,
@@ -221,7 +161,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 10,
     paddingHorizontal: 0,
-    fontSize: height * 0.0135,
+    fontSize: height * 0.0105,
     color: '#000000',
   },
   icon: {
@@ -234,15 +174,16 @@ const styles = StyleSheet.create({
     top: 4,
     zIndex: 999,
     paddingHorizontal: 8,
-    fontSize: height * 0.018,
+    fontSize: height * 0.0185,
     borderRadius: 5,
     color: '#FFFFFF',
   },
   placeholderStyle: {
     fontSize: width * 0.035,
+    fontWeight: '600'
   },
   selectedTextStyle: {
-    fontSize: height * 0.018,
+    fontSize: height * 0.014,
     flexWrap: 'nowrap',
   },
   iconStyle: {

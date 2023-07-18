@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TextProps, TouchableOpacity, View } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
+import { MultiSelect } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -18,7 +18,6 @@ type Props = {
   other?: any;
   handleOptions?: any;
   searchbar?: boolean;
-  mode?: string
 };
 
 const { width, height } = Dimensions.get('window');
@@ -30,7 +29,6 @@ export const CustomDropdown = ({
   width,
   handleOptions,
   searchbar,
-  mode,
   ...other
 }: Props) => {
   const dropdownHeight = (length: number) => {
@@ -55,10 +53,15 @@ export const CustomDropdown = ({
   });
   const { values, errors, touched, setFieldValue, setFieldTouched } =
     useFormikContext<any>();
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState([]);
   const [isFocus, setIsFocus] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [showInput, setShowInput] = useState(false);
+  const [selected, setSelected] = useState([]);
+
+  useEffect(()=>{
+    if(value.length!== 0){
+      console.log("5555", value)
+    }
+  },[isFocus])
 
   const renderLabel = () => {
     if (values[name] || isFocus) {
@@ -79,7 +82,7 @@ export const CustomDropdown = ({
     <View style={styles.container}>
       <View>
         {renderLabel()}
-        <Dropdown
+        <MultiSelect
           style={[
             styles.input,
             { width: width, backgroundColor: theme.colors.quaternary },
@@ -114,18 +117,26 @@ export const CustomDropdown = ({
             );
           }}
           maxHeight={300}
-          mode={(data?.length > 4 || mode ) ? 'modal' : 'default'}
+          mode={data.length > 4 ? 'modal' : 'default'}
           labelField="label"
           valueField="value"
-          placeholder={value ? value: placeholder}
+          placeholder={!isFocus ? placeholder : ''}
           searchPlaceholder="Search..."
           value={value}
           showsVerticalScrollIndicator={false}
           onFocus={() => setIsFocus(true)}
-          onBlur={() => {
-            setIsFocus(false);
-            setFieldTouched(name);
-          }}
+          // onBlur={() => {
+          //   setIsFocus(false);
+          //   setFieldTouched(name);
+          //   value !== null || value !== '' || value !== undefined
+          //     ? handleOptions(value)
+          //     : null;
+          // }}
+          // onConfirmSelectItem={item => {
+          //   value !== null || value !== '' || value !== undefined
+          //     ? handleOptions(value)
+          //     : null;
+          // }}
           dropdownPosition="auto"
           {...other}
           containerStyle={{
@@ -144,16 +155,24 @@ export const CustomDropdown = ({
             color: theme.colors.terinaryText,
           }}
           onChange={(item: any) => {
-            setValue(item.value);
             setIsFocus(false);
-            setFieldValue(name, item.value);
-            handleOptions(item)
+            setValue(item)
+            setFieldValue(name,value);
+            handleOptions(value);
           }}
+          renderSelectedItem={(item, unSelect) => (
+            <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+              <View style={styles.selectedStyle}>
+                <Text style={styles.textSelectedStyle}>{item.label}</Text>
+                <AntDesign color="black" name="delete" size={17} />
+              </View>
+            </TouchableOpacity>
+          )}
           renderRightIcon={() => (
             <Feather
               style={styles.icon}
               color={isFocus ? '#6360FF' : '#706f6f'}
-              name={isFocus ? 'chevron-up' : 'chevron-down'}
+              name={'chevron-down'}
               size={height * 0.028}
             />
           )}
@@ -196,6 +215,36 @@ export const CustomDropdown = ({
 export default CustomDropdown;
 
 const styles = StyleSheet.create({
+  item: {
+    padding: 17,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  selectedStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 14,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    marginTop: 8,
+    marginRight: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+
+    elevation: 2,
+  },
+  textSelectedStyle: {
+    marginRight: 5,
+    fontSize: 16,
+  },
   input: {
     backgroundColor: '#000',
     height: height * 0.07,

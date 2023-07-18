@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import QuickAccess from '../../components/CustomFormComponents/QuickAccess/QuickAccess';
+import RoundedDropdown from '../../components/CustomFormComponents/RoundedDropdown';
 import CustomLoader from '../../components/loaders/CustomLoader';
 import ResourceLoader from '../../components/loaders/ResourceLoader';
 import ScreenLayout from '../../layouts/screenLayout';
@@ -76,7 +77,7 @@ const HomeScreen = () => {
     const unsubscribe = dynamicLinks().onLink((link: any) => handleDynamicLink(link));
     return () => unsubscribe();
   }, []);
-
+  
   return (
     <ScreenLayout name="Home">
       <ResourceLoader />
@@ -146,7 +147,20 @@ const HomeScreen = () => {
           }}
         />
         <View style={styles.recommendedContainer}>
-          <Text style={styles.recommendedText}>Recommended</Text>
+          <View style={styles.subContainer}>
+            <Text style={styles.recommendedText}>Recommended</Text>
+          <RoundedDropdown name='drop' width={160} data={[
+            { label: 'All', value: 'All' },
+            { label: 'Notes', value: 'Notes' },
+            { label: 'Syllabus', value: 'Syllabus' },
+            { label: 'Question Papers', value: 'QuestionPapers' },
+            { label: 'Other Resources', value: 'OtherResources' },
+          ]} placeholder='Resource Type' searchbar = {false} color={theme.colors.tertiary}
+            handleOptions={(item: any)=>{
+              setSelectedCategory(item)
+            }}
+          />
+          </View>
           <View>
             <Recommendation
               selected={selectedCategory}

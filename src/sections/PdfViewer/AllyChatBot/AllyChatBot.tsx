@@ -31,7 +31,6 @@ interface Props {
 const { width, height } = Dimensions.get('screen')
 
 const ChatScreen  = ({open, close, docId, choosenDoc}: Props) => {
-    const doc = choosenDoc[0]
     const [messages, setMessages] = useState<any>([]);
     const [messageText, setMessageText] = useState('');
     const data = {
@@ -44,9 +43,9 @@ const ChatScreen  = ({open, close, docId, choosenDoc}: Props) => {
     const usersPhoto = useSelector((state: any)=> state.usersData.userProfile)
     const flatListRef: any = useRef(null);
 
-    useEffect(() => {
-      flatListRef.current.scrollToEnd({ animated: true });
-    }, [data]);
+    // useEffect(() => {
+    //   flatListRef.current.scrollToEnd({ animated: true });
+    // }, [data]);
 
     useEffect(() => {
         PdfViewerAction.monitorMessageUpdates(docId, setMessages, uid);
@@ -137,14 +136,15 @@ const ChatScreen  = ({open, close, docId, choosenDoc}: Props) => {
             <View style={styles.mainContainer}>
             <ChatHeader name={'AllyBot'} onPress={()=>{close()}}/>
                     <FlatList
-                        data={messages}
+                        data={messages?.reverse()}
                         showsVerticalScrollIndicator={false}
-                        ref={flatListRef}
+                        // ref={flatListRef}
                         contentContainerStyle={styles.contentContainer}
                         renderItem={({ item }) => renderMessage(item)}
-                        onContentSizeChange={() =>
-                            flatListRef.current.scrollToEnd({ animated: true })
-                          }
+                        // onContentSizeChange={() =>
+                        //     flatListRef.current.scrollToEnd({ animated: true })
+                        //   }
+                          inverted
                     />
                     <View style={styless.inputContainer}>
                         <TextInput

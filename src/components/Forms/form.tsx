@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
 import { Formik } from 'formik'
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 
 type Props = {
   children: any,
@@ -12,7 +12,7 @@ type Props = {
 
 const Form = ({ children, initialValues, onSubmit, validationSchema, innerRef }: Props) => {
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} innerRef={innerRef} >
+    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} innerRef={innerRef} enableReinitialize={true} >
       {() => (
         <>
           {children}

@@ -21,7 +21,7 @@ type MyStackParamList = {
 const Profile = () => {
   const theme = useSelector((state: any) => { return state.theme });
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
-  const {photoURL}: any = useSelector((state: any) => state.bootReducer.userInfo);
+  const {photoURL}: any = useSelector((state: any) => state.bootReducer.userInfo)|| "";
   const [isOpen, setIsOpen] = React.useState(false);
   const [logOutAlert, setLogOutAlert] = useState(false);
   const userImage = useSelector((state: any) => {

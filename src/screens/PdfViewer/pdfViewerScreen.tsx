@@ -121,17 +121,19 @@ const PdfViewer = () => {
     if(existingChatList?.length > 0){
       setExistingChatListModal(true)
     }
-    else if (totalPages > 30 && existingChatList.length === 0){
+    else if (totalPages > 30 && existingChatList?.length === 0){
       setVisibleSpliterModal(true);
     }
-    else {
-      setViewPdfChatModal(true);
+    else if(totalPages < 30 && existingChatList?.length === 0 ){
+      createChat([])
+      setVisibleSpliterModal(true);
     }
   }
 
   const createChat = (pages: any) => {
     const uid = userInfo.uid
       PdfViewerAction.handleCreateFile(notesData, url, pages, uid, setCurrentProgress, setStartedProcessing).then((res: any)=>{
+        console.log('res', res)
         if(res?.sourceId){
           PdfViewerAction.getChatDoc(uid, res?.docId).then((data)=>{
             setchoosenDoc([data])
@@ -155,6 +157,8 @@ const PdfViewer = () => {
               backgroundColor: theme.colors.redError,
             });
           }
+          setVisibleSpliterModal(false);
+            setViewPdfChatModal(false);
         }
       })
   }
@@ -169,7 +173,7 @@ const PdfViewer = () => {
   }
   
   useEffect(()=>{
-    firestoreDB().collection('Users').doc('HES4HzSncnfg0s2F5jvV7Nxrqba2').collection('InitializedPdf')
+    firestoreDB().collection('Users').doc(userInfo.uid).collection('InitializedPdf')
     .where('docId', '>=', notesData.id)
     .where('docId', '<=', `${notesData.id}\uf8ff`)
     .get()

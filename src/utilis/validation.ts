@@ -74,3 +74,10 @@ export const searchFilterValidationSchema = yup.object().shape({
   sem: yup.string(),
   branch: yup.string(),
 });
+
+export const requestResource = yup.object().shape({
+  subject: yup.string(),
+  resourceType: yup.string(),
+  sem: yup.string(),
+  branch: yup.string()
+});

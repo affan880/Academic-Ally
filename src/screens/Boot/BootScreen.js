@@ -15,6 +15,7 @@ import { version as app_version } from '../../../package.json';
 import { getCurrentUser } from '../../Modules/auth/firebase/firebase';
 import UserRequestsPdfViewer from '../../sections/UserRequests/UserRequestsPdfViewer';
 import NavigationService from '../../services/NavigationService';
+import AllyBotScreen from '../AllyBot/AllyBotScreen';
 import LoginScreen from '../AuthenticationScreens/Login/LoginScreen';
 import SignUpScreen from '../AuthenticationScreens/SignUp/SignUpScreen';
 import Bookmark from '../Bookmark/Bookmark';
@@ -30,6 +31,7 @@ import AboutUs from '../Profile/Support/AboutUs';
 import PrivacyPolicy from '../Profile/Support/PrivacyPolicy';
 import TermsAndConditions from '../Profile/Support/Terms&Conditions';
 import Search from '../Search/searchScreen';
+import SeekHubScreen from '../SeekHub/SeekHubScreen';
 import SubjectResources from '../SubjectResources/SubjectResourcesScreen';
 import Upload from '../Upload/uploadScreen';
 import UserRequestsScreen from '../UserRequests/UserRequestsScreen';
@@ -192,6 +194,8 @@ const AppStack = () => {
             <Stack.Screen name={NavigationService.screens.AboutUs} component={AboutUs} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.UserRequestsPdfViewer} component={UserRequestsPdfViewer} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.Download} component={DownloadScreen} options={{ headerShown: false }} />
+            <Stack.Screen name={NavigationService.screens.AllyBot} component={AllyBotScreen} options={{ headerShown: false }} />
+            <Stack.Screen name={NavigationService.screens.SeekHub} component={SeekHubScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 };

@@ -3,7 +3,7 @@ import React from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type Props = {
-  title: string;
+  title: any;
   onPress?: () => any;
   color?: string;
   width?: any;
@@ -24,10 +24,10 @@ export const CustomBtn = ({ title, onPress, color, width }: Props) => {
   );
 };
 
-export const NavBtn = ({ title, onPress, color }: Props) => {
+export const NavBtn = ({ title, onPress, color, width }: Props) => {
   return (
     <TouchableOpacity
-      style={[styles.button, { backgroundColor: color }]}
+      style={[styles.button, { backgroundColor: color }, width && { width: width }]}
       onPress={onPress}
       onMagicTap={onPress}>
       <Text style={styles.buttonText}>{title}</Text>

@@ -5,7 +5,6 @@ export const createUserDataSlice = createSlice({
   name: 'RecentsManagement',
   initialState: {
     RecentViews: [],
-    RecentPdfChats: [],
   },
   reducers: {
     userAddToRecentsStart: (state, action) => {
@@ -45,12 +44,6 @@ export const createUserDataSlice = createSlice({
         JSON.stringify(state.RecentViews),
       );
     },
-
-    updateRecentChats: (state, action) => {
-      if (state.RecentPdfChats?.length > 0) {
-        state.RecentPdfChats = action.payload 
-      }
-    },
   },
 });
 
@@ -59,7 +52,6 @@ export const {
   userAddToRecents,
   userRemoveFromRecents,
   userClearRecents,
-  updateRecentChats
 } = createUserDataSlice.actions;
 
 export default createUserDataSlice.reducer;
