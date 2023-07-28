@@ -35,9 +35,11 @@ const HomeScreen = () => {
   }, [colorScheme]);
 
   useEffect(() => {
-    dispatch(HomeAction.loadUserData(uid));
-    dispatch(HomeAction.loadBoomarks(bookmarkList, setListData, uid));
-    getFcmToken();
+    if(uid !== null){
+      dispatch(HomeAction.loadUserData(uid));
+      dispatch(HomeAction.loadBoomarks(bookmarkList, setListData, uid));
+      getFcmToken();
+    }
   }, []);
 
   const handleDynamicLink = (link: string) => {
@@ -46,7 +48,6 @@ const HomeScreen = () => {
       if (userData && notesData) {
         if (screen === 'SubjectResourcesScreen') {
           dispatch(setCustomLoader(true));
-
           dispatch(HomeAction.getSubjectResources(userData, { subject: notesData.subject, subjectName: notesData.subject }));
         } else {
           dispatch(setCustomLoader(true));
@@ -54,6 +55,7 @@ const HomeScreen = () => {
             userData,
             notesData,
           });
+          console.log("hereee")
         }
       }
     }

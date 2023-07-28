@@ -266,9 +266,9 @@ class UtilityService {
             name: parts[11],
             units: parts[10],
             university: parts[4],
+            id: parts[12]
         };
         const screen = parts[parts.length - 1];
-
         return { userData, notesData, screen };
     }
 

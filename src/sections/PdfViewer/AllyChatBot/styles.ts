@@ -40,6 +40,7 @@ const createStyles = (theme: any, sizes: any) =>
       height: height(5),
       width: height(5),
       borderRadius: height(4),
+      marginLeft: width(2)
     },
     flexRow: {
       flexDirection: 'row',
@@ -118,9 +119,9 @@ const createStyles = (theme: any, sizes: any) =>
     },
     nameText: {
       fontFamily: 'semiBold',
-      color: theme.black,
+      color: theme.white,
       fontSize: width(4.5),
-      marginLeft: width(3),
+      marginLeft: width(5),
     },
     status: {
       height: height(1.5),

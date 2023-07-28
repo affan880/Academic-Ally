@@ -1,6 +1,7 @@
 import { Actionsheet, Box, HStack, Icon, Text } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
+import RNFS from 'react-native-fs'
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -72,11 +73,17 @@ const RecentlyVisited = ({ toggleOpen, toggleClose, userData, notesData }: Props
                                     width={'100%'}
                                     justifyContent={'space-between'}>
                                     <Text textAlign={'left'} width={'90%'} color={theme.colors.primaryText} >
-                                        {UtilityService.removeString(item.name)}
+                                        {UtilityService.removeString(item?.name)}
                                     </Text>
                                     <TouchableOpacity
                                         onPress={() => {
                                             dispatch(userRemoveFromRecents(item));
+                                            const remove = async () =>{
+                                                const exists = await RNFS.exists(item?.filePath);
+                                                if (exists) {
+                                                  await RNFS.unlink(item?.filePath);
+                                                } 
+                                            } 
                                         }}>
                                         <Icon
                                             as={Entypo}

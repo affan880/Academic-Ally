@@ -1,4 +1,3 @@
-import { IVSRealTime } from 'aws-sdk';
 import LottieView from 'lottie-react-native';
 import { Avatar, Box, Icon, IconButton } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -133,7 +132,7 @@ const ChatScreen  = ({open, close, docId, choosenDoc}: Props) => {
     };
     return (
         <Modal >
-            <View style={styles.mainContainer}>
+            <View style={[styles.mainContainer, {backgroundColor: theme.colors.quaternary}]}>
             <ChatHeader name={'AllyBot'} onPress={()=>{close()}}/>
                     <FlatList
                         data={messages?.reverse()}

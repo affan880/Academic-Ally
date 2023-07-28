@@ -35,7 +35,7 @@ export const ChatHeader = ({
   const theme = useSelector((state) => { return state.theme; });
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   return (
-    <View style={styles.chatHeader}>
+    <View style={[styles.chatHeader, {backgroundColor: theme.colors.primary}]}>
         <IconButton
             borderRadius={'full'}
             _hover={{
@@ -46,7 +46,7 @@ export const ChatHeader = ({
             }}
             onPress={onPress}
             variant="ghost"
-            icon={<Icon as={Ionicons} name="chevron-back-outline" size={'lg'} color={theme.colors.black} />}
+            icon={<Icon as={Ionicons} name="chevron-back-outline" size={'lg'} color={theme.colors.white} />}
             p={0}
         />
         <Image

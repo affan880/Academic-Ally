@@ -21,7 +21,7 @@ import SeekHubActions from './SeekHubAction'
 type Props = {}
 
 const SeekHubScreen = (props: Props) => {
-    const {uid}: any = useSelector((state: any)=> state.bootReducer.userInfo);
+    const {uid, photoURL}: any = useSelector((state: any)=> state.bootReducer.userInfo);
     const userFirestoreData = useSelector((state: any) => { return state.usersData });
     const theme = useSelector((state: any) => state.theme);
     const {isOpen, onClose, onOpen, onToggle} = useDisclose();
@@ -225,7 +225,7 @@ const SeekHubScreen = (props: Props) => {
                     onSubmit={values => {
                       onClose();
                       dispatch(setCustomLoader(true));
-                      dispatch(SeekHubActions.submitNewRequest(uid, userFirestoreData.usersData, values))
+                      dispatch(SeekHubActions.submitNewRequest(uid, userFirestoreData.usersData, values, photoURL))
                     }}
                     >
                       <Step1/>

@@ -101,6 +101,7 @@ const PdfViewer = () => {
   useEffect(() => {
     if (url === null || url === undefined || url === "") {
       PdfViewerAction.checkIfFileExists(notesData).then((res: any) => {
+        console.log("heehhee", res)
         if (res) {
           setUrl(res)
         }
@@ -133,7 +134,6 @@ const PdfViewer = () => {
   const createChat = (pages: any) => {
     const uid = userInfo.uid
       PdfViewerAction.handleCreateFile(notesData, url, pages, uid, setCurrentProgress, setStartedProcessing).then((res: any)=>{
-        console.log('res', res)
         if(res?.sourceId){
           PdfViewerAction.getChatDoc(uid, res?.docId).then((data)=>{
             setchoosenDoc([data])
@@ -172,25 +172,28 @@ const PdfViewer = () => {
     }
   }
   
-  useEffect(()=>{
-    firestoreDB().collection('Users').doc(userInfo.uid).collection('InitializedPdf')
-    .where('docId', '>=', notesData.id)
-    .where('docId', '<=', `${notesData.id}\uf8ff`)
-    .get()
-    .then((querySnapshot) => {
-      const documents = querySnapshot.docs
-        .map((doc) => {
-          const data = doc.data();
-          const date = data.date.toDate();
-          return { ...data, date, docId: doc.id }; 
-        })
-        .sort((a, b) => b.date - a.date);
-        setExistingChatList(documents)
-    })
-    .catch((error) => {
-      console.error('Error getting documents:', error);
-    });
-  },[])
+  useEffect(() => {
+    if(notesData?.id){
+    const unsubscribe = firestoreDB()
+      .collection('Users')
+      .doc(userInfo.uid)
+      .collection('InitializedPdf')
+      .where('docId', '>=', notesData?.id)
+      .where('docId', '<=', `${notesData?.id}\uf8ff`)
+      .onSnapshot((querySnapshot) => {
+        const documents = querySnapshot?.docs
+          .map((doc) => {
+            const data = doc.data();
+            const date = data.date.toDate();
+            return { ...data, date, docId: doc.id }; 
+          })
+          .sort((a, b) => b.date - a.date);
+        setExistingChatList(documents);
+      });
+    return () => unsubscribe();
+    }
+  }, []);
+  
 
   return (
     <RestrictedScreen name={'PdfViewer'} >
@@ -263,7 +266,7 @@ const PdfViewer = () => {
                     }
                   }}
                   onLoadComplete={(numberOfPages, filePath) => {
-                    dispatch(userAddToRecentsStart({ ...notesData, "viewedTime": `${new Date()}`, "category": category }));
+                    dispatch(userAddToRecentsStart({ ...notesData, "viewedTime": `${new Date()}`, "category": category, filePath }));
                     setFilePath(filePath)
                   }}
                   style={{

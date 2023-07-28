@@ -114,7 +114,7 @@ const PopOver = ({ url, notesData }: Props) => {
                             <Button
                                 onPress={() => {
                                     setSaved(!saved);
-                                    const status = BookmarkStatus(notesData.id);
+                                    const status = BookmarkStatus(notesData?.id);
                                     PdfViewerAction.manageBookmarks(notesData, status, uid);
                                     !status
                                         ? dispatch(
@@ -130,7 +130,7 @@ const PopOver = ({ url, notesData }: Props) => {
                                 variant="outline">
                                 <Fontisto
                                     name={
-                                        BookmarkStatus(notesData.id)
+                                        BookmarkStatus(notesData?.id)
                                             ? 'bookmark-alt'
                                             : 'bookmark'
                                     }

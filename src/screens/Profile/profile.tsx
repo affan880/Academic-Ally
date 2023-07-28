@@ -3,7 +3,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { AlertDialog, Avatar, Button, Toast, VStack } from 'native-base';
 import React, { useMemo, useState } from 'react';
 import { Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -40,7 +40,7 @@ const Profile = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.headerContainer}>
           <View style={styles.header}>
-            <Feather name="user" style={{
+            <FontAwesome name="user" style={{
               marginHorizontal: -5,
             }} size={theme.sizes.iconMedium} color="#FFFFFF" />
             <Text style={styles.headerText}>Account</Text>
@@ -226,16 +226,17 @@ const Profile = () => {
                   colorScheme="danger"
                   onPress={() => {
                     useAuth()
-                      ?.currentUser?.delete()
-                      .then(() => {
-                        AsyncStorage.clear();
-                        dispatch({ type: 'RESET_APP' });
-                        Toast.show({
-                          title: 'Account Deleted',
-                          backgroundColor: '#F44336',
-                          color: '#ffffff',
-                        });
-                      })
+                    ?.currentUser?.delete()
+                    .then(() => {
+                      AsyncStorage.clear();
+                      dispatch({ type: 'RESET_APP' });
+                      NavigationService.navigate(NavigationService.screens.Login);
+                      Toast.show({
+                        title: 'Account Deleted',
+                        backgroundColor: '#F44336',
+                        color: '#ffffff',
+                      });
+                    })
                       .catch(error => {
                         useAuth().signOut();
                         AsyncStorage.clear();

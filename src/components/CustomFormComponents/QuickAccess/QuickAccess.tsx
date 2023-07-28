@@ -41,7 +41,7 @@ const QuickAccess = ({ selected, setSelectedCategory }: Props) => {
         <Text style={styles.iconLabel}>SeekHub</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.itemContainer} onPress={() => {
-        setSelectedCategory('QuestionPapers');
+          NavigationService.navigate(NavigationService.screens.Recents)
       }} >
         <View style={styles.questionsIconContainer}>
           {/* <Qp /> */}
@@ -50,11 +50,11 @@ const QuickAccess = ({ selected, setSelectedCategory }: Props) => {
         <Text style={styles.iconLabel}>Recents</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.itemContainer} onPress={() => {
-        setSelectedCategory('OtherResources');
+        NavigationService.navigate(NavigationService.screens.Download)
       }}>
         <View style={styles.otherResourcesIconContainer}>
           {/* <OtherRes /> */}
-        <Icon as={Ionicons} name="ios-paper-plane" size="lg" color={theme.colors.white} />
+        <Icon as={Ionicons} name="download" size="xl" color={theme.colors.white} />
         </View>
         <Text style={styles.iconLabel}>Downloads</Text>
       </TouchableOpacity>

@@ -9,6 +9,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import { useDispatch, useSelector } from 'react-redux'
 
 import MainScreenLayout from '../../layouts/mainScreenLayout'
+import { userRemoveFromRecents } from '../../redux/reducers/usersRecentPdfsManager';
 import DownloadingList from '../../sections/Downloads/DownloadingList';
 import ReportActionSheet from '../../sections/NotesCard/Report/ReportActionSheet'
 import NavigationService from '../../services/NavigationService'
@@ -17,34 +18,39 @@ import PdfViewerAction from '../PdfViewer/pdfViewerAction'
 
 const { width, height } = Dimensions.get('screen');
 
-const DownloadScreen = () => {
+const RecentScreen = () => {
   const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
+  const recentsList = useSelector((state: any) => state.userRecentPdfs.RecentViews)||[];
   const dispatch = useDispatch()
   const [files, setFiles] = useState([])
-  const [data, setData] = useState([])
+  const [data, setData] = useState(recentsList)
   const [searchTerm, setSearchTerm] = useState('');
   const [sortedArray, setSortedArray] = useState<any>([])
+
   const groupByDate = (array: any) => {
-    const groupedArray: any = {};
-    for (const item of array) {
-      const date = new Date(item?.downloadedDate);
-      const dateString = date.toDateString();
-      if (groupedArray[dateString]) {
-        groupedArray[dateString].push(item);
-      } else {
-        groupedArray[dateString] = [item];
+    if(array?.length > 0){
+      const groupedArray: any = {};
+      for (const item of array) {
+        const date = new Date(item?.viewedTime);
+        const dateString = date.toDateString();
+        if (groupedArray[dateString]) {
+          groupedArray[dateString].push(item);
+        } else {
+          groupedArray[dateString] = [item];
+        } 
       }
+      return Object.values(groupedArray);
     }
-    return Object.values(groupedArray);
   };
 
-  const listOfItems = ['downloading', 'downloaded', 'failed', 'cancelled']
+  
 
   const onSearch = () => {
-    if (searchTerm === '') {
+    if (searchTerm === '') {    
       groupByDate(data)
     } else {
-      const filteredData: any = sortedArray.map((group: any) => {
+        const array = data;
+      const filteredData: any = array.map((group: any) => {
         const filteredItems = group?.filter((item: any) => {
           return (
             item.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -70,11 +76,7 @@ const DownloadScreen = () => {
   const colors = theme?.colors;
 
   const getDownloadedList = async () => {
-    await PdfViewerAction.listDownloadedFiles().then((res: any) => {
-      setData(res);
-      const filterFiles = res?.filter((item: any) => item?.endsWith('.text'))
-      setFiles(filterFiles)
-    })
+    setFiles(recentsList)
   }
 
   useEffect(() => {
@@ -82,27 +84,37 @@ const DownloadScreen = () => {
   }, [])
 
   useEffect(() => {
-    if (data?.length > 0 && files?.length > 0) {
-      PdfViewerAction.getfileMetaData(files).then((res: any) => {
-        setData(res);
-        setSortedArray(groupByDate([...res.reverse()]))
-      })
+    if(recentsList?.length > 0){
+        const updatedArray = groupByDate(recentsList); 
+        setSortedArray(updatedArray);
+          setData(updatedArray)
     }
-  }, [files])
+  }, [files, recentsList])
 
   const PdfPreviewComponent = React.memo(({ notesData, index }: any) => {
     const { isOpen, onOpen, onClose } = useDisclose();
+    const dispatch = useDispatch()
     const data = notesData;
     const [visible, setVisible] = useState(true);
-
-    const placeholdersValues = [notesData?.university, notesData?.course, notesData?.branch, notesData?.sem, notesData?.category, notesData?.name, notesData?.subject, notesData?.did, notesData?.uid, notesData?.uid2, notesData?.uid3];
+    const [url, setUrl] = useState("")
+    const { filePath } = notesData;
     const initialFocusRef = React.useRef(null);
-    const pdfFileName = `${notesData?.name}_${notesData?.branch}_${notesData?.sem}.pdf`;
-    const filePath = `${RNFS.DocumentDirectoryPath}/Resources/${pdfFileName}`;
+    const checkFileExist = async () => {
+        const exists = await RNFS.exists(filePath);
+        if(exists){
+            setUrl(filePath)
+        }
+        else {
+            return filePath
+        }
+    }
+    useEffect(()=>{
+        checkFileExist()
+    },[])
     const source: object = {
-      uri: filePath,
+      uri: url,
       cache: true,
-      expiration: 60 * 60 * 24 * 1000,
+      expiration: 60 * 60 * 30 * 24 * 1000,
     };
 
     return (
@@ -207,21 +219,11 @@ const DownloadScreen = () => {
                         }}
                         onPress={async () => {
                           try {
-                            await PdfViewerAction.deleteFile(notesData).then((res: any) => {
-                              // getDownloadedList();
-                              setVisible(false);
-                              Toast.show({
-                                title: 'Deleted Successfully',
-                                placement: 'bottom',
-                                duration: 3000,
-                              });
-                            }).catch((error: any) => {
-                              Toast.show({
-                                title: 'Something went wrong',
-                                placement: 'bottom',
-                                duration: 3000,
-                              });
-                            });
+                            dispatch(userRemoveFromRecents(notesData));
+                            const exists = await RNFS.exists(filePath);
+                            if (exists) {
+                              await RNFS.unlink(filePath);
+                            } 
                           } catch (error) {
                             Toast.show({
                               title: 'Something went wrong',
@@ -315,7 +317,7 @@ const DownloadScreen = () => {
         width: '95%',
 
       }}>
-        {UtilityService.formatDate(itemGroup[0]?.downloadedDate, 'MMM dd, yyyy')}
+        {UtilityService.formatDate(itemGroup[0]?.viewedTime, 'MMM dd, yyyy')}
       </Text>
       <FlatList
         data={itemGroup}
@@ -350,7 +352,7 @@ const DownloadScreen = () => {
           fontWeight: 'bold',
         }}
       >
-        No Downloads
+        No Recent pdf's
       </Text>
     </View>
   ));
@@ -360,7 +362,7 @@ const DownloadScreen = () => {
   ));
 
   return (
-    <MainScreenLayout rightIconFalse={true} title={'Downloads'} handleScroll={() => { }} name="DownloadScreen" >
+    <MainScreenLayout rightIconFalse={true} title={'Recents'} handleScroll={() => { }} name="DownloadScreen" >
       <Box justifyContent={'center'} alignItems={'center'} flex={1} >
         <View
           style={[
@@ -387,44 +389,25 @@ const DownloadScreen = () => {
           />
         </View>
         <VirtualizedList
-          data={listOfItems}
-          renderItem={({ item }: any) => {
-            switch (item) {
-              case 'downloading':
-                return <DownloadingList />
-              case 'downloaded':
-                return <VirtualizedList
-                  data={sortedArray}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }: any) => (
-                    <ItemGroupComponent itemGroup={item} />
-                  )}
-                  getItemCount={(data) => data.length}
-                  getItem={(data, index) => data[index]}
-                  initialNumToRender={10}
-                  maxToRenderPerBatch={10}
-                  showsVerticalScrollIndicator={false}
-                  ListEmptyComponent={ListEmptyComponent}
-                  ListFooterComponent={ListFooterComponent}
-                />
-              default:
-                return null;
-            }
-          }}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
-          getItemCount={(data) => data.length}
-          getItem={(data, index) => data[index]}
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          windowSize={10}
+            data={sortedArray}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }: any) => (
+              <ItemGroupComponent itemGroup={item} />
+            )}
+            getItemCount={(data) => data?.length}
+            getItem={(data, index) => data[index]}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={ListEmptyComponent}
+            ListFooterComponent={ListFooterComponent}
         />
       </Box>
     </MainScreenLayout>
   )
 }
 
-export default DownloadScreen
+export default RecentScreen
 
 const styles = StyleSheet.create({
   searchContainer: {

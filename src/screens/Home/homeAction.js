@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Toast } from 'native-base';
 
 import { firestoreDB, useAuth } from "../../Modules/auth/firebase/firebase"
 import { setListLoaded, setSubjectsList } from "../../redux/reducers/subjectsList";
@@ -18,12 +19,12 @@ class HomeAction {
                 dispatch(setListLoaded(true));
             } else {
                 firestoreDB().collection('QueryList')
-                    .doc(`${data.university}`)
-                    .collection(`${data.course}`)
+                    .doc(`${data?.university}`)
+                    .collection(`${data?.course}`)
                     .doc('SubjectsListDetail')
                     .get()
                     .then((doc) => {
-                        const subjectsList = doc.data().list;
+                        const subjectsList = doc?.data()?.list;
                         dispatch(setSubjectsList(subjectsList));
                         dispatch(setListLoaded(true));
                     })
@@ -42,33 +43,31 @@ class HomeAction {
 
     static loadUserData = (uid) => (dispatch) => {
         try {
-            firestoreDB()
-                .collection('Users')
-                .doc(uid)
-                .get()
-                .then((data) => {
-                    dispatch(setUsersData(data?.data()));
+            const userRef = firestoreDB().collection('Users').doc(uid);
+        
+            const unsubscribe = userRef.onSnapshot((docSnapshot) => {
+                const userData = docSnapshot?.data();
+                if(uid){
+                    dispatch(setUsersData(userData));
                     dispatch(setUsersDataLoaded(true));
-                    dispatch(this.fetchNotesList(data?.data()));
-                    const subscribeArray = data?.data()?.subscribeArray;
-                    const topics = `${data?.data()?.university}_${data?.data()?.course}_${data?.data()?.branch}_${data?.data()?.sem}`;
-
-                    if (subscribeArray?.includes(topics)) {
-                        return;
-                    }
-                    else {
-                        firestoreDB()
-                            .collection('Users')
-                            .doc(uid)
-                            .update({
-                                'subscribeArray': [topics]
-                            }).catch(error => console.log(error))
-                    }
-                });
-        }
-        catch (error) {
-            CrashlyticsService.recordError(error)
-        }
+                    dispatch(this.fetchNotesList(userData));
+                }
+                const subscribeArray = userData?.subscribeArray;
+                const topics = `${userData?.university}_${userData?.course}_${userData?.branch}_${userData?.sem}`;
+        
+                if (subscribeArray?.includes(topics)) {
+                  return;
+                } else {
+                  const updatedSubscribeArray = [...(subscribeArray || []), topics];
+                  userRef.update({
+                    'subscribeArray': updatedSubscribeArray,
+                  }).catch(error => console.log(error));
+                }
+            });
+            return () => unsubscribe();
+          } catch (error) {
+            CrashlyticsService.recordError(error);
+          }
     }
 
     static getResources = (userData, type, item) => async (dispatch) => {
@@ -127,26 +126,26 @@ class HomeAction {
         }
     }
 
-    static getBookmarksList = (setListData, uid) => async (dispatch) => {
+    static getBookmarksList = (setListData, uid) => (dispatch) => {
         try {
-            const item = await firestoreDB()
-                .collection('Users')
-                .doc(uid)
-                .collection('NotesBookmarked')
-                .get();
-
-            const updatedList = item.docs.map((doc) => (
-                {
-                    ...doc?.data(),
-                    id: doc?.id
-                }
-            ));
-            dispatch(setBookmarks(updatedList));
-            setListData(updatedList);
+          const unsubscribe = firestoreDB()
+            .collection('Users')
+            .doc(uid)
+            .collection('NotesBookmarked')
+            .onSnapshot((querySnapshot) => {
+              const updatedList = querySnapshot?.docs?.map((doc) => ({
+                ...doc.data(),
+                id: doc.id,
+              }));
+              dispatch(setBookmarks(updatedList));
+              setListData(updatedList);
+            });
+          return unsubscribe;
         } catch (error) {
-            CrashlyticsService.recordError(error);
+          CrashlyticsService.recordError(error);
         }
-    }
+      };
+      
 
     static loadBoomarks = (bookmarkList, setListData, uid) => (dispatch) => {
         try {

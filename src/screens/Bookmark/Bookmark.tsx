@@ -223,7 +223,7 @@ const Bookmark = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <Fontisto name="bookmark" size={theme.sizes.iconMedium} color="#FFFFFF" />
+          <Fontisto name="bookmark-alt" size={theme.sizes.iconMedium} color="#FFFFFF" />
           <Text style={styles.headerText}>Bookmarks</Text>
         </View>
       </View>

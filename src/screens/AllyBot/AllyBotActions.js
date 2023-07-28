@@ -1,3 +1,5 @@
+import { Toast } from "native-base";
+
 const { firestoreDB } = require("../../Modules/auth/firebase/firebase");
 const { setInitiatedChatList } = require("./AllyBotSlice");
 
@@ -25,15 +27,21 @@ class AllyBotActions {
               }
             })
             .sort((a, b) => b.date - a.date);
-            console.log(documents)
           dispatch(setInitiatedChatList(documents));
         }, (error) => {
           console.error('Error getting documents:', error);
         //   setInitiatedChatList([]);
         });
-      
         return unsubscribe;
-      }      
+    }      
+    static deleteChat = (uid, id) => {
+      firestoreDB().collection('Users').doc(uid).collection('InitializedPdf').doc(id).delete().then(()=>{
+        Toast.show({
+          title: 'Deleted Chat',
+          backgroundColor: '#FF0000'
+        })
+      })
+    }
 }
 
 export default AllyBotActions

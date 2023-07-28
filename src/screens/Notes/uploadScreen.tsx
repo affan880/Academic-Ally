@@ -306,7 +306,7 @@ const UploadPDF = () => {
                   <Box w="100%" h={theme.sizes.height * 0.2} px={2} my={4} justifyContent="center" alignItems={"center"} >
                     <AntDesign name="checkcircle" size={50} color={theme.colors.primary} />
                     <Text fontSize={theme.sizes.title} color={theme.colors.black} fontWeight={700} marginTop={4} >
-                      Uploaded Successful
+                      Uploaded Successfully
                     </Text>
                     <Text fontSize={theme.sizes.textSmall} padding={theme.sizes.height * 0.01} paddingTop={theme.sizes.height * 0.01} color={theme.colors.black} textAlign={"center"} fontWeight={700} >
                       Thank you! The file has been uploaded successfully. It will be available for others to download once we finish verifying the contents of the file

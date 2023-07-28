@@ -62,6 +62,14 @@ class PdfViewerAction {
         }
         return false;
     };
+    
+    static checkIfFileExistsInCache = async (path) => {
+        const fileExists = await RNFS.exists(path);
+        if (fileExists) {
+            return path;
+        }
+        return false;
+    };
 
     static createMetaData = (result, notesData, setPdfDataPath) => async (dispatch) => {
         const metaData = {
@@ -161,7 +169,7 @@ class PdfViewerAction {
     static sharePdf = async (notesData, dynamicLink) => {
         const link = await dynamicLinks().buildShortLink(
             {
-                link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}`,
+                link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/${notesData?.id}`,
                 domainUriPrefix: dynamicLink,
                 android: {
                     packageName: 'com.academically',

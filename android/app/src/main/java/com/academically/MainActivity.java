@@ -93,7 +93,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
   public static class MainActivityDelegate extends ReactActivityDelegate {
     public MainActivityDelegate(ReactActivity activity, String mainComponentName) {
       super(activity, mainComponentName);
-    }
+    } 
 
     @Override
     protected ReactRootView createRootView() {

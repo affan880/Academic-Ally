@@ -26,7 +26,8 @@ class NavigationService {
         UserRequestsPdfViewer: 'UserRequestsPdfViewer',
         Download: 'Download',
         AllyBot: 'AllyBot',
-        SeekHub: 'SeekHub'
+        SeekHub: 'SeekHub',
+        Recents: 'Recents'
     };
 
     static navigate(name, params) {

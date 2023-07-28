@@ -49,7 +49,6 @@ class UploadAction {
                 lastUpdated: new Date(),
             })
         });
-
     }
 }
 

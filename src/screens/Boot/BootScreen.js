@@ -3,9 +3,11 @@ import messaging from '@react-native-firebase/messaging';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator, DrawerActions } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Avatar } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { Alert, Dimensions, Linking, Pressable, StatusBar, Text, View } from 'react-native';
 import Feather from "react-native-vector-icons/Feather";
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -15,6 +17,7 @@ import { version as app_version } from '../../../package.json';
 import { getCurrentUser } from '../../Modules/auth/firebase/firebase';
 import UserRequestsPdfViewer from '../../sections/UserRequests/UserRequestsPdfViewer';
 import NavigationService from '../../services/NavigationService';
+import { useAuthentication } from '../../utilis/hooks/useAuthentication';
 import AllyBotScreen from '../AllyBot/AllyBotScreen';
 import LoginScreen from '../AuthenticationScreens/Login/LoginScreen';
 import SignUpScreen from '../AuthenticationScreens/SignUp/SignUpScreen';
@@ -30,6 +33,7 @@ import Profile from '../Profile/profile';
 import AboutUs from '../Profile/Support/AboutUs';
 import PrivacyPolicy from '../Profile/Support/PrivacyPolicy';
 import TermsAndConditions from '../Profile/Support/Terms&Conditions';
+import RecentScreen from '../Recents/RecentScreen';
 import Search from '../Search/searchScreen';
 import SeekHubScreen from '../SeekHub/SeekHubScreen';
 import SubjectResources from '../SubjectResources/SubjectResourcesScreen';
@@ -77,6 +81,8 @@ const DrawerScreen = ({ navigation }) => {
 const BottomTabBar = () => {
     const theme = useSelector((state) => state.theme);
     const customClaims = useSelector((state) => state.bootReducer.customClaims);
+    
+  const {photoURL} = useSelector((state) => state.bootReducer.userInfo)|| "";
 
     const TabIcon = ({ focused, iconName, labelText }) => (
         <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
@@ -170,7 +176,12 @@ const BottomTabBar = () => {
                     name={NavigationService.screens.Profile}
                     options={{
                         tabBarIcon: ({ focused }) => (
-                            <TabIcon focused={focused} iconName="user" labelText="Account" />
+                            <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
+                                <Avatar style={{ bottom: focused ? 3 : 0 }} source={{
+                                  uri: photoURL
+                                }} size={theme.sizes.iconMedium} alignSelf={'center'} />
+                                {focused ? <Text style={{ color: '#FF8181', fontSize: theme.sizes.textSmall, fontWeight: '400', textAlign: "center", bottom: 0 }}>Account</Text> : null}
+                            </View>
                         ),
                     }}
                     component={Profile}
@@ -196,6 +207,7 @@ const AppStack = () => {
             <Stack.Screen name={NavigationService.screens.Download} component={DownloadScreen} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.AllyBot} component={AllyBotScreen} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.SeekHub} component={SeekHubScreen} options={{ headerShown: false }} />
+            <Stack.Screen name={NavigationService.screens.Recents} component={RecentScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 };
@@ -233,10 +245,12 @@ const AuthStack = () => {
 const BootScreen = () => {
     const requiredVersion = useSelector((state) => state.bootReducer.requiredVersion);
     const currentUser = getCurrentUser();
+    const { user } = useAuthentication();
     const dispatch = useDispatch();
     const [compatible, setCompatible] = useState(true);
     const [initializing, setInitializing] = useState(true)
     const currentVersion = app_version;
+    const userInfo = useSelector((state)=> state.bootReducer.userInfo)
 
     const convertToNumber = (version) => {
         const versionParts = version.split(".");
@@ -262,7 +276,7 @@ const BootScreen = () => {
         finally {
             setInitializing(false)
         }
-    }, [ currentUser]);
+    }, [currentUser, user]);
 
     useEffect(() => {
         if (requiredVersion !== null) {
@@ -270,7 +284,7 @@ const BootScreen = () => {
                 setCompatible(false);
             }
         }
-    }, [requiredVersion, currentVersion, currentUser]);
+    }, [requiredVersion, currentVersion, currentUser, user]);
 
     useEffect(() => {
         if (compatible === false) {
@@ -316,7 +330,7 @@ const BootScreen = () => {
     }
 
     else {
-        return (currentUser !== null) ? <AppStack /> : <AuthStack />;
+        return (userInfo !== null) ? <AppStack /> : <AuthStack />;
     }
 
 };

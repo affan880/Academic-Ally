@@ -21,6 +21,8 @@ class UserRequestsActions {
 
     static loadNewUploads = (managerUniversity, managerCourse, managerBranch) => async (dispatch) => {
         dispatch(setRequestNull());
+        console.log(managerCourse)
+        console.log(managerUniversity)
 
         const branchExists = async (managerUniversity, managerCourse, branch) => {
             const branchDocRef = firestoreDB()
@@ -46,6 +48,7 @@ class UserRequestsActions {
                             .get();
 
                         const uploadsData = uploadsSnapshot.docs.map((doc) => doc.data());
+                        console.log("+++++++++++++",uploadsData)
                         dispatch(setNewRequests(uploadsData));
                     }
                 })
@@ -62,7 +65,7 @@ class UserRequestsActions {
                 querySnapshot.forEach((doc) => {
                     if (doc.data().storageId === data.storageId) {
                         firestoreDB().collection('Users').doc(data?.uploaderId).collection('UserUploads').doc(doc.id).update({
-                            aproval: decision.aprova || null,
+                            aproval: decision.aproval || null,
                             comment: decision.comment || null,
                             verifiedBy: decision.verifiedBy || null,
                             verifiedByUid: decision.verifiedByUid || null,
