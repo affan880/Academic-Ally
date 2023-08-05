@@ -1,7 +1,8 @@
 import { useFormikContext } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TextProps, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import Animated, { runOnUI, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -24,7 +25,7 @@ type Props = {
 const { width, height } = Dimensions.get('window');
 export const CustomDropdown = ({
   leftIcon,
-  placeholder,
+  placeholder, 
   name,
   data,
   width,
@@ -66,7 +67,7 @@ export const CustomDropdown = ({
         <Text
           style={[
             styles.label,
-            isFocus && { color: '#FFFFFF' },
+            isFocus && { color: '#F1F1FA' },
           ]}>
           {name.charAt(0).toUpperCase() + name.slice(1)}
         </Text>
@@ -75,9 +76,32 @@ export const CustomDropdown = ({
     return null;
   };
 
+  const scaleValue = useSharedValue(2);
+  const elevationValue = useSharedValue(0);
+  useEffect(() => {
+    const startAnimations = () => {
+      'worklet';
+      scaleValue.value = withSpring(0.8, {
+        damping: 5,
+        mass: 0.1,
+      });
+
+      setTimeout(() => {
+        scaleValue.value = withSpring(1, {
+          damping: 80,
+          mass: 0.1,
+        });
+      }, 1000);
+    };
+    startAnimations();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <View>
+      <Animated.View style={{
+        transform: [{scale: scaleValue}],
+        elevation: elevationValue
+      }}>
         {renderLabel()}
         <Dropdown
           style={[
@@ -131,7 +155,7 @@ export const CustomDropdown = ({
           containerStyle={{
             borderRadius: 10,
             elevation: 3,
-            height: dropdownHeight(data.length),
+            height: dropdownHeight(data?.length),
           }}
           itemContainerStyle={{
             // backgroundColor: theme.colors.quaternary,
@@ -154,7 +178,7 @@ export const CustomDropdown = ({
               style={styles.icon}
               color={isFocus ? '#6360FF' : '#706f6f'}
               name={isFocus ? 'chevron-up' : 'chevron-down'}
-              size={height * 0.028}
+              size={24}
             />
           )}
           renderLeftIcon={() =>
@@ -163,19 +187,19 @@ export const CustomDropdown = ({
                 style={styles.icon}
                 color={isFocus ? '#6360FF' : theme.colors.primaryText}
                 name={'university'}
-                size={height * 0.025}
+                size={24}
               />
             ) : (
               <AntDesign
                 style={styles.icon}
                 color={isFocus ? '#6360FF' : theme.colors.primaryText}
                 name={leftIcon}
-                size={height * 0.025}
+                size={24}
               />
             )
           }
         />
-      </View>
+      </Animated.View>
       {touched[name] && errors[name] && values[name] === '' ? (
         <Text
           style={{
@@ -197,24 +221,24 @@ export default CustomDropdown;
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#000',
+    backgroundColor: '#161719',
     height: height * 0.07,
     borderRadius: 10,
     elevation: 3,
     paddingLeft: 20,
     marginTop: 10,
     alignItems: 'center',
-    color: '#000000',
+    color: '#161719',
   },
   textInput: {
     width: 250,
     fontSize: height * 0.0235,
-    color: '#000000',
+    color: '#161719',
     fontFamily: 'Poppins-Regular',
   },
   container: {
     marginTop: 1,
-    color: '#000000',
+    color: '#161719',
   },
   dropdown: {
     borderColor: 'gray',
@@ -222,7 +246,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 0,
     fontSize: height * 0.0135,
-    color: '#000000',
+    color: '#161719',
   },
   icon: {
     marginRight: 12,
@@ -236,7 +260,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontSize: height * 0.018,
     borderRadius: 5,
-    color: '#FFFFFF',
+    color: '#F1F1FA',
   },
   placeholderStyle: {
     fontSize: width * 0.035,
@@ -253,7 +277,7 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 50,
     fontSize: height * 0.0205,
-    color: '#000000',
+    color: '#161719',
     fontFamily: 'Poppins-Regular',
     borderRadius: 10,
   },

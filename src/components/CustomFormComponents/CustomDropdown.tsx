@@ -1,7 +1,8 @@
 import { useFormikContext } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TextProps, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import Animated, { runOnUI, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -56,17 +57,37 @@ export const CustomDropdown = ({
     }
   };
 
+  const scaleValue = useSharedValue(2);
+  const elevationValue = useSharedValue(0);
+  useEffect(() => {
+    const startAnimations = () => {
+      'worklet';
+      scaleValue.value = withSpring(0.8, {
+        damping: 5,
+        mass: 0.1,
+      });
+
+      setTimeout(() => {
+        scaleValue.value = withSpring(1, {
+          damping: 80,
+          mass: 0.1,
+        });
+      }, 1000);
+    };
+    startAnimations();
+  }, []);
+
 
   return (
     <View style={styles.container}>
-      <View>
+      <Animated.View style={{
+        transform: [{scale: scaleValue}],
+        elevation: elevationValue
+      }}>
         <Dropdown
           style={[
             styles.input,
-            { width: width, backgroundColor: theme.colors.quaternary, borderColor: color, height: height },
-            {
-              borderRadius: 15,
-            },
+            { width: width, backgroundColor: theme.colors.quaternary, borderColor: color, height: height, borderRadius: 15, },
           ]}
           placeholderStyle={[
             styles.placeholderStyle,
@@ -136,7 +157,7 @@ export const CustomDropdown = ({
             />
           )}
         />
-      </View>
+      </Animated.View>
     </View>
   );
 };
@@ -145,7 +166,7 @@ export default CustomDropdown;
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#000',
+    backgroundColor: '#161719',
     height: height * 0.05,
     borderRadius: 5,
     paddingLeft: 20,
@@ -155,12 +176,12 @@ const styles = StyleSheet.create({
   textInput: {
     width: 250,
     fontSize: height * 0.0235,
-    color: '#000000',
+    color: '#161719',
     fontFamily: 'Poppins-Regular',
   },
   container: {
     marginTop: 1,
-    color: '#000000',
+    color: '#161719',
   },
   dropdown: {
     borderColor: 'gray',
@@ -168,7 +189,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 0,
     fontSize: height * 0.0105,
-    color: '#000000',
+    color: '#161719',
   },
   icon: {
     marginRight: 12,
@@ -182,7 +203,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontSize: height * 0.0185,
     borderRadius: 5,
-    color: '#FFFFFF',
+    color: '#F1F1FA',
   },
   placeholderStyle: {
     fontSize: width * 0.035,
@@ -200,7 +221,7 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 50,
     fontSize: height * 0.0205,
-    color: '#000000',
+    color: '#161719',
     fontFamily: 'Poppins-Regular',
     borderRadius: 10,
   },

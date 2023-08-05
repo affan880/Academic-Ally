@@ -1,16 +1,19 @@
+import { useIsFocused } from '@react-navigation/native'
 import LottieView from 'lottie-react-native';
 import { Toast } from 'native-base';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import CustomDropdown from '../../components/CustomFormComponents/Dropdown';
 import Form from '../../components/Forms/form';
+import CustomLoader from '../../components/loaders/CustomLoader';
 import { firestoreDB } from '../../Modules/auth/firebase/firebase';
-import { setResourceLoader } from '../../redux/reducers/userState';
+import { setCustomLoader, setResourceLoader } from "../../redux/reducers/userState";
 import { userFirestoreData } from '../../services/fetch';
 import NavigationService from '../../services/NavigationService';
 import { searchFilterValidationSchema } from '../../utilis/validation';
@@ -37,12 +40,34 @@ const Search = () => {
   const [branchData, setBranchesData] = useState([])
   const [semData, setSemData] = useState([]);
   const [filteredData, setFilteredData] = useState(list);
+  const [scroollPostion, setScrollPosition] = useState(null)
+  const [saveScroll, setScroll]= useState(null);
+  const listRef = useRef<any>();
+  const isFocused = useIsFocused();
   const dispatch = useDispatch();
 
   const rendererItems: Array<string> = ['Search', 'Subjects'];
   const [searchTerm, setSearchTerm] = useState('');
   const [reload, setReload] = useState(false);
 
+
+  useEffect(() => {
+    const run = async () =>{
+      const val: any = await listRef.current?.scrollToOffset({ offset: saveScroll })
+      return val
+    }
+    if (isFocused) {
+      saveScroll !== null ? dispatch(setCustomLoader(true)) : null
+          saveScroll !== null ? 
+          run().then(()=>dispatch(setCustomLoader(false)))
+          : null
+    }
+
+    return () => {
+      // Run your function here when the component is unmounted (navigated back)
+      console.log('Component is unmounted (navigated back)');
+    };
+  }, [isFocused]);
 
 
   useEffect(() => {
@@ -174,6 +199,7 @@ const Search = () => {
         },
         notesData: notesData,
         subject: item.subject,
+        branch: item?.branch
       });
     } catch (error) {
       dispatch(setResourceLoader(false));
@@ -188,7 +214,7 @@ const Search = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <Feather name="search" size={theme.sizes.iconMedium} color="#FFFFFF" />
+          <Ionicons name="search-circle-sharp" size={theme.sizes.iconMedium} color="#F1F1FA" />
           <Text style={styles.headerText}>Explore</Text>
         </View>
       </View>
@@ -197,6 +223,7 @@ const Search = () => {
           <FlatList
             data={rendererItems}
             showsVerticalScrollIndicator={false}
+            ref={listRef}
             renderItem={({ item }: { item: string }) => {
               switch (item) {
                 case 'Search':
@@ -282,9 +309,15 @@ const Search = () => {
                       <FlatList
                         data={filteredData}
                         showsVerticalScrollIndicator={false}
+                        onScroll={(event: any)=>{
+                          setScrollPosition(event.nativeEvent.contentOffset.y)
+                        }}
                         renderItem={({ item }: any) => {
                           return (
-                            <TouchableOpacity style={styles.subjectItem} onPress={() => selectedSubject(item)}>
+                            <TouchableOpacity style={styles.subjectItem} onPress={() => {
+                              selectedSubject(item);
+                              setScroll(scroollPostion)
+                            }}>
                               <View style={styles.containerBox}>
                                 <View style={styles.containerText} />
                               </View>

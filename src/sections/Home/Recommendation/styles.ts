@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 const createStyles = (theme:any, sizes:any) =>
@@ -28,7 +28,7 @@ const createStyles = (theme:any, sizes:any) =>
     },
     containerText: {
       fontSize: sizes.text,
-      color: '#FFF',
+      color: '#F1F1FA',
       fontWeight: '400',
       backgroundColor: 'rgba(255, 255, 255, 0.17)',
       width: width * 0.08,
@@ -44,7 +44,7 @@ const createStyles = (theme:any, sizes:any) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
-      shadowColor: '#000',
+      shadowColor: '#161719719',
     },
     subjectContainer: {
       width: width / 1.1,
@@ -53,7 +53,7 @@ const createStyles = (theme:any, sizes:any) =>
       justifyContent: 'space-between',
       alignItems: 'center',
       position: 'relative',
-      shadowColor: '#000',
+      shadowColor: '#161719719',
       borderRadius: 10,
       paddingHorizontal: width * 0.02,
     },

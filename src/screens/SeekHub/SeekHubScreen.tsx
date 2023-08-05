@@ -28,6 +28,7 @@ const SeekHubScreen = (props: Props) => {
     const list: any = useSelector((state: any) => state.subjectsList.list || []);
     const [subjectListDetail, setSubjectListDetail] = useState<any[]>(list);
     const [branchData, setBranchData] = useState<any>([]);
+    const [selectedBranch, setSelectedBranch] = useState(null)
     const [semList, setSemList] = useState<any>([]);
     const dispatch: any = useDispatch()
     const formRef : any = useRef();
@@ -90,7 +91,7 @@ const SeekHubScreen = (props: Props) => {
         setSemList(semesters);
     },[])
 
-    const handleSemChange = (event: any) => {
+    const handleSemChange = () => {
       if(formRef.current.values.branch !== ""){
       const semesters = apiResponse[userFirestoreData.usersData.university][userFirestoreData.usersData.course][formRef.current.values.branch]?.sem.map((value: any, index: any) => {
         return {
@@ -102,6 +103,19 @@ const SeekHubScreen = (props: Props) => {
       setSemList(semesters);
     }
     }
+
+    useEffect(()=>{
+    if(selectedBranch !== null){
+      const semesters = apiResponse[userFirestoreData.usersData.university][userFirestoreData.usersData.course][selectedBranch]?.sem.map((value: any, index: any) => {
+        return {
+          label: (index + 1).toString(),
+          value: (index + 1).toString(),
+          status: value
+        };
+      }).filter((value: any) => value.status === true);
+      setSemList(semesters);
+    }
+    }, [selectedBranch])
 
     const Step1 = () =>{
       return(
@@ -116,10 +130,11 @@ const SeekHubScreen = (props: Props) => {
           <DropdownComponent
             name="branch"
             data={branchData}
-            placeholder={userFirestoreData.usersData.branch}
+            placeholder={'Branch'}
             leftIcon="ellipsis1"
             width={theme.sizes.width * 0.38}
-            handleOptions={handleSemChange}
+            handleOptions={(item: any)=>{
+            }}
           />
           <DropdownComponent
             name="sem"
@@ -228,7 +243,34 @@ const SeekHubScreen = (props: Props) => {
                       dispatch(SeekHubActions.submitNewRequest(uid, userFirestoreData.usersData, values, photoURL))
                     }}
                     >
-                      <Step1/>
+                      <Box mb={2}>
+                    <Text fontSize={'lg'} fontWeight={600} color={theme.colors.black} paddingBottom={1} >
+                      Branch and Semester
+                    </Text>
+                    <Text fontSize={'xs'} fontWeight={500} color={theme.colors.terinaryText} >
+                      Specify the branch and semester you require resources for.
+                    </Text>
+                    <Box justifyContent={'space-around'} alignItems={'center'} paddingTop={2} flexDirection={'row'} >
+                    <DropdownComponent
+                      name="branch"
+                      data={branchData}
+                      placeholder={userFirestoreData?.usersData?.branch}
+                      leftIcon="ellipsis1"
+                      width={theme.sizes.width * 0.38}
+                      handleOptions={(item: any)=>{
+                        setSelectedBranch(item.value);
+                      }}
+                    />
+                    <DropdownComponent
+                      name="sem"
+                      data={semList}
+                      placeholder={getOrdinalSuffix(userFirestoreData.usersData.sem) + ' Sem'}
+                      leftIcon="bars"
+                      width={theme.sizes.width * 0.38}
+                      handleOptions={()=>{}}
+                    />
+                      </Box>
+                    </Box>
                       <Step2/>
                       <Step3/>
                       <CustomBtn title="Submit" color={theme.colors.mainTheme}/>

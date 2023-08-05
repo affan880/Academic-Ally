@@ -10,18 +10,17 @@ import { useSelector } from 'react-redux'
 import createStyles from './styles';
 
 type Props = {
-  setSplitPages: any,
-  splitPages: any,
   setVisibleSpliterModal: any,
   visibleSpliterModal: any,
-  filePath: any,
   createChat: any,
   currentProgress: any,
-  startedProcessing: any
+  startedProcessing: any,
+  totalPdfPages: number,
+  maxPages: number
 }
 
-const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, visibleSpliterModal, filePath, createChat , currentProgress, startedProcessing}: Props) => {
-  const totalPageNumbers = 30;
+const PdfPageSplitter = ({  setVisibleSpliterModal, visibleSpliterModal, createChat , currentProgress, startedProcessing, totalPdfPages, maxPages}: Props) => {
+  const totalPageNumbersAllowed = maxPages;
   const [totalPages, setTotalPages] = useState<any>([])
   const [fromPage, setFromPage] = useState('')
   const [toPage, setToPage] = useState('')
@@ -58,13 +57,13 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
   
     const combinedPages = [...totalPages, ...filteredRange];
   
-    let limitedTotalPages = combinedPages.slice(0, 30);
+    let limitedTotalPages = combinedPages.slice(0, totalPageNumbersAllowed);
     if (limitedTotalPages.length < combinedPages.length) {
       Toast.show({
-        title: "Length Limit Exceeded', The total number of pages cannot exceed 30.",
+        title: `Length Limit Exceeded', The total number of pages cannot exceed ${totalPageNumbersAllowed}.`,
         placement: 'bottom',
         backgroundColor: '#FF0101',
-        duration: 1000,
+        duration: 3000,
       })
     }
   
@@ -78,7 +77,7 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
   function getNextPageNumbers(totalPageNumbers: any, starting: any) {
     const nextPageNumbers = [];
   
-    for (let i = starting; i <= totalPageNumbers && nextPageNumbers.length < 30; i++) {
+    for (let i = starting; i <= totalPageNumbers && nextPageNumbers.length < totalPageNumbersAllowed; i++) {
       nextPageNumbers.push(i);
     }
   
@@ -87,7 +86,7 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
 
   return (
     <Modal isOpen={visibleSpliterModal} onClose={()=>{
-      setVisibleSpliterModal(false);
+      setVisibleSpliterModal();
     }}  size={'xl'}>
         <Alert
             maxW="400"
@@ -102,7 +101,7 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
                 <HStack flexShrink={1} space={2} alignItems="center">
                   <Alert.Icon />
                   <Text fontSize="md" fontWeight="medium" color="coolGray.800">
-                  The PDF contains more than 50 pages.
+                  The PDF contains more than {maxPages} pages.
                   </Text>
                 </HStack>
                 <IconButton
@@ -119,7 +118,9 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
               <Box pl="6" _text={{
                 color: "coolGray.600"
               }}>
-                Please select a range of pages (maximum 50 pages) you want to chat with.
+                <Text color={'coolGray.600'} >
+                    Please select a range of pages (maximum {maxPages} pages) you want to chat with.
+                </Text>
               </Box>
             </VStack>
           </Alert>
@@ -164,7 +165,7 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
                     </TouchableOpacity>
                     <TouchableOpacity
                     onPress={()=>{
-                      const newRange = Array.from({ length: 30 - 1 + 1 }, (_, index) => 1 + index);
+                      const newRange = Array.from({ length: totalPageNumbersAllowed - 1 + 1 }, (_, index) => 1 + index);
                       setTotalPages(newRange)
                       }}
                       style={{
@@ -179,12 +180,12 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
                       }}
                     >
                       <Text color={theme.colors.mainTheme} fontSize={'md'} fontWeight={'bold'} textDecorationLine={'underline'}>
-                        From 1 - 30
+                        From 1 - {totalPageNumbersAllowed}
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={()=>{
-                        const newRange = Array.from({ length: getNextPageNumbers(150,97) - 97 + 1 }, (_, index) => 97 + index);
+                        const newRange = Array.from({ length: getNextPageNumbers(totalPdfPages,maxPages) - maxPages + 1 }, (_, index) => maxPages + index);
                         setTotalPages(newRange)
                       }}
                       style={{
@@ -199,7 +200,7 @@ const PdfPageSplitter = ({ setSplitPages, splitPages, setVisibleSpliterModal, vi
                       }}
                     >
                       <Text color={theme.colors.mainTheme} fontSize={'md'} fontWeight={'bold'} textDecorationLine={'underline'} >
-                        From 31 - {getNextPageNumbers(150, 30)}
+                        From 31 - {getNextPageNumbers(totalPdfPages, maxPages)}
                       </Text>
                     </TouchableOpacity>
                   </Box> 

@@ -77,6 +77,7 @@ const Recommendation = ({ setResourcesLoaded, selected }: Props) => {
         }),
         selected: category,
         subject: item.subjectName,
+        branch: item?.branch
       })
     ) : (NavigationService.navigate(NavigationService.screens.Upload, {
       userData: userData?.usersData,

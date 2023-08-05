@@ -36,7 +36,7 @@ const createStyles = (theme, sizes) =>
     categoryBtns: {
       width: width * 0.4,
       height: height * 0.25,
-      backgroundColor: '#fff',
+      backgroundColor: '#F1F1FA',
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
@@ -44,7 +44,7 @@ const createStyles = (theme, sizes) =>
       marginVertical: 10,
       //change btn position on hover
       transform: [{ scale: 1 }],
-      shadowColor: '#000',
+      shadowColor: '#161719719719719719',
       shadowOffset: {
         width: 0,
         height: 2,
@@ -84,7 +84,7 @@ const createStyles = (theme, sizes) =>
       marginVertical: 10,
       //change btn position on hover
       transform: [{ scale: 1 }],
-      shadowColor: '#000',
+      shadowColor: '#161719719719719719',
       shadowOffset: {
         width: 0,
         height: 2,
@@ -97,7 +97,7 @@ const createStyles = (theme, sizes) =>
       transform: [{ scale: 1.1 }],
       borderColor: '#FF8181',
       borderWidth: 2,
-      backgroundColor: '#fff',
+      backgroundColor: '#F1F1FA',
     },
 
     notesContainer: {
@@ -138,7 +138,7 @@ const createStyles = (theme, sizes) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 15,
-      shadowColor: '#000',
+      shadowColor: '#161719719719719719',
       marginRight: 5,
     },
     subjectName: {
@@ -156,7 +156,7 @@ const createStyles = (theme, sizes) =>
       justifyContent: 'flex-start',
       alignItems: 'center',
       position: 'relative',
-      shadowColor: '#000',
+      shadowColor: '#161719719719719719',
       borderRadius: 10,
       paddingHorizontal: height * 0.02,
     },

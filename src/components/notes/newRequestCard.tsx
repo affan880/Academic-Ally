@@ -350,7 +350,7 @@ const NewRequestCard = ({ item }: any) => {
                                     paddingHorizontal: theme.sizes.width * 0.06,
                                     paddingVertical: 10,
                                 }} onPress={approved} >
-                                    <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#FFF"} onPress={approved} >
+                                    <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#F1F1FA"} onPress={approved} >
                                         Approve
                                     </Text>
                                 </TouchableOpacity>
@@ -381,7 +381,7 @@ const NewRequestCard = ({ item }: any) => {
                                     paddingHorizontal: theme.sizes.width * 0.06,
                                     paddingVertical: 10,
                                 }} onPress={rejected}>
-                                    <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#FFF"} onPress={rejected} >
+                                    <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#F1F1FA"} onPress={rejected} >
                                         Disapprove
                                     </Text>
                                 </TouchableOpacity>
@@ -395,7 +395,7 @@ const NewRequestCard = ({ item }: any) => {
                         {
                             !submitted ? (
                                 <Card style={{
-                                    backgroundColor: "#FFF",
+                                    backgroundColor: "#F1F1FA",
                                     width: "100%",
                                     alignItems: "center",
                                     justifyContent: "center",
@@ -441,7 +441,7 @@ const NewRequestCard = ({ item }: any) => {
                                         <Actionsheet.Item style={{
                                             borderBottomWidth: 0.9,
                                             borderBottomColor: "#91919F",
-                                            backgroundColor: "#FFF",
+                                            backgroundColor: "#F1F1FA",
                                         }} onPress={() => {
                                             setChecked2(!checked2);
                                         }}>
@@ -467,7 +467,7 @@ const NewRequestCard = ({ item }: any) => {
                                         <Actionsheet.Item style={{
                                             borderBottomWidth: 0.9,
                                             borderBottomColor: "#91919F",
-                                            backgroundColor: "#FFF",
+                                            backgroundColor: "#F1F1FA",
                                         }} onPress={() => {
                                             setChecked3(!checked3);
                                         }}>

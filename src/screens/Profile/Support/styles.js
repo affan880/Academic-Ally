@@ -69,7 +69,7 @@ const createStyles = (theme, sizes) =>
         headerText: {
             fontSize: 20,
             fontWeight: 'bold',
-            color: '#FFFFFF',
+            color: '#F1F1FA',
             textAlign: 'center',
             paddingLeft: 5,
         },

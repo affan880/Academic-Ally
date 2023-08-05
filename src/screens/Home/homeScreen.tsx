@@ -55,7 +55,6 @@ const HomeScreen = () => {
             userData,
             notesData,
           });
-          console.log("hereee")
         }
       }
     }

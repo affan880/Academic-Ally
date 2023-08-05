@@ -5,7 +5,7 @@ import { PDFDocument, PDFPage } from 'pdf-lib';
 import RNFS from 'react-native-fs';
 import { v4 as uuidv4 } from 'uuid';
 
-import { firestoreDB } from '../../Modules/auth/firebase/firebase';
+import { firestoreDB, getCurrentUser } from '../../Modules/auth/firebase/firebase';
 import CrashlyticsService from '../../services/CrashlyticsService';
 import { addItemToDownloadingList, removeItemFromDownloadingList, setDownloadProgress, setIsDownloading, updateDownloadProgress } from './pdfViewerSlice';
 
@@ -183,6 +183,9 @@ class PdfViewerAction {
                 duration: 3000,
             });
         });
+
+        // console.log("tuytut",link.slice(link.length-4, link.length))
+        // console.log("tuytut",link)
         return link;
     };
 
@@ -333,6 +336,7 @@ class PdfViewerAction {
                 resolve(data); 
               } catch (error) {
                 setStartedProcessing(false)
+                console.log( `Error creating Initialized PDF document: ${error.message}`)
                 reject({ message: `Error creating Initialized PDF document: ${error.message}` });
               }
             } else {
@@ -370,13 +374,16 @@ class PdfViewerAction {
             );
       
             if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
+
+              CrashlyticsService.setUserId(getCurrentUser()?.uid)
+              resolve(false)
+              // throw new Error(`HTTP error! Status: ${response.status}`);
             }
       
             const data = await response.json();
             resolve(data);
           } catch (error) {
-            console.error("Error:", error);
+            console.log("Error:hehe", error);
             reject({ message: `Error: ${error.message}` });
           }
         });
@@ -385,8 +392,8 @@ class PdfViewerAction {
       const chatRef = firestoreDB().collection('Users').doc(uid).collection('InitializedPdf').doc(chatId);
     
       const unsubscribe = chatRef.onSnapshot((snapshot) => {
-        const chatData = snapshot.data();
-        const messages = chatData ? chatData.conversations : [];
+        const chatData = snapshot?.data();
+        const messages = chatData ? chatData?.conversations : [];
 
         setMessages(messages);
       });
@@ -405,7 +412,7 @@ class PdfViewerAction {
           
         const docSnapshot = await docRef.get();
     
-        if (docSnapshot.exists) {
+        if (docSnapshot?.exists) {
           const data = docSnapshot?.data();
           return data;
         } else {

@@ -1,3 +1,4 @@
+import AllyBotActions from './AllyBotActions'
 import { formatDistanceToNow } from 'date-fns';
 import LottieView from 'lottie-react-native';
 import { Box, Divider, Icon, IconButton, Modal, Stack, Text } from 'native-base'
@@ -10,7 +11,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import MainScreenLayout from '../../layouts/mainScreenLayout'
 import AllyChatBot from '../../sections/PdfViewer/AllyChatBot/AllyChatBot'
 import UtilityService from '../../services/UtilityService'
-import AllyBotActions from './AllyBotActions'
 
 type Props = {}
 
@@ -85,7 +85,7 @@ const AllyBotScreen = (props: Props) => {
                                 }} onPress={()=>{
                                   setConfirmDelete(false)
                                 }} >
-                                    <Text fontSize={theme.sizes.subtitle} fontWeight={'600'} textAlign="center" color={"#FFF"} >
+                                    <Text fontSize={theme.sizes.subtitle} fontWeight={'600'} textAlign="center" color={"#F1F1FA"} >
                                         Cancel
                                     </Text>
                                 </TouchableOpacity>

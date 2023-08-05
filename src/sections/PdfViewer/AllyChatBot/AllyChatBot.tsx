@@ -1,7 +1,8 @@
 import LottieView from 'lottie-react-native';
-import { Avatar, Box, Icon, IconButton } from 'native-base';
+import { Avatar, Box, Icon, IconButton, Toast } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, FlatList, Image, KeyboardAvoidingView, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { useSelector } from 'react-redux';
 
 import PdfViewerAction from '../../../screens/PdfViewer/pdfViewerAction';
@@ -127,7 +128,10 @@ const ChatScreen  = ({open, close, docId, choosenDoc}: Props) => {
       }
       setMessageText("")
         PdfViewerAction.chatWithPdf(docId, messageText, uid).then((res)=>{
-            console.log("ress==========", res);
+            Toast.show({
+              title: 'Error: PDF Text Recognition',
+              description: 'Oops! It seems we encountered an issue with the PDF you provided. Our AI is having trouble recognizing handwritten or cursive text, which probably caused the error. Please try another PDF with clear, machine-readable text for accurate answers to your questions.Thank you for your understanding! 📄🚀'
+            })
         })
     };
     return (
@@ -135,28 +139,32 @@ const ChatScreen  = ({open, close, docId, choosenDoc}: Props) => {
             <View style={[styles.mainContainer, {backgroundColor: theme.colors.quaternary}]}>
             <ChatHeader name={'AllyBot'} onPress={()=>{close()}}/>
                     <FlatList
-                        data={messages?.reverse()}
+                        data={messages}
                         showsVerticalScrollIndicator={false}
-                        // ref={flatListRef}
+                        ref={flatListRef}
                         contentContainerStyle={styles.contentContainer}
                         renderItem={({ item }) => renderMessage(item)}
                         // onContentSizeChange={() =>
                         //     flatListRef.current.scrollToEnd({ animated: true })
                         //   }
-                          inverted
+                          // inverted
                     />
                     <View style={styless.inputContainer}>
                         <TextInput
                             style={styless.input}
                             value={messageText}
                             onChangeText={setMessageText}
-                            placeholder="Send a message"
+                            placeholder="  Send a message"
                             placeholderTextColor="#999"
                             multiline
                             underlineColorAndroid="transparent"
+                            onSubmitEditing={sendMessage}
+                            returnKeyType='send'
                         />
                         <TouchableOpacity style={styless.sendButton} onPress={sendMessage}>
-                            <Text style={styless.sendButtonText}>Send</Text>
+                            <Text style={styless.sendButtonText}>
+                              <Icon as={MaterialIcons} name='send' color={theme.colors.white} size={22  } />
+                            </Text>
                         </TouchableOpacity>
                     </View>
             </View>
@@ -193,7 +201,7 @@ const styless = StyleSheet.create({
     },
     sendButtonText: {
         fontSize: 14,
-        color: '#fff',
+        color: '#F1F1FA',
         fontWeight: 'bold'
     },
 });

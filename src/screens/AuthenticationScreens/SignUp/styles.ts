@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 const createStyles = () =>
@@ -19,12 +19,12 @@ const createStyles = () =>
     },
     studyIcon: {
       width: width * 0.6,
-      height: height * 0.35,
+      height: height * 0.30 ,
       resizeMode: 'contain',
       alignSelf: 'center',
     },
     title: {
-      color: '#fff',
+      color: '#F1F1FA',
       fontSize: 15,
       fontWeight: 'bold',
     },
@@ -35,14 +35,14 @@ const createStyles = () =>
       alignItems: 'center',
     },
     LoginBtn: {
-      backgroundColor: '#000000',
+      backgroundColor: '#161719',
       width: 150,
       height: 200,
       borderRadius: 16,
       elevation: 8,
     },
     LoginBtnText: {
-      color: '#fff',
+      color: '#F1F1FA',
       fontSize: 16,
       fontWeight: 'bold',
       alignSelf: 'center',
@@ -56,22 +56,21 @@ const createStyles = () =>
       elevation: 8,
     },
     welcomeText: {
-      fontWeight: '100',
-      fontSize: 16,
-      color: '#fff',
-      alignSelf: 'center',
-      marginTop: 15,
-      lineHeight: 37,
+      fontSize: 30,
+      fontWeight: 'bold',
       textAlign: 'center',
+      marginVertical: 5,
+      width: '100%',
+      color: '#161719'
     },
     loginText: {
       fontWeight: '900',
-      width: 600,
-      fontSize: 34,
-      color: '#fff',
+      fontSize: 30,
+      color: '#161719',
       alignSelf: 'center',
       lineHeight: 41,
       textAlign: 'center',
+      paddingVertical:15
     },
     inputContainer: {
       width: '100%',
@@ -79,7 +78,7 @@ const createStyles = () =>
       alignItems: 'center',
     },
     input: {
-      backgroundColor: '#fff',
+      backgroundColor: '#F1F1FA',
       width: 342,
       height: 60,
       borderRadius: 20,
@@ -92,7 +91,7 @@ const createStyles = () =>
     forgotPasswordText: {
       fontWeight: '100',
       fontSize: 12,
-      color: '#fff',
+      color: '#F1F1FA',
       lineHeight: 37,
       alignSelf: 'flex-end',
       marginRight: 25,
@@ -110,19 +109,19 @@ const createStyles = () =>
     loginButtonText: {
       fontWeight: '900',
       fontSize: 16,
-      color: '#fff',
+      color: '#F1F1FA',
       lineHeight: 37,
     },
     orText: {
       fontWeight: '100',
       fontSize: 12,
-      color: '#fff',
+      color: '#F1F1FA',
       lineHeight: 37,
       alignSelf: 'center',
       marginTop: 10,
     },
     createButton: {
-      backgroundColor: '#000000',
+      backgroundColor: '#161719',
       width: 342,
       height: 60,
       borderRadius: 20,
@@ -135,14 +134,14 @@ const createStyles = () =>
     createButtonText: {
       fontWeight: '700',
       fontSize: 16,
-      color: '#fff',
+      color: '#F1F1FA',
       lineHeight: 19,
     },
     LoginButton: {
-      marginBottom: 20,
+      marginBottom: 40,
     },
     SignupButton: {
-      marginTop: 20,
+      marginVertical: 20,
     },
   });
 

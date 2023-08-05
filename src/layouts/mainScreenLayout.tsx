@@ -55,7 +55,7 @@ const MainScreenLayout = ({ children, rightIconFalse, title, handleScroll, name,
                         }}
                         onPress={() => { navigation.goBack() }}
                         variant="ghost"
-                        icon={<Icon as={Ionicons} name="chevron-back-outline" size={'lg'} color={theme.colors.white} />}
+                        icon={<Icon as={Ionicons} name="chevron-back-outline" size={'xl'} color={theme.colors.white} />}
                         p={0}
                     />
                     {title && (

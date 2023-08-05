@@ -1,9 +1,9 @@
-import { firestoreDB } from "../../Modules/auth/firebase/firebase";
 import auth from '@react-native-firebase/auth';
-import { setCustomClaims, setUsersData } from "../../redux/reducers/usersData";
-import { setCustomLoader } from "../../redux/reducers/userState";
 import { Toast } from "native-base";
 
+import { firestoreDB } from "../../Modules/auth/firebase/firebase";
+import { setCustomClaims, setUsersData } from "../../redux/reducers/usersData";
+import { setCustomLoader } from "../../redux/reducers/userState";
 
 class AuthAction {
 
@@ -119,14 +119,13 @@ class AuthAction {
                         title: 'User not found',
                         type: 'danger',
                     });
-                    dispatch(setCustomLoader(false));
                 } else {
                     Toast.show({
                         title: 'Incorrect Password',
                         type: 'danger',
                     });
-                    dispatch(setCustomLoader(false));
                 }
+                dispatch(setCustomLoader(false));
             });
     }
 
@@ -208,6 +207,18 @@ class AuthAction {
                 }
             });
     }
+
+    static forgotPasswordHandler = (formRef)  => {
+        if (formRef.current && formRef.current.errors?.email) {
+          Toast.show({
+            title: 'Please Enter a Valid Email',
+            duration: 4000,
+            backgroundColor: '#FF0101',
+          });
+        } else {
+          dispatch(this.forgotPassword(formRef.current.values.email));
+        }
+      };
 }
 
 export default AuthAction;

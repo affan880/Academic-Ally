@@ -69,8 +69,8 @@ class SeekHubActions {
                 .collection('SeekHub')
                 .doc(`${userData.university}`)
                 .collection(`${userData.course}`)
-                .where("sem", "==", filter.sem)
-                .where("branch", "==", filter.branch)
+                // .where("sem", "==", filter.sem)
+                // .where("branch", "==", filter.branch)
                 .where('status', "==", 'pending')
                 .get();
 
@@ -136,7 +136,7 @@ class SeekHubActions {
         firestoreDB().collection('Users').doc(uid).update({
             subscribeArray:  firebase.firestore.FieldValue.arrayRemove(topic)
         }).then(()=>{
-            firebase.messaging().unsubscribeFromTopic(`${id}`);
+            firebase.messaging().unsubscribeFromTopic(`${topic}`);
             Toast.show({
                 title: "Unsubscribed",
                 backgroundColor: '#FF0000',
@@ -189,7 +189,6 @@ class SeekHubActions {
         const path = `SeekHub/${university}/${course}`;
 
         const DocRef = firestoreDB().collection(path).doc(pdf?.id);
-        console.log(DocRef)
 
         await DocRef.update(data).then(async () => {
             await this.addToUserUploads(data, university, course);

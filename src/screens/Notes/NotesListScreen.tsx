@@ -1,10 +1,12 @@
-import { RouteProp, useRoute } from '@react-navigation/native'
-import React, { useMemo, useRef, useState } from 'react';
+import { RouteProp, useIsFocused, useRoute } from '@react-navigation/native'
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View, VirtualizedList } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
+import CustomLoader from '../../components/loaders/CustomLoader';
 import NotesCard from '../../components/notes/notesCard';
 import MainScreenLayout from '../../layouts/mainScreenLayout';
+import { setCustomLoader, setResourceLoader } from "../../redux/reducers/userState";
 import NavigationService from '../../services/NavigationService';
 import UtilityService from '../../services/UtilityService';
 import createStyles from './styles';
@@ -19,17 +21,38 @@ type RootStackParamList = {
   };
 };
 
-const NotesList = (props: Props) => {
+const NotesList = React.memo((props: Props) => {
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [uploadButtonVisible, setUploadButtonVisible] = useState(true);
   const components = ['subjectDetails', 'notesList']
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [scroollPostion, setScrollPosition] = useState(null)
+  const [saveScroll, setScroll]= useState(null);
+  const listRef = useRef<any>();
+  const isFocused = useIsFocused();
+  const dispatch = useDispatch()
+  useEffect(() => {
+    const run = async () =>{
+      const val: any = await listRef.current?.scrollToOffset({ offset: saveScroll })
+      return val
+    }
+    if (isFocused) {
+      saveScroll !== null ? dispatch(setCustomLoader(true)) : null
+          saveScroll !== null ? 
+          run().then(()=>dispatch(setCustomLoader(false)))
+          : null
+    }
 
+    return () => {
+      null
+    };
+  }, [isFocused]);
   const handleScroll = (event: any) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const contentHeight = event.nativeEvent.contentSize.height;
     const windowHeight = event.nativeEvent.layoutMeasurement.height;
+    setScrollPosition(event.nativeEvent.contentOffset.y)
 
     if (offsetY > 0) {
       Animated.timing(fadeAnim, {
@@ -62,9 +85,11 @@ const NotesList = (props: Props) => {
 
   return (
     <>
+      <CustomLoader />
       <MainScreenLayout rightIconFalse={true} title={subjectName} handleScroll={handleScroll} name="SubjectList" >
         <VirtualizedList
           data={components}
+          ref={listRef}
           renderItem={({ item, index }: any) => {
             switch (item) {
               case 'subjectDetails':
@@ -102,7 +127,9 @@ const NotesList = (props: Props) => {
                       renderItem={({ item, index }: any) => {
                         return (
                           <View key={index + Math.random()}>
-                            <NotesCard item={item} userData={userData} notesData={notesData} selected={selected} subject={subject} />
+                            <NotesCard item={item} userData={userData} notesData={notesData} selected={selected} subject={subject} setScroll = {() => {
+                              setScroll(scroollPostion)
+                            }} />
                           </View>
                         );
                       }}
@@ -156,7 +183,7 @@ const NotesList = (props: Props) => {
       }
     </>
   );
-};
+});
 
 export default NotesList;
 

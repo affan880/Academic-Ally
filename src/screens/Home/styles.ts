@@ -19,7 +19,7 @@ const createStyles = (theme:any, sizes:any) =>
             justifyContent: "space-between",
         },
         userImgContainer: {
-            backgroundColor: "#fff", 
+            backgroundColor: "#F1F1FA", 
             borderRadius: 50,
         },
         userImg: {
@@ -28,13 +28,13 @@ const createStyles = (theme:any, sizes:any) =>
             borderRadius: 50,
         },
         salutation: {
-            color: "#fff",
+            color: "#F1F1FA",
             fontSize: sizes.title,
             fontWeight: "700",
             lineHeight: height * 0.04,
         },
         userName: {
-            color: "#fff",
+            color: "#F1F1FA",
             fontSize: sizes.subtitle,
             fontWeight: "700",
         },

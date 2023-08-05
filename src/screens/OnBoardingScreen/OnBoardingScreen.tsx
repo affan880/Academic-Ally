@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
-import React, { FC } from 'react';
-import { Dimensions, Image, StatusBar, StyleSheet, Text, View } from 'react-native';
+import React, { FC, useEffect, useRef, useState } from 'react';
+import { Animated, Dimensions, Image, StatusBar, StyleSheet, Text, View } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 
-import { FIRSTONBOARDINGSCREEN, SECONDONBOARDINGSCREEN, THIRDONBOARDINGSCREEN } from '../../assets';
+import { ALLYBOT, FIRSTONBOARDINGSCREEN, SECONDONBOARDINGSCREEN, SEEKHUB, THIRDONBOARDINGSCREEN } from '../../assets';
 import NavigationService from '../../services/NavigationService';
 
 const Bar_Height: any = StatusBar.currentHeight;
@@ -15,26 +15,95 @@ interface IProps {
   navigation: NavigationProp<ParamListBase>;
 }
 
-const OnBoardingScreen: FC<IProps> = ({ navigation }) => {
+const OnBoardingScreen: FC<IProps> = () => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
+  const bounceAnim = useRef(new Animated.Value(0)).current;
+  const onboardingRef = useRef<Onboarding>(null);
+  const [statusBarColor, setStatusBarColor] = useState('#6360FF');
+  const colors = ['#6360FF', '#827FFF', '#FF8181']
+
+  const reRun = () => {
+    bounceAnim.setValue(0);
+  
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  
+    Animated.timing(slideAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  
+    const firstBounce = Animated.spring(bounceAnim, {
+      toValue: 1,
+      friction: 10,
+      tension: 100,
+      useNativeDriver: true,
+    });
+  
+    const secondBounce = Animated.spring(bounceAnim, {
+      toValue: 0, // Corrected to return to the initial position
+      friction: 10,
+      tension: 150,
+      useNativeDriver: true,
+    });
+  
+    Animated.sequence([firstBounce, secondBounce]).start();
+  };
+  
+
+  useEffect(() => {
+    reRun()
+  }, [fadeAnim, slideAnim]);
+
+
   const handleCompleteOnboarding = async () => {
     await AsyncStorage.setItem('hasCompletedOnboarding', 'true');
-    NavigationService.navigate(NavigationService.screens.Login);
+    NavigationService.navigate(NavigationService.screens.Auth);
   };
 
   return (
-    <View style={[styles.statusBar, styles.container]}>
-      <StatusBar animated={true} translucent={true} backgroundColor={'#6360FF'} />
+    <Animated.View
+    style={[styles.statusBar, styles.container, { opacity: fadeAnim }]}
+    >
+      <StatusBar animated={true} translucent={true} backgroundColor={'#827FFF'} />
       <Onboarding
         onSkip={handleCompleteOnboarding}
         onDone={handleCompleteOnboarding}
         nextLabel={<Text style={styles.buttonText}>Next</Text>}
+        transitionAnimationDuration={300}
+        // controlStatusBar={true}
         skipLabel={<Text style={styles.buttonText}>Skip</Text>}
         imageContainerStyles={styles.imageContainer}
+        ref={onboardingRef}
+        pageIndexCallback={(index)=>{
+          reRun();
+          setStatusBarColor(colors[index])
+        }}
         pages={[
           {
-            backgroundColor: '#6360FF',
+            backgroundColor: '#827FFF',
             image: (
-              <Image source={THIRDONBOARDINGSCREEN} style={styles.image} />
+              <Animated.Image
+                source={THIRDONBOARDINGSCREEN}
+                style={[
+                  styles.image,
+                  {
+                    transform: [
+                      {
+                        translateY: bounceAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0, -25],
+                        }),
+                      },
+                    ],
+                  },
+                ]}
+              />
             ),
             titleStyles: styles.title,
             subTitleStyles: styles.subTitle,
@@ -45,28 +114,110 @@ const OnBoardingScreen: FC<IProps> = ({ navigation }) => {
           {
             backgroundColor: '#827FFF',
             image: (
-              <Image source={SECONDONBOARDINGSCREEN} style={styles.image} />
+              <Animated.Image
+                source={SECONDONBOARDINGSCREEN}
+                style={[
+                  styles.image,
+                  {
+                    transform: [
+                      {
+                        translateY: bounceAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0, -25],
+                        }),
+                      },
+                    ],
+                  },
+                ]}
+              />
             ),
             subTitleStyles: styles.subTitle,
-            title: 'Manage Your Notes and Resources',
             titleStyles: styles.title,
+            title: 'Manage Your Notes and Resources',
             subtitle:
               'Effortlessly manage all your notes, syllabus, and other resources with our intuitive notes app.',
           },
+          // {
+          //   backgroundColor: '#FF8181',
+          //   image: (
+          //     <Animated.Image
+          //       source={FIRSTONBOARDINGSCREEN}
+          //       style={[
+          //         styles.image,
+          //         {
+          //           transform: [
+          //             {
+          //               translateY: bounceAnim.interpolate({
+          //                 inputRange: [0, 1],
+          //                 outputRange: [0, -25],
+          //               }),
+          //             },
+          //           ],
+          //         },
+          //       ]}
+          //     />
+          //   ),
+          //   title: 'One Place for All Your Study Needs',
+          //   titleStyles: styles.title,
+          //   subTitleStyles: styles.subTitle,
+          //   subtitle:
+          //     'Keep all your notes, syllabus, and other resources in one convenient place with our notes app.',
+          // },
           {
-            backgroundColor: '#FF8181',
+            backgroundColor: '#827FFF',
             image: (
-              <Image source={FIRSTONBOARDINGSCREEN} style={styles.image} />
+              <Animated.Image
+                source={SEEKHUB}
+                style={[
+                  styles.image,
+                  {
+                    transform: [
+                      {
+                        translateY: bounceAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0, -25],
+                        }),
+                      },
+                    ],
+                  },
+                ]}
+              />
             ),
-            title: 'One Place for All Your Study Needs',
+            title: 'SeekHub - Your Academic Resource Hub',
+            titleStyles: styles.title,
+            subTitleStyles: styles.subTitle,
+            subtitle:  
+            "Find everything you need for your academic journey, right at your fingertips.",
+          },
+          {
+            backgroundColor: '#827FFF',
+            image: (
+              <Animated.Image
+                source={ALLYBOT}
+                style={[
+                  styles.image,
+                  {
+                    transform: [
+                      {
+                        translateY: bounceAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0, -25],
+                        }),
+                      },
+                    ],
+                  },
+                ]}
+              />
+            ),
+            title: 'AllyBot: Your PDF Conversationalist',
             titleStyles: styles.title,
             subTitleStyles: styles.subTitle,
             subtitle:
-              'Keep all your notes, syllabus, and other resources in one convenient place with our notes app.',
+              'Unlock AllyBot: Communicate with PDFs effortlessly using natural language. Get instant answers and seamless interactions in one intelligent chatbot.',
           },
         ]}
       />
-    </View>
+    </Animated.View>
   );
 };
 
@@ -90,7 +241,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   title: {
-    color: '#fff',
+    color: '#F1F1FA',
     fontSize: 26,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -98,7 +249,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   subTitle: {
-    color: '#fff',
+    color: '#F1F1FA',
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',

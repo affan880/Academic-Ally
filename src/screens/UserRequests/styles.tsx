@@ -83,7 +83,7 @@ const createStyles = (theme: any, sizes: any) =>
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: 10,
-            shadowColor: '#000',
+            shadowColor: '#161719',
             borderWidth: 0,
         },
         subjectItem: {

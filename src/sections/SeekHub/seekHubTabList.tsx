@@ -181,7 +181,7 @@ const seekHubTabList = (props: Props) => {
         </TouchableOpacity>
         <Divider orientation="vertical" />
         <TouchableOpacity onPress={()=>{
-          SeekHubActions.handleNotification(subscribedTopics, data.id, uid)
+          SeekHubActions.handleNotification(subscribedTopics, data?.id, uid)
         }} style={{ flexDirection: 'row', alignItems: 'center', padding: 5, width:'50%', justifyContent:'center' }} >
           <Text fontSize={16} fontWeight={700} color={theme.colors.white} pr={2} >Notify</Text>
           <MaterialIcons name={isNotificationOn(data?.id) ? "notifications-on" : "notifications-off"} size={22} color={theme.colors.white} />

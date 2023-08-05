@@ -3,7 +3,7 @@ import { Dimensions, StatusBar, StyleSheet, Text, View } from 'react-native';
 import Orientation from 'react-native-orientation-locker';
 import { useSelector } from 'react-redux';
 
-const ScreenLayout = ({name, children}) => {
+const ScreenLayout = ({name = 'none', children}) => {
   const height = Dimensions.get('screen').height;
   const width = Dimensions.get('screen').width;
   const theme = useSelector(state => state.theme);

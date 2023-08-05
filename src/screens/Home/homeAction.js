@@ -119,6 +119,7 @@ class HomeAction {
                     otherResources,
                 },
                 subject: subjectData.subjectName,
+                branch: data?.branch
             });
             dispatch(setCustomLoader(false));
         } catch (error) {

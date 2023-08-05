@@ -233,10 +233,10 @@ const UploadPDF = () => {
           alignSelf: 'center',
           flexDirection: 'row',
         }}>
-        <Text fontWeight={700} fontSize={theme.sizes.title} color={'#FFFFFF'}>
+        <Text fontWeight={700} fontSize={theme.sizes.title} color={'#F1F1FA'}>
           Upload{' '}
         </Text>
-        <MaterialIcons name="file-upload" size={theme.sizes.iconSmall} color={'#FFFFFF'} />
+        <MaterialIcons name="file-upload" size={theme.sizes.iconSmall} color={'#F1F1FA'} />
       </TouchableOpacity>
 
       <Modal isOpen={modalVisible} size={'xl'}>

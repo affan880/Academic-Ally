@@ -1,4 +1,4 @@
-import { Icon } from 'native-base';
+import { Avatar, Icon } from 'native-base';
 import React, { useMemo } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 // import {listBase, list, QueryList, SubjectList} from '../../../Modules/auth/firebase/firebase';
@@ -28,7 +28,10 @@ const QuickAccess = ({ selected, setSelectedCategory }: Props) => {
         NavigationService.navigate(NavigationService.screens.AllyBot);
       }}>
         <View style={styles.syllabusIconContainer}>
-          <Icon as={Ionicons} name="chatbubble-sharp" size="lg" color={theme.colors.white} />
+          {/* <Icon as={Ionicons} name="chatbubble-sharp" size="lg" color={theme.colors.white} /> */}
+          <Avatar source={{
+            uri: 'https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/logo%2FAlly Bot™.png?alt=media&token=d3b0a0ad-8dc7-4428-84de-4b952f0998ad'
+          }} size={'sm'} />
         </View>
         <Text style={styles.iconLabel}>AllyBot</Text>
       </TouchableOpacity>
@@ -54,7 +57,7 @@ const QuickAccess = ({ selected, setSelectedCategory }: Props) => {
       }}>
         <View style={styles.otherResourcesIconContainer}>
           {/* <OtherRes /> */}
-        <Icon as={Ionicons} name="download" size="xl" color={theme.colors.white} />
+        <Icon as={Ionicons} name="download" size="2xl" color={theme.colors.white} />
         </View>
         <Text style={styles.iconLabel}>Downloads</Text>
       </TouchableOpacity>

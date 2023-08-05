@@ -91,7 +91,7 @@ const createStyles = (theme: any, sizes: any) =>
     categoryItemText: {
       fontSize: sizes.subtitle,
       fontWeight: 'bold',
-      color: '#FFFFFF',
+      color: '#F1F1FA',
       textAlign: 'center',
     },
     containerText: {
@@ -113,7 +113,7 @@ const createStyles = (theme: any, sizes: any) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
-      shadowColor: '#000',
+      shadowColor: '#161719',
     },
     subjectItem: {
       width: width * 0.95,

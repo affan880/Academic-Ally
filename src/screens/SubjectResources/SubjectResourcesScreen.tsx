@@ -31,13 +31,14 @@ type RootStackParamList = {
       sem: string;
     };
     notesData: any;
-    subject: string; // Add the 'subject' property here
+    subject: string;
+    branch: string;
   };
 };
 
 const NotesScreen = React.memo(() => {
   const route = useRoute<RouteProp<RootStackParamList, 'Home'>>();
-  const { userData, notesData, subject } = route.params;
+  const { userData, notesData, subject, branch } = route.params;
   const [selectedCategory, setSelectedCategory] = useState('');
 
   const FlatListRef: any = useRef(null)
@@ -54,10 +55,11 @@ const NotesScreen = React.memo(() => {
   const searchScreenStyles = useMemo(() => createStylesSearch(theme.colors, theme.sizes), [theme]);
   const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
 
-  const subjectTitle: string = subject?.length > 20 ? (UtilityService.generateAbbreviation(subject)).toUpperCase() : subject;
+  const Title: string = branch?.length > 20 ? (UtilityService.generateAbbreviation(branch)).toUpperCase() : branch;
+  const Subject: string = subject;
 
   const selectedSubject = async (item: any) => {
-    FlatListRef.current.scrollToOffset({ offset: 0, animated: true })
+    // FlatListRef.current.scrollToOffset({ offset: 0, animated: true })
     dispatch(setResourceLoader(true));
     try {
       const userData: any = await firestore().collection('Users').doc(uid).get();
@@ -85,6 +87,7 @@ const NotesScreen = React.memo(() => {
         },
         notesData: notesData,
         subject: item.subject,
+        branch: item.branch
       });
     } catch (error) {
       dispatch(setResourceLoader(false));
@@ -113,7 +116,7 @@ const NotesScreen = React.memo(() => {
           item.subject.toLowerCase().includes(subject.toLowerCase()) ||
           generateAbbreviation(item.subject).includes(subject.toLowerCase())
         )
-      ).filter((item: any) => item.branch !== userData.branch);
+      ).filter((item: any) => item.branch !== branch);
 
       setFilteredList(similarItems);
     }
@@ -197,7 +200,7 @@ const NotesScreen = React.memo(() => {
   };
 
   return !loading ? (
-    <MainScreenLayout rightIconFalse={false} title={subjectTitle} handleScroll={() => { }} name={subjectTitle} handleShare={generateShareLink} >
+    <MainScreenLayout rightIconFalse={false} title={Title} handleScroll={() => { }} name={Title} handleShare={generateShareLink} >
       <ResourceLoader />
       <CustomLoader />
       <View style={{
@@ -206,11 +209,15 @@ const NotesScreen = React.memo(() => {
         <FlatList
           ref={FlatListRef}
           data={ItemsToRender}
+          showsVerticalScrollIndicator={false}
           renderItem={({ item }) => {
             switch (item) {
               case 'resourcesBtn':
                 return (
                   <>
+                    <Text style={[styles.headerText, {
+                      textAlign:'center'
+                    }]} >{Subject}</Text>
                     <View style={styles.header}>
                       <Text style={styles.headerText}>Resources</Text>
                     </View>

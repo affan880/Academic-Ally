@@ -6,6 +6,7 @@ class NavigationService {
         Intro: 'Intro',
         Login: 'Login',
         SignUp: 'SignUp',
+        Auth:'Auth',
         ForgotPassword: 'ForgotPassword',
         ConnectionError: 'ConnectionError',
         BottomTabNavigator: 'BottomTabNavigator',

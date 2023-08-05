@@ -98,7 +98,6 @@ export const RoundedDropdown = ({
             setIsFocus(false)
           }}
           onConfirmSelectItem={item => {
-            console.log('it',item)
             handleOptions(item)
           }}
           dropdownPosition="auto"
@@ -139,7 +138,7 @@ export default RoundedDropdown;
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#000',
+    backgroundColor: '#161719',
     height: height * 0.05,
     borderRadius: 15,
     paddingLeft: 20,
@@ -147,14 +146,14 @@ const styles = StyleSheet.create({
     borderWidth:1,
   },
   textInput: {
-    width: 250,
+    width: 260,
     fontSize: height * 0.0235,
-    color: '#000000',
+    color: '#161719',
     fontFamily: 'Poppins-Regular',
   },
   container: {
     marginTop: 1,
-    color: '#000000',
+    color: '#161719',
   },
   dropdown: {
     borderColor: 'gray',
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 0,
     fontSize: height * 0.0105,
-    color: '#000000',
+    color: '#161719',
   },
   icon: {
     marginRight: 12,
@@ -176,7 +175,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontSize: height * 0.0185,
     borderRadius: 5,
-    color: '#FFFFFF',
+    color: '#F1F1FA',
   },
   placeholderStyle: {
     fontSize: width * 0.035,
@@ -194,7 +193,7 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 50,
     fontSize: height * 0.0205,
-    color: '#000000',
+    color: '#161719',
     fontFamily: 'Poppins-Regular',
     borderRadius: 10,
   },

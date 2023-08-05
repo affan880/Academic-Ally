@@ -196,10 +196,10 @@ const Bookmark = () => {
       width={width / 1.1}
       pl="2"
       borderRadius={10}
-      backgroundColor={'#FFFFFF'}
+      backgroundColor={'#F1F1FA'}
       justifyContent={'center'}
       alignSelf={'center'}>
-      <Box width={"78%"} borderRadius={10} backgroundColor={"#FFF"} zIndex={999} />
+      <Box width={"78%"} borderRadius={10} backgroundColor={"#F1F1FA"} zIndex={999} />
       <Pressable
         w="90"
         height={"100%"}
@@ -223,7 +223,7 @@ const Bookmark = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <Fontisto name="bookmark-alt" size={theme.sizes.iconMedium} color="#FFFFFF" />
+          <Fontisto name="bookmark-alt" size={theme.sizes.iconMedium} color="#F1F1FA" />
           <Text style={styles.headerText}>Bookmarks</Text>
         </View>
       </View>
@@ -292,7 +292,7 @@ const Bookmark = () => {
         style={{
           fontSize: theme.sizes.title,
           fontWeight: 'bold',
-          color: '#FFFFFF',
+          color: '#F1F1FA',
           marginBottom: 20,
           alignSelf: 'center',
           margin: height * 0.06,

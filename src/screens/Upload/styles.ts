@@ -35,7 +35,7 @@ const createStyles = (theme: any, sizes: any) =>
     searchContainer: {
       width: width * 0.9,
       height: height * 0.06,
-      backgroundColor: '#fff',
+      backgroundColor: '#F1F1FA',
       borderRadius: 10,
       flexDirection: 'row',
       alignItems: 'center',
@@ -53,7 +53,7 @@ const createStyles = (theme: any, sizes: any) =>
       paddingHorizontal: width * 0.03,
       marginVertical: height * 0.01,
       alignSelf: 'center',
-      color: '#000000',
+      color: '#161719',
     },
     searchIcon: {
       width: width * 0.05,
@@ -95,7 +95,7 @@ const createStyles = (theme: any, sizes: any) =>
     categoryItemText: {
       fontSize: sizes.subtitle,
       fontWeight: 'bold',
-      color: '#FFFFFF',
+      color: '#F1F1FA',
       textAlign: 'center',
     },
     containerText: {
@@ -117,12 +117,12 @@ const createStyles = (theme: any, sizes: any) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
-      shadowColor: '#000',
+      shadowColor: '#161719719',
     },
     subjectItem: {
       width: width * 0.9,
       height: height * 0.15,
-      backgroundColor: '#fff',
+      backgroundColor: '#F1F1FA',
       borderRadius: 10,
       flexDirection: 'row',
       alignItems: 'center',
@@ -134,7 +134,7 @@ const createStyles = (theme: any, sizes: any) =>
     subjectItemTextContainer: {
       width: width * 0.65,
       height: height * 0.1,
-      backgroundColor: '#fff',
+      backgroundColor: '#F1F1FA',
       borderRadius: 10,
       flexDirection: 'column',
       alignItems: 'flex-start',
@@ -193,7 +193,7 @@ const createStyles = (theme: any, sizes: any) =>
       backgroundColor: theme.quaternary,
       borderRadius: 10,
       elevation: 3,
-      shadowColor: '#000',
+      shadowColor: '#161719719',
       shadowOffset: {width: 0, height: 2},
       shadowOpacity: 0.8,
       shadowRadius: 2,

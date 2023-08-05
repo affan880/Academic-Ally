@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 const createStyles = (theme: any, sizes: any) =>
@@ -40,7 +40,7 @@ const createStyles = (theme: any, sizes: any) =>
       marginVertical: 10,
       //change btn position on hover
       transform: [{scale: 1}],
-      shadowColor: '#000',
+      shadowColor: '#161719719',
       shadowOffset: {
         width: 0,
         height: 2,
@@ -78,7 +78,7 @@ const createStyles = (theme: any, sizes: any) =>
       marginHorizontal: 0,
       marginVertical: 10,
       transform: [{scale: 1}],
-      shadowColor: '#000',
+      shadowColor: '#161719719',
       shadowOffset: {
         width: 0,
         height: 2,
@@ -113,7 +113,7 @@ const createStyles = (theme: any, sizes: any) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
-      shadowColor: '#000',
+      shadowColor: '#161719719',
     },
     subjectName: {
       fontSize: 14,
@@ -129,7 +129,7 @@ const createStyles = (theme: any, sizes: any) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      shadowColor: '#000',
+      shadowColor: '#161719719',
       borderRadius: 10,
       paddingHorizontal: 15,
     },
@@ -185,7 +185,7 @@ const createStyles = (theme: any, sizes: any) =>
       shadowOpacity: 0.5,
     },
     uploadBtnText: {
-      color: '#fff',
+      color: '#F1F1FA',
       fontSize: sizes.text,
       fontWeight: 'bold',
       textAlign: 'center',

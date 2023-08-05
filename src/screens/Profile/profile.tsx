@@ -42,7 +42,7 @@ const Profile = () => {
           <View style={styles.header}>
             <FontAwesome name="user" style={{
               marginHorizontal: -5,
-            }} size={theme.sizes.iconMedium} color="#FFFFFF" />
+            }} size={theme.sizes.iconMedium} color="#F1F1FA" />
             <Text style={styles.headerText}>Account</Text>
           </View>
           <VStack alignItems="center" space={0} marginY={theme.sizes.height * 0.023} width={"100%"} justifyContent={"center"} >

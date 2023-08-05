@@ -46,7 +46,7 @@ const UserRequestsScreen = () => {
                     <MaterialCommunityIcons
                         name="clipboard-edit-outline"
                         size={theme.sizes.iconMedium}
-                        color="#FFFFFF"
+                        color="#F1F1FA"
                     />
                     <Text style={styles.headerText}>Requests</Text>
                 </View>

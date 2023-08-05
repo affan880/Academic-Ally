@@ -264,7 +264,7 @@ const UpdateInformation = () => {
         <Feather
           name="edit-3"
           size={13}
-          color={'#FFFFFF'}
+          color={'#F1F1FA'}
           onPress={onOpen}
           style={{
             position: 'relative',
@@ -417,7 +417,7 @@ const UpdateInformation = () => {
               updateUserImage(selectedAvatar)
               onClose()
             }}>
-              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={"#FFF"} >
+              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={"#F1F1FA"} >
                 Confirm
               </Text>
             </TouchableOpacity>

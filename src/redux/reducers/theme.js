@@ -1,9 +1,8 @@
+import { ShareIcon, ShareIconImg } from '../../assets/images/icons';
+import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSlice } from '@reduxjs/toolkit';
 import { Dimensions } from 'react-native';
-
-import { ShareIcon, ShareIconImg } from '../../assets/images/icons';
-import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,7 +29,7 @@ export const createThemeSlice = createSlice({
             disabledCategoryBtn: '#D3D3D3',
             mainTheme: '#6360FF',
             popOver: '#FCFCFF',
-            shareIcon: ShareIconImg,
+            shareIcon: ShareIconImg, 
             reportIcon: ReportIconBlack,
             actionSheet: '#FCFCFF'
         },
@@ -47,7 +46,7 @@ export const createThemeSlice = createSlice({
             greenSuccess: "#7DC579",
             redError: "#FF0000",
             yellowWarning: "#FFC960",
-            SearchCategory: "#FFFFFF",
+            SearchCategory: "#F1F1FA",
             white: "#FCFCFF",
             black: "#161719",
             categoryBtn: '#6360FF',

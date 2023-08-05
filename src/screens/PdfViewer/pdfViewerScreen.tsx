@@ -1,7 +1,7 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Alert, Box, Center, CloseIcon, HStack, Icon, IconButton, Modal, Text, Toast, VStack } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Linking, View } from 'react-native';
 import Pdf from 'react-native-pdf';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -66,8 +66,28 @@ const PdfViewer = () => {
   const userInfo: any = useSelector((state: any) => state.bootReducer.userInfo);
   const theme = useSelector((state: any) => { return state.theme; });
   const potrait = useSelector((state: any) => state.theme).isPotrait;
+  const { usersData } = useSelector((state: any) => state.usersData);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes, landscape), [theme, potrait]);
   const [url, setUrl] = useState<any>(null);
+  const mail = useSelector((state: any) => state?.bootReducer?.utilis);
+  const {max_init_per_day, max_pages, premium_max_init_per_day, premium_max_pages, mailTo} = useSelector((state: any) => state?.bootReducer?.utilis)?.pdfChat;
+  const [maxPagesAllowed, setMaxPagesAllowed] = useState(max_pages);
+  const [maxInitiationLimit, setMaxInitiationLimit] = useState(max_init_per_day);
+  useEffect(()=>{
+    if(usersData?.premiumUser){
+      setMaxInitiationLimit(premium_max_init_per_day);
+      setMaxPagesAllowed(premium_max_pages);
+    }
+  },[])
+
+const handleOpenEmail = () => {
+  const email = mailTo || 'admin@getacademically.co';
+  const subject = 'Premium Plan Inquiry'; // Subject for the email
+  const body = 'Hi,\n\nI am interested in upgrading to the Premium plan for unlimited PDF chat access. Please provide me with more information about the premium options and how to get started.\n\nThank you!\n\n'; // Pre-written message body
+
+  const url = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  Linking.openURL(url); // Open the email app with the pre-written email content
+};
 
   useEffect(() => {
     const updateOrientation = () => {
@@ -101,7 +121,6 @@ const PdfViewer = () => {
   useEffect(() => {
     if (url === null || url === undefined || url === "") {
       PdfViewerAction.checkIfFileExists(notesData).then((res: any) => {
-        console.log("heehhee", res)
         if (res) {
           setUrl(res)
         }
@@ -122,10 +141,10 @@ const PdfViewer = () => {
     if(existingChatList?.length > 0){
       setExistingChatListModal(true)
     }
-    else if (totalPages > 30 && existingChatList?.length === 0){
+    else if (totalPages > maxPagesAllowed && existingChatList?.length === 0){
       setVisibleSpliterModal(true);
     }
-    else if(totalPages < 30 && existingChatList?.length === 0 ){
+    else if(totalPages < maxPagesAllowed && existingChatList?.length === 0 ){
       createChat([])
       setVisibleSpliterModal(true);
     }
@@ -164,11 +183,13 @@ const PdfViewer = () => {
   }
 
   const handleAddNewChat = () =>{
-    if (totalPages > 30 ){
+    if (totalPages > maxPagesAllowed ){
       setVisibleSpliterModal(true);
     }
     else {
+      setVisibleSpliterModal(true);
       const newRange = Array.from({ length: totalPages - 1 + 1 }, (_, index) => 1 + index);
+      createChat(newRange)
     }
   }
   
@@ -207,7 +228,7 @@ const PdfViewer = () => {
         setSourceId(id);
         setchoosenDoc(existingChatList.filter((doc: any)=> doc.docId === id))
       }} />
-      <PdfPageSplitter setSplitPages={setSplitPages} splitPages={splitPages} setVisibleSpliterModal={setVisibleSpliterModal} createChat={createChat} visibleSpliterModal={visibleSpliterModal} filePath={filePath} currentProgress={currentProgress} startedProcessing={startedProcessing} />
+      <PdfPageSplitter setVisibleSpliterModal={()=> setVisibleSpliterModal(false)} createChat={createChat} visibleSpliterModal={visibleSpliterModal} currentProgress={currentProgress} startedProcessing={startedProcessing} totalPdfPages={totalPages} maxPages={maxPagesAllowed} />
       <View style={styles.container}>
         <View style={Display ? styles.headerContainer : { display: 'none' }} >
           <IconButton borderRadius={'full'} _hover={{ bg: '#D3D3D3', }} _pressed={{ bg: '#D3D3D3', }} onPress={() => { NavigationService.goBack() }} variant="ghost" icon={<Icon as={Ionicons} name="chevron-back-outline" size={'lg'} color={theme.colors.white} />} p={0} />
@@ -217,9 +238,30 @@ const PdfViewer = () => {
             </Text>
           </View>
           <IconButton borderRadius={'xl'} _hover={{ bg: '#D3D3D3', }} onPress={() => setViewRecentSheet(true)} variant="ghost" icon={<Icon as={Fontisto} name="history" size={'md'} color={theme.colors.white} />} p={0} />
-          <IconButton borderRadius={'xl'} _hover={{ bg: '#D3D3D3', }} onPress={() => { 
-            handleChat()
-           }} variant="ghost" icon={<Icon as={Ionicons} name="md-chatbubble-ellipses-outline" size={'lg'} color={theme.colors.white} />} p={0} />
+          <IconButton
+              borderRadius={'xl'}
+              _hover={{ bg: '#D3D3D3' }}
+              onPress={() => {
+                maxInitiationLimit > usersData?.initiatedChats
+                  ? handleChat()
+                  : Toast.show({
+                      title: 'Message Limit Exceeded 🚫',
+                      description:
+                        'Upgrade to our Premium plan for unlimited PDF chat access! 📩😊\n\n'
+                        + `Contact us at ${mailTo} to inquire about premium options and get started.\n\n`
+                        + 'Thank you for being part of our community! Feel free to reach out if you have any questions or need help.\n\n'
+                        + 'Happy chatting! 😊📩',
+                      backgroundColor: '#FFA726',
+                      placement: 'top',
+                      duration: 5000,
+                      collapsable: true,
+                      onTouchStart: handleOpenEmail
+                    });
+              }}
+              variant="ghost"
+              icon={<Icon as={Ionicons} name="md-chatbubble-ellipses-outline" size={'lg'} color={theme.colors.white} />}
+              p={0}
+            />
         </View>
         <View style={styles.body}>
           <View>

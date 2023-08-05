@@ -24,6 +24,7 @@ type Props = {
   notesData: any;
   selected: string;
   subject: string;
+  setScroll: any;
 };
 type RootStackParamList = {
   NotesList: {
@@ -87,7 +88,7 @@ function KbsToMB(bits: any) {
   return megabytes.toFixed(2) + " MB";
 }
 
-const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
+const NotesCard = ({ item, userData, notesData, selected, subject, setScroll }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclose();
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
@@ -201,6 +202,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
               subjectName: subject,
               id: item.id,
             })
+            setScroll()
             NavigationService.navigate(NavigationService.screens.PdfViewer, {
               userData: {
                 Course: userData.Course,
@@ -354,7 +356,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
           }
         }} >
           <Text style={styles.cardOptionText}>Rate</Text>
-          <AntDesign name={RatedStatus(item.did) ? 'star' : 'staro'} size={theme.sizes.iconSmall} color={RatedStatus(item.did) ? '#FFC960' : "#FFF"} />
+          <AntDesign name={RatedStatus(item.did) ? 'star' : 'staro'} size={theme.sizes.iconSmall} color={RatedStatus(item.did) ? '#FFC960' : "#F1F1FA"} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.cardOptionContainer} onPress={onOpen} >
           <Text style={styles.cardOptionText}>Report</Text>
@@ -418,7 +420,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
               }} onPress={() => {
                 setModalVisible(false);
               }} >
-                <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#FFF"} onPress={() => {
+                <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#F1F1FA"} onPress={() => {
                   submitRatingCount();
                 }} >
                   Confirm
@@ -434,7 +436,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
           {
             !submitted ? (
               <Card style={{
-                backgroundColor: "#FFF",
+                backgroundColor: "#F1F1FA",
                 width: "100%",
                 alignItems: "center",
                 justifyContent: "center",
@@ -480,7 +482,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   <Actionsheet.Item style={{
                     borderBottomWidth: 0.9,
                     borderBottomColor: "#91919F",
-                    backgroundColor: "#FFF",
+                    backgroundColor: "#F1F1FA",
                   }} onPress={() => {
                     setChecked2(!checked2);
                   }}>
@@ -506,7 +508,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   <Actionsheet.Item style={{
                     borderBottomWidth: 0.9,
                     borderBottomColor: "#91919F",
-                    backgroundColor: "#FFF",
+                    backgroundColor: "#F1F1FA",
                   }} onPress={() => {
                     setChecked3(!checked3);
                   }}>

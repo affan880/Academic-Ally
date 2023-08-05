@@ -19,6 +19,7 @@ import UserRequestsPdfViewer from '../../sections/UserRequests/UserRequestsPdfVi
 import NavigationService from '../../services/NavigationService';
 import { useAuthentication } from '../../utilis/hooks/useAuthentication';
 import AllyBotScreen from '../AllyBot/AllyBotScreen';
+import AuthScreen from '../AuthenticationScreens/authScreen'
 import LoginScreen from '../AuthenticationScreens/Login/LoginScreen';
 import SignUpScreen from '../AuthenticationScreens/SignUp/SignUpScreen';
 import Bookmark from '../Bookmark/Bookmark';
@@ -232,12 +233,11 @@ const AuthStack = () => {
     };
 
     return (
-        <Stack.Navigator initialRouteName={!hasCompletedOnboarding ? NavigationService.screens.Intro : NavigationService.screens.Login} screenOptions={screenOptions}>
+        <Stack.Navigator initialRouteName={!hasCompletedOnboarding ? NavigationService.screens.Intro : NavigationService.screens.Intro} screenOptions={screenOptions}>
             {!hasCompletedOnboarding ? (
                 <Stack.Screen name={NavigationService.screens.Intro} component={OnBoardingScreen} options={screenOptions} />
-            ) : null}
-            <Stack.Screen name={NavigationService.screens.Login} component={LoginScreen} options={screenOptions} />
-            <Stack.Screen name={NavigationService.screens.SignUp} component={SignUpScreen} options={screenOptions} />
+                ) : null}
+                <Stack.Screen name={NavigationService.screens.Auth} component={AuthScreen} options={screenOptions} />
         </Stack.Navigator>
     );
 };

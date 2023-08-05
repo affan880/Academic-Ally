@@ -57,19 +57,13 @@ export const CustomDropdown = ({
   const [isFocus, setIsFocus] = useState(false);
   const [selected, setSelected] = useState([]);
 
-  useEffect(()=>{
-    if(value.length!== 0){
-      console.log("5555", value)
-    }
-  },[isFocus])
-
   const renderLabel = () => {
     if (values[name] || isFocus) {
       return (
         <Text
           style={[
             styles.label,
-            isFocus && { color: '#FFFFFF' },
+            isFocus && { color: '#F1F1FA' },
           ]}>
           {name.charAt(0).toUpperCase() + name.slice(1)}
         </Text>
@@ -227,7 +221,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 14,
     backgroundColor: 'white',
-    shadowColor: '#000',
+    shadowColor: '#161719',
     marginTop: 8,
     marginRight: 12,
     paddingHorizontal: 12,
@@ -246,24 +240,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   input: {
-    backgroundColor: '#000',
+    backgroundColor: '#161719',
     height: height * 0.07,
     borderRadius: 10,
     elevation: 3,
     paddingLeft: 20,
     marginTop: 10,
     alignItems: 'center',
-    color: '#000000',
+    color: '#161719',
   },
   textInput: {
     width: 250,
     fontSize: height * 0.0235,
-    color: '#000000',
+    color: '#161719',
     fontFamily: 'Poppins-Regular',
   },
   container: {
     marginTop: 1,
-    color: '#000000',
+    color: '#161719',
   },
   dropdown: {
     borderColor: 'gray',
@@ -271,7 +265,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 0,
     fontSize: height * 0.0135,
-    color: '#000000',
+    color: '#161719',
   },
   icon: {
     marginRight: 12,
@@ -285,7 +279,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontSize: height * 0.018,
     borderRadius: 5,
-    color: '#FFFFFF',
+    color: '#F1F1FA',
   },
   placeholderStyle: {
     fontSize: width * 0.035,
@@ -302,7 +296,7 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 50,
     fontSize: height * 0.0205,
-    color: '#000000',
+    color: '#161719',
     fontFamily: 'Poppins-Regular',
     borderRadius: 10,
   },

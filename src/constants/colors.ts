@@ -11,8 +11,8 @@ export interface ColorValue{
 }
 
 export const COLORS: ColorValue = {
-    light: '#FFFFFF',  
-    dark: '#000000',
+    light: '#F1F1FA',  
+    dark: '#161719',
     black: '#37392e',
     blue: '#19647e',
     verdigris: '#28afb0',

@@ -154,7 +154,7 @@ const PopOver = ({ url, notesData }: Props) => {
                                 <MaterialIcons
                                     name="file-download"
                                     size={25}
-                                    color={url?.includes(`${RNFS.DocumentDirectoryPath}`) ? theme.colors.greenSuccess : theme.colors.textSecondary}
+                                    color={url?.includes(`${RNFS.DocumentDirectoryPath}`) ? theme.colors.greenSuccess : theme.colors.black}
                                 />
                             </Button>
                         </VStack>

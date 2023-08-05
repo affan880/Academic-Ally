@@ -270,7 +270,7 @@ const UploadScreen = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <Ionicons name="cloud-upload" size={theme.sizes.iconMedium} color="#FFFFFF" />
+          <Ionicons name="cloud-upload" size={theme.sizes.iconMedium} color="#F1F1FA" />
           <Text style={styles.headerText}>Upload</Text>
         </View>
       </View>

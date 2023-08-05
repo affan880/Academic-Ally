@@ -20,9 +20,9 @@ const CustomLoader = () => {
     >
       <StatusBar backgroundColor="rgba(0, 0, 0, 0.8)" barStyle="light-content" />
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#fff" />
+        <ActivityIndicator size="large" color="#F1F1FA" />
         {/* <Button 
-          style={{ marginTop: 100, backgroundColor: '#fff', width: 100, justifyContent: 'center', borderRadius: 10 }}
+          style={{ marginTop: 100, backgroundColor: '#F1F1FA', width: 100, justifyContent: 'center', borderRadius: 10 }}
           onPress={() => dispatch(setCustomLoader(false))}
         >
           <Text>Close</Text>
