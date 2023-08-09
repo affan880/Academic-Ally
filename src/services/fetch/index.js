@@ -300,7 +300,7 @@ export async function getMailId() {
 export const shareNotes = async (notesData, dynamicLink) => {
   const link = await dynamicLinks().buildShortLink(
     {
-      link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/ViewNotes`,
+      link: `https://app.getacademically.co?id=/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/ViewNotes`,
       domainUriPrefix: dynamicLink,
       android: {
         packageName: 'com.academically',

@@ -51,7 +51,8 @@ const PdfViewer = () => {
   const [currentProgress, setCurrentProgress] = useState<any>('started...')
   const [startedProcessing, setStartedProcessing] = useState<any>(false)
   const [sourceId, setSourceId] = useState<string>('');
-  const [choosenDoc, setchoosenDoc] = useState<any>( null )
+  const [choosenDoc, setchoosenDoc] = useState<any>( null );
+  const [pdfLoaded, setPdfLoaded] = useState<boolean>(false);
 
   const { userData, notesData } = route.params;
   const { university, course, branch, sem, did, uid, uid2, uid3, category } = notesData;
@@ -70,7 +71,7 @@ const PdfViewer = () => {
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes, landscape), [theme, potrait]);
   const [url, setUrl] = useState<any>(null);
   const mail = useSelector((state: any) => state?.bootReducer?.utilis);
-  const {max_init_per_day, max_pages, premium_max_init_per_day, premium_max_pages, mailTo} = useSelector((state: any) => state?.bootReducer?.utilis)?.pdfChat;
+  const {max_init_per_day, max_pages, premium_max_init_per_day, premium_max_pages, mailTo, status} = useSelector((state: any) => state?.bootReducer?.utilis)?.pdfChat;
   const [maxPagesAllowed, setMaxPagesAllowed] = useState(max_pages);
   const [maxInitiationLimit, setMaxInitiationLimit] = useState(max_init_per_day);
   useEffect(()=>{
@@ -231,37 +232,41 @@ const handleOpenEmail = () => {
       <PdfPageSplitter setVisibleSpliterModal={()=> setVisibleSpliterModal(false)} createChat={createChat} visibleSpliterModal={visibleSpliterModal} currentProgress={currentProgress} startedProcessing={startedProcessing} totalPdfPages={totalPages} maxPages={maxPagesAllowed} />
       <View style={styles.container}>
         <View style={Display ? styles.headerContainer : { display: 'none' }} >
-          <IconButton borderRadius={'full'} _hover={{ bg: '#D3D3D3', }} _pressed={{ bg: '#D3D3D3', }} onPress={() => { NavigationService.goBack() }} variant="ghost" icon={<Icon as={Ionicons} name="chevron-back-outline" size={'lg'} color={theme.colors.white} />} p={0} />
+          <IconButton borderRadius={'full'} _hover={{ bg: '#D3D3D3', }} _pressed={{ bg: '#D3D3D3', }} onPress={() => { NavigationService.goBack() }} variant="ghost" icon={<Icon as={Ionicons} name="chevron-back-outline" size={'xl'} color={theme.colors.white} />} p={0} />
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '60%' }}>
             <Text style={{ fontSize: 18, color: '#ffffff', fontWeight: '600', width: '100%', textAlign: 'center' }}>
               Page {currentPage} of {totalPages}
             </Text>
           </View>
-          <IconButton borderRadius={'xl'} _hover={{ bg: '#D3D3D3', }} onPress={() => setViewRecentSheet(true)} variant="ghost" icon={<Icon as={Fontisto} name="history" size={'md'} color={theme.colors.white} />} p={0} />
+          <IconButton borderRadius={'xl'} _hover={{ bg: '#D3D3D3', }}  _pressed={{ bg: '#D3D3D3', }} onPress={() => setViewRecentSheet(true)} variant="ghost" icon={<Icon as={Fontisto} name="history" size={'lg'} color={theme.colors.white} />} p={0} />
+         {
+          status && pdfLoaded && 
           <IconButton
-              borderRadius={'xl'}
-              _hover={{ bg: '#D3D3D3' }}
-              onPress={() => {
-                maxInitiationLimit > usersData?.initiatedChats
-                  ? handleChat()
-                  : Toast.show({
-                      title: 'Message Limit Exceeded 🚫',
-                      description:
-                        'Upgrade to our Premium plan for unlimited PDF chat access! 📩😊\n\n'
-                        + `Contact us at ${mailTo} to inquire about premium options and get started.\n\n`
-                        + 'Thank you for being part of our community! Feel free to reach out if you have any questions or need help.\n\n'
-                        + 'Happy chatting! 😊📩',
-                      backgroundColor: '#FFA726',
-                      placement: 'top',
-                      duration: 5000,
-                      collapsable: true,
-                      onTouchStart: handleOpenEmail
-                    });
-              }}
-              variant="ghost"
-              icon={<Icon as={Ionicons} name="md-chatbubble-ellipses-outline" size={'lg'} color={theme.colors.white} />}
-              p={0}
-            />
+          borderRadius={'xl'}
+          _hover={{ bg: '#D3D3D3' }}
+          onPress={() => {
+            maxInitiationLimit > usersData?.initiatedChats
+              ? handleChat()
+              : Toast.show({
+                  title: 'Message Limit Exceeded 🚫',
+                  description:
+                    'Upgrade to our Premium plan for unlimited PDF chat access! 📩😊\n\n'
+                    + `Contact us at ${mailTo} to inquire about premium options and get started.\n\n`
+                    + 'Thank you for being part of our community! Feel free to reach out if you have any questions or need help.\n\n'
+                    + 'Happy chatting! 😊📩',
+                  backgroundColor: '#FFA726',
+                  placement: 'top',
+                  duration: 5000,
+                  collapsable: true,
+                  onTouchStart: handleOpenEmail
+                });
+          }}
+          variant="ghost"
+          _pressed={{ bg: '#D3D3D3', }}
+          icon={<Icon as={Ionicons} name="md-chatbubble-ellipses-outline" size={'xl'} color={theme.colors.white} />}
+          p={0}
+        />
+         }
         </View>
         <View style={styles.body}>
           <View>
@@ -309,7 +314,8 @@ const handleOpenEmail = () => {
                   }}
                   onLoadComplete={(numberOfPages, filePath) => {
                     dispatch(userAddToRecentsStart({ ...notesData, "viewedTime": `${new Date()}`, "category": category, filePath }));
-                    setFilePath(filePath)
+                    setFilePath(filePath);
+                    setPdfLoaded(true)
                   }}
                   style={{
                     width: '100%',

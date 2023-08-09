@@ -189,7 +189,7 @@ const NotesScreen = React.memo(() => {
           handleNavigation(category);
         }}
       >
-        <Text style={[styles.btnText, { color: theme.colors.black }]}>{label}</Text>
+        <Text style={[styles.btnText, { color: theme.theme !== 'light' ? isDisabled ? theme.colors.black : theme.colors.white : theme.colors.black }]}>{label}</Text>
         <Octicons name="arrow-right" style={{
           position: 'absolute',
           right: 15,

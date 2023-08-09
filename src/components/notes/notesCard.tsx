@@ -93,6 +93,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject, setScroll }: 
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const navigation = useNavigation<pdfViewer>();
+  const [bookmarked, setBookmarked] = useState<boolean>(false);
   const dispatch = useDispatch();
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const [saved, setSaved] = useState(false);
@@ -319,6 +320,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject, setScroll }: 
           </View>
           <TouchableOpacity
             onPress={() => {
+              setBookmarked(!bookmarked)
               setSaved(!saved);
               const status = BookmarkStatus(item.did);
               PdfViewerAction.manageBookmarks(item, status, uid);
@@ -334,7 +336,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject, setScroll }: 
             }}>
             <FontAwesome
               name={
-                BookmarkStatus(item.did)
+                BookmarkStatus(item.did) || bookmarked
                   ? 'bookmark'
                   : 'bookmark-o'
               }

@@ -1,5 +1,7 @@
 package com.academically;
 
+import android.net.Uri;
+import androidx.annotation.Nullable;
 import android.os.Bundle;
 import android.os.Build;
 import com.facebook.react.ReactActivity;
@@ -78,6 +80,12 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
     checkAndRequestPermissions();
     RNBootSplash.init(this);
     super.onCreate(savedInstanceState);
+    Uri deepLinkUri = getIntent().getData();
+    if (deepLinkUri != null) {
+        // Handle the deep link data here
+        String path = deepLinkUri.getPath();
+        // ...
+    }
   }
 
   /**

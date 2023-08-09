@@ -74,7 +74,7 @@ const MainScreenLayout = ({ children, rightIconFalse, title, handleScroll, name,
                             }}
                             onPress={handleShare}
                             variant="ghost"
-                            icon={<Icon as={Ionicons} name="md-share-social-outline" size={'lg'} color={theme.colors.white} />}
+                            icon={<Icon as={Ionicons} name="md-share-social-outline" size={'xl'} color={theme.colors.white} />}
                             p={0}
                         />
                     )}

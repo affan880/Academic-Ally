@@ -1,4 +1,5 @@
 import dynamicLinks from '@react-native-firebase/dynamic-links';
+import queryString from 'query-string';
 
 class UtilityService {
 
@@ -248,27 +249,30 @@ class UtilityService {
     }
 
     static getDynamicLinkData(link) {
-        const parts = link?.url.split('/');
+        const query = link.url.split('?')[1];
+        const parsedData = queryString.parse(query);
+      
         const userData = {
-            university: parts[4],
-            Course: parts[5],
-            course: parts[5],
-            branch: parts[6],
-            sem: parts[7],
+          university: parsedData?.university,
+          Course: parsedData?.course, // You can remove this line if 'Course' is not needed
+          course: parsedData?.course,
+          branch: parsedData?.branch,
+          sem: parsedData?.sem,
         };
+      
         const notesData = {
-            course: parts[5],
-            branch: parts[6],
-            sem: parts[7],
-            subject: parts[8],
-            category: parts[3],
-            did: parts[9],
-            name: parts[11],
-            units: parts[10],
-            university: parts[4],
-            id: parts[12]
+          course: parsedData?.course,
+          branch: parsedData?.branch,
+          sem: parsedData?.sem,
+          subject: parsedData?.subject,
+          category: parsedData?.category,
+          did: parsedData?.did,
+          name: parsedData?.name,
+          units: parsedData?.units,
+          university: parsedData?.university,
+          id: parsedData?.id,
         };
-        const screen = parts[parts.length - 1];
+        const screen = parsedData?.page
         return { userData, notesData, screen };
     }
 
@@ -285,11 +289,11 @@ class UtilityService {
     static async generateLink(notesData, screen) {
         switch (screen) {
             case 'PdfViewer':
-                return `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/PdfViewer`;
+                return `https://app.getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/PdfViewer`;
             case 'SubjectResourcesScreen':
-                return `https://getacademically.co/Resources/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/SubjectResourcesScreen`;
+                return `https://app.getacademically.co/Resources/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/SubjectResourcesScreen`;
             case 'Resources':
-                return `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/Resources`;
+                return `https://app.getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/Resources`;
             default:
                 return null;
         }
@@ -297,9 +301,17 @@ class UtilityService {
 
 
     static async generateDynamicLink(url, notesData, screen) {
+        const queryParams = new URLSearchParams({
+            university: notesData.university,
+            course: notesData.course,
+            branch: notesData.branch,
+            sem: notesData.sem,
+            subject: notesData.subject,
+            page: 'SubjectResources'
+          });
         return link = await dynamicLinks().buildShortLink(
             {
-                link: await this.generateLink(notesData, screen),
+                link: `https://app.getacademically.co?${queryParams}`,
                 domainUriPrefix: url,
                 android: {
                     packageName: 'com.academically',

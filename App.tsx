@@ -19,12 +19,22 @@ const App = () => {
       RNBootSplash.hide();
     }, 500);
   });
+  const linking = {
+    prefixes: ['academically://', 'https://app.getacademically.co/', 'https://getacademically.co'],
+    config:{
+      screens: {
+        Recents: {
+          path: 'Recents'
+        }
+      }
+    }
+  }
   return (
     <GestureHandlerRootView style={{ flex: 1 }} >
       <SafeAreaView style={{ flex: 1 }}>
         <NativeBaseProvider>
           <Provider store={store}>
-            <NavigationContainer ref={NavigationService.navigationRef} >
+            <NavigationContainer ref={NavigationService.navigationRef} linking={linking} >
               <NotifierWrapper>
                 <BootScreen />
               </NotifierWrapper>

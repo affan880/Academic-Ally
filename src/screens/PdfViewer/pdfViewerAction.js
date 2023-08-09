@@ -167,27 +167,39 @@ class PdfViewerAction {
     };
 
     static sharePdf = async (notesData, dynamicLink) => {
-        const link = await dynamicLinks().buildShortLink(
-            {
-                link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/${notesData?.id}`,
-                domainUriPrefix: dynamicLink,
-                android: {
-                    packageName: 'com.academically',
-                },
-            },
-            dynamicLinks.ShortLinkType.SHORT,
-        ).catch((e) => {
-            CrashlyticsService.recordError(e);
-            Toast.show({
-                title: 'Something went wrong, Please try again later',
-                duration: 3000,
-            });
+      try {
+        const queryParams = new URLSearchParams({
+          category: notesData.category,
+          university: notesData.university,
+          course: notesData.course,
+          branch: notesData.branch,
+          sem: notesData.sem,
+          subject: notesData.subject,
+          did: notesData.did,
+          units: notesData.units,
+          name: notesData.name,
+          id: notesData.id,
+          page: 'viewPdf'
         });
-
-        // console.log("tuytut",link.slice(link.length-4, link.length))
-        // console.log("tuytut",link)
+        
+        const link = await dynamicLinks().buildShortLink({
+          link: `https://app.getacademically.co?${queryParams}`,
+          domainUriPrefix: dynamicLink,
+          android: {
+            packageName: 'com.academically',
+          },
+        }, dynamicLinks.ShortLinkType.SHORT);
+        
         return link;
-    };
+      } catch (error) {
+        CrashlyticsService.recordError(error);
+        Toast.show({
+          title: 'Something went wrong, Please try again later',
+          duration: 3000,
+        });
+        return null;
+      }
+    }
 
     static stopDownload = (taskId) => {
         RNFS.stopDownload(taskId);

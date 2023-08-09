@@ -27,7 +27,7 @@ const NotesList = React.memo((props: Props) => {
   const [uploadButtonVisible, setUploadButtonVisible] = useState(true);
   const components = ['subjectDetails', 'notesList']
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  const [scroollPostion, setScrollPosition] = useState(null)
+  let scroollPostion : any;
   const [saveScroll, setScroll]= useState(null);
   const listRef = useRef<any>();
   const isFocused = useIsFocused();
@@ -52,7 +52,7 @@ const NotesList = React.memo((props: Props) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const contentHeight = event.nativeEvent.contentSize.height;
     const windowHeight = event.nativeEvent.layoutMeasurement.height;
-    setScrollPosition(event.nativeEvent.contentOffset.y)
+    scroollPostion = event.nativeEvent.contentOffset.y;
 
     if (offsetY > 0) {
       Animated.timing(fadeAnim, {

@@ -20,7 +20,8 @@ const QuickAccess = ({ selected, setSelectedCategory }: Props) => {
   const theme = useSelector((state: any) => {
     return state.theme;
   });
-  const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
+const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
+
 
   return (
     <View style={styles.categories}>

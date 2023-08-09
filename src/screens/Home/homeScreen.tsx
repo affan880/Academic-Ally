@@ -1,4 +1,6 @@
 import dynamicLinks from '@react-native-firebase/dynamic-links';
+import { Toast } from 'native-base';
+import { background } from 'native-base/lib/typescript/theme/styled-system';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -46,15 +48,23 @@ const HomeScreen = () => {
     if (link && link !== null && link !== undefined) {
       const { userData, notesData, screen } = UtilityService.getDynamicLinkData(link);
       if (userData && notesData) {
-        if (screen === 'SubjectResourcesScreen') {
+        if (screen === 'SubjectResources') {
           dispatch(setCustomLoader(true));
           dispatch(HomeAction.getSubjectResources(userData, { subject: notesData.subject, subjectName: notesData.subject }));
-        } else {
+        } 
+        else if (screen === 'viewPdf') {
           dispatch(setCustomLoader(true));
           NavigationService.navigate(NavigationService.screens.PdfViewer, {
             userData,
             notesData,
           });
+        }
+        else {
+          Toast.show({
+            title: 'Link Expired',
+            description: 'The link you tried to access has expired.',
+            background: '#FF0000'
+          })
         }
       }
     }

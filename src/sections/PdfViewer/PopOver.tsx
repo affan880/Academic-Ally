@@ -30,6 +30,7 @@ const PopOver = ({ url, notesData }: Props) => {
     const [taskId, setTaskId] = useState(null);
     const [progress, setProgress] = useState(0);
     const [saved, setSaved] = useState(false);
+    const [bookmarked, setBookmarked] = useState<boolean>(false);
     const {uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
 
     const { subject, category } = notesData;
@@ -113,6 +114,7 @@ const PopOver = ({ url, notesData }: Props) => {
                         <VStack space={2}>
                             <Button
                                 onPress={() => {
+                                    setBookmarked(!bookmarked)
                                     setSaved(!saved);
                                     const status = BookmarkStatus(notesData?.id);
                                     PdfViewerAction.manageBookmarks(notesData, status, uid);
@@ -130,7 +132,7 @@ const PopOver = ({ url, notesData }: Props) => {
                                 variant="outline">
                                 <Fontisto
                                     name={
-                                        BookmarkStatus(notesData?.id)
+                                        bookmarked || BookmarkStatus(notesData?.id)
                                             ? 'bookmark-alt'
                                             : 'bookmark'
                                     }
@@ -154,7 +156,7 @@ const PopOver = ({ url, notesData }: Props) => {
                                 <MaterialIcons
                                     name="file-download"
                                     size={25}
-                                    color={url?.includes(`${RNFS.DocumentDirectoryPath}`) ? theme.colors.greenSuccess : theme.colors.black}
+                                    color={url?.includes(`${RNFS.DocumentDirectoryPath}`) ? theme.colors.greenSuccess : theme.colors.mainTheme}
                                 />
                             </Button>
                         </VStack>

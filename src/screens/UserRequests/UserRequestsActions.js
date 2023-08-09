@@ -21,8 +21,6 @@ class UserRequestsActions {
 
     static loadNewUploads = (managerUniversity, managerCourse, managerBranch) => async (dispatch) => {
         dispatch(setRequestNull());
-        console.log(managerCourse)
-        console.log(managerUniversity)
 
         const branchExists = async (managerUniversity, managerCourse, branch) => {
             const branchDocRef = firestoreDB()
@@ -48,7 +46,6 @@ class UserRequestsActions {
                             .get();
 
                         const uploadsData = uploadsSnapshot.docs.map((doc) => doc.data());
-                        console.log("+++++++++++++",uploadsData)
                         dispatch(setNewRequests(uploadsData));
                     }
                 })
