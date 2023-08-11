@@ -43,6 +43,8 @@ class SeekHubActions {
             this.handleNotification(subscribeArray, uid, uniqueId);
             firestoreDB().collection('Users').doc(uid).collection('SeekHub').doc('Requests').set({
                 requests: firebase.firestore.FieldValue.arrayUnion(uniqueId)
+            }).then(()=>{
+            dispatch(setCustomLoader(false))
             }).catch((e)=>{
                 Toast.show({
                     title: 'Something went wrong!',
@@ -72,6 +74,7 @@ class SeekHubActions {
                 // .where("sem", "==", filter.sem)
                 // .where("branch", "==", filter.branch)
                 .where('status', "==", 'pending')
+                .orderBy('date', 'desc')
                 .get();
 
             const requests = [];

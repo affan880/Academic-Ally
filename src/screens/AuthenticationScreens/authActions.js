@@ -35,7 +35,9 @@ class AuthAction {
                 university: Details.university,
                 college: Details.college,
                 pfp: "https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2Fdefault.png?alt=media&token=b8e8a831-811e-4132-99bc-e6c2e01461da",
-                sourceType: 'MOBILE_APP'
+                sourceType: 'MOBILE_APP',
+                premiumUser: false,
+                initiatedChats:0
             })
             .catch(error => {
                 CrashlyticsService.recordError(error);

@@ -293,7 +293,7 @@ const seekHubTabList = (props: Props) => {
 
   return (
     <View style={{flex: 1, alignItems: 'center'}}>
-      <FlatList data={list} renderItem={renderCard} keyExtractor={(item) => item.id} showsVerticalScrollIndicator={false} ListEmptyComponent={ListEmptyComponent} />
+      <FlatList data={list} renderItem={renderCard} keyExtractor={(item) => item.id} showsVerticalScrollIndicator={false} ListEmptyComponent={ListEmptyComponent} initialNumToRender={6} />
     </View>
   )
 }

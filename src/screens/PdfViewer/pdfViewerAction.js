@@ -435,6 +435,19 @@ class PdfViewerAction {
         return { message: 'Error retrieving document' };
       }
     };    
+
+    static canPDFBeAnalyzed(pdfSizeKB, numPages) {
+      const minTextSizePerPageKB = 30;
+      const maxTextSizePerPageKB = 200;
+      const minEstimatedPDFSizeKB = minTextSizePerPageKB * numPages;
+      const maxEstimatedPDFSizeKB = maxTextSizePerPageKB * numPages;
+      if (pdfSizeKB <= maxEstimatedPDFSizeKB) {
+          return true;
+      } else {
+          return false;
+      }
+  }
+  
 }
 
 export default PdfViewerAction;

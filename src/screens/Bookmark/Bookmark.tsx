@@ -2,9 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
-import { Box, Divider, FlatList, HStack, Icon, Pressable, Text, VStack } from 'native-base';
+import { Box, Divider, FlatList, HStack, Icon, Pressable, Text, Toast, VStack } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Dimensions, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { Dimensions, Share, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -124,6 +124,30 @@ const Bookmark = () => {
     groupBySubject(listData);
   }, [listData]);
 
+  const handleSharePdf = async (notesData: any) => {
+    const {subject, category} = notesData;
+    try {
+        await PdfViewerAction.sharePdf(notesData, dynamicLink).then((link: any) => {
+            Share.share({
+                title: `${subject}`,
+                message: `If you're studying ${subject}, you might find these ${category} on Academic Ally helpfull. I did! Check them out:${link}`
+            });
+        }).catch((error: any) => {
+            Toast.show({
+                title: 'Something went wrong',
+                placement: 'bottom',
+                duration: 3000,
+            })
+        })
+    } catch (error) {
+        Toast.show({
+            title: 'Something went wrong',
+            placement: 'bottom',
+            duration: 3000,
+        })
+    }
+};
+
   const renderItem = ({ item, index }: any) => (
     <Box style={styles.mainContainer}>
       <Pressable
@@ -174,9 +198,7 @@ const Bookmark = () => {
                 <Text style={styles.subjectName}>Branch: {item?.branch}</Text>
               </Box>
             </VStack>
-            <TouchableOpacity onPress={() => {
-              shareNotes(item, dynamicLink)
-            }} style={{
+            <TouchableOpacity onPress={()=>handleSharePdf(item)} style={{
               justifyContent: 'center',
             }}  >
               {

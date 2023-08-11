@@ -30,7 +30,7 @@ interface Props {
 
 const { width, height } = Dimensions.get('screen')
 
-const ChatScreen  = ({open, close, docId, choosenDoc}: Props) => {
+const ChatScreen  = React.memo(({open, close, docId, choosenDoc}: Props) => {
     const [messages, setMessages] = useState<any>([]);
     const [messageText, setMessageText] = useState('');
     const data = {
@@ -128,10 +128,15 @@ const ChatScreen  = ({open, close, docId, choosenDoc}: Props) => {
       }
       setMessageText("")
         PdfViewerAction.chatWithPdf(docId, messageText, uid).then((res)=>{
+          if(!res){
+            close()
             Toast.show({
               title: 'Error: PDF Text Recognition',
-              description: 'Oops! It seems we encountered an issue with the PDF you provided. Our AI is having trouble recognizing handwritten or cursive text, which probably caused the error. Please try another PDF with clear, machine-readable text for accurate answers to your questions.Thank you for your understanding! 📄🚀'
+              description: 'Oops! It seems we encountered an issue with the PDF you provided. Our AI is having trouble recognizing handwritten or cursive text, which probably caused the error. Please try another PDF with clear, machine-readable text for accurate answers to your questions.Thank you for your understanding! 📄🚀',
+              duration: 10000,
+              collapsable: true
             })
+          }
         })
     };
     return (
@@ -144,9 +149,9 @@ const ChatScreen  = ({open, close, docId, choosenDoc}: Props) => {
                         ref={flatListRef}
                         contentContainerStyle={styles.contentContainer}
                         renderItem={({ item }) => renderMessage(item)}
-                        // onContentSizeChange={() =>
-                        //     flatListRef.current.scrollToEnd({ animated: true })
-                        //   }
+                        onContentSizeChange={() =>
+                            flatListRef.current.scrollToEnd({ animated: true })
+                          }
                           // inverted
                     />
                     <View style={styless.inputContainer}>
@@ -170,7 +175,7 @@ const ChatScreen  = ({open, close, docId, choosenDoc}: Props) => {
             </View>
         </Modal>
     );
-};
+});
 
 const styless = StyleSheet.create({
     inputContainer: {

@@ -16,7 +16,7 @@ type Props = {
     toggleClose: any
 }
 
-const RecentlyVisited = ({ toggleOpen, toggleClose, userData, notesData }: Props) => {
+const RecentlyVisited = React.memo(({ toggleOpen, toggleClose, userData, notesData }: Props) => {
     const dispatch: any = useDispatch()
     const [userRecents, setUserRecents] = useState<any>([]);
     const recentsList = useSelector((state: any) => state.userRecentPdfs.RecentViews);
@@ -102,6 +102,6 @@ const RecentlyVisited = ({ toggleOpen, toggleClose, userData, notesData }: Props
             </Actionsheet.Content>
         </Actionsheet>
     )
-}
+});
 
 export default RecentlyVisited

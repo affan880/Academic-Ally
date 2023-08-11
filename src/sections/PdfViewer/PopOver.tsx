@@ -20,7 +20,7 @@ type Props = {
 
 const { width, height } = Dimensions.get('window')
 
-const PopOver = ({ url, notesData }: Props) => {
+const PopOver = React.memo(({ url, notesData }: Props) => {
     const dispatch: any = useDispatch();
 
     const isDownloading = useSelector((state: any) => state.pdfViewerReducer).isDownloading;
@@ -226,6 +226,6 @@ const PopOver = ({ url, notesData }: Props) => {
             </Modal>
         </>
     )
-}
+});
 
 export default PopOver

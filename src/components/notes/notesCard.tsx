@@ -88,7 +88,7 @@ function KbsToMB(bits: any) {
   return megabytes.toFixed(2) + " MB";
 }
 
-const NotesCard = ({ item, userData, notesData, selected, subject, setScroll }: Props) => {
+const NotesCard = React.memo(({ item, userData, notesData, selected, subject, setScroll }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclose();
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
@@ -188,33 +188,36 @@ const NotesCard = ({ item, userData, notesData, selected, subject, setScroll }: 
     }
   };
 
+
+  const handleOnPress = () => {
+    ViewCount({
+      university: userFirestoreData.usersData.university,
+      branch: userData.Branch || item.branch,
+      course: userData.Course || userData.course,
+      sem: userData.Sem || item.sem,
+      type: selected.charAt(0).toUpperCase() + selected.slice(1),
+      subjectName: subject,
+      id: item.id,
+    })
+    setScroll()
+    NavigationService.navigate(NavigationService.screens.PdfViewer, {
+      userData: {
+        Course: userData.Course,
+        Branch: userData.Branch,
+        Sem: userData.Sem,
+      },
+      notesData: item,
+      selected: selected,
+      subject: subject,
+    });
+  }
+
   return (
     <View style={styles.notesContainer}>
       <View style={styles.reccomendationStyle}>
         <TouchableOpacity
           style={styles.subjectContainer}
-          onPress={() => {
-            ViewCount({
-              university: userFirestoreData.usersData.university,
-              branch: userData.Branch || item.branch,
-              course: userData.Course || userData.course,
-              sem: userData.Sem || item.sem,
-              type: selected.charAt(0).toUpperCase() + selected.slice(1),
-              subjectName: subject,
-              id: item.id,
-            })
-            setScroll()
-            NavigationService.navigate(NavigationService.screens.PdfViewer, {
-              userData: {
-                Course: userData.Course,
-                Branch: userData.Branch,
-                Sem: userData.Sem,
-              },
-              notesData: item,
-              selected: selected,
-              subject: subject,
-            });
-          }}>
+          onPress={handleOnPress}>
           <View style={styles.containerBox}>
             <View style={styles.containerText}>
 
@@ -622,7 +625,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject, setScroll }: 
       </Center>
     </View>
   );
-};
+});
 
 export default NotesCard;
 

@@ -27,7 +27,7 @@ interface item {
   subject: string,
 }
 
-const Search = () => {
+const Search = React.memo(() => {
 
   const apiResponse = useSelector((state: any) => state?.bootReducer?.utilis?.courses) || [];
   const userData = useSelector((state: any) => { return state.usersData });
@@ -40,7 +40,7 @@ const Search = () => {
   const [branchData, setBranchesData] = useState([])
   const [semData, setSemData] = useState([]);
   const [filteredData, setFilteredData] = useState(list);
-  const [scroollPostion, setScrollPosition] = useState(null)
+  let scroollPostion: any;
   const [saveScroll, setScroll]= useState(null);
   const listRef = useRef<any>();
   const isFocused = useIsFocused();
@@ -310,7 +310,7 @@ const Search = () => {
                         data={filteredData}
                         showsVerticalScrollIndicator={false}
                         onScroll={(event: any)=>{
-                          setScrollPosition(event.nativeEvent.contentOffset.y)
+                          scroollPostion = event.nativeEvent.contentOffset.y
                         }}
                         renderItem={({ item }: any) => {
                           return (
@@ -369,6 +369,6 @@ const Search = () => {
       </View>
     </View>
   );
-};
+});
 
 export default Search;

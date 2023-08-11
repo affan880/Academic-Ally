@@ -19,7 +19,7 @@ type Props = {
   maxPages: number
 }
 
-const PdfPageSplitter = ({  setVisibleSpliterModal, visibleSpliterModal, createChat , currentProgress, startedProcessing, totalPdfPages, maxPages}: Props) => {
+const PdfPageSplitter = React.memo(({  setVisibleSpliterModal, visibleSpliterModal, createChat , currentProgress, startedProcessing, totalPdfPages, maxPages}: Props) => {
   const totalPageNumbersAllowed = maxPages;
   const [totalPages, setTotalPages] = useState<any>([])
   const [fromPage, setFromPage] = useState('')
@@ -88,42 +88,44 @@ const PdfPageSplitter = ({  setVisibleSpliterModal, visibleSpliterModal, createC
     <Modal isOpen={visibleSpliterModal} onClose={()=>{
       setVisibleSpliterModal();
     }}  size={'xl'}>
-        <Alert
-            maxW="400"
-            status="info"
-            colorScheme="info"
-            position='absolute'
-            top={20}
-            collapsable
-          >
-            <VStack space={2} flexShrink={1} w="100%">
-              <HStack flexShrink={1} space={2} alignItems="center" justifyContent="space-between">
-                <HStack flexShrink={1} space={2} alignItems="center">
-                  <Alert.Icon />
-                  <Text fontSize="md" fontWeight="medium" color="coolGray.800">
-                  The PDF contains more than {maxPages} pages.
-                  </Text>
-                </HStack>
-                <IconButton
-                  variant="unstyled"
-                  _focus={{
-                    borderWidth: 0
-                  }}
-                  icon={<CloseIcon size="3"  />}
-                  _icon={{
-                    color: "coolGray.600"
-                  }}
-                />
-              </HStack>
-              <Box pl="6" _text={{
-                color: "coolGray.600"
-              }}>
-                <Text color={'coolGray.600'} >
-                    Please select a range of pages (maximum {maxPages} pages) you want to chat with.
-                </Text>
-              </Box>
-            </VStack>
-          </Alert>
+  {
+    totalPages > maxPages && <Alert
+    maxW="400"
+    status="info"
+    colorScheme="info"
+    position='absolute'
+    top={20}
+    collapsable
+  >
+    <VStack space={2} flexShrink={1} w="100%">
+      <HStack flexShrink={1} space={2} alignItems="center" justifyContent="space-between">
+        <HStack flexShrink={1} space={2} alignItems="center">
+          <Alert.Icon />
+          <Text fontSize="md" fontWeight="medium" color="coolGray.800">
+          The PDF contains more than {maxPages} pages.
+          </Text>
+        </HStack>
+        <IconButton
+          variant="unstyled"
+          _focus={{
+            borderWidth: 0
+          }}
+          icon={<CloseIcon size="3"  />}
+          _icon={{
+            color: "coolGray.600"
+          }}
+        />
+      </HStack>
+      <Box pl="6" _text={{
+        color: "coolGray.600"
+      }}>
+        <Text color={'coolGray.600'} >
+            Please select a range of pages (maximum {maxPages} pages) you want to chat with.
+        </Text>
+      </Box>
+    </VStack>
+  </Alert>
+  }
     <Modal.Content size={'sm'}>
       <Modal.CloseButton />
         {
@@ -322,6 +324,6 @@ const PdfPageSplitter = ({  setVisibleSpliterModal, visibleSpliterModal, createC
     </Modal.Content>
   </Modal>
   )
-}
+});
 
 export default PdfPageSplitter

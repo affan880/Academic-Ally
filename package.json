@@ -1,6 +1,6 @@
 {
   "name": "academically",
-  "version": "0.0.3",
+  "version": "0.0.7",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -9,7 +9,7 @@
     "start": "react-native start",
     "test": "jest",
     "release-build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/ && rm -rf android/app/src/main/res/drawable-* && rm -rf android/app/src/main/res/raw/* && cd android && gradlew assembleRelease && cd ..",
-    "prod-build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/ && rm -rf android/app/src/main/res/drawable-* && rm -rf android/app/src/main/res/raw/* && cd android && gradlew assembleRelease && gradlew buildRelease && cd .."
+    "prod-build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/ && rm -rf android/app/src/main/res/drawable-* && rm -rf android/app/src/main/res/raw/* && cd android && gradlew assembleRelease && gradlew bundleRelease && cd .."
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.18.2",

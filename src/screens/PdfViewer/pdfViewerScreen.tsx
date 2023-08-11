@@ -1,5 +1,6 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Alert, Box, Center, CloseIcon, HStack, Icon, IconButton, Modal, Text, Toast, VStack } from 'native-base';
+import { PDFInvalidObject } from 'pdf-lib';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, Linking, View } from 'react-native';
 import Pdf from 'react-native-pdf';
@@ -33,7 +34,7 @@ type RootStackParamList = {
   };
 };
 
-const PdfViewer = () => {
+const PdfViewer = React.memo(() => {
   const route = useRoute<RouteProp<RootStackParamList, 'NotesList'>>();
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage]: any = useState(0);
@@ -55,7 +56,7 @@ const PdfViewer = () => {
   const [pdfLoaded, setPdfLoaded] = useState<boolean>(false);
 
   const { userData, notesData } = route.params;
-  const { university, course, branch, sem, did, uid, uid2, uid3, category } = notesData;
+  const { university, course, branch, sem, did, uid, uid2, uid3, category, size } = notesData;
   const name = UtilityService.replaceUnusualCharacters(notesData?.name, '&');
   const subject = UtilityService.replaceUnusualCharacters(notesData?.subject, '&');
   const pdfRef = useRef(null);
@@ -74,6 +75,12 @@ const PdfViewer = () => {
   const {max_init_per_day, max_pages, premium_max_init_per_day, premium_max_pages, mailTo, status} = useSelector((state: any) => state?.bootReducer?.utilis)?.pdfChat;
   const [maxPagesAllowed, setMaxPagesAllowed] = useState(max_pages);
   const [maxInitiationLimit, setMaxInitiationLimit] = useState(max_init_per_day);
+
+  function bitsToKB(bits: any) {
+    const kilobytes = bits / 1024 / 8;
+    return kilobytes;
+  }
+
   useEffect(()=>{
     if(usersData?.premiumUser){
       setMaxInitiationLimit(premium_max_init_per_day);
@@ -216,12 +223,33 @@ const handleOpenEmail = () => {
     }
   }, []);
   
+  const handleInitiateChat = () => {
+    maxInitiationLimit > usersData?.initiatedChats
+    ? handleChat()
+    : Toast.show({
+        title: 'Message Limit Exceeded 🚫',
+        description:
+          'Upgrade to our Premium plan for unlimited PDF chat access! 📩😊\n\n'
+          + `Contact us at ${mailTo} to inquire about premium options and get started.\n\n`
+          + 'Thank you for being part of our community! Feel free to reach out if you have any questions or need help.\n\n'
+          + 'Happy chatting! 😊📩',
+        backgroundColor: '#FFA726',
+        placement: 'top',
+        duration: 5000,
+        collapsable: true,
+        onTouchStart: handleOpenEmail
+      });
+  }
 
   return (
-    <RestrictedScreen name={'PdfViewer'} >
+    <RestrictedScreen>
       {
         viewPdfChatModal &&
-        <AllyChatBot open={viewPdfChatModal} close={()=> setViewPdfChatModal(false)} docId={sourceId} choosenDoc={choosenDoc} />
+        <AllyChatBot open={viewPdfChatModal} close={()=> {
+          setVisibleSpliterModal(false);
+          setViewPdfChatModal(false);
+          setExistingChatListModal(false);
+        }} docId={sourceId} choosenDoc={choosenDoc} />
       }
       <ExistingChatList existingChatList={existingChatList} open={existingChatListModal} close={()=>{ setExistingChatListModal(false) }} handleAddNewChat={handleAddNewChat} setDocId={(id: any)=>{
         setVisibleSpliterModal(false);
@@ -244,23 +272,7 @@ const handleOpenEmail = () => {
           <IconButton
           borderRadius={'xl'}
           _hover={{ bg: '#D3D3D3' }}
-          onPress={() => {
-            maxInitiationLimit > usersData?.initiatedChats
-              ? handleChat()
-              : Toast.show({
-                  title: 'Message Limit Exceeded 🚫',
-                  description:
-                    'Upgrade to our Premium plan for unlimited PDF chat access! 📩😊\n\n'
-                    + `Contact us at ${mailTo} to inquire about premium options and get started.\n\n`
-                    + 'Thank you for being part of our community! Feel free to reach out if you have any questions or need help.\n\n'
-                    + 'Happy chatting! 😊📩',
-                  backgroundColor: '#FFA726',
-                  placement: 'top',
-                  duration: 5000,
-                  collapsable: true,
-                  onTouchStart: handleOpenEmail
-                });
-          }}
+          onPress={handleInitiateChat}
           variant="ghost"
           _pressed={{ bg: '#D3D3D3', }}
           icon={<Icon as={Ionicons} name="md-chatbubble-ellipses-outline" size={'xl'} color={theme.colors.white} />}
@@ -284,7 +296,6 @@ const handleOpenEmail = () => {
                   enableAnnotationRendering={true}
                   onPageChanged={(page, numberOfPages) => {
                     setCurrentPage(page);
-                    setTotalPages(numberOfPages);
                   }}
                   page={pageNo}
                   onPageSingleTap={() => {
@@ -315,7 +326,8 @@ const handleOpenEmail = () => {
                   onLoadComplete={(numberOfPages, filePath) => {
                     dispatch(userAddToRecentsStart({ ...notesData, "viewedTime": `${new Date()}`, "category": category, filePath }));
                     setFilePath(filePath);
-                    setPdfLoaded(true)
+                    setTotalPages(numberOfPages);
+                    setPdfLoaded(PdfViewerAction.canPDFBeAnalyzed(size, numberOfPages))
                   }}
                   style={{
                     width: '100%',
@@ -326,11 +338,13 @@ const handleOpenEmail = () => {
             </View>
           </View>
         </View>
-        <PopOver url={url} notesData={notesData} />
+        <View style={{zIndex: 1}}>
+          <PopOver url={url} notesData={notesData} />
+        </View>
         <RecentlyVisited toggleOpen={viewRecentSheet} toggleClose={() => setViewRecentSheet(false)} userData={userData} notesData={notesData} />
       </View>
     </RestrictedScreen>
   );
-};
+});
 
 export default PdfViewer;

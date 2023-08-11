@@ -19,7 +19,7 @@ type Props = {
     setDocId:any
 }
 
-const ExistingChatList = ({existingChatList, open, close, handleAddNewChat, setDocId}: Props) => {
+const ExistingChatList = React.memo(({existingChatList, open, close, handleAddNewChat, setDocId}: Props) => {
   
   const theme = useSelector((state: any) => { return state.theme; });
   const {uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
@@ -100,6 +100,6 @@ const ExistingChatList = ({existingChatList, open, close, handleAddNewChat, setD
     </Modal.Content>
   </Modal>
   )
-}
+});
 
 export default ExistingChatList

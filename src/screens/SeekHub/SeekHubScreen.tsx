@@ -75,21 +75,23 @@ const SeekHubScreen = (props: Props) => {
     }, [list]);
 
     useEffect(() => {
+     if(apiResponse && userFirestoreData){
       const branches = Object.keys(apiResponse[userFirestoreData?.usersData?.university][userFirestoreData?.usersData.course])
-          .map((branch) => ({
-            label: branch,
-            value: branch
-          }));
-        setBranchData(branches);
-        const semesters = apiResponse[userFirestoreData?.usersData?.university][userFirestoreData.usersData.course][userFirestoreData.usersData.branch]?.sem.map((value: any, index: any) => {
-          return {
-            label: (index + 1).toString(),
-            value: (index + 1).toString(),
-            status: value
-          };
-        }).filter((value: any) => value.status === true);
-        setSemList(semesters);
-    },[])
+      .map((branch) => ({
+        label: branch,
+        value: branch
+      }));
+    setBranchData(branches);
+    const semesters = apiResponse[userFirestoreData?.usersData?.university][userFirestoreData.usersData.course][userFirestoreData.usersData.branch]?.sem.map((value: any, index: any) => {
+      return {
+        label: (index + 1).toString(),
+        value: (index + 1).toString(),
+        status: value
+      };
+    }).filter((value: any) => value.status === true);
+    setSemList(semesters);
+     }
+    },[apiResponse, userFirestoreData])
 
     const handleSemChange = () => {
       if(formRef.current.values.branch !== ""){
@@ -234,13 +236,13 @@ const SeekHubScreen = (props: Props) => {
                     initialValues={{
                       subject: '',
                       requestResource: '',
-                      branch: userFirestoreData.usersData.branch,
-                      sem:  userFirestoreData.usersData.sem
+                      branch: userFirestoreData?.usersData?.branch,
+                      sem:  userFirestoreData?.usersData?.sem
                     }}
                     onSubmit={values => {
                       onClose();
                       dispatch(setCustomLoader(true));
-                      dispatch(SeekHubActions.submitNewRequest(uid, userFirestoreData.usersData, values, photoURL))
+                      dispatch(SeekHubActions.submitNewRequest(uid, userFirestoreData?.usersData, values, photoURL))
                     }}
                     >
                       <Box mb={2}>
@@ -264,7 +266,7 @@ const SeekHubScreen = (props: Props) => {
                     <DropdownComponent
                       name="sem"
                       data={semList}
-                      placeholder={getOrdinalSuffix(userFirestoreData.usersData.sem) + ' Sem'}
+                      placeholder={getOrdinalSuffix(userFirestoreData?.usersData?.sem) + ' Sem'}
                       leftIcon="bars"
                       width={theme.sizes.width * 0.38}
                       handleOptions={()=>{}}

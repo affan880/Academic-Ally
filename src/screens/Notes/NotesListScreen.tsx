@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CustomLoader from '../../components/loaders/CustomLoader';
 import NotesCard from '../../components/notes/notesCard';
 import MainScreenLayout from '../../layouts/mainScreenLayout';
+import RestrictedScreen from '../../layouts/restrictedScreen';
 import { setCustomLoader, setResourceLoader } from "../../redux/reducers/userState";
 import NavigationService from '../../services/NavigationService';
 import UtilityService from '../../services/UtilityService';
@@ -49,29 +50,29 @@ const NotesList = React.memo((props: Props) => {
     };
   }, [isFocused]);
   const handleScroll = (event: any) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    const contentHeight = event.nativeEvent.contentSize.height;
-    const windowHeight = event.nativeEvent.layoutMeasurement.height;
+    // const offsetY = event.nativeEvent.contentOffset.y;
+    // const contentHeight = event.nativeEvent.contentSize.height;
+    // const windowHeight = event.nativeEvent.layoutMeasurement.height;
     scroollPostion = event.nativeEvent.contentOffset.y;
 
-    if (offsetY > 0) {
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-      setUploadButtonVisible(false);
-    } else if (offsetY + windowHeight < contentHeight) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-      setUploadButtonVisible(true);
-    } else {
-      // User is at the end of the list
-      setUploadButtonVisible(false);
-    }
+    // if (offsetY > 0) {
+    //   Animated.timing(fadeAnim, {
+    //     toValue: 0,
+    //     duration: 500,
+    //     useNativeDriver: true,
+    //   }).start();
+    //   setUploadButtonVisible(false);
+    // } else if (offsetY + windowHeight < contentHeight) {
+    //   Animated.timing(fadeAnim, {
+    //     toValue: 1,
+    //     duration: 500,
+    //     useNativeDriver: true,
+    //   }).start();
+    //   setUploadButtonVisible(true);
+    // } else {
+    //   // User is at the end of the list
+    //   setUploadButtonVisible(false);
+    // }
   };
 
 
@@ -84,9 +85,9 @@ const NotesList = React.memo((props: Props) => {
   const subjectName: string = subject.length > 20 ? (UtilityService.generateAbbreviation(subject)).toUpperCase() : subject;
 
   return (
-    <>
+    <RestrictedScreen>
       <CustomLoader />
-      <MainScreenLayout rightIconFalse={true} title={subjectName} handleScroll={handleScroll} name="SubjectList" >
+      <MainScreenLayout rightIconFalse={true} title={subjectName} handleScroll={()=>{}} name="SubjectList" >
         <VirtualizedList
           data={components}
           ref={listRef}
@@ -181,7 +182,7 @@ const NotesList = React.memo((props: Props) => {
           </TouchableOpacity>
         </Animated.View>
       }
-    </>
+    </RestrictedScreen>
   );
 });
 
