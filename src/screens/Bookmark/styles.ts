@@ -8,7 +8,7 @@ const createStyles = (theme: any, sizes: any) =>
       backgroundColor: theme.primary,
     },
     headerContainer: {
-      height: height * 0.14,
+      height: height * 0.08,
       width: width,
       justifyContent: 'space-between',
       alignItems: 'flex-end',
@@ -44,10 +44,10 @@ const createStyles = (theme: any, sizes: any) =>
     //  height={height / 7}
     //   width={"92%"}
     //   borderRadius={10}
-    //   backgroundColor={'#FFFFFF'}
+    //   backgroundColor={'#F1F1FA'}
     //   justifyContent={'center'}
     //   alignSelf={'center'}
-    mainContainer:{
+    mainContainer: {
       width: width * 0.95,
       height: height * 0.15,
       backgroundColor: theme.quaternary,
@@ -63,7 +63,7 @@ const createStyles = (theme: any, sizes: any) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
-      shadowColor: '#000',
+      shadowColor: '#161719719719719719719',
       borderWidth: 0,
     },
     subjectItem: {
@@ -86,7 +86,7 @@ const createStyles = (theme: any, sizes: any) =>
       justifyContent: 'center',
       paddingHorizontal: height * 0.015,
       alignSelf: 'center',
-      borderWidth: 0, 
+      borderWidth: 0,
     },
     subjectName: {
       fontSize: sizes.subtitle,

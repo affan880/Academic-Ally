@@ -6,6 +6,7 @@ class NavigationService {
         Intro: 'Intro',
         Login: 'Login',
         SignUp: 'SignUp',
+        Auth:'Auth',
         ForgotPassword: 'ForgotPassword',
         ConnectionError: 'ConnectionError',
         BottomTabNavigator: 'BottomTabNavigator',
@@ -16,7 +17,7 @@ class NavigationService {
         UploadScreen: 'UploadScreen',
         Bookmark: 'Bookmark',
         Profile: 'Profile',
-        ResourcesCategories: 'ResourcesCategories',
+        SubjectResourcesScreen: 'SubjectResourcesScreen',
         Resources: 'Resources',
         PdfViewer: 'PdfViewer',
         UpdateProfile: 'UpdateProfile',
@@ -25,15 +26,21 @@ class NavigationService {
         TermsAndConditions: 'TermsAndConditions',
         UserRequestsPdfViewer: 'UserRequestsPdfViewer',
         Download: 'Download',
+        AllyBot: 'AllyBot',
+        SeekHub: 'SeekHub',
+        Recents: 'Recents'
     };
 
     static navigate(name, params) {
         this.navigationRef.navigate(name, params);
     }
 
-    static goBack() {
+    static goBack(onNavigateBack) {
         if (this.navigationRef.isReady() && this.navigationRef.canGoBack()) {
             this.navigationRef.goBack();
+            if (typeof onNavigateBack === 'function') {
+                onNavigateBack(); // Execute the callback function when navigating back
+            }
         }
     }
 

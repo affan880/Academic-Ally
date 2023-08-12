@@ -2,19 +2,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
-import { Box, Divider, FlatList, HStack, Icon, Pressable, Text, VStack } from 'native-base';
+import { Box, Divider, FlatList, HStack, Icon, Pressable, Text, Toast, VStack } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Dimensions, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { Dimensions, Share, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ShareIcon, ShareIconImg } from '../../assets/images/icons';
-import { removeBookmark } from '../../Modules/auth/firebase/firebase';
 import { setBookmarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
 import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
 import { fetchBookmarksList, shareNotes } from '../../services/fetch';
+import PdfViewerAction from '../PdfViewer/pdfViewerAction';
 import createStyles from './styles';
 
 const { width, height } = Dimensions.get('window');
@@ -46,6 +46,7 @@ type pdfViewer = StackNavigationProp<MyStackParamList, 'PdfViewer'>;
 const Bookmark = () => {
   const theme = useSelector((state: any) => state.theme);
   const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
+  const {uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [listData, setListData] = useState([]);
   const [sortedList, setSortedList] = useState([]);
@@ -95,16 +96,14 @@ const Bookmark = () => {
     closeRow(rowMap, rowKey);
     const newData = [...listData];
     const prevIndex = listData.findIndex(
-      (item: any) => item.did === rowKey,
+      (item: any) => item.id === rowKey,
     );
     newData.splice(prevIndex, 1);
     setListData(newData);
     dispatch(
-      userRemoveBookMarks({
-        did: item.item.did,
-      }),
+      userRemoveBookMarks({ id: item.item.id }),
     );
-    removeBookmark(item.item);
+    PdfViewerAction.removeBookmark(item?.item, uid);
   };
 
   function groupBySubject(array: any) {
@@ -124,6 +123,30 @@ const Bookmark = () => {
   useEffect(() => {
     groupBySubject(listData);
   }, [listData]);
+
+  const handleSharePdf = async (notesData: any) => {
+    const {subject, category} = notesData;
+    try {
+        await PdfViewerAction.sharePdf(notesData, dynamicLink).then((link: any) => {
+            Share.share({
+                title: `${subject}`,
+                message: `If you're studying ${subject}, you might find these ${category} on Academic Ally helpfull. I did! Check them out:${link}`
+            });
+        }).catch((error: any) => {
+            Toast.show({
+                title: 'Something went wrong',
+                placement: 'bottom',
+                duration: 3000,
+            })
+        })
+    } catch (error) {
+        Toast.show({
+            title: 'Something went wrong',
+            placement: 'bottom',
+            duration: 3000,
+        })
+    }
+};
 
   const renderItem = ({ item, index }: any) => (
     <Box style={styles.mainContainer}>
@@ -175,9 +198,7 @@ const Bookmark = () => {
                 <Text style={styles.subjectName}>Branch: {item?.branch}</Text>
               </Box>
             </VStack>
-            <TouchableOpacity onPress={() => {
-              shareNotes(item, dynamicLink)
-            }} style={{
+            <TouchableOpacity onPress={()=>handleSharePdf(item)} style={{
               justifyContent: 'center',
             }}  >
               {
@@ -197,10 +218,10 @@ const Bookmark = () => {
       width={width / 1.1}
       pl="2"
       borderRadius={10}
-      backgroundColor={'#FFFFFF'}
+      backgroundColor={'#F1F1FA'}
       justifyContent={'center'}
       alignSelf={'center'}>
-      <Box width={"78%"} borderRadius={10} backgroundColor={"#FFF"} zIndex={999} />
+      <Box width={"78%"} borderRadius={10} backgroundColor={"#F1F1FA"} zIndex={999} />
       <Pressable
         w="90"
         height={"100%"}
@@ -216,9 +237,6 @@ const Bookmark = () => {
         }}>
         <VStack alignItems="center" space={2}>
           <Icon as={<MaterialIcons name="delete" />} color="white" size="2xl" />
-          {/* <Text color="white" fontSize="xs" fontWeight="medium">
-            Delete
-          </Text> */}
         </VStack>
       </Pressable>
     </HStack>
@@ -227,7 +245,7 @@ const Bookmark = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <Fontisto name="bookmark" size={theme.sizes.iconMedium} color="#FFFFFF" />
+          <Fontisto name="bookmark-alt" size={theme.sizes.iconMedium} color="#F1F1FA" />
           <Text style={styles.headerText}>Bookmarks</Text>
         </View>
       </View>
@@ -243,7 +261,7 @@ const Bookmark = () => {
                   fontWeight: 'bold',
                   color: theme.colors.primaryText,
                   marginLeft: 10,
-                  marginTop: 20,
+                  marginTop: index === 0 ? 10 : 20,
                   marginBottom: 10,
                   width: '95%',
                 }}>{item[0]?.subject}</Text>
@@ -270,6 +288,7 @@ const Bookmark = () => {
               </View>
             }
             keyExtractor={(item, index) => index.toString()}
+            initialNumToRender={10}
           />
 
         </View>
@@ -295,7 +314,7 @@ const Bookmark = () => {
         style={{
           fontSize: theme.sizes.title,
           fontWeight: 'bold',
-          color: '#FFFFFF',
+          color: '#F1F1FA',
           marginBottom: 20,
           alignSelf: 'center',
           margin: height * 0.06,

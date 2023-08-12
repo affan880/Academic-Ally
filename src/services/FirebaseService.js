@@ -14,9 +14,6 @@ class FirebaseService {
                 const enabled =
                     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
                     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-                if (enabled) {
-                    console.log('FCM Authorization status:', authStatus);
-                }
             });
     }
 }

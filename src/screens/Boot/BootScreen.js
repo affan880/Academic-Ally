@@ -1,9 +1,13 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerActions } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Avatar } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { Alert, Dimensions, Linking, Pressable, StatusBar, Text, View } from 'react-native';
 import Feather from "react-native-vector-icons/Feather";
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -14,22 +18,26 @@ import { getCurrentUser } from '../../Modules/auth/firebase/firebase';
 import UserRequestsPdfViewer from '../../sections/UserRequests/UserRequestsPdfViewer';
 import NavigationService from '../../services/NavigationService';
 import { useAuthentication } from '../../utilis/hooks/useAuthentication';
+import AllyBotScreen from '../AllyBot/AllyBotScreen';
+import AuthScreen from '../AuthenticationScreens/authScreen'
 import LoginScreen from '../AuthenticationScreens/Login/LoginScreen';
 import SignUpScreen from '../AuthenticationScreens/SignUp/SignUpScreen';
 import Bookmark from '../Bookmark/Bookmark';
 import DownloadScreen from '../Downloads/DownloadScreen';
 import HomeScreen from '../Home/homeScreen';
-import NotesList from '../Notes/NotesList';
-import PdfViewer from '../Notes/PdfViewer/pdfViewer';
-import SubjectResources from '../Notes/SubjectResources';
+import NotesList from '../Notes/NotesListScreen';
 import UploadScreen from '../Notes/uploadScreen';
 import OnBoardingScreen from '../OnBoardingScreen/OnBoardingScreen';
+import PdfViewer from '../PdfViewer/pdfViewerScreen';
 import UpdateInformation from '../Profile/AccountSettings/UpdateInformation';
 import Profile from '../Profile/profile';
 import AboutUs from '../Profile/Support/AboutUs';
 import PrivacyPolicy from '../Profile/Support/PrivacyPolicy';
 import TermsAndConditions from '../Profile/Support/Terms&Conditions';
+import RecentScreen from '../Recents/RecentScreen';
 import Search from '../Search/searchScreen';
+import SeekHubScreen from '../SeekHub/SeekHubScreen';
+import SubjectResources from '../SubjectResources/SubjectResourcesScreen';
 import Upload from '../Upload/uploadScreen';
 import UserRequestsScreen from '../UserRequests/UserRequestsScreen';
 import BootActions from './BootAction';
@@ -73,9 +81,9 @@ const DrawerScreen = ({ navigation }) => {
 
 const BottomTabBar = () => {
     const theme = useSelector((state) => state.theme);
-    const { user } = useAuthentication();
-
     const customClaims = useSelector((state) => state.bootReducer.customClaims);
+    
+  const {photoURL} = useSelector((state) => state.bootReducer.userInfo)|| "";
 
     const TabIcon = ({ focused, iconName, labelText }) => (
         <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
@@ -169,7 +177,12 @@ const BottomTabBar = () => {
                     name={NavigationService.screens.Profile}
                     options={{
                         tabBarIcon: ({ focused }) => (
-                            <TabIcon focused={focused} iconName="user" labelText="Account" />
+                            <View style={{ alignItems: 'center', justifyContent: 'center', width: width * 0.23 }}>
+                                <Avatar style={{ bottom: focused ? 3 : 0 }} source={{
+                                  uri: photoURL
+                                }} size={theme.sizes.iconMedium} alignSelf={'center'} />
+                                {focused ? <Text style={{ color: '#FF8181', fontSize: theme.sizes.textSmall, fontWeight: '400', textAlign: "center", bottom: 0 }}>Account</Text> : null}
+                            </View>
                         ),
                     }}
                     component={Profile}
@@ -183,7 +196,7 @@ const AppStack = () => {
     return (
         <Stack.Navigator initialRouteName={NavigationService.screens.BottomTabNavigator} screenOptions={{ headerShown: false, animationEnabled: false }}>
             <Stack.Screen name={NavigationService.screens.BottomTabNavigator} component={BottomTabBar} />
-            <Stack.Screen name={NavigationService.screens.ResourcesCategories} component={SubjectResources} options={{ headerShown: false }} />
+            <Stack.Screen name={NavigationService.screens.SubjectResourcesScreen} component={SubjectResources} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.Resources} component={NotesList} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.Upload} component={UploadScreen} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.PdfViewer} component={PdfViewer} options={{ headerShown: false }} />
@@ -193,27 +206,51 @@ const AppStack = () => {
             <Stack.Screen name={NavigationService.screens.AboutUs} component={AboutUs} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.UserRequestsPdfViewer} component={UserRequestsPdfViewer} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.Download} component={DownloadScreen} options={{ headerShown: false }} />
+            <Stack.Screen name={NavigationService.screens.AllyBot} component={AllyBotScreen} options={{ headerShown: false }} />
+            <Stack.Screen name={NavigationService.screens.SeekHub} component={SeekHubScreen} options={{ headerShown: false }} />
+            <Stack.Screen name={NavigationService.screens.Recents} component={RecentScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 };
 
 const AuthStack = () => {
+    const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
+
+    useEffect(() => {
+        checkOnboardingStatus();
+    }, []);
+
+    const checkOnboardingStatus = async () => {
+        const completed = await AsyncStorage.getItem('hasCompletedOnboarding');
+        if (completed === 'true') {
+            setHasCompletedOnboarding(true);
+        }
+    };
+
+    const screenOptions = {
+        headerShown: false,
+        animationEnabled: false,
+    };
+
     return (
-        <Stack.Navigator initialRouteName={NavigationService.screens.Intro} screenOptions={{ headerShown: false, animationEnabled: false }}>
-            <Stack.Screen name={NavigationService.screens.Intro} component={OnBoardingScreen} options={{ headerShown: false }} />
-            <Stack.Screen name={NavigationService.screens.Login} component={LoginScreen} options={{ headerShown: false }} />
-            <Stack.Screen name={NavigationService.screens.SignUp} component={SignUpScreen} options={{ headerShown: false }} />
+        <Stack.Navigator initialRouteName={!hasCompletedOnboarding ? NavigationService.screens.Intro : NavigationService.screens.Intro} screenOptions={screenOptions}>
+            {!hasCompletedOnboarding ? (
+                <Stack.Screen name={NavigationService.screens.Intro} component={OnBoardingScreen} options={screenOptions} />
+                ) : null}
+                <Stack.Screen name={NavigationService.screens.Auth} component={AuthScreen} options={screenOptions} />
         </Stack.Navigator>
     );
 };
 
 const BootScreen = () => {
     const requiredVersion = useSelector((state) => state.bootReducer.requiredVersion);
-    const { user } = useAuthentication();
     const currentUser = getCurrentUser();
+    const { user } = useAuthentication();
     const dispatch = useDispatch();
     const [compatible, setCompatible] = useState(true);
+    const [initializing, setInitializing] = useState(true)
     const currentVersion = app_version;
+    const userInfo = useSelector((state)=> state.bootReducer.userInfo)
 
     const convertToNumber = (version) => {
         const versionParts = version.split(".");
@@ -228,10 +265,18 @@ const BootScreen = () => {
     };
 
     useEffect(() => {
-        dispatch(BootActions.loadUtils());
-        dispatch(BootActions.loadUserCustomClaims(user, currentUser));
-        dispatch(BootActions.loadProtectedUtils(user, currentUser));
-    }, [user, currentUser]);
+        try {
+            dispatch(BootActions.loadUtils(currentUser));
+            dispatch(BootActions.loadUserCustomClaims(currentUser));
+            dispatch(BootActions.loadProtectedUtils())
+        }
+        catch (e) {
+            console.log('Initialization error', e)
+        }
+        finally {
+            setInitializing(false)
+        }
+    }, [currentUser, user]);
 
     useEffect(() => {
         if (requiredVersion !== null) {
@@ -239,7 +284,7 @@ const BootScreen = () => {
                 setCompatible(false);
             }
         }
-    }, [requiredVersion, currentVersion, user, currentUser]);
+    }, [requiredVersion, currentVersion, currentUser, user]);
 
     useEffect(() => {
         if (compatible === false) {
@@ -260,7 +305,34 @@ const BootScreen = () => {
         }
     }, [compatible]);
 
-    return (user || currentUser !== null) ? <AppStack /> : <AuthStack />;
+    useEffect(() => {
+        const unsubscribe = messaging().onMessage(async messageObj => {
+            BootActions.handleNotification(messageObj);
+        });
+
+        return unsubscribe;
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = messaging().setBackgroundMessageHandler(async messageObj => {
+            BootActions.handleNotification(messageObj);
+        });
+
+        return unsubscribe;
+    }, []);
+
+    if (initializing) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
+
+    else {
+        return (userInfo !== null) ? <AppStack /> : <AuthStack />;
+    }
+
 };
 
 export default BootScreen;

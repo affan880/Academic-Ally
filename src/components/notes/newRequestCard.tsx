@@ -1,5 +1,3 @@
-import { LinkPreview } from '@flyerhq/react-native-link-preview'
-import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import { Actionsheet, Box, Card, Center, Checkbox, Icon, IconButton, Modal, Stack, Text, Toast, useDisclose } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -10,8 +8,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
-import { listBase } from '../../Modules/auth/firebase/firebase';
-import { setCustomLoader } from '../../redux/reducers/userState';
 import UserRequestsActions from '../../screens/UserRequests/UserRequestsActions';
 import EditUploadsForm from '../../sections/EditUploadsForm/EditUploadsForm';
 import NavigationService from '../../services/NavigationService';
@@ -65,6 +61,7 @@ const NewRequestCard = ({ item }: any) => {
     const [checked2, setChecked2] = useState(false);
     const [checked3, setChecked3] = useState(false);
     const userFirestoreData = useSelector((state: any) => state.usersData).usersData;
+    const userInfo: any = useSelector((state: any) => state.bootReducer.userInfo);
     const [submitted, setSubmitted] = useState(false);
     const customClaims = useSelector((state: any) => state.bootReducer.customClaims);
     const managerUniversity = customClaims?.branchManagerDetails?.university;
@@ -86,7 +83,7 @@ const NewRequestCard = ({ item }: any) => {
         uploaderEmail: item?.uploaderEmail,
         status: "unverified",
         verifiedBy: userFirestoreData?.name,
-        verifiedByUid: auth().currentUser?.uid,
+        verifiedByUid: userInfo?.uid,
         verifiedByEmail: userFirestoreData?.email,
         notesId: item?.notesId,
         userPfp: item?.pfp || null,
@@ -124,7 +121,7 @@ const NewRequestCard = ({ item }: any) => {
 
     const rejected = () => {
         setLoading(true)
-        dispatch(UserRequestsActions.rejectRequest(data, handleRefresh)).then(() => {
+        dispatch(UserRequestsActions.rejectRequest(data, handleRefresh, userInfo)).then(() => {
             setRejectionModalVisible(false);
         });
     }
@@ -353,7 +350,7 @@ const NewRequestCard = ({ item }: any) => {
                                     paddingHorizontal: theme.sizes.width * 0.06,
                                     paddingVertical: 10,
                                 }} onPress={approved} >
-                                    <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#FFF"} onPress={approved} >
+                                    <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#F1F1FA"} onPress={approved} >
                                         Approve
                                     </Text>
                                 </TouchableOpacity>
@@ -384,7 +381,7 @@ const NewRequestCard = ({ item }: any) => {
                                     paddingHorizontal: theme.sizes.width * 0.06,
                                     paddingVertical: 10,
                                 }} onPress={rejected}>
-                                    <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#FFF"} onPress={rejected} >
+                                    <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#F1F1FA"} onPress={rejected} >
                                         Disapprove
                                     </Text>
                                 </TouchableOpacity>
@@ -398,7 +395,7 @@ const NewRequestCard = ({ item }: any) => {
                         {
                             !submitted ? (
                                 <Card style={{
-                                    backgroundColor: "#FFF",
+                                    backgroundColor: "#F1F1FA",
                                     width: "100%",
                                     alignItems: "center",
                                     justifyContent: "center",
@@ -444,7 +441,7 @@ const NewRequestCard = ({ item }: any) => {
                                         <Actionsheet.Item style={{
                                             borderBottomWidth: 0.9,
                                             borderBottomColor: "#91919F",
-                                            backgroundColor: "#FFF",
+                                            backgroundColor: "#F1F1FA",
                                         }} onPress={() => {
                                             setChecked2(!checked2);
                                         }}>
@@ -470,7 +467,7 @@ const NewRequestCard = ({ item }: any) => {
                                         <Actionsheet.Item style={{
                                             borderBottomWidth: 0.9,
                                             borderBottomColor: "#91919F",
-                                            backgroundColor: "#FFF",
+                                            backgroundColor: "#F1F1FA",
                                         }} onPress={() => {
                                             setChecked3(!checked3);
                                         }}>

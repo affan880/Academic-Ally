@@ -1,10 +1,23 @@
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import queryString from 'query-string';
+
 class UtilityService {
-    static getTaskStatus(current) {
-        throw new Error('Method not implemented.');
-    }
-    static downloadFile(pdfUrl, downloadDir) {
-        throw new Error('Method not implemented.');
-    }
+
+    static months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "June",
+        "July",
+        "Aug",
+        "Sept",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
+    static days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
     static checkEmpty(obj) {
         if (obj === undefined || obj === null || obj === {} || obj === []) {
@@ -42,6 +55,44 @@ class UtilityService {
         return UtilityService.months[index];
     }
 
+    static formatDateFromTimestamp(timestamp, format) {
+        if (timestamp == null) {
+            return '';
+        }
+        const time = new Date(timestamp * 1000);
+        const yyyy = time.getFullYear();
+        const yy = (yyyy + "").substring(2);
+        const MM = time.getMonth() + 1;
+        const dd = time.getDate();
+        const hh = time.getHours();
+        const mm = time.getMinutes();
+        const ss = time.getSeconds();
+        const DD = time.getDay();
+        const A = hh < 12 ? "AM" : "PM";
+
+        if (format.indexOf("A") > -1) {
+            hh = hh > 12 ? hh - 12 : hh;
+        }
+
+        MM = MM < 10 ? "0" + MM : MM;
+        dd = dd < 10 ? "0" + dd : dd;
+        hh = hh < 10 ? "0" + hh : hh;
+        mm = mm < 10 ? "0" + mm : mm;
+
+        format = format.replace("A", A);
+        format = format.replace("yyyy", yyyy);
+        format = format.replace("yy", yy);
+        format = format.replace("MMM", UtilityService.months[MM - 1]);
+        format = format.replace("MM", MM);
+        format = format.replace("dd", dd);
+        format = format.replace("hh", hh);
+        format = format.replace("mm", mm);
+        format = format.replace("ss", ss);
+        format = format.replace("DDD", UtilityService.days[DD].substring(0, 3));
+        format = format.replace("DD", UtilityService.days[DD]);
+
+        return format;
+    }
 
     static formatDate(date, format) {
         if (date == null) {
@@ -49,7 +100,7 @@ class UtilityService {
         }
         let time = new Date(date);
         let yyyy = time.getFullYear();
-        let yy = (yyyy + "").substring(2);
+        let yy = yyyy % 100;
         let MM = time.getMonth() + 1;
         let dd = time.getDate();
         let hh = time.getHours();
@@ -67,7 +118,8 @@ class UtilityService {
         format = format.replace("A", A);
         format = format.replace("yyyy", yyyy);
         format = format.replace("yy", yy);
-        format = format.replace("MMM", UtilityService.months[MM - 1]);
+        format = format.replace("MMMM", UtilityService.months[MM - 1]);
+        format = format.replace("MMM", UtilityService.months[MM - 1].substring(0, 3));
         format = format.replace("MM", MM);
         format = format.replace("dd", dd);
         format = format.replace("hh", hh);
@@ -196,26 +248,82 @@ class UtilityService {
         return str;
     }
 
-    static getDynamicLink(link) {
-        const parts = link?.url.split('/');
+    static getDynamicLinkData(link) {
+        const query = link.url.split('?')[1];
+        const parsedData = queryString.parse(query);
+      
         const userData = {
-            Course: parts[5],
-            branch: parts[6],
-            sem: parts[7],
+          university: parsedData?.university,
+          Course: parsedData?.course, // You can remove this line if 'Course' is not needed
+          course: parsedData?.course,
+          branch: parsedData?.branch,
+          sem: parsedData?.sem,
         };
+      
         const notesData = {
-            course: parts[5],
-            branch: parts[6],
-            sem: parts[7],
-            subject: parts[8],
-            category: parts[3],
-            did: parts[9],
-            name: parts[11],
-            units: parts[10],
-            university: parts[4],
+          course: parsedData?.course,
+          branch: parsedData?.branch,
+          sem: parsedData?.sem,
+          subject: parsedData?.subject,
+          category: parsedData?.category,
+          did: parsedData?.did,
+          name: parsedData?.name,
+          units: parsedData?.units,
+          university: parsedData?.university,
+          id: parsedData?.id,
         };
-        return { userData, notesData };
+        const screen = parsedData?.page
+        return { userData, notesData, screen };
     }
 
+    static generateAbbreviation(subject) {
+        const words = subject.split(' ');
+        const excludedTerms = ['of', 'for', 'and'];
+        const abbreviation = words
+            .filter((word) => !excludedTerms.includes(word.toLowerCase()))
+            .map((word) => word.charAt(0))
+            .join('');
+        return abbreviation.toLowerCase();
+    };
+
+    static async generateLink(notesData, screen) {
+        switch (screen) {
+            case 'PdfViewer':
+                return `https://app.getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/PdfViewer`;
+            case 'SubjectResourcesScreen':
+                return `https://app.getacademically.co/Resources/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/SubjectResourcesScreen`;
+            case 'Resources':
+                return `https://app.getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/Resources`;
+            default:
+                return null;
+        }
+    }
+
+
+    static async generateDynamicLink(url, notesData, screen) {
+        const queryParams = new URLSearchParams({
+            university: notesData.university,
+            course: notesData.course,
+            branch: notesData.branch,
+            sem: notesData.sem,
+            subject: notesData.subject,
+            page: 'SubjectResources'
+          });
+        return link = await dynamicLinks().buildShortLink(
+            {
+                link: `https://app.getacademically.co?${queryParams}`,
+                domainUriPrefix: url,
+                android: {
+                    packageName: 'com.academically',
+                },
+            },
+            dynamicLinks.ShortLinkType.SHORT,
+        ).catch((error) => {
+            Toast.show({
+                title: 'Something went wrong, Please try again later',
+                duration: 3000,
+            })
+        });
+    }
 }
 export default UtilityService;

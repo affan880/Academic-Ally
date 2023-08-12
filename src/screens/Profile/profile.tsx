@@ -1,14 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import auth from '@react-native-firebase/auth';
-import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AlertDialog, Avatar, Button, Toast, VStack } from 'native-base';
 import React, { useMemo, useState } from 'react';
-import { Dimensions, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
+import { Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useAuth } from '../../Modules/auth/firebase/firebase';
 import NavigationService from '../../services/NavigationService';
 import createStyles from './styles';
 
@@ -22,7 +21,7 @@ type MyStackParamList = {
 const Profile = () => {
   const theme = useSelector((state: any) => { return state.theme });
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
-  const user = auth().currentUser;
+  const {photoURL}: any = useSelector((state: any) => state.bootReducer.userInfo)|| "";
   const [isOpen, setIsOpen] = React.useState(false);
   const [logOutAlert, setLogOutAlert] = useState(false);
   const userImage = useSelector((state: any) => {
@@ -31,10 +30,6 @@ const Profile = () => {
   const onClose = () => setIsOpen(false);
   const onCloseLogout = () => setLogOutAlert(false);
   const cancelRef = React.useRef(null);
-  type MyScreenNavigationProp = StackNavigationProp<
-    MyStackParamList,
-    'UpdateInformation'
-  >;
   const dispatch = useDispatch();
   const userFirestoreData = useSelector((state: any) => {
     return state.usersData;
@@ -45,14 +40,14 @@ const Profile = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.headerContainer}>
           <View style={styles.header}>
-            <Feather name="user" style={{
+            <FontAwesome name="user" style={{
               marginHorizontal: -5,
-            }} size={theme.sizes.iconMedium} color="#FFFFFF" />
+            }} size={theme.sizes.iconMedium} color="#F1F1FA" />
             <Text style={styles.headerText}>Account</Text>
           </View>
           <VStack alignItems="center" space={0} marginY={theme.sizes.height * 0.023} width={"100%"} justifyContent={"center"} >
             <Avatar source={{
-              uri: userImage || user?.photoURL
+              uri: userImage || photoURL
             }} size={theme.sizes.height * 0.16} alignSelf={'center'} />
           </VStack>
           <Text style={styles.name}>{userFirestoreData.usersData.name}</Text>
@@ -230,19 +225,20 @@ const Profile = () => {
                 <Button
                   colorScheme="danger"
                   onPress={() => {
-                    auth()
-                      ?.currentUser?.delete()
-                      .then(() => {
-                        AsyncStorage.clear();
-                        dispatch({ type: 'RESET_APP' });
-                        Toast.show({
-                          title: 'Account Deleted',
-                          backgroundColor: '#F44336',
-                          color: '#ffffff',
-                        });
-                      })
+                    useAuth()
+                    ?.currentUser?.delete()
+                    .then(() => {
+                      AsyncStorage.clear();
+                      dispatch({ type: 'RESET_APP' });
+                      NavigationService.navigate(NavigationService.screens.Login);
+                      Toast.show({
+                        title: 'Account Deleted',
+                        backgroundColor: '#F44336',
+                        color: '#ffffff',
+                      });
+                    })
                       .catch(error => {
-                        auth().signOut();
+                        useAuth().signOut();
                         AsyncStorage.clear();
                         Toast.show({
                           title: 'Error',
@@ -282,8 +278,9 @@ const Profile = () => {
                 <Button
                   colorScheme="danger"
                   onPress={() => {
-                    auth().signOut();
+                    useAuth().signOut();
                     AsyncStorage.clear();
+                    AsyncStorage.setItem('hasCompletedOnboarding', 'true')
                     dispatch({ type: 'RESET_APP' });
                   }}>
                   Log Out

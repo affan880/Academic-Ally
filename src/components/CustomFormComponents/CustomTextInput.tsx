@@ -1,8 +1,10 @@
 import { useFormikContext } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Animated, { runOnUI, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useSelector } from 'react-redux';
 
 type Props = {
   leftIcon: any;
@@ -10,7 +12,7 @@ type Props = {
   handlePasswordVisibility?: any;
   name: any;
   securuty?: boolean;
-  errors?: any;
+  // errors?: any;
   other?: any;
   width?: any;
 };
@@ -26,14 +28,40 @@ export const CustomTextInput = ({
   width,
   other
 }: Props) => {
+  const theme = useSelector((state: any) => { return state.theme });
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const { values, errors, touched, setFieldValue, setFieldTouched } =
     useFormikContext<any>();
+  
+    const scaleValue = useSharedValue(2);
+    const elevationValue = useSharedValue(0);
+    useEffect(() => {
+      const startAnimations = () => {
+        'worklet';
+        scaleValue.value = withSpring(0.8, {
+          damping: 5,
+          mass: 0.1,
+        });
+  
+        setTimeout(() => {
+          scaleValue.value = withSpring(1, {
+            damping: 80,
+            mass: 0.1,
+          });
+        }, 1000);
+      };
+      startAnimations();
+    }, []);
+  
   return (
     <View style={styles.container}>
-      <View
+      <Animated.View
         style={[
           styles.input,
+          {
+            backgroundColor: theme.colors.quaternary,
+            elevation: elevationValue
+          },
           width ? {
             width: width,
           } : null,
@@ -43,20 +71,24 @@ export const CustomTextInput = ({
               borderWidth: 3,
             }
             : null,
+            {
+              transform: [{scale: scaleValue}]
+            },
+
         ]}>
         {name === 'college' ? (
           <FontAwesome
-            size={Height * 0.025}
-            color={touched[name] && errors[name] ? '#FF2E00' : '#000000'}
-            style={{ paddingRight: 15, alignSelf: 'center' }}
+            size={24}
+            color={touched[name] && errors[name] ? '#FF2E00' : theme.colors.primaryText}
+            style={{padding: 16}}
             name={'university'}
           />
         ) : (
           <Feather
             name={leftIcon}
-            size={18}
-            color={touched[name] && errors[name] ? '#FF2E00' : '#000000'}
-            style={{ paddingRight: 15, alignSelf: 'center' }}
+            size={24}
+            style={{padding: 16}}
+            color={touched[name] && errors[name] ? '#FF2E00' : theme.colors.primaryText}
           />
         )}
         <TextInput
@@ -70,7 +102,7 @@ export const CustomTextInput = ({
           placeholderTextColor={
             touched[name] && errors[name] ? '#FF2E00' : '#808080'
           }
-          style={styles.textInput}
+          style={[styles.textInput, { color: theme.colors.primaryText }]}
           maxLength={50}
           secureTextEntry={
             name === 'password' || name === 'confirmPassword'
@@ -82,30 +114,32 @@ export const CustomTextInput = ({
           errors[name] &&
           name !== 'password' &&
           name !== 'confirmPassword' ? (
-          <Feather name="alert-circle" size={Height * 0.025} color="#FF2E00" />
+          <Feather name="alert-circle" size={Height * 0.025} 
+          style={{padding: 16}} color="#FF2E00" />
         ) : null}
         {name === 'password' || name === 'confirmPassword' ? (
           <TouchableOpacity
             onPress={() => setPasswordVisibility(!passwordVisibility)}
-            style={{ paddingRight: 25, alignSelf: 'center' }}>
+            style={{alignSelf: 'center' }}>
             <Feather
               name={passwordVisibility ? 'eye' : 'eye-off'}
-              size={Height * 0.025}
-              color={touched[name] && errors[name] ? '#FF2E00' : '#000000'}
+              size={24}
+              style={{padding: 16}}
+              color={touched[name] && errors[name] ? '#FF2E00' : '#161719'}
             />
           </TouchableOpacity>
         ) : null}
-      </View>
+      </Animated.View>
       {touched[name] && errors[name] ? (
         <Text
           style={{
-            color: '#000000',
+            color: theme.colors.primaryText,
             fontSize: Height * 0.015,
             fontFamily: 'Poppins-Regular',
             paddingLeft: 20,
             fontWeight: 'bold',
           }}>
-          *{errors[name]}
+          *{errors[name] + ''}
         </Text>
       ) : null}
     </View>
@@ -116,12 +150,9 @@ export default CustomTextInput;
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#fff',
     width: Width - 50,
     height: Height * 0.07,
     borderRadius: 10,
-    elevation: 3,
-    paddingLeft: 20,
     marginTop: 10,
     alignItems: 'center',
     flexDirection: 'row',
@@ -131,10 +162,10 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: Height * 0.07,
-    width: '78%',
     fontSize: Height * 0.018,
-    color: '#000000',
     fontFamily: 'Poppins-Regular',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    textAlign:'left',
+    flex:1
   },
 });

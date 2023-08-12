@@ -1,6 +1,6 @@
-import {createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Toast} from 'native-base';
+import { createSlice } from '@reduxjs/toolkit';
+import { Toast } from 'native-base';
 
 export const createUserDataSlice = createSlice({
   name: 'BookmarkManagement',
@@ -30,7 +30,7 @@ export const createUserDataSlice = createSlice({
     },
     userRemoveBookMarks: (state, action) => {
       state.userBookMarks = state.userBookMarks.filter(
-        item => item.did !== action.payload.did,
+        item => item.id !== action.payload.id,
       );
       AsyncStorage.setItem(
         'userBookMarks',

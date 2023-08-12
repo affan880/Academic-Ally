@@ -1,16 +1,14 @@
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import { useNavigation } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
-import { Box, Modal, Stack, Text, Toast, useDisclose } from 'native-base';
+import { Box, Modal, Stack, Text, Toast } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Dimensions, PermissionsAndroid, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Dimensions, ScrollView, TouchableOpacity, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
+import { PERMISSIONS, request } from 'react-native-permissions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { CustomBtn } from '../../components/CustomFormComponents/CustomBtn';
 import { CustomTextInput } from '../../components/CustomFormComponents/CustomTextInput';
@@ -23,7 +21,7 @@ import UploadAction from './uploadAction';
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
 
-const Search = () => {
+const UploadScreen = () => {
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const list: any = useSelector((state: any) => state.subjectsList.list || []);
@@ -99,9 +97,6 @@ const Search = () => {
     { label: 'Question Paper', value: 'QuestionPaper' },
     { label: 'Other Resources', value: 'OtherResources' },
   ]
-
-  const UniversityData: any = [{ label: 'Osmania University', value: 'OU' }];
-
 
   const handleYearChange = (event: any) => {
     if (event?.value === '' || event?.value === undefined || event?.value === null) {
@@ -242,17 +237,9 @@ const Search = () => {
 
   const requestPermission = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        {
-          title: 'Storage Permission',
-          message: 'This app needs access to your storage to upload files.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      const granted = await request(
+        PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+      if (granted) {
         pickPDF();
         setPermissionGranted(true);
       }
@@ -283,7 +270,7 @@ const Search = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <Ionicons name="cloud-upload" size={theme.sizes.iconMedium} color="#FFFFFF" />
+          <Ionicons name="cloud-upload" size={theme.sizes.iconMedium} color="#F1F1FA" />
           <Text style={styles.headerText}>Upload</Text>
         </View>
       </View>
@@ -362,7 +349,8 @@ const Search = () => {
                   placeholder={'Subject'}
                   leftIcon="Safety"
                   width={screenWidth - 50}
-                  handleOptions={handleYearChange}
+                  handleOptions={() => { }}
+                  searchbar
                 />
                 <DropdownComponent
                   name="category"
@@ -370,7 +358,7 @@ const Search = () => {
                   placeholder={'Select Type of resource'}
                   leftIcon="Safety"
                   width={screenWidth - 50}
-                  handleOptions={handleYearChange}
+                  handleOptions={() => { }}
                 />
                 <CustomTextInput
                   leftIcon="user"
@@ -486,4 +474,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default UploadScreen;

@@ -25,7 +25,7 @@ const ReportActionSheet = ({ isOpen, onClose, notesData }: any) => {
                 {
                     !submitted ? (
                         <Card style={{
-                            backgroundColor: "#FFF",
+                            backgroundColor: "#F1F1FA",
                             width: "100%",
                             alignItems: "center",
                             justifyContent: "center",
@@ -71,7 +71,7 @@ const ReportActionSheet = ({ isOpen, onClose, notesData }: any) => {
                                 <Actionsheet.Item style={{
                                     borderBottomWidth: 0.9,
                                     borderBottomColor: "#91919F",
-                                    backgroundColor: "#FFF",
+                                    backgroundColor: "#F1F1FA",
                                 }} onPress={() => {
                                     setChecked2(!checked2);
                                 }}>
@@ -97,7 +97,7 @@ const ReportActionSheet = ({ isOpen, onClose, notesData }: any) => {
                                 <Actionsheet.Item style={{
                                     borderBottomWidth: 0.9,
                                     borderBottomColor: "#91919F",
-                                    backgroundColor: "#FFF",
+                                    backgroundColor: "#F1F1FA",
                                 }} onPress={() => {
                                     setChecked3(!checked3);
                                 }}>

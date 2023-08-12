@@ -1,37 +1,24 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import auth from '@react-native-firebase/auth';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { Actionsheet, Avatar, Stack, Text, Toast, useDisclose } from 'native-base';
-import React, { useRef, useState, useEffect } from 'react';
-import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CustomBtn, NavBtn } from '../../../components/CustomFormComponents/CustomBtn';
+import { CustomBtn } from '../../../components/CustomFormComponents/CustomBtn';
 import { CustomTextInput } from '../../../components/CustomFormComponents/CustomTextInput';
 import DropdownComponent from '../../../components/CustomFormComponents/Dropdown';
 import Form from '../../../components/Forms/form';
-import NavigationLayout from '../../../interfaces/navigationLayout';
-import { updateFirestoreData } from '../../../Modules/auth/firebase/firebase';
+import NavigationLayout from '../../../layouts/navigationLayout';
+import { updateFirestoreData, useAuth } from '../../../Modules/auth/firebase/firebase';
 import { setUserProfile } from '../../../redux/reducers/usersData';
 import NavigationService from '../../../services/NavigationService';
 import { updatevalidationSchema } from '../../../utilis/validation';
 import createStyles from './styles';
 
-type MyStackParamList = {
-  'BottomTabBar': any;
-  'Home': undefined;
-};
-
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
-
-type MyScreenNavigationProp = StackNavigationProp<
-  MyStackParamList,
-  'BottomTabBar'
->;
 
 const UpdateInformation = () => {
   const {
@@ -41,14 +28,15 @@ const UpdateInformation = () => {
   } = useDisclose();
   const dispatch = useDispatch();
   const formRef: any = useRef();
-  const uid = auth().currentUser?.uid;
+  const getUserAuthData: any = useAuth()
+  const uid = getUserAuthData.currentUser?.uid;
   const userFirestoreData = useSelector((state: any) => {
     return state.usersData;
   });
   const userImage = useSelector((state: any) => {
     return state.usersData.userProfile;
   });
-  const user = auth().currentUser;
+  const user = getUserAuthData.currentUser;
   const theme = useSelector((state: any) => state.theme);
   const styles = createStyles(theme.colors, theme.sizes);
   const initialValues: any = {
@@ -59,7 +47,7 @@ const UpdateInformation = () => {
     Year: userFirestoreData.usersData.Year,
     college: userFirestoreData.usersData.college,
   };
-  const [selectedAvatar, setSelectedAvatar] = React.useState<any>(auth().currentUser?.photoURL);
+  const [selectedAvatar, setSelectedAvatar] = React.useState<any>(getUserAuthData.currentUser?.photoURL);
   const [selectedYear, setSelectedYear] = useState<any>(null);
   const [BranchData, setBranchData] = useState<any>([]);
   const [selectedBranch, setSelectedBranch] = useState<any>(userFirestoreData.usersData.branch);
@@ -242,7 +230,7 @@ const UpdateInformation = () => {
   }
 
   const updateUserImage = (img: string) => {
-    auth()
+    getUserAuthData
       .currentUser?.updateProfile({
         photoURL: img,
       })
@@ -276,7 +264,7 @@ const UpdateInformation = () => {
         <Feather
           name="edit-3"
           size={13}
-          color={'#FFFFFF'}
+          color={'#F1F1FA'}
           onPress={onOpen}
           style={{
             position: 'relative',
@@ -387,12 +375,12 @@ const UpdateInformation = () => {
         </Form>
       </View>
       <Actionsheet isOpen={isOpen} onClose={onClose} borderRadius={0}  >
-        <Actionsheet.Content height={screenHeight * 0.65}>
+        <Actionsheet.Content height={screenHeight * 0.65} backgroundColor={theme.colors.actionSheet} >
           <Avatar source={{
             uri: selectedAvatar
           }} size={screenHeight * 0.14} alignSelf={'center'} marginTop={screenHeight * 0.01} />
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: screenHeight * 0.05 }}>
-            <Text style={{ fontSize: theme.sizes.subtitle, color: '#000', fontWeight: 'bold', textAlign: "center" }}>select from a variety of avatars to represent yourself</Text>
+            <Text style={{ fontSize: theme.sizes.subtitle, color: theme.colors.primaryText, fontWeight: 'bold', textAlign: "center" }}>select from a variety of avatars to represent yourself</Text>
           </View>
           <Stack style={styles.gridContainer} >
             {
@@ -407,7 +395,7 @@ const UpdateInformation = () => {
                       }
                     } size={screenHeight * 0.07} style={[styles.gridItem, {
                       borderWidth: selectedAvatar === item.image ? 2 : 0,
-                      borderColor: '#6360FF'
+                      borderColor: theme.colors.mainTheme
                     }]} alignSelf={'center'} />
                   </TouchableOpacity>
                 )
@@ -416,7 +404,7 @@ const UpdateInformation = () => {
           </Stack>
           <Stack direction="row" space={2} marginY={screenHeight * 0.05} paddingX={screenWidth * 0.02} alignItems="center" justifyContent="space-evenly" width={"100%"} >
             <TouchableOpacity onPress={onClose} >
-              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={"#91919F"} >
+              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={theme.colors.terinaryText} >
                 Cancel
               </Text>
             </TouchableOpacity>
@@ -429,7 +417,7 @@ const UpdateInformation = () => {
               updateUserImage(selectedAvatar)
               onClose()
             }}>
-              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={"#FFF"} >
+              <Text fontSize={theme.sizes.title} fontWeight={'700'} textAlign="center" color={"#F1F1FA"} >
                 Confirm
               </Text>
             </TouchableOpacity>

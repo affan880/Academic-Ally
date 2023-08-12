@@ -1,7 +1,9 @@
+apply plugin: "com.facebook.react"
 apply plugin: "com.android.application"
-import com.android.build.OutputFile
-import org.apache.tools.ant.taskdefs.condition.Os
+apply plugin: 'com.google.gms.google-services'
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+import org.apache.tools.ant.taskdefs.condition.Os
+import com.android.build.OutputFile
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -138,7 +140,7 @@ android {
         applicationId "com.academically"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
+        versionCode 7
         versionName "1.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
         manifestPlaceholders = [
@@ -299,8 +301,12 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-    implementation platform('com.google.firebase:firebase-bom:26.3.0')
     implementation 'com.google.firebase:firebase-auth'
+    implementation platform('com.google.firebase:firebase-bom:31.2.3')
+    implementation project(":@react-native-firebase_inAppMessaging")
+    implementation 'com.google.firebase:firebase-analytics'
+    // implementation project(':react-native-push-notification')
+
 }
 
 if (isNewArchitectureEnabled()) {
@@ -336,5 +342,4 @@ def isNewArchitectureEnabled() {
     return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
 }
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'

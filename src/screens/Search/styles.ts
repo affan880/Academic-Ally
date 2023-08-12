@@ -8,7 +8,7 @@ const createStyles = (theme: any, sizes: any) =>
       backgroundColor: theme.primary,
     },
     headerContainer: {
-      height: height * 0.14,
+      height: height * 0.08,
       width: width,
       justifyContent: 'space-between',
       alignItems: 'flex-end',
@@ -26,7 +26,7 @@ const createStyles = (theme: any, sizes: any) =>
     },
     bodyContent: {
       flex: 1,
-      paddingTop: height * 0.02,
+      paddingTop: height * 0.01,
     },
     searchContainer: {
       width: width * 0.9,
@@ -91,7 +91,7 @@ const createStyles = (theme: any, sizes: any) =>
     categoryItemText: {
       fontSize: sizes.subtitle,
       fontWeight: 'bold',
-      color: '#FFFFFF',
+      color: '#F1F1FA',
       textAlign: 'center',
     },
     containerText: {
@@ -113,7 +113,7 @@ const createStyles = (theme: any, sizes: any) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
-      shadowColor: '#000',
+      shadowColor: '#161719',
     },
     subjectItem: {
       width: width * 0.95,

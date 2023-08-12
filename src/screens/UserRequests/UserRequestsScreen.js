@@ -1,6 +1,6 @@
 import LottieView from 'lottie-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { FlatList, RefreshControl, Text, Touchable, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -46,7 +46,7 @@ const UserRequestsScreen = () => {
                     <MaterialCommunityIcons
                         name="clipboard-edit-outline"
                         size={theme.sizes.iconMedium}
-                        color="#FFFFFF"
+                        color="#F1F1FA"
                     />
                     <Text style={styles.headerText}>Requests</Text>
                 </View>

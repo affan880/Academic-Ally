@@ -1,9 +1,8 @@
-import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import { Toast } from 'native-base';
-import React, { useMemo, useRef } from 'react';
-import { Image, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, Dimensions, Image, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import LinearGradient from 'react-native-linear-gradient';
+// import Animated, { useDispatch } from 'react-native-reanimated';
 import { useDispatch } from 'react-redux';
 
 import { LOGINILLUSTRATION } from '../../../assets';
@@ -13,103 +12,148 @@ import Form from '../../../components/Forms/form';
 import CustomLoader from '../../../components/loaders/CustomLoader';
 import NavigationService from '../../../services/NavigationService';
 import { LoginvalidationSchema } from '../../../utilis/validation';
-import createStyles from './styles';
 import AuthAction from '../authActions';
+import createStyles from './styles';
 
-interface IProps {
-  navigation: NavigationProp<ParamListBase>;
+const {width, height} = Dimensions.get('window');
+
+type props = {
+  onPress: any
 }
 
-const LoginScreen: React.FC<IProps> = ({ navigation }) => {
+const LoginScreen = ({onPress}: props) => {
   const formRef: any = useRef();
   const styles = useMemo(() => createStyles(), []);
   const initialValues = { email: '', password: '' };
   const dispatch: any = useDispatch();
 
-  const forgotPasswordHandler = (): void => {
-    if (formRef.current && formRef.current.errors?.email) {
-      Toast.show({
-        title: 'Please Enter a Valid Email',
-        duration: 4000,
-        backgroundColor: '#FF0101',
-      });
-    } else {
-      dispatch(AuthAction.forgotPassword(formRef.current.values.email));
+
+  const signInFields = [
+    {
+      leftIcon: 'user',
+      placeholder:'Email',
+      name: 'email',
+      id: 1,
+      handlePasswordVisibility: false
+    },
+    {
+      leftIcon: 'lock',
+      placeholder:'Password',
+      name: 'password',
+      id: 2,
+      handlePasswordVisibility: true
     }
-  };
+  ]
+
+  const animatedValue = useRef(new Animated.Value(0)).current
+  const signInButtons = [
+    {
+      btn: <CustomBtn title="Log In" color="#6360FF" />,
+      id: 1,
+    },
+    {
+      btn: <> 
+      <Animated.View style={[styles.CreatAccount, 
+      {
+        transform: [
+          {
+            perspective:400
+          },
+          {
+            rotateY: animatedValue.interpolate({
+              inputRange: [0, 0.5,1],
+              outputRange: ['0deg', '-90deg', '-180deg']
+            })
+          }, 
+          {
+            scale: animatedValue.interpolate({
+              inputRange: [0, 0.5,1],
+              outputRange: [1,8,1]
+            })
+          }
+        ]
+      }
+      ]}>
+      <TouchableOpacity
+      style={[{ backgroundColor: "#FF8181",    
+      width: width - 50,
+      height: height * 0.07,
+      borderRadius: 10,
+      elevation: 8,
+      alignItems: 'center',
+      justifyContent: 'center', }]}
+      onPress={() => {
+        // NavigationService.navigate(NavigationService.screens.SignUp);
+        onPress()
+        Animated.timing(animatedValue, {
+          toValue: 1,
+          duration: 3000,
+          useNativeDriver: false
+        }).start()
+      }}>
+      <Text style={{fontWeight: '900',
+        fontSize: 16,
+        color: '#fff',
+        lineHeight: 37,}}>
+          Create an Account</Text>
+    </TouchableOpacity>
+      </Animated.View></>,
+      id: 2,
+    },
+  ]
 
   return (
     <>
-      <CustomLoader />
-      <View style={styles.container}>
-        <StatusBar
-          animated={true}
-          translucent={true}
-          backgroundColor={'transparent'}
-        />
-        <LinearGradient
-          colors={['#6360ff', '#FF8181']}
-          start={{ x: 0.5, y: 0.5 }}
-          end={{ x: 0.5, y: 1 }}
-          style={styles.LinearGradient}>
-          <KeyboardAwareScrollView style={{ flex: 1 }}>
-            <Image source={LOGINILLUSTRATION} style={styles.rocketIcon} />
-            <Text style={styles.welcomeText}>Welcome back!</Text>
-            <Text style={styles.loginText}>Please, Log In.</Text>
-            <View style={styles.inputContainer}>
-              <Form
-                initialValues={initialValues}
-                innerRef={formRef}
-                validationSchema={LoginvalidationSchema}
-                onSubmit={values => {
-                  dispatch(AuthAction.signIn(values.email, values.password))
-                }}>
+      <Text style={styles.loginText}>Please, Log In.</Text>
+      <Form
+        initialValues={initialValues}
+        innerRef={formRef}
+        validationSchema={LoginvalidationSchema}
+        onSubmit={values => {
+          dispatch(AuthAction.signIn(values.email, values.password))
+        }}>
+          {
+            signInFields.map((item: any) =>(
+              <View key={item?.id}>
                 <CustomTextInput
-                  leftIcon="user"
-                  placeholder="Email"
-                  name="email"
+                  leftIcon={item?.leftIcon}
+                  placeholder={item?.placeholder}
+                  name={item?.name}
                 />
-                <CustomTextInput
-                  leftIcon="lock"
-                  placeholder="Password"
-                  handlePasswordVisibility
-                  name="password"
-                />
-                <TouchableOpacity
-                  style={styles.formContainer}
-                  touchSoundDisabled={false}>
-                  <Text
-                    onPress={() => {
-                      if (formRef.current.values.email) {
-                        forgotPasswordHandler();
-                      } else {
-                        Toast.show({
-                          title: 'Please Enter a Valid Email',
-                          duration: 4000,
-                          backgroundColor: '#FF0101',
-                        });
-                      }
-                    }}
-                    style={styles.forgotPasswordText}>
-                    Forgot Password?
-                  </Text>
-                </TouchableOpacity>
-                <CustomBtn title="Log In" color="#6360FF" />
-                <Text style={styles.orText}>Or</Text>
-                <View style={styles.CreatAccount}>
-                  <NavBtn
-                    title="Create an Account"
-                    onPress={() => {
-                      NavigationService.navigate(NavigationService.screens.SignUp);
-                    }}
-                    color="#FF8181"
-                  />
+              </View>
+            ))
+          }
+        <TouchableOpacity
+          style={styles.formContainer}
+          touchSoundDisabled={false}>
+          <Text
+            onPress={() => {
+              if (formRef.current.values.email) {
+                AuthAction.forgotPasswordHandler(formRef);
+              } else {
+                Toast.show({
+                  title: 'Please Enter a Valid Email',
+                  duration: 4000,
+                  backgroundColor: '#FF0101',
+                });
+              }
+            }}
+            style={styles.forgotPasswordText}>
+            Forgot Password?
+          </Text>
+        </TouchableOpacity>
+        <View>
+            {
+              signInButtons.map((item)=>(
+                <View key={item?.id} style={{
+                  position: 'relative'
+                }} >
+                  {item.btn}
                 </View>
-              </Form>
-            </View>
-          </KeyboardAwareScrollView>
-        </LinearGradient>
-      </View>
+              ))
+            }
+        </View>
+      </Form>
     </>
   );
 };

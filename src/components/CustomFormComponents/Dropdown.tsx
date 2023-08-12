@@ -1,74 +1,147 @@
 import { useFormikContext } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TextProps, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import Animated, { runOnUI, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useSelector } from 'react-redux';
 
 type Props = {
   leftIcon: any;
   placeholder: string;
   handlePasswordVisibility?: any;
   name: string;
-  securuty?: boolean;
+  security?: boolean;
   data?: any;
   width?: any;
   other?: any;
   handleOptions?: any;
+  searchbar?: boolean;
+  mode?: string
 };
 
 const { width, height } = Dimensions.get('window');
 export const CustomDropdown = ({
   leftIcon,
-  placeholder,
+  placeholder, 
   name,
   data,
   width,
   handleOptions,
+  searchbar,
+  mode,
   ...other
 }: Props) => {
+  const dropdownHeight = (length: number) => {
+    switch (length) {
+      case 1:
+        return height * 0.073 * (length + 1);
+      case 2:
+        return height * 0.073 * (length + 1);
+      case 3:
+        return height * 0.073 * (length + 1);
+      case 4:
+        return height * 0.073 * (length + 1);
+      case 5:
+        return height * 0.073 * (length + 1);
+      default:
+        return height * 0.073 * 6;
+    }
+  };
+
+  const theme = useSelector((state: any) => {
+    return state.theme;
+  });
   const { values, errors, touched, setFieldValue, setFieldTouched } =
     useFormikContext<any>();
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [showInput, setShowInput] = useState(false);
+
   const renderLabel = () => {
     if (values[name] || isFocus) {
       return (
-        <Text style={[styles.label, isFocus && { color: '#FFFFFF' }]}>
+        <Text
+          style={[
+            styles.label,
+            isFocus && { color: '#F1F1FA' },
+          ]}>
           {name.charAt(0).toUpperCase() + name.slice(1)}
         </Text>
       );
     }
     return null;
   };
+
+  const scaleValue = useSharedValue(2);
+  const elevationValue = useSharedValue(0);
+  useEffect(() => {
+    const startAnimations = () => {
+      'worklet';
+      scaleValue.value = withSpring(0.8, {
+        damping: 5,
+        mass: 0.1,
+      });
+
+      setTimeout(() => {
+        scaleValue.value = withSpring(1, {
+          damping: 80,
+          mass: 0.1,
+        });
+      }, 1000);
+    };
+    startAnimations();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <View>
+      <Animated.View style={{
+        transform: [{scale: scaleValue}],
+        elevation: elevationValue
+      }}>
         {renderLabel()}
         <Dropdown
           style={[
             styles.input,
-            { width: width },
+            { width: width, backgroundColor: theme.colors.quaternary },
             touched[name] && errors[name]
               ? {
                 borderColor: '#FF2E00',
                 borderWidth: 2,
               }
               : null,
+            {
+              borderRadius: 10,
+            },
           ]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
+          placeholderStyle={[
+            styles.placeholderStyle,
+            { color: theme.colors.primaryText },
+          ]}
+          selectedTextStyle={[
+            styles.selectedTextStyle,
+            {
+              color: theme.colors.primaryText,
+            },
+          ]}
           inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
           data={data}
-          search={
-            name === 'branch' || name === 'Year' || name === 'year' || name === 'sem' || name === 'Syllabus' || name === 'course' || name === 'university' || name === 'category' ? false : true
-          }
+          search={searchbar ? true : false}
+          searchQuery={(res, res2) => {
+            return (
+              res.toLowerCase().includes(res2.toLowerCase()) ||
+              res2.toLowerCase().includes(res.toLowerCase())
+            );
+          }}
           maxHeight={300}
+          mode={(data?.length > 4 || mode ) ? 'modal' : 'default'}
           labelField="label"
           valueField="value"
-          placeholder={!isFocus ? placeholder : ''}
+          placeholder={value ? value: placeholder}
           searchPlaceholder="Search..."
           value={value}
           showsVerticalScrollIndicator={false}
@@ -76,65 +149,61 @@ export const CustomDropdown = ({
           onBlur={() => {
             setIsFocus(false);
             setFieldTouched(name);
-            value !== null || value !== '' || value !== undefined ? handleOptions(value) : null;
-          }}
-          onConfirmSelectItem={item => {
-            value !== null || value !== '' || value !== undefined ? handleOptions(value) : null;
           }}
           dropdownPosition="auto"
           {...other}
           containerStyle={{
-            width: width,
             borderRadius: 10,
             elevation: 3,
-            marginTop: -35,
+            height: dropdownHeight(data?.length),
           }}
           itemContainerStyle={{
-            // height: 50,
-            // justifyContent: 'center',
+            // backgroundColor: theme.colors.quaternary,
             borderBottomWidth: 1,
             borderBottomColor: '#e5e5e5',
+            borderRadius: 10,
           }}
           itemTextStyle={{
             fontSize: height * 0.0205,
-            color: '#000000',
+            color: theme.colors.terinaryText,
           }}
-          onChange={item => {
+          onChange={(item: any) => {
             setValue(item.value);
             setIsFocus(false);
             setFieldValue(name, item.value);
-            handleOptions(item);
-          }} renderRightIcon={() => (
+            handleOptions(item)
+          }}
+          renderRightIcon={() => (
             <Feather
               style={styles.icon}
               color={isFocus ? '#6360FF' : '#706f6f'}
-              name={'chevron-down'}
-              size={height * 0.028}
+              name={isFocus ? 'chevron-up' : 'chevron-down'}
+              size={24}
             />
           )}
           renderLeftIcon={() =>
             name === 'university' ? (
               <FontAwesome
                 style={styles.icon}
-                color={isFocus ? '#6360FF' : 'black'}
+                color={isFocus ? '#6360FF' : theme.colors.primaryText}
                 name={'university'}
-                size={height * 0.025}
+                size={24}
               />
             ) : (
               <AntDesign
                 style={styles.icon}
-                color={isFocus ? 'blue' : 'black'}
+                color={isFocus ? '#6360FF' : theme.colors.primaryText}
                 name={leftIcon}
-                size={height * 0.025}
+                size={24}
               />
             )
           }
         />
-      </View>
-      {touched[name] && errors[name] && values[name] === "" ? (
+      </Animated.View>
+      {touched[name] && errors[name] && values[name] === '' ? (
         <Text
           style={{
-            color: '#000000',
+            color: theme.colors.primaryText,
             fontSize: height * 0.015,
             fontFamily: 'Poppins-Regular',
             alignSelf: 'flex-start',
@@ -152,33 +221,32 @@ export default CustomDropdown;
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: '#161719',
     height: height * 0.07,
     borderRadius: 10,
     elevation: 3,
     paddingLeft: 20,
     marginTop: 10,
     alignItems: 'center',
-    color: '#000000',
+    color: '#161719',
   },
   textInput: {
     width: 250,
     fontSize: height * 0.0235,
-    color: '#000000',
+    color: '#161719',
     fontFamily: 'Poppins-Regular',
   },
   container: {
     marginTop: 1,
-    color: '#000000',
+    color: '#161719',
   },
   dropdown: {
-    width: 300,
     borderColor: 'gray',
     borderWidth: 0.5,
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 0,
     fontSize: height * 0.0135,
-    color: '#000000',
+    color: '#161719',
   },
   icon: {
     marginRight: 12,
@@ -192,15 +260,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontSize: height * 0.018,
     borderRadius: 5,
-    color: '#FFFFFF',
+    color: '#F1F1FA',
   },
   placeholderStyle: {
     fontSize: width * 0.035,
-    color: '#808080',
   },
   selectedTextStyle: {
     fontSize: height * 0.018,
-    color: '#000000',
     flexWrap: 'nowrap',
   },
   iconStyle: {
@@ -209,9 +275,10 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   inputSearchStyle: {
-    height: 40,
-    fontSize: height * 0.0235,
-    color: '#000000',
+    height: 50,
+    fontSize: height * 0.0205,
+    color: '#161719',
     fontFamily: 'Poppins-Regular',
+    borderRadius: 10,
   },
 });

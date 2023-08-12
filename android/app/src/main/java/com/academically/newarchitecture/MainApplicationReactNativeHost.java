@@ -24,6 +24,7 @@ import com.academically.newarchitecture.components.MainComponentsRegistry;
 import com.academically.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
+import io.invertase.firebase.fiam.ReactNativeFirebaseFiamPackage;
 
 /**
  * A {@link ReactNativeHost} that helps you load everything needed for the New Architecture, both
@@ -47,6 +48,7 @@ public class MainApplicationReactNativeHost extends ReactNativeHost {
     List<ReactPackage> packages = new PackageList(this).getPackages();
     // Packages that cannot be autolinked yet can be added manually here, for example:
     //     packages.add(new MyReactNativePackage());
+        packages.add(new ReactNativeFirebaseFiamPackage());
     // TurboModules must also be loaded here providing a valid TurboReactPackage implementation:
     //     packages.add(new TurboReactPackage() { ... });
     // If you have custom Fabric Components, their ViewManagers should also be loaded here

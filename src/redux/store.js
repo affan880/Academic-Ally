@@ -1,7 +1,9 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
+import AllyBotSlice from '../screens/AllyBot/AllyBotSlice';
 import BootSlice from '../screens/Boot/BootSlice';
-import pdfViewerSlice from '../screens/Notes/PdfViewer/pdfViewerSlice';
+import pdfViewerSlice from '../screens/PdfViewer/pdfViewerSlice';
+import SeekHubSlice from '../screens/SeekHub/SeekHubSlice';
 import UserRequests from '../screens/UserRequests/UserRequestsSlice';
 import SubjectsList from './reducers/subjectsList';
 import theme from './reducers/theme';
@@ -20,6 +22,8 @@ const appReducer = combineReducers({
   theme: theme,
   UserRequestsReducer: UserRequests,
   pdfViewerReducer: pdfViewerSlice,
+  AllyBotReducer: AllyBotSlice,
+  SeekHubReducer: SeekHubSlice
 });
 
 const rootReducer = (state, action) => {

@@ -1,16 +1,16 @@
-import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import { Box, Modal, Stack, Text, Toast } from 'native-base';
 import React, { useState } from 'react';
-import { Dimensions, Image, PermissionsAndroid, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, TouchableOpacity, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
+import { PERMISSIONS, request } from 'react-native-permissions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useSelector } from 'react-redux';
 
-import NavigationLayout from '../../interfaces/navigationLayout';
+import NavigationLayout from '../../layouts/navigationLayout';
 import UploadAction from '../Upload/uploadAction';
 
 const { width, height } = Dimensions.get('window');
@@ -50,7 +50,7 @@ const UploadPDF = () => {
   const [completed, setCompleted] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const theme = useSelector((state: any) => { return state.theme });
-  const user: any = auth().currentUser;
+  const {email, displayName, uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
 
   const capitalize = (s: any) => {
     if (typeof s !== 'string') return ''
@@ -61,9 +61,9 @@ const UploadPDF = () => {
     UploadAction.uploadPDFToFirestore(
       {
         ...userData,
-        uploaderEmail: user.email,
-        uploaderName: user.displayName,
-        uploaderId: user.uid,
+        uploaderEmail: email,
+        uploaderName: displayName,
+        uploaderId: uid,
       }
       , {
         university: userData.university,
@@ -107,7 +107,6 @@ const UploadPDF = () => {
       await task;
       task.then((snapshot: any) => {
         setUploadingResult(snapshot);
-        console.log(snapshot);
         setUploadProgress(0);
         setCompleted(true);
       })
@@ -154,17 +153,8 @@ const UploadPDF = () => {
 
   const requestPermission = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        {
-          title: 'Storage Permission',
-          message: 'This app needs access to your storage to upload files.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      const granted = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+      if (granted) {
         pickPDF();
       }
     } catch (err) {
@@ -184,8 +174,6 @@ const UploadPDF = () => {
     const megabytes = bits / 1000000;
     return megabytes.toFixed(2) + " MB";
   }
-
-
 
   return (
     <NavigationLayout rightIconFalse={true} title="" handleScroll={() => { }}>
@@ -245,10 +233,10 @@ const UploadPDF = () => {
           alignSelf: 'center',
           flexDirection: 'row',
         }}>
-        <Text fontWeight={700} fontSize={theme.sizes.title} color={'#FFFFFF'}>
+        <Text fontWeight={700} fontSize={theme.sizes.title} color={'#F1F1FA'}>
           Upload{' '}
         </Text>
-        <MaterialIcons name="file-upload" size={theme.sizes.iconSmall} color={'#FFFFFF'} />
+        <MaterialIcons name="file-upload" size={theme.sizes.iconSmall} color={'#F1F1FA'} />
       </TouchableOpacity>
 
       <Modal isOpen={modalVisible} size={'xl'}>
@@ -318,7 +306,7 @@ const UploadPDF = () => {
                   <Box w="100%" h={theme.sizes.height * 0.2} px={2} my={4} justifyContent="center" alignItems={"center"} >
                     <AntDesign name="checkcircle" size={50} color={theme.colors.primary} />
                     <Text fontSize={theme.sizes.title} color={theme.colors.black} fontWeight={700} marginTop={4} >
-                      Uploaded Successful
+                      Uploaded Successfully
                     </Text>
                     <Text fontSize={theme.sizes.textSmall} padding={theme.sizes.height * 0.01} paddingTop={theme.sizes.height * 0.01} color={theme.colors.black} textAlign={"center"} fontWeight={700} >
                       Thank you! The file has been uploaded successfully. It will be available for others to download once we finish verifying the contents of the file

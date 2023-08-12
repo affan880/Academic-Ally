@@ -38,27 +38,6 @@ export const updateFirestoreData = async (uid, data, dispatch) => {
     });
 };
 
-export const manageBookmarks = async (notesData, status) => {
-  !status ? await firestore()
-    .collection('Users')
-    .doc(`${getCurrentUser().uid}`)
-    .collection('NotesBookmarked')
-    .doc(`${notesData.did}`)
-    .set({
-      ...notesData
-    })
-    :
-    removeBookmark(notesData);
-};
-export const removeBookmark = async item => {
-  firestore()
-    .collection('Users')
-    .doc(`${getCurrentUser().uid}`)
-    .collection('NotesBookmarked')
-    .doc(`${item.did}`)
-    .delete();
-};
-
 export const createList = (item) => {
   const sep = item.fullPath.split('/');
   sep.length === 3 && item.type === 'Folder'
@@ -80,7 +59,6 @@ export const createList = (item) => {
 }
 
 export const AddtoUserUploads = async (notesData) => {
-  console.log(notesData);
   await firestore()
     .collection('Users')
     .doc(`${getCurrentUser().uid}`)
@@ -98,9 +76,9 @@ export function listBase(notes) {
     sep.length === 5 && item.type !== 'Folder'
       ? firestore()
         .collection('Universities')
-        .doc('OU')
-        .collection('BE')
-        .doc(sep[0])
+        .doc('JNTUH')
+        .collection('BTECH')
+        .doc('CSE(Non-Autonomous)')
         .collection(sep[1])
         .doc(sep[3])
         .collection(sep[2]).doc().set(
@@ -108,9 +86,9 @@ export function listBase(notes) {
             Year: "",
             category: sep[3],
             college: "",
-            course: 'BE',
+            course: 'BTECH',
             date: Date.now(),
-            department: "IT",
+            department: "CSE(Non-Autonomous)",
             did: item.id,
             dlink: '',
             name: sep[4],
@@ -130,18 +108,18 @@ export function listBase(notes) {
     // /"I.T/5/Computer Networks/OtherResources/CNQuestion bank.pdf"
 
     // console.log('list start', sep[1]);
-    // sep.length === 3 && item.type === 'Folder'
-    //   ? firestore()
-    //     .collection('Universities')
-    //     .doc('JNTUH')
-    //     .collection('BTECH')
-    //     .doc(sep[0])
-    //     .collection(sep[1])
-    //     .doc('SubjectsList')
-    //     .set({
-    //       list: [],
-    //     })
-    //   : null;
+    sep.length === 3 && item.type === 'Folder'
+      ? firestore()
+        .collection('Universities')
+        .doc('JNTUH')
+        .collection('BTECH')
+        .doc('CSE(Non-Autonomous)')
+        .collection(sep[1])
+        .doc('SubjectsList')
+        .set({
+          list: [],
+        })
+      : null;
   });
 }
 
@@ -150,16 +128,16 @@ export function list(notes) {
   console.log('list start', notes?.length);
   notes.map(item => {
     const sep = item.fullPath.split('/');
-    console.log(`Universities/JNTUH/BTECH/${sep[0]}/${sep[1]}/${sep[3]}/${sep[2]}`)
+    console.log(`Universities/JNTUH/BTECH/CSE(Non-Autonomous)/${sep[1]}/${sep[3]}/${sep[2]}`)
     console.log(sep.length === 5 && item.type === 'Files' && sep[4] !== 'desktop.ini' ? 'true' : 'false')
     sep.length === 5 && item.type === 'Files' && sep[4] !== 'desktop.ini'
-      ? firestore().collection(`Universities/JNTUH/BTECH/${sep[0]}/${sep[1]}/${sep[3]}/${sep[2]}`).doc().set({
+      ? firestore().collection(`Universities/JNTUH/BTECH/CSE(Non-Autonomous)/${sep[1]}/${sep[3]}/${sep[2]}`).doc().set({
         Year: "",
         category: sep[3],
         college: "",
         course: 'BTECH',
         date: Date.now(),
-        department: sep[0],
+        department: 'CSE(Non-Autonomous)',
         did: item.id,
         dlink: '',
         name: sep[4],
@@ -183,19 +161,19 @@ export const SubjectList = async (notes) => {
   notes.map(item => {
     const sep = item.fullPath.split('/');
     console.log(sep[0], sep[1], sep[2]);
-    sep.length === 3 && item.type === 'Folder' && sep[1] === "8"
+    sep.length === 3 && item.type === 'Folder'
       ? firestore()
         .collection('Universities')
         .doc('JNTUH')
         .collection('BTECH')
-        .doc(sep[0])
+        .doc('CSE(Non-Autonomous)')
         .collection(sep[1])
         .doc('SubjectsList')
         .update({
           list: firebase.firestore.FieldValue.arrayUnion({
             subjectName: sep[2],
-            Notes: true,
-            QuestionPapers: true,
+            Notes: false,
+            QuestionPapers: false,
             Syllabus: false,
             OtherResources: false,
           }),

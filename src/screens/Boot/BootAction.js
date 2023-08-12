@@ -1,14 +1,12 @@
-import { Toast } from "native-base";
+import { Easing, Notifier } from 'react-native-notifier';
 
 import { firestoreDB } from "../../Modules/auth/firebase/firebase";
-import { getCurrentUser } from "../../Modules/auth/firebase/firebase";
+import { setUserProfile } from '../../redux/reducers/usersData';
 import CrashlyticsService from "../../services/CrashlyticsService";
-import NavigationService from "../../services/NavigationService";
-import { useAuthentication } from "../../utilis/hooks/useAuthentication";
-import { setCustomClaims, setProtectedUtils, setRequiredVersion, setUtilis } from "./BootSlice";
+import { setCustomClaims, setProtectedUtils, setRequiredVersion, setUserInfo, setUtilis } from "./BootSlice";
 
 class BootActions {
-    static loadUserCustomClaims = (user, currentUser) => async (dispatch) => {
+    static loadUserCustomClaims = (user) => async (dispatch) => {
         try {
             const doc = await firestoreDB()
                 .collection('ImmutableUserData')
@@ -29,7 +27,7 @@ class BootActions {
         }
     }
 
-    static loadProtectedUtils = (user, currentUser) => async (dispatch) => {
+    static loadProtectedUtils = () => async (dispatch) => {
         try {
             await firestoreDB()
                 .collection('UtilsProtected')
@@ -47,7 +45,9 @@ class BootActions {
         }
     }
 
-    static loadUtils = () => async (dispatch) => {
+    static loadUtils = (user) => async (dispatch) => {
+        dispatch(setUserInfo(user))
+        dispatch(setUserProfile(user?.photoURL))
         try {
             await firestoreDB()
                 .collection('utils')
@@ -63,6 +63,49 @@ class BootActions {
         } catch (error) {
             CrashlyticsService.recordError(error);
             console.log(error);
+        }
+    }
+
+    static handleNotification = (messageObj) => {
+        try {
+            Notifier.showNotification({
+                title: messageObj?.notification?.title,
+                description: messageObj?.notification?.body,
+                swipeEnabled: true,
+                duration: 10000,
+                showAnimationDuration: 800,
+                showEasing: Easing.linear,
+                onHidden: () => { },
+                onPress: () => { },
+                hideOnPress: false,
+            });
+        }
+        catch (error) {
+            CrashlyticsService.recordError(error);
+        }
+    }
+    static handleCustomNotification = (messageObj, customNotification, onPress, onSkip, ...other) => {
+        try {
+            Notifier.showNotification({
+                title: messageObj?.notification?.title,
+                description: messageObj?.notification?.body,
+                swipeEnabled: true,
+                duration: 10000,
+                Component: () => {
+                    return (
+                        { customNotification }
+                    )
+                },
+                showAnimationDuration: 800,
+                showEasing: Easing.linear,
+                onHidden: () => { },
+                onPress: () => { },
+                hideOnPress: false,
+                ...other
+            });
+        }
+        catch (error) {
+            CrashlyticsService.recordError(error);
         }
     }
 }

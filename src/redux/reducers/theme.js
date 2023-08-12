@@ -1,9 +1,8 @@
+import { ShareIcon, ShareIconImg } from '../../assets/images/icons';
+import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSlice } from '@reduxjs/toolkit';
 import { Dimensions } from 'react-native';
-
-import { ShareIcon, ShareIconImg } from '../../assets/images/icons';
-import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,9 +29,9 @@ export const createThemeSlice = createSlice({
             disabledCategoryBtn: '#D3D3D3',
             mainTheme: '#6360FF',
             popOver: '#FCFCFF',
-            shareIcon: ShareIconImg,
+            shareIcon: ShareIconImg, 
             reportIcon: ReportIconBlack,
-            logo: '../../../assets/images/logo_black.png',
+            actionSheet: '#FCFCFF'
         },
         dark: {
             primary: "#292B2D",
@@ -47,7 +46,7 @@ export const createThemeSlice = createSlice({
             greenSuccess: "#7DC579",
             redError: "#FF0000",
             yellowWarning: "#FFC960",
-            SearchCategory: "#FFFFFF",
+            SearchCategory: "#F1F1FA",
             white: "#FCFCFF",
             black: "#161719",
             categoryBtn: '#6360FF',
@@ -56,7 +55,7 @@ export const createThemeSlice = createSlice({
             popOver: '#292B2D',
             shareIcon: ShareIcon,
             reportIcon: ReportIconWhite,
-            logo: '../../../assets/images/white-logo.png',
+            actionSheet: '#292B2D'
         },
         colors: {
             primary: "#6360FF",
@@ -81,6 +80,7 @@ export const createThemeSlice = createSlice({
             shareIcon: ShareIcon,
             reportIcon: ReportIconBlack,
             logo: '../../../assets/images/white-logo.png',
+            actionSheet: '#FCFCFF'
         },
         sizes: {
             title: height * 0.020,
@@ -98,11 +98,13 @@ export const createThemeSlice = createSlice({
             icon: height * 0.05,
             iconMedium: height * 0.035,
             iconSmall: height * 0.025,
+            iconMini: height * 0.020,
             label: height * 0.03,
             lottieIconHeight: height * 0.4,
             height,
             width,
-        }
+        },
+        isPotrait: true,
     },
     reducers: {
         setTheme: (state, action) => {
@@ -138,7 +140,17 @@ export const createThemeSlice = createSlice({
                 }
                 );
         },
-
+        setIsPotrait: (state, action) => {
+            state.isPotrait = action.payload;
+            if (action.payload === false) {
+                state.sizes.height = width;
+                state.sizes.width = height;
+            }
+            else {
+                state.sizes.height = height;
+                state.sizes.width = width;
+            }
+        },
     }
 });
 
@@ -146,7 +158,8 @@ export const {
     setTheme,
     setLightTheme,
     setDarkTheme,
-    getCurrentTheme
+    getCurrentTheme,
+    setIsPotrait,
 } = createThemeSlice.actions;
 
 export default createThemeSlice.reducer;

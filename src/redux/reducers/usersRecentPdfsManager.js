@@ -1,5 +1,5 @@
-import {createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createSlice } from '@reduxjs/toolkit';
 
 export const createUserDataSlice = createSlice({
   name: 'RecentsManagement',
@@ -29,7 +29,6 @@ export const createUserDataSlice = createSlice({
       state.RecentViews = action.payload;
     },
     userRemoveFromRecents: (state, action) => {
-      //renmove the bookmark from the array
       state.RecentViews = state.RecentViews.filter(
         recents => recents.did !== action.payload.did,
       );

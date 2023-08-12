@@ -4,13 +4,12 @@ import { firebase } from '@react-native-firebase/auth';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
-import { CheckIcon, Toast } from 'native-base';
+import { Toast } from 'native-base';
 import { Alert, Share } from 'react-native';
-import { useDispatch } from 'react-redux';
-import PushNotification from 'react-native-push-notification';
+import { PERMISSIONS, request } from 'react-native-permissions';
 
-import CrashlyticsService from '../../services/CrashlyticsService';
 import { setVisitedSubjects } from '../../redux/reducers/subjectsList';
+import CrashlyticsService from '../../services/CrashlyticsService';
 
 export const userFirestoreData = async (userData, type, item, dispatch) => {
   let list = [];
@@ -110,7 +109,12 @@ export const fetchBookmarksList = async (dispatch, setBookmarks, setListData) =>
       .collection('NotesBookmarked')
       .get();
 
-    const updatedList = item.docs.map((doc) => doc.data());
+    const updatedList = item.docs.map((doc) => (
+      {
+        ...doc.data(),
+        'docId': doc?.id
+      }
+    ));
 
     dispatch(setBookmarks(updatedList));
     setListData(updatedList);
@@ -296,23 +300,25 @@ export async function getMailId() {
 export const shareNotes = async (notesData, dynamicLink) => {
   const link = await dynamicLinks().buildShortLink(
     {
-      link: `https://getacademically.co/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}`,
+      link: `https://app.getacademically.co?id=/${notesData?.category}/${notesData?.university}/${notesData?.course}/${notesData?.branch}/${notesData?.sem}/${notesData?.subject}/${notesData?.did}/${notesData?.units}/${notesData?.name}/ViewNotes`,
       domainUriPrefix: dynamicLink,
       android: {
         packageName: 'com.academically',
       },
     },
     dynamicLinks.ShortLinkType.SHORT,
-  ).catch((error) => {
+  ).then((res) => {
+    Share.share({
+      title: notesData.subject,
+      message: `If you're studying ${notesData.subject}, you might find these ${notesData.category} on Academic Ally helpfull. I did! Check them out:
+      ${res}`,
+    });
+  }).catch((error) => {
+    console.log(error)
     Toast.show({
       title: 'Something went wrong, Please try again later',
       duration: 3000,
     })
-  });
-  Share.share({
-    title: notesData.subject,
-    message: `If you're studying ${notesData.subject}, you might find these ${notesData.category} on Academic Ally helpfull. I did! Check them out:
-      ${link}`,
   });
 }
 
@@ -345,14 +351,13 @@ async function requestPermisssion() {
   const enabled =
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-  if (enabled) {
-    console.log('Authorization status:', authStatus);
-  }
 }
 
 export const getFcmToken = async () => {
   let fcmToken = await AsyncStorage.getItem('fcmToken');
+
+  request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
+  await requestPermisssion();
   if (!fcmToken) {
     await requestPermisssion();
     fcmToken = await messaging().getToken();
@@ -361,16 +366,9 @@ export const getFcmToken = async () => {
       await firestore()
         .collection('Users')
         .doc(auth().currentUser?.uid)
-        .get()
-        .then(async (userFirestoreData) => {
-          await firestore()
-            .collection('Users')
-            .doc(auth().currentUser?.uid)
-            .update({
-              fcmToken: fcmToken,
-            })
-        }
-        )
+        .update({
+          fcmToken: fcmToken,
+        })
         .catch(error => {
           console.log("Error getting document:", error);
         }

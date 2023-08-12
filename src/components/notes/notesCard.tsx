@@ -1,8 +1,8 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Actionsheet, Box, Card, Center, Checkbox, Icon, Modal, Stack, Text, Toast, useDisclose } from 'native-base';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Animated, Linking, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import SwipeableRating from 'react-native-swipeable-rating';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -12,13 +12,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { ShareIcon } from '../../assets/images/icons';
 import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
-import NavigationLayout from '../../interfaces/navigationLayout';
-import { manageBookmarks } from '../../Modules/auth/firebase/firebase';
 import { userAddBookMarks, userRemoveBookMarks } from '../../redux/reducers/userBookmarkManagement';
-import { userAddToRecentsStart } from '../../redux/reducers/usersRecentPdfsManager';
-import { getMailId, ratedResourcesList, shareNotes, submitRating, submitReport, ViewCount } from '../../services/fetch';
+import PdfViewerAction from '../../screens/PdfViewer/pdfViewerAction';
+import { ratedResourcesList, submitRating, submitReport, ViewCount } from '../../services/fetch';
 import NavigationService from '../../services/NavigationService';
-import { NavBtn } from '../CustomFormComponents/CustomBtn';
 import createStyles from './styles';
 
 type Props = {
@@ -27,6 +24,7 @@ type Props = {
   notesData: any;
   selected: string;
   subject: string;
+  setScroll: any;
 };
 type RootStackParamList = {
   NotesList: {
@@ -90,11 +88,12 @@ function KbsToMB(bits: any) {
   return megabytes.toFixed(2) + " MB";
 }
 
-const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
+const NotesCard = React.memo(({ item, userData, notesData, selected, subject, setScroll }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclose();
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const navigation = useNavigation<pdfViewer>();
+  const [bookmarked, setBookmarked] = useState<boolean>(false);
   const dispatch = useDispatch();
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const [saved, setSaved] = useState(false);
@@ -107,6 +106,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
   const [ratedList, setRatedList] = useState<any>([]);
   const [submitted, setSubmitted] = useState(false);
   const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
+  const {uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
 
   const userBookmarks = useSelector(
     (state: any) => state.userBookmarkManagement,
@@ -163,32 +163,61 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
     Linking.openURL(`mailto:support@getacademically.co?body=Report for notes Id : ${item.id}, ${userData.Course} ${userData.Branch}, Semester ${item.sem} ${selected.charAt(0).toUpperCase() + selected.slice(1)} of ${subject}  `)
   }
 
+  const handleSharePdf = async () => {
+    try {
+      await PdfViewerAction.sharePdf({ ...item, subject: subject }, dynamicLink).then((link: any) => {
+        Share.share({
+          title: `${subject}`,
+          message: `If you're studying ${subject}, you might find these ${notesData.category} on Academic Ally helpfull. I did! Check them out:${link}`
+        });
+      }).catch((error: any) => {
+        console.log(error);
+        Toast.show({
+          title: 'Something went wrong',
+          placement: 'bottom',
+          duration: 3000,
+        })
+      })
+    } catch (error) {
+      console.log(error);
+      Toast.show({
+        title: 'Something went wrong',
+        placement: 'bottom',
+        duration: 3000,
+      })
+    }
+  };
+
+
+  const handleOnPress = () => {
+    ViewCount({
+      university: userFirestoreData.usersData.university,
+      branch: userData.Branch || item.branch,
+      course: userData.Course || userData.course,
+      sem: userData.Sem || item.sem,
+      type: selected.charAt(0).toUpperCase() + selected.slice(1),
+      subjectName: subject,
+      id: item.id,
+    })
+    setScroll()
+    NavigationService.navigate(NavigationService.screens.PdfViewer, {
+      userData: {
+        Course: userData.Course,
+        Branch: userData.Branch,
+        Sem: userData.Sem,
+      },
+      notesData: item,
+      selected: selected,
+      subject: subject,
+    });
+  }
+
   return (
     <View style={styles.notesContainer}>
       <View style={styles.reccomendationStyle}>
         <TouchableOpacity
           style={styles.subjectContainer}
-          onPress={() => {
-            ViewCount({
-              university: userFirestoreData.usersData.university,
-              branch: userData.Branch || item.branch,
-              course: userData.Course || userData.course,
-              sem: userData.Sem || item.sem,
-              type: selected.charAt(0).toUpperCase() + selected.slice(1),
-              subjectName: subject,
-              id: item.id,
-            })
-            NavigationService.navigate(NavigationService.screens.PdfViewer, {
-              userData: {
-                Course: userData.Course,
-                Branch: userData.Branch,
-                Sem: userData.Sem,
-              },
-              notesData: item,
-              selected: selected,
-              subject: subject,
-            });
-          }}>
+          onPress={handleOnPress}>
           <View style={styles.containerBox}>
             <View style={styles.containerText}>
 
@@ -237,7 +266,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   justifyContent: 'center',
                   marginRight: theme.sizes.width * 0.02,
                 }}>
-                <Ionicons name="md-eye-outline" size={theme.sizes.height * 0.018} color={theme.colors.primaryText} style={{
+                <Ionicons name="md-eye-outline" size={theme.sizes.iconMini} color={theme.colors.primaryText} style={{
                   paddingTop: theme.sizes.height * 0.002,
                 }} />
                 <Text
@@ -245,7 +274,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                     fontSize: theme.sizes.subtitle,
                     color: theme.colors.primaryText,
                     fontWeight: '600',
-                    paddingLeft: theme.sizes.width * 0.01,
+                    paddingLeft: theme.sizes.width * 0.005,
                   }}>{
                     item?.views ? formatViewCount(item.views) : 0
                   }
@@ -256,9 +285,9 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  paddingHorizontal: theme.sizes.width * 0.02,
+                  paddingHorizontal: theme.sizes.width * 0.001,
                 }}>
-                <AntDesign name="star" size={theme.sizes.height * 0.018} color={theme.colors.yellowWarning} />
+                <AntDesign name="star" size={theme.sizes.iconMini} color={theme.colors.yellowWarning} />
                 <Text
                   style={{
                     fontSize: 14,
@@ -274,6 +303,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
+                  paddingHorizontal: theme.sizes.width * 0.01,
                 }}>
                 <Entypo name="dot-single" size={20} color="#91919F" style={{
                   paddingTop: 2,
@@ -293,32 +323,23 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
           </View>
           <TouchableOpacity
             onPress={() => {
+              setBookmarked(!bookmarked)
               setSaved(!saved);
               const status = BookmarkStatus(item.did);
-              manageBookmarks(item, status);
+              PdfViewerAction.manageBookmarks(item, status, uid);
               !status
                 ? dispatch(
                   userAddBookMarks({
-                    ...item,
-                    name: item.name,
-                    subject: subject,
-                    did: item.did,
-                    category: selected,
+                    ...item
                   }),
                 )
                 : dispatch(
-                  userRemoveBookMarks({
-                    name: item.name,
-                    subject: subject,
-                    did: item.did,
-                    category: selected,
-                    ...item,
-                  }),
+                  userRemoveBookMarks({ ...item }),
                 );
             }}>
             <FontAwesome
               name={
-                BookmarkStatus(item.did)
+                BookmarkStatus(item.did) || bookmarked
                   ? 'bookmark'
                   : 'bookmark-o'
               }
@@ -340,23 +361,18 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
           }
         }} >
           <Text style={styles.cardOptionText}>Rate</Text>
-          <AntDesign name={RatedStatus(item.did) ? 'star' : 'staro'} size={theme.sizes.iconSmall} color={RatedStatus(item.did) ? '#FFC960' : "#FFF"} />
+          <AntDesign name={RatedStatus(item.did) ? 'star' : 'staro'} size={theme.sizes.iconSmall} color={RatedStatus(item.did) ? '#FFC960' : "#F1F1FA"} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.cardOptionContainer} onPress={onOpen} >
           <Text style={styles.cardOptionText}>Report</Text>
           <ReportIconWhite />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.cardOptionContainer} onPress={() => {
-          shareNotes({
-            ...item,
-            subject: subject,
-          }, dynamicLink)
-        }} >
+        <TouchableOpacity style={styles.cardOptionContainer} onPress={handleSharePdf} >
           <Text style={styles.cardOptionText}>Share</Text>
           <ShareIcon />
         </TouchableOpacity>
       </View>
-      <Modal isOpen={modalVisible} onClose={setModalVisible} size={'xl'}>
+      <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)} size={'xl'}>
         <Modal.Content >
           <Box margin={2} >
             <Text fontSize={'14px'} fontWeight={'700'} marginTop={3} textAlign="center" >
@@ -409,7 +425,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
               }} onPress={() => {
                 setModalVisible(false);
               }} >
-                <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#FFF"} onPress={() => {
+                <Text fontSize={theme.sizes.subtitle} fontWeight={'700'} textAlign="center" color={"#F1F1FA"} onPress={() => {
                   submitRatingCount();
                 }} >
                   Confirm
@@ -425,7 +441,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
           {
             !submitted ? (
               <Card style={{
-                backgroundColor: "#FFF",
+                backgroundColor: "#F1F1FA",
                 width: "100%",
                 alignItems: "center",
                 justifyContent: "center",
@@ -471,7 +487,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   <Actionsheet.Item style={{
                     borderBottomWidth: 0.9,
                     borderBottomColor: "#91919F",
-                    backgroundColor: "#FFF",
+                    backgroundColor: "#F1F1FA",
                   }} onPress={() => {
                     setChecked2(!checked2);
                   }}>
@@ -497,7 +513,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
                   <Actionsheet.Item style={{
                     borderBottomWidth: 0.9,
                     borderBottomColor: "#91919F",
-                    backgroundColor: "#FFF",
+                    backgroundColor: "#F1F1FA",
                   }} onPress={() => {
                     setChecked3(!checked3);
                   }}>
@@ -609,7 +625,7 @@ const NotesCard = ({ item, userData, notesData, selected, subject }: Props) => {
       </Center>
     </View>
   );
-};
+});
 
 export default NotesCard;
 

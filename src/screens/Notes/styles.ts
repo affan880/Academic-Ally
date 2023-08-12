@@ -1,13 +1,13 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 const {width, height} = Dimensions.get('window');
-const createStyles = (theme:any, sizes:any) =>
+const createStyles = (theme: any, sizes: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: theme.primary,
     },
-     headerContainer: {
+    headerContainer: {
       height: height * 0.14,
       width: width,
       justifyContent: 'space-between',
@@ -28,10 +28,10 @@ const createStyles = (theme:any, sizes:any) =>
       flex: 1,
       paddingTop: height * 0.02,
     },
-    
+
     categoryBtns: {
       width: width * 0.4,
-      height: height * 0.25,
+      height: height * 0.1,
       backgroundColor: theme.categoryBtn,
       borderRadius: 20,
       justifyContent: 'center',
@@ -40,7 +40,7 @@ const createStyles = (theme:any, sizes:any) =>
       marginVertical: 10,
       //change btn position on hover
       transform: [{scale: 1}],
-      shadowColor: '#000',
+      shadowColor: '#161719719',
       shadowOffset: {
         width: 0,
         height: 2,
@@ -67,19 +67,18 @@ const createStyles = (theme:any, sizes:any) =>
       color: theme.primaryText,
       textAlign: 'center',
       lineHeight: 20,
-      marginTop: 10,
     },
     disabledBtn: {
       width: width * 0.4,
-      height: height * 0.25,
-      backgroundColor:  theme.disabledCategoryBtn,
+      height: height * 0.1,
+      backgroundColor: theme.disabledCategoryBtn,
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
       marginHorizontal: 0,
       marginVertical: 10,
       transform: [{scale: 1}],
-      shadowColor: '#000',
+      shadowColor: '#161719719',
       shadowOffset: {
         width: 0,
         height: 2,
@@ -114,7 +113,7 @@ const createStyles = (theme:any, sizes:any) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
-      shadowColor: '#000',
+      shadowColor: '#161719719',
     },
     subjectName: {
       fontSize: 14,
@@ -130,21 +129,20 @@ const createStyles = (theme:any, sizes:any) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      position: 'relative',
-      shadowColor: '#000',
+      shadowColor: '#161719719',
       borderRadius: 10,
       paddingHorizontal: 15,
     },
     categoryBtnsContainer: {
-      flex: 1,
       justifyContent: 'space-around',
       flexDirection: 'row',
       flexWrap: 'wrap',
       alignSelf: 'center',
+      marginBottom: 15,
     },
     notesListHeaderContainer: {
       width: width,
-      height: height * 0.08,
+      height: height * 0.055,
       justifyContent: 'space-evenly',
       alignItems: 'center',
       flexDirection: 'row',
@@ -153,7 +151,7 @@ const createStyles = (theme:any, sizes:any) =>
     notesListHeaderText: {
       fontSize: sizes.text,
       fontWeight: '500',
-      color: '#161719',
+      color: theme.primaryText,
     },
     notesListValueText: {
       fontSize: sizes.text,
@@ -162,36 +160,37 @@ const createStyles = (theme:any, sizes:any) =>
     },
     header: {
       width: width,
-      height: height * 0.08,
-      justifyContent: 'center',
-      alignItems: 'center',
+      height: height * 0.03,
+      // justifyContent: 'center',
+      // alignItems: 'center',
       marginVertical: height * 0.02,
+      marginLeft: height * 0.03,
     },
     headerText: {
       fontSize: sizes.title,
-      fontWeight: 'bold', 
+      fontWeight: 'bold',
       color: theme.primaryText,
     },
-    btn:{
-        position: 'absolute',
-        bottom: 10,
-        alignSelf: 'center',
-        backgroundColor: theme.tertiary,
-        width: '90%',
-        height: height * 0.07,
-        borderRadius: height * 0.015,
-        justifyContent: 'center',
-        alignItems: 'center',
-        elevation: 0,
-        shadowOpacity: 0.5,
-        },
-        uploadBtnText:{
-          color: '#fff',
-          fontSize: sizes.text,
-          fontWeight: 'bold',
-          textAlign: 'center',
-          paddingVertical: 10,
-        }
-  })
+    btn: {
+      position: 'absolute',
+      bottom: 10,
+      alignSelf: 'center',
+      backgroundColor: theme.tertiary,
+      width: '90%',
+      height: height * 0.07,
+      borderRadius: height * 0.015,
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 0,
+      shadowOpacity: 0.5,
+    },
+    uploadBtnText: {
+      color: '#F1F1FA',
+      fontSize: sizes.text,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      paddingVertical: 10,
+    },
+  });
 
 export default createStyles;

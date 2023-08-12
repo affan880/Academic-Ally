@@ -12,7 +12,7 @@ const createStyles = (theme:any, sizes:any) =>
             justifyContent: 'space-evenly',
             alignItems: 'center',
             position: 'relative',
-            shadowColor: "#000",
+            shadowColor: "#161719",
             top: -height * 0.09,
             zIndex: 1,
             alignSelf: "center",

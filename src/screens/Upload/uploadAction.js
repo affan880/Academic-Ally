@@ -1,5 +1,3 @@
-import { firebase } from "@react-native-firebase/auth";
-
 import { firestoreDB, getCurrentUser } from "../../Modules/auth/firebase/firebase";
 
 class UploadAction {
@@ -39,8 +37,6 @@ class UploadAction {
             sem,
         };
 
-        console.log("check", data);
-
         const path = `NewUploads/${university}/${course}/${branch}/uploads`;
         const path2 = `NewUploads/${university}/${course}/${branch}`;
 
@@ -53,7 +49,6 @@ class UploadAction {
                 lastUpdated: new Date(),
             })
         });
-
     }
 }
 

@@ -1,17 +1,19 @@
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { useIsFocused } from '@react-navigation/native'
 import LottieView from 'lottie-react-native';
 import { Toast } from 'native-base';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import CustomDropdown from '../../components/CustomFormComponents/Dropdown';
 import Form from '../../components/Forms/form';
-import { setResourceLoader } from '../../redux/reducers/userState';
+import CustomLoader from '../../components/loaders/CustomLoader';
+import { firestoreDB } from '../../Modules/auth/firebase/firebase';
+import { setCustomLoader, setResourceLoader } from "../../redux/reducers/userState";
 import { userFirestoreData } from '../../services/fetch';
 import NavigationService from '../../services/NavigationService';
 import { searchFilterValidationSchema } from '../../utilis/validation';
@@ -19,91 +21,149 @@ import createStyles from './styles';
 
 const { width, height } = Dimensions.get('screen');
 
-const Search = () => {
+interface item {
+  sem: string,
+  branch: string,
+  subject: string,
+}
 
-  const apiResponse = useSelector((state: any) => state?.bootReducer?.utilis?.courses);
+const Search = React.memo(() => {
+
+  const apiResponse = useSelector((state: any) => state?.bootReducer?.utilis?.courses) || [];
   const userData = useSelector((state: any) => { return state.usersData });
+  const {uid}: any = useSelector((state: any) => state.bootReducer.userInfo);
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [selectedSem, setSelectedSem] = useState("");
   const list = useSelector((state: any) => state.subjectsList.list);
-  const [subjectListDetail, setSubjectListDetail] = useState(list);
   const [branchData, setBranchesData] = useState([])
   const [semData, setSemData] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData, setFilteredData] = useState(list);
+  let scroollPostion: any;
+  const [saveScroll, setScroll]= useState(null);
+  const listRef = useRef<any>();
+  const isFocused = useIsFocused();
   const dispatch = useDispatch();
 
   const rendererItems: Array<string> = ['Search', 'Subjects'];
   const [searchTerm, setSearchTerm] = useState('');
+  const [reload, setReload] = useState(false);
+
 
   useEffect(() => {
-    if ((userData?.usersData?.course !== undefined || userData?.usersData?.course !== null) && (userData?.usersData?.university !== undefined || userData?.usersData?.university !== null)) {
-      const branch: any = Object?.keys(apiResponse[userData?.usersData?.university][userData?.usersData?.course])
-        .map((branch) => ({
-          label: branch,
-          value: branch
-        }))
-      setBranchesData(branch);
+    const run = async () =>{
+      const val: any = await listRef.current?.scrollToOffset({ offset: saveScroll })
+      return val
     }
-    if ((userData?.usersData?.course !== undefined || userData?.usersData?.course !== null) && (userData?.usersData?.university !== undefined || userData?.usersData?.university !== null) && (selectedBranch !== undefined || selectedBranch !== null)) {
-      const semesters = apiResponse[userData?.usersData?.university][userData?.usersData?.course][selectedBranch]?.sem.map((value: any, index: any) => {
-        return {
-          label: (index + 1).toString(),
-          value: (index + 1).toString(),
-          status: value
-        };
-      }).filter((value: any) => value.status === true);
+    if (isFocused) {
+      saveScroll !== null ? dispatch(setCustomLoader(true)) : null
+          saveScroll !== null ? 
+          run().then(()=>dispatch(setCustomLoader(false)))
+          : null
+    }
 
+    return () => {
+      // Run your function here when the component is unmounted (navigated back)
+      console.log('Component is unmounted (navigated back)');
+    };
+  }, [isFocused]);
+
+
+  useEffect(() => {
+    if (userData?.usersData && apiResponse[userData?.usersData?.university][userData?.usersData?.course]?.sem?.length !== 0) {
+      const branch: any = Object.keys(apiResponse[userData?.usersData?.university][userData?.usersData?.course])?.map((branch) => ({
+        label: branch,
+        value: branch,
+      }));
+      if (branch.length > 0) {
+        setBranchesData(branch);
+      }
+      else {
+        setBranchesData([])
+      }
+    }
+  }, [reload]);
+
+  useEffect(() => {
+    const semesters = apiResponse[userData?.usersData?.university][userData?.usersData?.course][selectedBranch || userData?.usersData?.branch]?.sem?.map((value: any, index: any) => {
+      return {
+        label: (index + 1).toString(),
+        value: (index + 1).toString(),
+        status: value
+      };
+    }).filter((value: any) => value.status === true);
+    if (semesters?.length > 0) {
       setSemData(semesters);
     }
-  }, [selectedBranch]);
+    else {
+      setSemData([])
+    }
+  }, [selectedBranch, reload]);
+
+  const filterData = () => {
+    let filteredList = list;
+
+    if (searchTerm !== '') {
+      const lowercaseSearchTerm = searchTerm?.toLowerCase();
+      filteredList = filteredList.filter(
+        (item: item) =>
+          item?.subject?.toLowerCase()?.includes(lowercaseSearchTerm) ||
+          generateAbbreviation(item?.subject)?.includes(lowercaseSearchTerm)
+      );
+    }
+
+    if (selectedBranch !== '') {
+      filteredList = filteredList.filter(
+        (item: item) => item?.branch === selectedBranch
+      );
+    }
+
+    if (selectedSem !== '') {
+      filteredList = filteredList?.filter((item: item) => item?.sem === selectedSem);
+    }
+
+    const similarItems = list.filter(
+      (item: item) =>
+        item?.subject?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+        generateAbbreviation(item?.subject)?.includes(searchTerm?.toLowerCase())
+    );
+
+    if (selectedBranch !== '') {
+      const similarBranchItems = similarItems.filter(
+        (item: item) => item?.branch === selectedBranch
+      );
+
+      if (similarBranchItems.length > 0) {
+        const otherItems = similarItems.filter(
+          (item: item) => item?.branch !== selectedBranch
+        );
+        const orderedItems = similarBranchItems.concat(otherItems);
+        setFilteredData(orderedItems);
+        return;
+      }
+    }
+
+    setFilteredData(similarItems);
+
+    if (selectedSem !== '' && selectedBranch === '') {
+      filteredList = list.filter((item: item) => item?.sem === selectedSem);
+    }
+    if (selectedSem !== '' && selectedBranch !== '') {
+      filteredList = filteredData.filter((item: item) => item?.sem === selectedSem);
+    }
+
+    setFilteredData(filteredList);
+  };
 
   useEffect(() => {
-    const filteredSubjects = list?.filter((item: any) => {
-      const lowerCaseTerm = searchTerm.toLowerCase();
-      const lowerCaseBranch = selectedBranch.toLowerCase();
-      const lowerCaseSem = selectedSem.toLowerCase();
-      const lowerCaseSubject = item.subject.toLowerCase();
-
-      const matchesSearchTerm =
-        searchTerm !== ''
-          ? lowerCaseSubject.includes(lowerCaseTerm) ||
-          generateAbbreviation(lowerCaseSubject).includes(lowerCaseTerm)
-          : true;
-      const matchesBranch = selectedBranch !== '' ? item.branch.toLowerCase().includes(lowerCaseBranch) : true;
-      const matchesSem = selectedSem !== '' ? item.sem.toLowerCase().includes(lowerCaseSem) : true;
-
-      return matchesSearchTerm && matchesBranch && matchesSem;
-    });
-
-    const unfilteredSubjects = list?.filter((item: any) => {
-      const lowerCaseTerm = searchTerm.toLowerCase();
-      const lowerCaseBranch = selectedBranch.toLowerCase();
-      const lowerCaseSem = selectedSem.toLowerCase();
-      const lowerCaseSubject = item.subject.toLowerCase();
-
-      const matchesSearchTerm =
-        searchTerm !== ''
-          ? lowerCaseSubject.includes(lowerCaseTerm) ||
-          generateAbbreviation(lowerCaseSubject).includes(lowerCaseTerm)
-          : true;
-      const matchesBranch = selectedBranch !== '' ? item.branch.toLowerCase().includes(lowerCaseBranch) : true;
-      const matchesSem = selectedSem !== '' ? item.sem.toLowerCase().includes(lowerCaseSem) : true;
-
-      return !matchesSearchTerm || !matchesBranch || !matchesSem;
-    });
-
-    const sortedSubjects: any = [...filteredSubjects, ...unfilteredSubjects];
-
-    setFilteredData(sortedSubjects);
-  }, [list, searchTerm, selectedBranch, selectedSem, subjectListDetail]);
+    filterData();
+  }, [selectedBranch, selectedSem, searchTerm]);
 
 
   const generateAbbreviation = (subject: string) => {
     const words = subject.split(' ');
-    const excludedTerms = ['of', 'for', 'and'];
+    const excludedTerms: any = ['of', 'for', 'and'];
     const abbreviation = words
       .filter((word) => !excludedTerms.includes(word.toLowerCase()))
       .map((word) => word.charAt(0))
@@ -114,7 +174,7 @@ const Search = () => {
   const selectedSubject = async (item: any) => {
     dispatch(setResourceLoader(true));
     try {
-      const userData: any = await firestore().collection('Users').doc(auth().currentUser?.uid).get();
+      const userData: any = await firestoreDB().collection('Users').doc(uid).get();
       const customizedData = {
         university: userData.data().university,
         course: userData.data().course,
@@ -130,7 +190,7 @@ const Search = () => {
       };
 
       dispatch(setResourceLoader(false));
-      NavigationService.navigate(NavigationService.screens.ResourcesCategories, {
+      NavigationService.navigate(NavigationService.screens.SubjectResourcesScreen, {
         userData: {
           course: userData.data().course,
           branch: item.branch,
@@ -139,6 +199,7 @@ const Search = () => {
         },
         notesData: notesData,
         subject: item.subject,
+        branch: item?.branch
       });
     } catch (error) {
       dispatch(setResourceLoader(false));
@@ -153,7 +214,7 @@ const Search = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <Feather name="search" size={theme.sizes.iconMedium} color="#FFFFFF" />
+          <Ionicons name="search-circle-sharp" size={theme.sizes.iconMedium} color="#F1F1FA" />
           <Text style={styles.headerText}>Explore</Text>
         </View>
       </View>
@@ -162,6 +223,7 @@ const Search = () => {
           <FlatList
             data={rendererItems}
             showsVerticalScrollIndicator={false}
+            ref={listRef}
             renderItem={({ item }: { item: string }) => {
               switch (item) {
                 case 'Search':
@@ -175,14 +237,33 @@ const Search = () => {
                           placeholderTextColor={theme.colors.primaryText}
                           style={styles.searchInput}
                         />
-                        <Feather
-                          name="search"
-                          size={theme.sizes.iconSmall}
-                          color={theme.colors.primaryText}
-                          style={styles.searchIcon}
-                        />
+                        {
+                          (searchTerm === '' && selectedBranch === '' && selectedSem === '') &&
+                          <Feather
+                            name="search"
+                            size={theme.sizes.iconSmall}
+                            color={theme.colors.primaryText}
+                            style={styles.searchIcon}
+                          />
+                        }
+                        {
+                          (searchTerm !== '' || selectedBranch !== '' || selectedSem !== '') &&
+                          <MaterialIcons
+                            onPress={() => {
+                              setSearchTerm('');
+                              setSelectedBranch('');
+                              setSelectedSem('');
+                              setFilteredData(list);
+                              setReload(!reload)
+                            }}
+                            name="clear"
+                            size={theme.sizes.iconSmall}
+                            color={theme.colors.primaryText}
+                            style={styles.searchIcon}
+                          />
+                        }
                       </View>
-                      <Form initialValues={{ branch: '', sem: '' }} onSubmit={(values) => { console.log("tfuy", values) }} validationSchema={searchFilterValidationSchema} >
+                      <Form initialValues={{ branch: '', sem: '' }} onSubmit={(values) => { }} validationSchema={searchFilterValidationSchema}>
                         <View style={{
                           justifyContent: 'space-between',
                           alignItems: 'center',
@@ -210,7 +291,6 @@ const Search = () => {
                             handleOptions={(item: any) => {
                               if (item?.value) {
                                 setSelectedSem(item?.value);
-                                console.log("item", item)
                               }
                             }}
                           />
@@ -229,9 +309,15 @@ const Search = () => {
                       <FlatList
                         data={filteredData}
                         showsVerticalScrollIndicator={false}
+                        onScroll={(event: any)=>{
+                          scroollPostion = event.nativeEvent.contentOffset.y
+                        }}
                         renderItem={({ item }: any) => {
                           return (
-                            <TouchableOpacity style={styles.subjectItem} onPress={() => selectedSubject(item)}>
+                            <TouchableOpacity style={styles.subjectItem} onPress={() => {
+                              selectedSubject(item);
+                              setScroll(scroollPostion)
+                            }}>
                               <View style={styles.containerBox}>
                                 <View style={styles.containerText} />
                               </View>
@@ -283,6 +369,6 @@ const Search = () => {
       </View>
     </View>
   );
-};
+});
 
 export default Search;

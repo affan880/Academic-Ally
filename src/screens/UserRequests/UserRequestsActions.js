@@ -62,7 +62,7 @@ class UserRequestsActions {
                 querySnapshot.forEach((doc) => {
                     if (doc.data().storageId === data.storageId) {
                         firestoreDB().collection('Users').doc(data?.uploaderId).collection('UserUploads').doc(doc.id).update({
-                            aproval: decision.aprova || null,
+                            aproval: decision.aproval || null,
                             comment: decision.comment || null,
                             verifiedBy: decision.verifiedBy || null,
                             verifiedByUid: decision.verifiedByUid || null,
@@ -87,13 +87,16 @@ class UserRequestsActions {
 
     static uploadFile = async (item, url, credentials, handleRefresh) => {
         try {
-            const response = await axios.get(url, { responseType: 'arraybuffer' });
+            const response = await axios.get(url, {
+                responseType: 'arraybuffer',
+            });
+
             const fileContent = response.data;
             const fileSize = fileContent.byteLength;
             const data = {
                 ...item,
                 size: fileSize / 1000
-            }
+            };
 
             const uploadParams = {
                 Bucket: credentials?.bucketName,
@@ -101,16 +104,20 @@ class UserRequestsActions {
                 Body: fileContent,
             };
 
-            await this.s3.upload(uploadParams).promise().then((res) => {
-                this.createResource(data).then(() => {
-                    this.deleteResource(item, handleRefresh);
-                    this.deleteFilefromFBStorage(item?.path);
-                })
-            })
+            await new Promise((resolve) => {
+                this.s3.upload(uploadParams).promise().then((res) => {
+                    this.createResource(data).then(() => {
+                        this.deleteResource(item, handleRefresh);
+                        this.deleteFilefromFBStorage(item?.path);
+                        resolve(); // Resolve the promise to continue further
+                    });
+                });
+            });
         } catch (error) {
             console.log('Error:', error);
         }
     }
+
 
     static createResource = async (data) => {
         try {
@@ -126,15 +133,15 @@ class UserRequestsActions {
                     dlink: '',
                     name: data?.name,
                     rating: 0,
-                    sem: data?.name,
+                    sem: data?.sem,
                     size: data?.size,
                     status: "unverified",
                     subject: data?.subject,
                     time: new Date().getTime(),
                     units: data?.units,
-                    uploaderId: data?.uploaderName,
+                    uploaderId: data?.uploaderId,
                     author: data?.author || data?.uploaderName,
-                    uploaderName: data?.uploaderId,
+                    uploaderName: data?.uploaderName,
                     uploaderEmail: data?.uploaderEmail,
                     verifiedBy: data?.verifiedBy,
                     verifiedByUid: data?.verifiedByUid,
@@ -196,8 +203,7 @@ class UserRequestsActions {
         }
     }
 
-    static rejectRequest = (item, handleRefresh) => async (dispatch) => {
-        const user = firebase.auth().currentUser;
+    static rejectRequest = (item, handleRefresh, user) => async (dispatch) => {
         try {
             this.deleteResource(item, handleRefresh);
             this.deleteFilefromFBStorage(item?.path);
