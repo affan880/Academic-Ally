@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { useSelector } from 'react-redux';
 
+import RestrictedScreen from './restrictedScreen';
 import createStyles from './styles';
 
 interface Props {
@@ -21,6 +22,7 @@ const navigationLayout = ({ children, rightIconFalse, title, handleScroll, handl
   const theme = useSelector((state: any) => state.theme);
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
   return (
+    <RestrictedScreen>
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={{
@@ -85,6 +87,7 @@ const navigationLayout = ({ children, rightIconFalse, title, handleScroll, handl
         </View>
       </View>
     </View>
+    </RestrictedScreen>
   );
 };
 

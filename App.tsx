@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { NativeBaseProvider } from 'native-base';
 import React from 'react';
+import { StatusBar } from 'react-native';
 import RNBootSplash from 'react-native-bootsplash';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NotifierWrapper } from 'react-native-notifier';
@@ -34,6 +35,10 @@ const App = () => {
       <SafeAreaView style={{ flex: 1 }}>
         <NativeBaseProvider>
           <Provider store={store}>
+              <StatusBar
+            backgroundColor={'#6360FF'}
+            barStyle="light-content"
+          />
             <NavigationContainer ref={NavigationService.navigationRef} linking={linking} >
               <NotifierWrapper>
                 <BootScreen />

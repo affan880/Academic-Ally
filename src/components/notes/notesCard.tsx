@@ -165,10 +165,10 @@ const NotesCard = React.memo(({ item, userData, notesData, selected, subject, se
 
   const handleSharePdf = async () => {
     try {
-      await PdfViewerAction.sharePdf({ ...item, subject: subject }, dynamicLink).then((link: any) => {
+      await PdfViewerAction.sharePdf({ ...item, subject: item?.subject }, dynamicLink).then((link: any) => {
         Share.share({
           title: `${subject}`,
-          message: `If you're studying ${subject}, you might find these ${notesData.category} on Academic Ally helpfull. I did! Check them out:${link}`
+          message: `If you're studying ${subject}, you might find these ${item.category} on Academic Ally helpfull. I did! Check them out:${link}`
         });
       }).catch((error: any) => {
         console.log(error);

@@ -3,6 +3,8 @@ import { Dimensions, StatusBar, StyleSheet, Text, View } from 'react-native';
 import Orientation from 'react-native-orientation-locker';
 import { useSelector } from 'react-redux';
 
+import RestrictedScreen from './restrictedScreen';
+
 const ScreenLayout = ({name = 'none', children}) => {
   const height = Dimensions.get('screen').height;
   const width = Dimensions.get('screen').width;
@@ -16,6 +18,7 @@ const ScreenLayout = ({name = 'none', children}) => {
     }
   }, []);
   return (
+    <RestrictedScreen>
     <View
       //enable potrait and landscape
       // style={{ flex: 1, width: '100%', height: height }}
@@ -40,6 +43,7 @@ const ScreenLayout = ({name = 'none', children}) => {
         {children}
       </View>
     </View>
+    </RestrictedScreen>
   );
 };
 
