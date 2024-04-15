@@ -7,12 +7,15 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NotifierWrapper } from 'react-native-notifier';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
+import AndroidBadge from 'react-native-android-badge';
 
 import store from './src/redux/store';
 import BootScreen from './src/screens/Boot/BootScreen';
 import NavigationService from './src/services/NavigationService';
 
 import 'react-native-gesture-handler';
+
+AndroidBadge.setBadge(5);
 
 const App = () => {
   React.useEffect(() => {
@@ -35,7 +38,7 @@ const App = () => {
       <SafeAreaView style={{ flex: 1 }}>
         <NativeBaseProvider>
           <Provider store={store}>
-              <StatusBar
+          <StatusBar
             backgroundColor={'#6360FF'}
             barStyle="light-content"
           />

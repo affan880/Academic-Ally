@@ -5,6 +5,7 @@ const UserRequests = createSlice({
     initialState: {
         NewRequests: [],
         loadingRequests: false,
+        SeekHubRequests: []
     },
     reducers: {
         setNewRequests: (state, action) => {
@@ -21,8 +22,19 @@ const UserRequests = createSlice({
         setLoading: (state, action) => {
             state.loadingRequests = action.payload;
         },
+        setNewSeekHubRequests: (state, action) => {
+            if (state.SeekHubRequests.length === 0) {
+                state.SeekHubRequests = action.payload;
+            }
+            else {
+                state.SeekHubRequests = [...state.SeekHubRequests, ...action.payload];
+            }
+        },
+        setNewSeekHubRequestNull: (state) => {
+            state.SeekHubRequests = [];
+        },
     },
 });
-export const { setNewRequests, setRequestNull, setLoading } = UserRequests.actions;
+export const { setNewRequests, setRequestNull, setLoading, setNewSeekHubRequests, setNewSeekHubRequestNull } = UserRequests.actions;
 
 export default UserRequests.reducer;

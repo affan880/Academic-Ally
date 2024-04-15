@@ -1,53 +1,19 @@
 import storage from '@react-native-firebase/storage';
-import { Actionsheet, Box, Card, Center, Checkbox, Icon, IconButton, Modal, Stack, Text, Toast, useDisclose } from 'native-base';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Animated, Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Actionsheet, Box, Card, Center, Checkbox, Icon, IconButton, Modal, Stack, Text, useDisclose } from 'native-base';
+import React, { useMemo, useState } from 'react';
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ReportIconBlack, ReportIconWhite } from '../../assets/images/images';
+import { ReportIconBlack } from '../../assets/images/images';
 import UserRequestsActions from '../../screens/UserRequests/UserRequestsActions';
 import EditUploadsForm from '../../sections/EditUploadsForm/EditUploadsForm';
 import NavigationService from '../../services/NavigationService';
-// import { data } from '../../utilis/data';
 import createStyles from './styles';
 
-type MyStackParamList = {
-    NotesList: {
-        userData: {
-            Course: string;
-            Branch: string;
-            Sem: string;
-        };
-        notesData: string;
-        selected: string;
-        subject: string;
-    };
-    PdfViewer: {
-        userData: {
-            Course: string;
-            Branch: string;
-            Sem: string;
-        };
-        notesData: string;
-        selected: string;
-        subject: string;
-    };
-    UploadScreen: {
-        userData: {
-            Course: string;
-            Branch: string;
-            Sem: string;
-        };
-        notesData: string;
-        selected: string;
-        subject: string;
-    };
-};
-
-const NewRequestCard = ({ item }: any) => {
+const   NewRequestCard = ({ item }: any) => {
     const { isOpen, onOpen, onClose } = useDisclose();
     const theme = useSelector((state: any) => state.theme);
     const styles = useMemo(() => createStyles(theme.colors, theme.sizes), [theme]);
@@ -62,6 +28,7 @@ const NewRequestCard = ({ item }: any) => {
     const [checked3, setChecked3] = useState(false);
     const userFirestoreData = useSelector((state: any) => state.usersData).usersData;
     const userInfo: any = useSelector((state: any) => state.bootReducer.userInfo);
+    const dynamicLink = useSelector((state: any) => state?.bootReducer?.utilis?.dynamicLink);
     const [submitted, setSubmitted] = useState(false);
     const customClaims = useSelector((state: any) => state.bootReducer.customClaims);
     const managerUniversity = customClaims?.branchManagerDetails?.university;
@@ -88,12 +55,13 @@ const NewRequestCard = ({ item }: any) => {
         notesId: item?.notesId,
         userPfp: item?.pfp || null,
     }
+
     const [editedData, setEditedData] = useState(data);
 
     const handleRefresh = () => {
         dispatch(UserRequestsActions.loadNewUploads(managerUniversity, managerCourse, managerBranch))
         setLoading(false);
-    };
+    }; 
 
     const credentials = {
         notesPath: item?.path,
@@ -111,9 +79,9 @@ const NewRequestCard = ({ item }: any) => {
     };
 
     const approved = () => {
-        setLoading(true)
+        console.log("hmm")
         getDownloadUrl(item?.path).then((url) => {
-            dispatch(UserRequestsActions.acceptRequest(editedData, url, credentials, handleRefresh)).then(() => {
+            dispatch(UserRequestsActions.acceptRequest(editedData, url, credentials, handleRefresh, dynamicLink)).then(() => {
                 setApprovalModalVisible(false);
             });
         })
@@ -160,8 +128,7 @@ const NewRequestCard = ({ item }: any) => {
                                 paddingTop: theme.sizes.height * 0.01,
                                 paddingLeft: theme.sizes.width * 0.02,
                             }}>
-                            <Text style={styles.subjectName}>
-                                {/* {remove(item?.name)} */}
+                            <Text style={styles.subjectName}>   
                                 {(editedData?.subject)?.substring(0, 20)}
                             </Text>
                             <Text

@@ -79,7 +79,7 @@ const SeekHubScreen = (props: Props) => {
       const branches = Object.keys(apiResponse[userFirestoreData?.usersData?.university][userFirestoreData?.usersData.course])
       .map((branch) => ({
         label: branch,
-        value: branch
+        value: branch 
       }));
     setBranchData(branches);
     const semesters = apiResponse[userFirestoreData?.usersData?.university][userFirestoreData.usersData.course][userFirestoreData.usersData.branch]?.sem.map((value: any, index: any) => {

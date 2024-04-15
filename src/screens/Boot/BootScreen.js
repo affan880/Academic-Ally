@@ -7,7 +7,6 @@ import { Avatar } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { Alert, Dimensions, Linking, Pressable, StatusBar, Text, View } from 'react-native';
 import Feather from "react-native-vector-icons/Feather";
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -20,8 +19,6 @@ import NavigationService from '../../services/NavigationService';
 import { useAuthentication } from '../../utilis/hooks/useAuthentication';
 import AllyBotScreen from '../AllyBot/AllyBotScreen';
 import AuthScreen from '../AuthenticationScreens/authScreen'
-import LoginScreen from '../AuthenticationScreens/Login/LoginScreen';
-import SignUpScreen from '../AuthenticationScreens/SignUp/SignUpScreen';
 import Bookmark from '../Bookmark/Bookmark';
 import DownloadScreen from '../Downloads/DownloadScreen';
 import HomeScreen from '../Home/homeScreen';
@@ -41,6 +38,8 @@ import SubjectResources from '../SubjectResources/SubjectResourcesScreen';
 import Upload from '../Upload/uploadScreen';
 import UserRequestsScreen from '../UserRequests/UserRequestsScreen';
 import BootActions from './BootAction';
+import SeekHubRequestsScreen from '../SeekHub/SeekHubRequest';
+import UserUploadRequestsScreen from '../Upload/UserUploadRequest';
 
 const { height, width } = Dimensions.get("screen");
 const Drawer = createDrawerNavigator();
@@ -171,7 +170,9 @@ const BottomTabBar = () => {
                                 ),
                             }}
                             component={UserRequestsScreen}
-                        /> : null
+                        /> 
+                        
+                        : null
                 }
                 <Tab.Screen
                     name={NavigationService.screens.Profile}
@@ -193,6 +194,7 @@ const BottomTabBar = () => {
 };
 
 const AppStack = () => {
+    const customClaims = useSelector((state) => state.bootReducer.customClaims);
     return (
         <Stack.Navigator initialRouteName={NavigationService.screens.BottomTabNavigator} screenOptions={{ headerShown: false, animationEnabled: false }}>
             <Stack.Screen name={NavigationService.screens.BottomTabNavigator} component={BottomTabBar} />
@@ -209,6 +211,14 @@ const AppStack = () => {
             <Stack.Screen name={NavigationService.screens.AllyBot} component={AllyBotScreen} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.SeekHub} component={SeekHubScreen} options={{ headerShown: false }} />
             <Stack.Screen name={NavigationService.screens.Recents} component={RecentScreen} options={{ headerShown: false }} />
+            {
+                (customClaims?.admin === true) || (customClaims?.moderator === true) ?
+                <>
+                 <Stack.Screen name={NavigationService.screens.SeekHubRequests} component={SeekHubRequestsScreen} options={{ headerShown: false }} />
+                 <Stack.Screen name={NavigationService.screens.UserUploadsRequest} component={UserUploadRequestsScreen} options={{ headerShown: false }} />
+                </>
+                : null 
+            }
         </Stack.Navigator>
     );
 };
@@ -307,6 +317,7 @@ const BootScreen = () => {
 
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async messageObj => {
+            console.log("objj",messageObj)
             BootActions.handleNotification(messageObj);
         });
 
@@ -314,11 +325,14 @@ const BootScreen = () => {
     }, []);
 
     useEffect(() => {
-        const unsubscribe = messaging().setBackgroundMessageHandler(async messageObj => {
+        messaging().getInitialNotification().then(async messageObj => {
+            console.log("called", messageObj)
             BootActions.handleNotification(messageObj);
+            console.log("object",messageObj)
+            if(messageObj?.data?.test === "1"){
+                Linking.openURL("https://academicallyapp.page.link/N141")
+            }
         });
-
-        return unsubscribe;
     }, []);
 
     if (initializing) {

@@ -28,7 +28,9 @@ class NavigationService {
         Download: 'Download',
         AllyBot: 'AllyBot',
         SeekHub: 'SeekHub',
-        Recents: 'Recents'
+        Recents: 'Recents',
+        SeekHubRequests: 'SeekHubRequests',
+        UserUploadsRequest: 'UserUploadsRequest'
     };
 
     static navigate(name, params) {

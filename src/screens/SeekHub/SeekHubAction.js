@@ -39,6 +39,16 @@ class SeekHubActions {
             date: new Date(),
             notifyList: [],
         }
+        const topic = `${userData?.university}_${userData?.course}_${formData?.branch}_${formData?.sem}`;
+        const title = `📚 New Request Alert!`;
+        const message = `${userData?.name} is seeking ${formData?.requestResource} for ${formData.subject}.`;
+        const notify = {
+            topic: topic,
+            title: title,
+            message: message,
+            data:{},
+          }
+        this.SendNotification(notify)
         firestoreDB().collection('SeekHub').doc(`${userData.university}`).collection(`${userData.course}`).doc(`${uniqueId}`).set(data).then(()=>{
             this.handleNotification(subscribeArray, uid, uniqueId);
             firestoreDB().collection('Users').doc(uid).collection('SeekHub').doc('Requests').set({
@@ -141,7 +151,7 @@ class SeekHubActions {
         }).then(()=>{
             firebase.messaging().unsubscribeFromTopic(`${topic}`);
             Toast.show({
-                title: "Unsubscribed",
+                title: "Unsubscribed",  
                 backgroundColor: '#FF0000',
                 placement: 'bottom'
             })
@@ -184,7 +194,7 @@ class SeekHubActions {
             uploaderId: uploaderId,
             path: pdf.path,
             pfp: user.photoURL,
-            uploadedDate: new Date(),
+            uploadedDate: new Date(), 
             storageId: pdf.storageId,
             status:  'Under Verification'
         };
@@ -196,6 +206,21 @@ class SeekHubActions {
         await DocRef.update(data).then(async () => {
             await this.addToUserUploads(data, university, course);
         })
+    }
+    
+    static async SendNotification(config) {
+        try {
+            const response = await fetch('https://us-central1-academic-ally-app.cloudfunctions.net/sendMessageToTopic', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(config),
+            });
+            console.log('Message sent successfully');
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
     }
 }
 

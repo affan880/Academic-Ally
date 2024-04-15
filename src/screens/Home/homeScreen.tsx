@@ -67,7 +67,7 @@ const HomeScreen = () => {
             description: 'The link you tried to access has expired.',
             background: '#FF0000'
           })
-        }
+        } 
       }
     }
   };

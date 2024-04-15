@@ -1,12 +1,15 @@
 import LottieView from 'lottie-react-native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, RefreshControl, Text, Touchable, View } from 'react-native';
+import { FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import { Avatar, Icon, HStack } from 'native-base';
 
 import NewRequestCard from '../../components/notes/newRequestCard';
 import createStyles from './styles';
 import UserRequestsActions from './UserRequestsActions';
+import NavigationService from '../../services/NavigationService';
 
 const UserRequestsScreen = () => {
     const dispatch = useDispatch();
@@ -39,6 +42,23 @@ const UserRequestsScreen = () => {
         <NewRequestCard item={item} index={index} />
     );
 
+    const List = [ 
+        {
+            icon: 'hands-helping',
+            requestType: 'SeekHub',
+            bgColor: '#FCFCFC',
+            onClick: () => {NavigationService.navigate(NavigationService.screens.SeekHubRequests)},
+            bg: '#FF8181'
+        },
+        {
+            icon: 'upload',
+            requestType: 'User Uploads',
+            bgColor: '#FCFCFC',
+            onClick: () => {NavigationService.navigate(NavigationService.screens.UserUploadsRequest)},
+            bg:'#7DC579'
+        }
+    ]
+
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -50,9 +70,28 @@ const UserRequestsScreen = () => {
                     />
                     <Text style={styles.headerText}>Requests</Text>
                 </View>
-            </View>
+            </View> 
             <View style={styles.body}>
-                <FlatList
+            <HStack mt={10} >
+            {
+                List.map((data, index)=>{
+                    return(
+                        <TouchableOpacity key={index} style={styles.itemContainer} onPress={() => {
+                            //    NavigationService.navigate(NavigationService.screens.UserUploadsRequest)
+                            data.onClick()
+                            }} >
+                            <View style={[styles.notesIconContainer,{
+                                backgroundColor:data?.bg
+                            }]}>
+                              <Icon as={FontAwesome5} name={data.icon} size="xl" color={theme.colors.white} />
+                            </View>
+                            <Text style={styles.iconLabel}>{data.requestType}</Text>
+                        </TouchableOpacity>
+                    )
+                })
+            }
+           </HStack>
+                {/* <FlatList
                     showsVerticalScrollIndicator={false}
                     data={UserRequests?.NewRequests}
                     renderItem={renderItem}
@@ -84,7 +123,7 @@ const UserRequestsScreen = () => {
                             }}>No Requests</Text>
                         </View>
                     )}
-                />
+                /> */}
             </View>
         </View>
     );

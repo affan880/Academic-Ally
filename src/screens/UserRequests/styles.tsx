@@ -133,6 +133,25 @@ const createStyles = (theme: any, sizes: any) =>
             color: theme.primaryText,
             textAlign: 'left',
         },
+        itemContainer: {
+            width: width / 3.5,
+            height: width * 0.25 ,
+            flexDirection: "column",
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        },
+        notesIconContainer: {
+            width: '70%',
+            height: "70%",
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        iconLabel: {
+            color: theme.text,
+            fontSize: sizes.subtitle,
+            fontWeight: 'bold'
+        },
     });
 
 export default createStyles;
