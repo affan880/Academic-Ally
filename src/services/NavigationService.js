@@ -1,4 +1,4 @@
-import { createNavigationContainerRef, StackActions, useNavigation } from '@react-navigation/native';
+import { createNavigationContainerRef, StackActions } from '@react-navigation/native';
 
 class NavigationService {
     static navigationRef = createNavigationContainerRef();
@@ -34,7 +34,9 @@ class NavigationService {
     };
 
     static navigate(name, params) {
-        this.navigationRef.navigate(name, params);
+        if (this.navigationRef.isReady()) {
+            this.navigationRef.navigate(name, params);
+        }
     }
 
     static goBack(onNavigateBack) {
@@ -81,4 +83,3 @@ class NavigationService {
 }
 
 export default NavigationService;
-

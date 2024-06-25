@@ -315,22 +315,64 @@ const BootScreen = () => {
         }
     }, [compatible]);
 
+    const handleNotification = async (messageObj) => {
+        const channelId = messageObj?.notification?.android?.channelId;
+        switch (channelId) {
+            case 'Notes':
+                Linking.openURL(`https://academicallyapp.page.link/${messageObj?.data.notesId}`);
+                break;
+            case 'UserProfile':
+                Linking.openURL(`https://academicallyapp.page.link/${messageObj?.data.userId}`);
+                break;
+            case 'SeekHub':
+                NavigationService.navigate(NavigationService.screens.SeekHub)
+                break;
+            case 'Recents':
+                NavigationService.navigate(NavigationService.screens.Recents)
+                break;
+            case 'UserRequestsPdfViewer':
+                Linking.openURL("https://academicallyapp.page.link/UserRequestsPdfViewer");
+                break;
+            case 'AboutUs':
+                NavigationService.navigate(NavigationService.screens.AboutUs)
+                break;
+            case 'UpdateProfile':
+                NavigationService.navigate(NavigationService.screens.Profile)
+                break;
+            case 'PdfViewer':
+                Linking.openURL("https://academicallyapp.page.link/PdfViewer");
+                break;
+                break;
+            case 'Profile':
+                Linking.openURL("https://academicallyapp.page.link/Profile");
+                break;
+            case 'UploadScreen':
+                NavigationService.navigate(NavigationService.screens.UploadScreen)
+                break;
+            case 'Search':
+                NavigationService.navigate(NavigationService.screens.Search)
+                break;
+            case 'Bookmark':
+                NavigationService.navigate(NavigationService.screens.Bookmark)
+                break;
+            default:
+                break;
+        }
+    };
+    
+
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async messageObj => {
-            console.log("objj",messageObj)
             BootActions.handleNotification(messageObj);
         });
 
         return unsubscribe;
     }, []);
-
+    
     useEffect(() => {
         messaging().getInitialNotification().then(async messageObj => {
-            console.log("called", messageObj)
-            BootActions.handleNotification(messageObj);
-            console.log("object",messageObj)
-            if(messageObj?.data?.test === "1"){
-                Linking.openURL("https://academicallyapp.page.link/N141")
+            if (messageObj?.data?.notesId !== null) {
+                handleNotification(messageObj);
             }
         });
     }, []);

@@ -93,7 +93,7 @@ const seekHubTabList = (props: Props) => {
 
   useEffect(()=>{
     setList(seekList)
-  },[seekList])
+  },[seekList, usersData])
 
   const isNotificationOn = (id: any) => {
      if(subscribedTopics?.includes(id)){

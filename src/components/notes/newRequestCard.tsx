@@ -79,7 +79,6 @@ const   NewRequestCard = ({ item }: any) => {
     };
 
     const approved = () => {
-        console.log("hmm")
         getDownloadUrl(item?.path).then((url) => {
             dispatch(UserRequestsActions.acceptRequest(editedData, url, credentials, handleRefresh, dynamicLink)).then(() => {
                 setApprovalModalVisible(false);
