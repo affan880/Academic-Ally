@@ -1,15 +1,25 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '12.4'
+platform :ios, '13.4'
+# use_modular_headers!
+use_frameworks!
 install! 'cocoapods', :deterministic_uuids => false
 
 target 'Academically' do
   config = use_native_modules!
 
+  use_frameworks! :linkage => :static
   # Flags change depending on the env values.
+  pod 'Firebase/Core', :modular_headers => true
+  # Add other Firebase pods that you use
+  pod 'Firebase/Analytics', :modular_headers => true
+  pod 'Firebase/Auth', :modular_headers => true
+  pod 'Firebase/Firestore', :modular_headers => true
+  # $RNFirebaseAnalyticsWithoutAdIdSupport=true
   flags = get_default_flags()
-
+  pod 'react-native-document-picker', :path => '../node_modules/react-native-document-picker'
+  # pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
   use_react_native!(
     :path => config[:reactNativePath],
     # Hermes is now enabled by default. Disable by setting this flag to false.
@@ -21,7 +31,7 @@ target 'Academically' do
     #
     # Note that if you have use_frameworks! enabled, Flipper will not work and
     # you should disable the next line.
-    :flipper_configuration => FlipperConfiguration.enabled,
+    # :flipper_configuration => FlipperConfiguration.enabled,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
@@ -38,6 +48,7 @@ target 'Academically' do
       # necessary for Mac Catalyst builds
       :mac_catalyst_enabled => false
     )
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    # __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end
+
