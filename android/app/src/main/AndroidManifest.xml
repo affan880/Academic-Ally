@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
 
 
     <application
@@ -53,5 +55,11 @@
             <data android:scheme="https" android:host = 'app.getacademically.co'/>
         </intent-filter>
       </activity>
-    </application>
+        <meta-data
+        android:name="com.google.firebase.messaging.default_notification_icon"
+        android:resource="@mipmap/ic_stat_black_bg_logo" />
+        <meta-data
+            android:name="com.google.firebandroid.permission.SYSTEM_ALERT_WINDOWase.messaging.default_notification_channel_id"
+            android:value="fetchh-channel"/>
+        </application>
 </manifest>

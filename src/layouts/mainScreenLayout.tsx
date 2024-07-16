@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { useSelector } from 'react-redux';
 
+import RestrictedScreen from './restrictedScreen';
 import createStyles from './styles';
 
 interface Props {
@@ -31,6 +32,7 @@ const MainScreenLayout = ({ children, rightIconFalse, title, handleScroll, name,
         }
     }, [])
     return (
+        <RestrictedScreen>
         <View style={styles.container}>
             <View style={styles.headerContainer}>
                 <View style={{
@@ -90,6 +92,7 @@ const MainScreenLayout = ({ children, rightIconFalse, title, handleScroll, name,
                 </View>
             </View>
         </View>
+        </RestrictedScreen>
     );
 };
 

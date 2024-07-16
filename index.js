@@ -7,4 +7,7 @@ import firebaseService from "./src/services/FirebaseService"
 
 firebaseService.requestUserPermission();
 
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('');
+  });
 AppRegistry.registerComponent(appName, () => App);

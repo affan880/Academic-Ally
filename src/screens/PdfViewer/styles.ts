@@ -7,9 +7,9 @@ const createStyles = (theme: any, sizes: any, isPotrait: any) =>
       flex: 1,
       backgroundColor: theme.primary,
     },
-    headerContainer: {
-      height: height * 0.07,
-      width: width,
+    headerContainer: { 
+      height: sizes.height * 0.07,
+      width: '100%',
       justifyContent: 'space-between',
       alignItems: 'flex-end',
       flexDirection: 'row',
@@ -22,7 +22,7 @@ const createStyles = (theme: any, sizes: any, isPotrait: any) =>
       backgroundColor: theme.secondary,
       borderTopLeftRadius: isPotrait ? 40 : 0,
       borderTopRightRadius: isPotrait ? 40 : 0,
-    },
+    },  
     pdf: {
       width: '100%',
       height: '100%',

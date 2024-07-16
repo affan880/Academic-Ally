@@ -355,7 +355,7 @@ async function requestPermisssion() {
 
 export const getFcmToken = async () => {
   let fcmToken = await AsyncStorage.getItem('fcmToken');
-
+  console.log(fcmToken)
   request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
   await requestPermisssion();
   if (!fcmToken) {

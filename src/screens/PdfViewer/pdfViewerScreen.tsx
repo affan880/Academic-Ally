@@ -2,7 +2,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { Alert, Box, Center, CloseIcon, HStack, Icon, IconButton, Modal, Text, Toast, VStack } from 'native-base';
 import { PDFInvalidObject } from 'pdf-lib';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, Linking, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Linking, StatusBar, View } from 'react-native';
 import Pdf from 'react-native-pdf';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -72,7 +72,7 @@ const PdfViewer = React.memo(() => {
   const styles = useMemo(() => createStyles(theme.colors, theme.sizes, landscape), [theme, potrait]);
   const [url, setUrl] = useState<any>(null);
   const mail = useSelector((state: any) => state?.bootReducer?.utilis);
-  const {max_init_per_day, max_pages, premium_max_init_per_day, premium_max_pages, mailTo, status} = useSelector((state: any) => state?.bootReducer?.utilis)?.pdfChat;
+  const {max_init_per_day = 0, max_pages = 0, premium_max_init_per_day = 0, premium_max_pages = 0, mailTo = 'admin@getacademically.co', status = false } = useSelector((state: any) => state?.bootReducer?.utilis)?.pdfChat || {};
   const [maxPagesAllowed, setMaxPagesAllowed] = useState(max_pages);
   const [maxInitiationLimit, setMaxInitiationLimit] = useState(max_init_per_day);
 
@@ -243,6 +243,10 @@ const handleOpenEmail = () => {
 
   return (
     <RestrictedScreen>
+      <StatusBar
+        backgroundColor={theme.colors.primary}
+        barStyle="light-content"
+      />
       {
         viewPdfChatModal &&
         <AllyChatBot open={viewPdfChatModal} close={()=> {

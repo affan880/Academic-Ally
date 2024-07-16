@@ -46,26 +46,28 @@ const HomeScreen = () => {
 
   const handleDynamicLink = (link: string) => {
     if (link && link !== null && link !== undefined) {
+      // dispatch(setCustomLoader(true));
       const { userData, notesData, screen } = UtilityService.getDynamicLinkData(link);
       if (userData && notesData) {
         if (screen === 'SubjectResources') {
-          dispatch(setCustomLoader(true));
+          dispatch(setCustomLoader(false));
           dispatch(HomeAction.getSubjectResources(userData, { subject: notesData.subject, subjectName: notesData.subject }));
         } 
         else if (screen === 'viewPdf') {
-          dispatch(setCustomLoader(true));
+          dispatch(setCustomLoader(false));
           NavigationService.navigate(NavigationService.screens.PdfViewer, {
             userData,
             notesData,
           });
         }
         else {
+          dispatch(setCustomLoader(false));
           Toast.show({
             title: 'Link Expired',
             description: 'The link you tried to access has expired.',
             background: '#FF0000'
           })
-        }
+        } 
       }
     }
   };

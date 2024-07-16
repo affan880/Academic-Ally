@@ -1,38 +1,35 @@
 import { useRoute } from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BackHandler, Platform } from 'react-native';
 import Orientation from 'react-native-orientation-locker';
 import { useSelector } from 'react-redux';
 
 const RestrictedScreen = ({ children }) => {
-    const potrait = useSelector((state) => state.theme).isPotrait;
     const route = useRoute();
-    const currentScreenName = route.name;
-    
+
     useEffect(() => {
-        if (currentScreenName === "PdfViewer") {
-            Orientation.unlockAllOrientations()
+        const isPdfViewerScreen = route.name === 'PdfViewer';
+
+        if (isPdfViewerScreen) {
+            Orientation.unlockAllOrientations();
+        } else {
+            Orientation.lockToPortrait();
         }
-        else {
-            Orientation.lockToPortrait()
-        }
-    }, [])
 
-    // useEffect(() => {
-    //     if (currentScreenName === "PdfViewer") {
-    //     const backAction = () => {
-    //         if (!potrait) {
-    //             return true;
-    //         }
-    //         return false;
-    //     };
+        const backAction = () => {
+            if (isPdfViewerScreen) {
+                return true;
+            }
+            return false;
+        };
 
-    //     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
-    //     return () => backHandler.remove();
-    //     }
-    // }, [potrait]);
-
+        return () => {
+            Orientation.lockToPortrait(); // Reset orientation on screen exit
+            backHandler.remove();
+        };
+    }, [route]);
 
     return (
         <>

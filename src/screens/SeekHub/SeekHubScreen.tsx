@@ -48,7 +48,7 @@ const SeekHubScreen = (props: Props) => {
 
     useEffect(() => {
       dispatch(SeekHubActions.getNewRequests(uid, userFirestoreData.usersData, filter))
-    },[])
+    },[userFirestoreData, apiResponse])
 
     function getOrdinalSuffix(text: string) {
       const number = parseInt(text, 10);
@@ -75,11 +75,11 @@ const SeekHubScreen = (props: Props) => {
     }, [list]);
 
     useEffect(() => {
-     if(apiResponse && userFirestoreData){
+     if((userFirestoreData?.usersData).length > 0  && apiResponse ){
       const branches = Object.keys(apiResponse[userFirestoreData?.usersData?.university][userFirestoreData?.usersData.course])
       .map((branch) => ({
         label: branch,
-        value: branch
+        value: branch 
       }));
     setBranchData(branches);
     const semesters = apiResponse[userFirestoreData?.usersData?.university][userFirestoreData.usersData.course][userFirestoreData.usersData.branch]?.sem.map((value: any, index: any) => {
@@ -90,7 +90,10 @@ const SeekHubScreen = (props: Props) => {
       };
     }).filter((value: any) => value.status === true);
     setSemList(semesters);
-     }
+    }
+    else {
+      // dispatch();
+    }
     },[apiResponse, userFirestoreData])
 
     const handleSemChange = () => {

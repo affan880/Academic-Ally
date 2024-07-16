@@ -19,7 +19,6 @@ const createStyles = (theme:any, sizes:any) =>
             //box elements should not get cut off
             overflow: 'hidden',
         },
-
         itemContainer: {
             width: width / 5,
             height: width * 0.2 ,

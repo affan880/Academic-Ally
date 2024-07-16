@@ -9,7 +9,7 @@ import { setUsersData, setUsersDataLoaded } from '../../redux/reducers/usersData
 import { setCustomLoader, setResourceLoader } from '../../redux/reducers/userState';
 import CrashlyticsService from "../../services/CrashlyticsService";
 import NavigationService from '../../services/NavigationService';
-
+import messaging from '@react-native-firebase/messaging';
 class HomeAction {
     static fetchNotesList = (data, val) => async (dispatch) => {
         try {
@@ -54,7 +54,9 @@ class HomeAction {
                 }
                 const subscribeArray = userData?.subscribeArray;
                 const topics = `${userData?.university}_${userData?.course}_${userData?.branch}_${userData?.sem}`;
-        
+                messaging()
+                .subscribeToTopic(topics)
+                .catch(error => console.error('Error subscribing to topic:', error));
                 if (subscribeArray?.includes(topics)) {
                   return;
                 } else {

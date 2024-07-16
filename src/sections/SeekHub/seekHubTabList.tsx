@@ -93,10 +93,10 @@ const seekHubTabList = (props: Props) => {
 
   useEffect(()=>{
     setList(seekList)
-  },[seekList])
+  },[seekList, usersData])
 
   const isNotificationOn = (id: any) => {
-     if(subscribedTopics.includes(id)){
+     if(subscribedTopics?.includes(id)){
        return true
       }
       else {
@@ -147,7 +147,7 @@ const seekHubTabList = (props: Props) => {
         <View style={{flexDirection: 'row', width: '100%'}}>
           <Box flexDirection={'column'}  >
           <Image source={{
-            uri: data.seekerPhoto
+            uri: data?.seekerPhoto || "https://firebasestorage.googleapis.com/v0/b/academic-ally-app.appspot.com/o/Avatars%2Fdefault.png?alt=media&token=b8e8a831-811e-4132-99bc-e6c2e01461da"
           }} style={{width: 76, height: 76, borderRadius: 10}} />
           </Box>
           <Box marginLeft={5} h={68} flexDirection={'column'} justifyContent={'space-between'}  >
