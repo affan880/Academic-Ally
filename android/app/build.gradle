@@ -163,9 +163,6 @@ android {
                 }
             }
         }
-         configurations.all {
-            resolutionStrategy { force 'androidx.work:work-runtime:2.6.0' }
-        }
     }
 
     if (isNewArchitectureEnabled()) {
